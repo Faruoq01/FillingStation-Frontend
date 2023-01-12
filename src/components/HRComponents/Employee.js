@@ -5,7 +5,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import avatar from '../../assets/avatar.png';
 import hr6 from '../../assets/hr6.png';
-import StaffModal from '../Modals/CreateStaffModal';
 import EmployeeDetails from '../Modals/EmployeeModal';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { adminOutlet, getAllStations } from '../../store/actions/outlet';
@@ -15,6 +14,7 @@ import { useSelector } from 'react-redux';
 import AdminUserService from '../../services/adminUsers';
 import { searchStaffs, storeStaffUsers } from '../../store/actions/staffUsers';
 import PrintStaffRecords from '../Reports/StaffRecord';
+import ManagerModal from '../Modals/ManagerModal';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -25,16 +25,18 @@ const Employee = () => {
     const [defaultState, setDefault] = useState(0);
     const [currentStaff, setCurrentStaff] = useState({});
     const [prints, setPrints] = useState(false);
-    const [setCurrentStation] = useState({});
     const [entries, setEntries] = useState(10);
+    const [filter, setFilter] = useState(0);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
+    const [roles, setRoles] = useState(['All Users', 'Admin', 'Accountant', 'Manager', 'Staff']);
 
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const staffUsers = useSelector(state => state.staffUserReducer.staffUsers);
+    const [cRoles, setCroles] = useState([]);
     const dispatch = useDispatch();
 
     const openModal = () => {
@@ -62,13 +64,19 @@ const Employee = () => {
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
+                    filter: roles[filter],
                     skip: skip * limit,
                     limit: limit,
                     outletID: data._id, 
                     organisationID: data.organisation
                 }
-                AdminUserService.allStaffUserRecords(payload).then(data => {
+                AdminUserService.filterRecords(payload).then(data => {
                     setTotal(data.staff.count);
+                    setCroles(data.staff.roles);
+
+                    const cloneRoles = ['All Users', 'Admin', 'Accountant', 'Manager', 'Staff'];
+                    const extensions = [...new Set(data.staff.roles.map(data => data.role))];
+                    setRoles(cloneRoles.concat(extensions));
                     dispatch(storeStaffUsers(data.staff.staff));
                 });
             });
@@ -78,13 +86,19 @@ const Employee = () => {
                 return data.station;
             }).then((data)=>{
                 const payload = {
+                    filter: roles[filter],
                     skip: skip * limit,
                     limit: limit,
                     outletID: data._id, 
                     organisationID: data.organisation
                 }
-                AdminUserService.allStaffUserRecords(payload).then(data => {
+                AdminUserService.filterRecords(payload).then(data => {
                     setTotal(data.staff.count);
+                    setCroles(data.staff.roles);
+
+                    const cloneRoles = ['All Users', 'Admin', 'Accountant', 'Manager', 'Staff'];
+                    const extensions = [...new Set(data.staff.roles.map(data => data.role))];
+                    setRoles(cloneRoles.concat(extensions));
                     dispatch(storeStaffUsers(data.staff.staff));
                 });
             });
@@ -98,13 +112,19 @@ const Employee = () => {
 
     const refresh = () => {
         const payload = {
+            filter: roles[filter],
             skip: skip * limit,
             limit: limit,
             outletID: oneStationData?._id, 
             organisationID: oneStationData?.organisation
         }
-        AdminUserService.allStaffUserRecords(payload).then(data => {
+        AdminUserService.filterRecords(payload).then(data => {
             setTotal(data.staff.count);
+            setCroles(data.staff.roles);
+
+            const cloneRoles = ['All Users', 'Admin', 'Accountant', 'Manager', 'Staff'];
+            const extensions = [...new Set(data.staff.roles.map(data => data.role))];
+            setRoles(cloneRoles.concat(extensions));
             dispatch(storeStaffUsers(data.staff.staff));
         });
     }
@@ -114,12 +134,13 @@ const Employee = () => {
         dispatch(adminOutlet(item));
 
         const payload = {
+            filter: roles[filter],
             skip: skip * limit,
             limit: limit,
             outletID: item._id, 
             organisationID: item.organisation
         }
-        AdminUserService.allStaffUserRecords(payload).then(data => {
+        AdminUserService.filterRecords(payload).then(data => {
             setTotal(data.staff.count);
             dispatch(storeStaffUsers(data.staff.staff));
         });
@@ -153,9 +174,25 @@ const Employee = () => {
         getAllEmployeeData();
     }
 
+    const filterMenu = (data, index) => {
+        setFilter(index);
+
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            filter: data,
+            outletID: oneStationData?._id, 
+            organisationID: oneStationData?.organisation
+        }
+
+        AdminUserService.filterRecords(payload).then(data =>{
+            dispatch(storeStaffUsers(data.staff.staff));
+        })
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllEmployeeData} />}
+            {<ManagerModal roles={cRoles} open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllEmployeeData} />}
             {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
             { prints && <PrintStaffRecords allOutlets={staffUsers} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
@@ -208,35 +245,36 @@ const Employee = () => {
                             }
                         </div>
                         <div className='second-select'>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px',  
-                                        background:'#EEF2F1', 
-                                        fontSize:'12px',
-                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            border:'1px solid #777777',
-                                        },
-                                    }} 
-                                    type='text'
-                                    placeholder="Search" 
-                                    onChange={(e) => {searchTable(e.target.value)}}
-                                />
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px',  
+                                    background:'#EEF2F1', 
+                                    fontSize:'12px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
+                                }} 
+                                type='text'
+                                placeholder="Search" 
+                                onChange={(e) => {searchTable(e.target.value)}}
+                            />
                         </div>
                     </div>
-                    <div style={{width:'100px'}} className='butt'>
+                    <div style={{width:'120px'}} className='butt'>
                         <Button sx={{
                             width:'100%', 
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',
-                            fontSize:'10px',
+                            fontSize:'12px',
+                            textTransform:'capitalize',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
                             }}  
                             onClick={openModal}
-                            variant="contained"> Add Staff
+                            variant="contained"> Add Employee
                         </Button>
                     </div>
                 </div>
@@ -255,20 +293,26 @@ const Employee = () => {
                             <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
-                        <Button sx={{
-                            width: mediaMatch.matches? '100%': '100px', 
-                            height:'30px',  
-                            background: '#58A0DF',
-                            borderRadius: '3px',
-                            fontSize:'10px',
-                            display: mediaMatch.matches && 'none',
-                            marginTop: mediaMatch.matches? '10px': '0px',
-                            '&:hover': {
-                                backgroundColor: '#58A0DF'
+                    <div style={{width: mediaMatch.matches? '100%': '200px'}} className='input-cont2'>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={filter}
+                            sx={{
+                                ...selectStyle2,
+                                height:'30px',
+                                marginRight:'10px',
+                                marginTop: mediaMatch.matches? '20px': '0px',
+                            }}
+                        >
+                            {
+                                roles.map((data, index) => {
+                                    return(
+                                        <MenuItem onClick={()=>{filterMenu(data, index)}} style={menu} value={index}>{data}</MenuItem>
+                                    )
+                                })
                             }
-                            }}  variant="contained"> History
-                        </Button>
+                        </Select>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 
                             height:'30px',  
@@ -296,7 +340,7 @@ const Employee = () => {
                         <div className='column'>Email</div>
                         <div className='column'>Phone Number</div>
                         <div className='column'>Date Employed</div>
-                        <div className='column'>Job Title</div>
+                        <div className='column'>Role</div>
                         <div className='column'>Action</div>
                     </div>
 
@@ -316,7 +360,7 @@ const Employee = () => {
                                         <div className='column'>{item.email}</div>
                                         <div className='column'>{item.phone}</div>
                                         <div className='column'>{item.dateEmployed}</div>
-                                        <div className='column'>{item.jobTitle}</div>
+                                        <div className='column'>{item.role}</div>
                                         <div className='column'>
                                             <div style={{justifyContent:'center'}} className='actions'>
                                                 <img onClick={()=>{openEmployee(item)}} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />

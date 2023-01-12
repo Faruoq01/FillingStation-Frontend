@@ -1,14 +1,36 @@
 import React, {useRef, useEffect} from 'react';
 import Tooltip from '@mui/material/Tooltip';
+import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
+    const tankList = useSelector(state => state.outletReducer.tankList);
+
+    const getCummulativeVolume = useCallback(() => {
+        const PMSList = tankList.filter(tank => tank.productType === "PMS");
+
+        const currentLevel = PMSList.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel);
+        }, 0);
+
+        const capacity = PMSList.reduce((accum, current) => {
+            return Number(accum) + Number(current.tankCapacity);
+        }, 0);
+
+        const deadStock = PMSList.reduce((accum, current) => {
+            return Number(accum) + Number(current.deadStockLevel);
+        }, 0);
+
+        console.log(currentLevel, "current level")
+
+        createTankCanvas(currentLevel, capacity, deadStock);
+    }, [tankList]);
 
     useEffect(()=>{
-        createTankCanvas(props.data.totalPMS, props.data.PMSTankCapacity, props.data.PMSDeadStock);
-        
-    }, [props.data.PMSDeadStock, props.data.PMSTankCapacity, props.data.totalPMS]);
+        getCummulativeVolume();
+    }, [getCummulativeVolume]);
 
     const createTankCanvas = (level, capacity, deadstock) => {
 

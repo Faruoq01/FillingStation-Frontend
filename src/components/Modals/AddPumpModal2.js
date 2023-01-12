@@ -40,7 +40,12 @@ const AddPump = (props) => {
         }
 
         OutletService.registerPumps(payload).then(data => {
-            if(data.code === 200) swal("Success!", "Pump created successfully", "success");
+            if(data.status === "exist"){
+                swal("Warning!", data.message, "info");
+
+            }else{
+                swal("Success!", "Pump created successfully!", "success");
+            }
         }).then(()=>{
             props.close(false);
             props.refresh();

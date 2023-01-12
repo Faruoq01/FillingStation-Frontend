@@ -352,7 +352,7 @@ const ReturnToTank = (props) => {
                     productType === "PMS"?
                     pms.map((item, index) => {
                         return(
-                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'230px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '270px', height:'230px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>

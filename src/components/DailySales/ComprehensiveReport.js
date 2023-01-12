@@ -550,10 +550,11 @@ const DippingDailySales = (props) => {
             <div style={{width:'100%'}} className='main-sales'>
                 <div className='inner'>
                     <div className='table-heads'>
+                        <div className='col'>Tank Name</div>
                         <div className='col'>Product Type</div>
-                        <div className='col'>PMS</div>
-                        <div className='col'>AGO</div>
-                        <div style={{marginRight:'0px'}} className='col'>DPK</div>
+                        <div className='col'>Tank Level</div>
+                        <div className='col'>Dipping value</div>
+                        <div style={{marginRight:'0px'}} className='col'>Difference</div>
                     </div>
 
                     {
@@ -563,9 +564,10 @@ const DippingDailySales = (props) => {
                             return(
                                 <div key={index} className='table-heads2'>
                                     <div className='col'>{data.tankName}</div>
-                                    <div className='col'>{data.productType === "PMS"? data.dipping: 0}</div>
-                                    <div className='col'>{data.productType === "AGO"? data.dipping: 0}</div>
-                                    <div style={{marginRight:'0px'}} className='col'>{data.productType === "DPK"? data.dipping: 0}</div>
+                                    <div className='col'>{data.productType}</div>
+                                    <div className='col'>{data.currentLevel}</div>
+                                    <div className='col'>{data.dipping}</div>
+                                    <div style={{marginRight:'0px'}} className='col'>{Number(data.currentLevel) - Number(data.dipping)}</div>
                                 </div>
                             )
                         })

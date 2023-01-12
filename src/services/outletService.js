@@ -61,13 +61,18 @@ const OutletService = {
     registerTanks: (data) => {
         return APIs.post('/station/tank/create', data)
         .then(({ data }) => {
-            return data.tank;
+            return data;
+        }).then(data => {
+            if(data.status === "exist"){
+                swal("Warning!", data.message, "info");
+
+            }else{
+                swal("Success!", "Tank created successfully!", "success");
+            }
         })
          .catch(err => {
             console.log("Auth service err", err);
             throw err
-        }).then(()=>{
-            swal("Success!", "Tank created successfully", "success");
         });
     },
 

@@ -11,13 +11,12 @@ import Manager from '../HRComponents/Manager';
 import Salary from '../HRComponents/Salary';
 import Query from '../HRComponents/Query';
 import Attendance from '../HRComponents/Attendance';
-import { useSelector } from 'react-redux';
 
 const HumanResource = (props) => {
 
     const handleNavigation = (data) => {
         if(data.name === 'Employee'){
-            props.history.push('/home/hr/manager');
+            props.history.push('/home/hr/employee');
         }else if(data.name === 'Salary structure'){
             props.history.push('/home/hr/salary');
         }else if(data.name === 'Query'){

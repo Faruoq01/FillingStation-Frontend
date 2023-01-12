@@ -45,6 +45,17 @@ const AdminUserService = {
             throw err
         })
     },
+
+    filterRecords: (data) => {
+        return APIs.post('/hr/employee/filterRecords', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default AdminUserService;

@@ -38,7 +38,7 @@ export const getAllStations = (params) => dispatch => {
 export const createTanks = (params) => dispatch => {
     return OutletService.registerTanks(params)
     .then(data => {
-        dispatch({type: NEW_TANK, payload: data})
+        dispatch({type: NEW_TANK, payload: data});
     })
     .catch(err => {
             

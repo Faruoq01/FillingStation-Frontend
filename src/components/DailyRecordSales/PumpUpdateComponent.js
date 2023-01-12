@@ -1,5 +1,5 @@
 import { Radio } from "@mui/material"
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
@@ -20,30 +20,36 @@ const PumpUpdateComponent = (props) => {
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
-    const getPMSPump = () => {
+    const getPMSPump = useCallback(() => {
         const newList = [...pumpList];
         const pms = newList.filter(data => data.productType === "PMS");
         const pmsCopy = pms.map(data => Object.assign({}, data));
         return pmsCopy;
-    }
+    }, [pumpList]);
 
-    const getAGOPump = () => {
+    const getAGOPump = useCallback(() => {
         const newList = [...pumpList];
         const ago = newList.filter(data => data.productType === "AGO");
         const agoCopy = ago.map(data => Object.assign({}, data));
         return agoCopy;
-    }
+    }, [pumpList]);
 
-    const getDPKPump = () => {
+    const getDPKPump = useCallback(() => {
         const newList = [...pumpList];
         const dpk = newList.filter(data => data.productType === "DPK");
         const dpkCopy = dpk.map(data => Object.assign({}, data));
         return dpkCopy;
-    }
+    }, [pumpList]);
 
-    const [pms, setPMS] = useState(getPMSPump());
-    const [ago, setAGO] = useState(getAGOPump());
-    const [dpk, setDPK] = useState(getDPKPump());
+    const [pms, setPMS] = useState([]);
+    const [ago, setAGO] = useState([]);
+    const [dpk, setDPK] = useState([]);
+
+    useEffect(()=>{
+        setPMS(getPMSPump());
+        setAGO(getAGOPump());
+        setDPK(getDPKPump());
+    }, [getAGOPump, getDPKPump, getPMSPump])
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -355,7 +361,7 @@ const PumpUpdateComponent = (props) => {
                     productType === "PMS"?
                     pms.map((item, index) => {
                         return(
-                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'300px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
@@ -377,7 +383,7 @@ const PumpUpdateComponent = (props) => {
                     productType === "AGO"?
                     ago.map((item, index) => {
                         return(
-                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'300px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
@@ -398,7 +404,7 @@ const PumpUpdateComponent = (props) => {
                     }):
                     dpk.map((item, index) => {
                         return(
-                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'300px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>

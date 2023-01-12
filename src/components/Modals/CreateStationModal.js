@@ -213,7 +213,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>PMS Cost</div>
+                                <div className='head-text2'>PMS Cost Price</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -231,7 +231,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>PMS Price</div>
+                                <div className='head-text2'>PMS Selling Price</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -249,7 +249,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>AGO Cost</div>
+                                <div className='head-text2'>AGO Cost Price</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -267,7 +267,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>AGO Price</div>
+                                <div className='head-text2'>AGO Selling Price</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -285,7 +285,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>DPK Cost</div>
+                                <div className='head-text2'>DPK Cost Price</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -303,7 +303,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>DPK Price</div>
+                                <div className='head-text2'>DPK Selling Price</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
