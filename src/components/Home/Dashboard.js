@@ -23,6 +23,8 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
 
+const mediaMatch = window.matchMedia('(max-width: 1150px)');
+
 const DashboardImage = (props) => {
 
     const history = useHistory();
@@ -330,7 +332,7 @@ const Dashboard = (props) => {
                             <div style={{width:'280px', marginRight:'10px'}} className='first-select'>
                                 <DateRangePicker style={{background:'red'}} onChange={onChange} value={value} />
                             </div>
-                            <div className='second-select'>
+                            <div style={{width: mediaMatch && '150px'}} className='second-select'>
                                 {(user.userType === "superAdmin" || user.userType === "admin") &&
                                     <Select
                                         labelId="demo-select-small"
