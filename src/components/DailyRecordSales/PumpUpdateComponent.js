@@ -11,7 +11,7 @@ const mediaMatch = window.matchMedia('(max-width: 500px)');
 const PumpUpdateComponent = (props) => {
 
     const [productType, setProductType] = useState("PMS");
-    const [selected, setSelected] = useState([]);
+    const [selectedPumps, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
@@ -19,6 +19,7 @@ const PumpUpdateComponent = (props) => {
     const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    console.log(linkedData, "helloooooo")
 
     const getPMSPump = useCallback(() => {
         const newList = [...pumpList];
@@ -46,10 +47,40 @@ const PumpUpdateComponent = (props) => {
     const [dpk, setDPK] = useState([]);
 
     useEffect(()=>{
-        setPMS(getPMSPump());
-        setAGO(getAGOPump());
-        setDPK(getDPKPump());
-    }, [getAGOPump, getDPKPump, getPMSPump])
+        if(linkedData.head.data.pms.length === 0){
+            setPMS(getPMSPump());
+        }else{
+            setPMS(linkedData.head.data.pms);
+            setSelected(linkedData.head.data.selectedPumps);
+            setSelectedTanks(linkedData.head.data.selectedTanks);
+        }
+
+        if(linkedData.head.data.ago.length === 0){
+            setAGO(getAGOPump());
+        }else{
+            setAGO(linkedData.head.data.ago);
+            setSelected(linkedData.head.data.selectedPumps);
+            setSelectedTanks(linkedData.head.data.selectedTanks);
+        }
+        
+        if(linkedData.head.data.dpk.length === 0){
+            setDPK(getDPKPump());
+        }else{
+            setDPK(linkedData.head.data.dpk);
+            setSelected(linkedData.head.data.selectedPumps);
+            setSelectedTanks(linkedData.head.data.selectedTanks);
+        }
+     
+    }, [
+        getAGOPump, 
+        getDPKPump, 
+        getPMSPump, 
+        linkedData.head.data.ago, 
+        linkedData.head.data.dpk, 
+        linkedData.head.data.pms, 
+        linkedData.head.data.selectedPumps, 
+        linkedData.head.data.selectedTanks
+    ]);
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -67,14 +98,15 @@ const PumpUpdateComponent = (props) => {
 
     const pumpItem = (e, index, item) => {
         e.preventDefault();
-        const tank = tankList.filter(data => data._id === item.hostTank)[0];
-
-        const findID = selected.findIndex(data => data._id === item._id);
+        const tankClone = [...tankList];
+        const tank = tankClone.filter(data => data._id === item.hostTank)[0];
+        
+        const findID = selectedPumps.findIndex(data => data._id === item._id);
         if(findID === -1){
             setSelected(prev => [...prev, item]);
 
         }else{
-            const newList = [...selected]
+            const newList = [...selectedPumps]
             newList[findID] = {...item};
             setSelected(newList);
         }
@@ -114,7 +146,7 @@ const PumpUpdateComponent = (props) => {
             list[index] = {...payload, identity: null}
             setPMS(list);
 
-            const deleted = selected.filter(data => data._id !== payload._id);
+            const deleted = selectedPumps.filter(data => data._id !== payload._id);
             const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
 
             setSelected(deleted);
@@ -125,7 +157,7 @@ const PumpUpdateComponent = (props) => {
             list[index] = {...payload, identity: null}
             setAGO(list);
 
-            const deleted = selected.filter(data => data._id !== payload._id);
+            const deleted = selectedPumps.filter(data => data._id !== payload._id);
             const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
 
             setSelected(deleted);
@@ -136,7 +168,7 @@ const PumpUpdateComponent = (props) => {
             list[index] = {...payload, identity: null}
             setDPK(list);
 
-            const deleted = selected.filter(data => data._id !== payload._id);
+            const deleted = selectedPumps.filter(data => data._id !== payload._id);
             const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
 
             setSelected(deleted);
@@ -182,28 +214,30 @@ const PumpUpdateComponent = (props) => {
         // update tank payload
         const newTankList = [...selectedTanks];
         const tankID = newTankList.findIndex(data => data._id === item.hostTank);
-        newTankList[tankID] = {
-            ...newTankList[tankID], 
-            pumps: selected.filter(data => data.hostTank === newTankList[tankID]._id),
-        }
-        if(user.userType === "superAdmin"){
+        if(tankID !== -1){
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: oneStationData
+                pumps: selectedPumps.filter(data => data.hostTank === newTankList[tankID]._id),
             }
-        }else{
-            newTankList[tankID] = {
-                ...newTankList[tankID], 
-                outlet: oneStationData
+            if(user.userType === "superAdmin"){
+                newTankList[tankID] = {
+                    ...newTankList[tankID], 
+                    outlet: oneStationData
+                }
+            }else{
+                newTankList[tankID] = {
+                    ...newTankList[tankID], 
+                    outlet: oneStationData
+                }
             }
+            setSelectedTanks(newTankList);
         }
-        setSelectedTanks(newTankList);
         savePumpUpdate(newTankList);
     }
 
     const setTotalizer = (e, item) => {
-
-        const currentTank = tankList.filter(data => data._id === item.hostTank)[0];
+        const clonedTanks = [...tankList];
+        const currentTank = clonedTanks.filter(data => data._id === item.hostTank)[0];
         const totalizerDiff = Number(e.target.value) - Number(item.totalizerReading);
         const quantity = Number(currentTank.currentLevel) - Number(currentTank.deadStockLevel);
 
@@ -213,7 +247,7 @@ const PumpUpdateComponent = (props) => {
 
             updateTotalizer("0", "0", item);
             swal("Warning!", "Please select a pump", "info");
-        }else if(selected.length === 0){
+        }else if(selectedPumps.length === 0){
             updateTotalizer("0", "0", item);
             swal("Warning!", "Please select a pump", "info");
 
@@ -242,6 +276,11 @@ const PumpUpdateComponent = (props) => {
 
         const newList = {...linkedData};
         newList.head.data.payload = newTankList;
+        newList.head.data.selectedPumps = selectedPumps;
+        newList.head.data.selectedTanks = selectedTanks;
+        newList.head.data.pms = pms;
+        newList.head.data.ago = ago;
+        newList.head.data.dpk = dpk;
         dispatch(passRecordSales(newList));
     }
 

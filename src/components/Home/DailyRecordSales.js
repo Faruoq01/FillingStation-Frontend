@@ -61,6 +61,11 @@ function DoublyLinkedListNode(data){
     this.data = data;
     this.next = null;
     this.prev = null;
+    this.data.ago = [];
+    this.data.pms = [];
+    this.data.dpk = [];
+    this.data.selectedPumps = [];
+    this.data.selectedTanks = [];
 }
 
 function DoublyLinkedList(){
@@ -68,10 +73,6 @@ function DoublyLinkedList(){
     this.currentDate = null;
     this.size = 0;
     this.page = 1;
-    this.incoming = [];
-    this.tanks = [];
-    this.pumps = [];
-    this.lpo = [];
 
     this.isEmpty = function(){
         return this.size === 0;
@@ -222,12 +223,10 @@ const DailyRecordSales = () => {
                 }
         
                 IncomingService.getAllIncoming3(payload).then((data) => {
-                    list.incoming = data.incoming.incoming;
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
 
                 OutletService.getAllStationPumps(payload).then(data => {
-                    list.pumps = data;
                     dispatch(getAllPumps(data));
                 });
 
@@ -236,17 +235,13 @@ const DailyRecordSales = () => {
                         const newData = {...data, label: data.tankName, value: data._id};
                         return newData;
                     });
-                    list.tanks = outletTanks;
                     dispatch(getAllOutletTanks(outletTanks));
                 });
 
                 LPOService.getAllLPO(payload).then((data) => {
-                    list.lpo = data.lpo.lpo;
                     dispatch(createLPO(data.lpo.lpo));
                 });
             });
-
-            dispatch(passRecordSales(list));
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
@@ -258,12 +253,10 @@ const DailyRecordSales = () => {
                 }
         
                 IncomingService.getAllIncoming3(payload).then((data) => {
-                    list.incoming = data.incoming.incoming;
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
 
                 OutletService.getAllStationPumps(payload).then(data => {
-                    list.pumps = data;
                     dispatch(getAllPumps(data));
                 });
 
@@ -272,17 +265,13 @@ const DailyRecordSales = () => {
                         const newData = {...data, label: data.tankName, value: data._id};
                         return newData;
                     });
-                    list.tanks = outletTanks;
                     dispatch(getAllOutletTanks(outletTanks));
                 });
 
                 LPOService.getAllLPO(payload).then((data) => {
-                    list.lpo = data.lpo.lpo;
                     dispatch(createLPO(data.lpo.lpo));
                 });
             });
-
-            dispatch(passRecordSales(list));
         }
     }, [dispatch, user._id, user.outletID, user.userType]);
 

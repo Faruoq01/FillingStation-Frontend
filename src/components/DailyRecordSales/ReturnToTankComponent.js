@@ -1,5 +1,5 @@
-import { Button, Radio } from "@mui/material"
-import { useState } from "react";
+import { Radio } from "@mui/material"
+import { useCallback, useEffect, useState } from "react";
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
@@ -12,38 +12,75 @@ const ReturnToTank = (props) => {
 
     const [productType, setProductType] = useState("PMS");
     const user = useSelector(state => state.authReducer.user);
-    const [selected, setSelected] = useState([]);
+    const [selectedPumps, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
     const dispatch = useDispatch();
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    console.log(linkedData, 'kslfhbfdkjbhfdbjhfdbjhkfvbjv')
 
-    const getPMSPump = () => {
+    const getPMSPump = useCallback(() => {
         const newList = [...pumpList];
         const pms = newList.filter(data => data.productType === "PMS");
         const pmsCopy = pms.map(data => Object.assign({}, data));
         return pmsCopy;
-    }
+    }, [pumpList]);
 
-    const getAGOPump = () => {
+    const getAGOPump = useCallback(() => {
         const newList = [...pumpList];
         const ago = newList.filter(data => data.productType === "AGO");
         const agoCopy = ago.map(data => Object.assign({}, data));
         return agoCopy;
-    }
+    }, [pumpList]);
 
-    const getDPKPump = () => {
+    const getDPKPump = useCallback(() => {
         const newList = [...pumpList];
         const dpk = newList.filter(data => data.productType === "DPK");
         const dpkCopy = dpk.map(data => Object.assign({}, data));
         return dpkCopy;
-    }
+    }, [pumpList]);
 
     const [pms, setPMS] = useState(getPMSPump());
     const [ago, setAGO] = useState(getAGOPump());
     const [dpk, setDPK] = useState(getDPKPump());
+   
+    useEffect(()=>{
+        if(linkedData.head.data.pms.length === 0){
+            setPMS(getPMSPump());
+        }else{
+            setPMS(linkedData.head.data.pms);
+            setSelected(linkedData.head.data.selectedPumps);
+            setSelectedTanks(linkedData.head.data.selectedTanks);
+        }
+
+        if(linkedData.head.data.ago.length === 0){
+            setAGO(getAGOPump());
+        }else{
+            setAGO(linkedData.head.data.ago);
+            setSelected(linkedData.head.data.selectedPumps);
+            setSelectedTanks(linkedData.head.data.selectedTanks);
+        }
+        
+        if(linkedData.head.data.dpk.length === 0){
+            setDPK(getDPKPump());
+        }else{
+            setDPK(linkedData.head.data.dpk);
+            setSelected(linkedData.head.data.selectedPumps);
+            setSelectedTanks(linkedData.head.data.selectedTanks);
+        }
+     
+    }, [
+        getAGOPump, 
+        getDPKPump, 
+        getPMSPump, 
+        linkedData.head.data.ago, 
+        linkedData.head.data.dpk, 
+        linkedData.head.data.pms, 
+        linkedData.head.data.selectedPumps, 
+        linkedData.head.data.selectedTanks
+    ]);
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -63,12 +100,12 @@ const ReturnToTank = (props) => {
         e.preventDefault();
         const tank = tankList.filter(data => data._id === item.hostTank)[0];
 
-        const findID = selected.findIndex(data => data._id === item._id);
+        const findID = selectedPumps.findIndex(data => data._id === item._id);
         if(findID === -1){
             setSelected(prev => [...prev, item]);
 
         }else{
-            const newList = [...selected]
+            const newList = [...selectedPumps]
             newList[findID] = {...item};
             setSelected(newList);
         }
@@ -108,7 +145,7 @@ const ReturnToTank = (props) => {
             list[index] = {...payload, identity: null}
             setPMS(list);
 
-            const deleted = selected.filter(data => data._id !== payload._id);
+            const deleted = selectedPumps.filter(data => data._id !== payload._id);
             const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
 
             setSelected(deleted);
@@ -119,7 +156,7 @@ const ReturnToTank = (props) => {
             list[index] = {...payload, identity: null}
             setAGO(list);
 
-            const deleted = selected.filter(data => data._id !== payload._id);
+            const deleted = selectedPumps.filter(data => data._id !== payload._id);
             const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
 
             setSelected(deleted);
@@ -130,7 +167,7 @@ const ReturnToTank = (props) => {
             list[index] = {...payload, identity: null}
             setDPK(list);
 
-            const deleted = selected.filter(data => data._id !== payload._id);
+            const deleted = selectedPumps.filter(data => data._id !== payload._id);
             const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
 
             setSelected(deleted);
@@ -144,7 +181,7 @@ const ReturnToTank = (props) => {
         if(productType === "PMS"){
             const newPms = [...pms];
             const findID = newPms.findIndex(data => data._id === item._id);
-            newPms[findID].RTlitre = Number(e.target.value);
+            newPms[findID].RTlitre = e;
             setPMS(newPms);
 
             // const newList = {...linkedData};
@@ -153,7 +190,7 @@ const ReturnToTank = (props) => {
         }else if(productType === "AGO"){
             const newAgo = [...ago];
             const findID = newAgo.findIndex(data => data._id === item._id);
-            newAgo[findID].RTlitre = Number(e.target.value);
+            newAgo[findID].RTlitre = e;
             setAGO(newAgo);
 
             // const newList = {...linkedData};
@@ -162,7 +199,7 @@ const ReturnToTank = (props) => {
         }else{
             const newDpk = [...dpk];
             const findID = newDpk.findIndex(data => data._id === item._id);
-            newDpk[findID].RTlitre = Number(e.target.value);
+            newDpk[findID].RTlitre = e;
             setDPK(newDpk);
 
             // const newList = {...linkedData};
@@ -173,38 +210,41 @@ const ReturnToTank = (props) => {
         // update tank payload
         const newTankList = [...selectedTanks];
         const tankID = newTankList.findIndex(data => data._id === item.hostTank);
-        newTankList[tankID] = {
-            ...newTankList[tankID], 
-            pumps: selected.filter(data => data.hostTank === newTankList[tankID]._id),
-        }
-        if(user.userType === "superAdmin"){
+        if(tankID !== -1){
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: oneStationData
+                pumps: selectedPumps.filter(data => data.hostTank === newTankList[tankID]._id),
             }
-        }else{
-            newTankList[tankID] = {
-                ...newTankList[tankID], 
-                outlet: oneStationData
+            if(user.userType === "superAdmin"){
+                newTankList[tankID] = {
+                    ...newTankList[tankID], 
+                    outlet: oneStationData
+                }
+            }else{
+                newTankList[tankID] = {
+                    ...newTankList[tankID], 
+                    outlet: oneStationData
+                }
             }
+            setSelectedTanks(newTankList);
         }
-        setSelectedTanks(newTankList);
-        saveReturnToTank(newTankList)
+        saveReturnToTank(newTankList);
     }
 
 
     const setTotalizer = (e, item) => {
-
-        const currentTank = tankList.filter(data => data._id === item.hostTank)[0];
+        const clonedTanks = [...tankList];
+        const currentTank = clonedTanks.filter(data => data._id === item.hostTank)[0];
         const quantity = Number(currentTank.currentLevel) + Number(e.target.value);
 
         if(oneStationData === null){
             swal("Warning!", "Please select a station", "info");
-        }else if(item.identity === null){
 
+        }else if(item.identity === null){
             updateTotalizer("0", item);
             swal("Warning!", "Please select a pump", "info");
-        }else if(selected.length === 0){
+
+        }else if(selectedPumps.length === 0){
             updateTotalizer("0", item);
             swal("Warning!", "Please select a pump", "info");
 
@@ -212,8 +252,9 @@ const ReturnToTank = (props) => {
             if(quantity > Number(currentTank.tankCapacity)){
                 updateTotalizer("0", item);
                 swal("Warning!", "Reading exceeded tank level", "info");
+
             }else{
-                updateTotalizer(e, item);
+                updateTotalizer(e.target.value, item);
             }
         }
     }
@@ -233,6 +274,11 @@ const ReturnToTank = (props) => {
 
         const newList = {...linkedData};
         newList.head.data.payload = newTankList;
+        newList.head.data.selectedPumps = selectedPumps;
+        newList.head.data.selectedTanks = selectedTanks;
+        newList.head.data.pms = pms;
+        newList.head.data.ago = ago;
+        newList.head.data.dpk = dpk;
         dispatch(passRecordSales(newList));
     }
 
@@ -363,7 +409,7 @@ const ReturnToTank = (props) => {
                                         onChange={e => setTotalizer(e, item)} 
                                         style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
-                                        defaultValue={"0"}
+                                        value={item.RTlitre}
                                     />
                                 </div>
                             </div>
@@ -381,7 +427,7 @@ const ReturnToTank = (props) => {
                                     <div style={{marginTop:'10px'}} className='label'>Quantity (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        defaultValue={"0"}
+                                        value={item.RTlitre}
                                         style={{...imps, width: '94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                     />
@@ -400,7 +446,7 @@ const ReturnToTank = (props) => {
                                     <div style={{marginTop:'10px'}} className='label'>Quantity (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        defaultValue={"0"}
+                                        value={item.RTlitre}
                                         style={{...imps, width: '94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                     />

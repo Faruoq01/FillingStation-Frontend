@@ -7,7 +7,7 @@ import {
 const initialState = {
     allAdminStations: [{}],
     singleAdminStation: {},
-    formStation: null
+    formStation: null,
 }
 
 const dailyRecordReducer = (state = initialState, action) => {
