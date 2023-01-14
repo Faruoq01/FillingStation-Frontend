@@ -197,11 +197,27 @@ const DailyRecordSales = () => {
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(date2);
+    const [pumpMetrics, setPumpMetrics] = useState({
+        pms: [],
+        ago: [],
+        dpk: [],
+        selectedTanks: [],
+        selectedPumps: [],
+        payload: []
+    });
+
+    const [pumpMetricsRT, setPumpMetricsRT] = useState({
+        pms: [],
+        ago: [],
+        dpk: [],
+        selectedTanks: [],
+        selectedPumps: [],
+        payload: []
+    });
 
     const getAllInitialRecords = React.useCallback((list) => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -290,33 +306,25 @@ const DailyRecordSales = () => {
 
     const nextQuestion = () => {
         let newList = {...linkedData}
-        
-        if(newList.head.data.currentPage === "1"){
-            // update tank locally
-            const fakeTankList = [...tankList];
-            for(let tank of newList.head.data.payload){
-                const findID = fakeTankList.findIndex(data => data._id === tank._id);
-                fakeTankList[findID] = {...fakeTankList[findID], currentLevel: Number(fakeTankList[findID].currentLevel) - Number(tank.sales)};
-            }
-            dispatch(getAllOutletTanks(fakeTankList));
 
-        }else if(newList.head.data.currentPage === "2"){
-            // update tank locally
-            const fakeTankList = [...tankList];
-            for(let tank of newList.head.data.payload){
-                const findID = fakeTankList.findIndex(data => data._id === tank._id);
-                fakeTankList[findID] = {...fakeTankList[findID], currentLevel: Number(fakeTankList[findID].currentLevel) + Number(tank.RTlitre)};
-            }
-            dispatch(getAllOutletTanks(fakeTankList));
+        if(linkedData.page === 1){
+            newList.head.data.payload = pumpMetrics.payload;
+            newList.head.data.selectedPumps = pumpMetrics.selectedPumps;
+            newList.head.data.selectedTanks = pumpMetrics.selectedTanks;
+            newList.head.data.pms = pumpMetrics.pms;
+            newList.head.data.ago = pumpMetrics.ago;
+            newList.head.data.dpk = pumpMetrics.dpk;
+            dispatch(passRecordSales(newList));
+        }
 
-        }else if(newList.head.data.currentPage === "3"){
-            // update tank locally
-            const fakeTankList = [...tankList];
-            for(let lpo of newList.head.data.payload){
-                const findID = fakeTankList.findIndex(data => data._id === lpo.tank._id);
-                fakeTankList[findID] = {...fakeTankList[findID], currentLevel: Number(fakeTankList[findID].currentLevel) - Number(lpo.lpoLitre)};
-            }
-            dispatch(getAllOutletTanks(fakeTankList));
+        if(linkedData.page === 2){
+            newList.head.data.payload = pumpMetricsRT.payload;
+            newList.head.data.selectedPumps = pumpMetricsRT.selectedPumps;
+            newList.head.data.selectedTanks = pumpMetricsRT.selectedTanks;
+            newList.head.data.pms = pumpMetricsRT.pms;
+            newList.head.data.ago = pumpMetricsRT.ago;
+            newList.head.data.dpk = pumpMetricsRT.dpk;
+            dispatch(passRecordSales(newList));
         }
 
         if(newList.head.next !== null){
@@ -374,21 +382,22 @@ const DailyRecordSales = () => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                setOpen(true);
-                RecordSalesService.saveRecordSales(payload).then(data => {
-                    swal("Success!", "Daily sales recorded successfully!", "success");
-                }).then(()=>{
-                    const list = new DoublyLinkedList();
-                    for(let i=7; i > 0 ; i--){
-                        list.addNode({
-                            currentPage: String(i),
-                            payload: [],
-                        });
-                    }
-                    getAllInitialRecords(list);
-                    dispatch(passRecordSales(list));
-                    setOpen(false);
-                })
+                // setOpen(true);
+                console.log(payload, 'payload')
+                // RecordSalesService.saveRecordSales(payload).then(data => {
+                //     swal("Success!", "Daily sales recorded successfully!", "success");
+                // }).then(()=>{
+                //     const list = new DoublyLinkedList();
+                //     for(let i=7; i > 0 ; i--){
+                //         list.addNode({
+                //             currentPage: String(i),
+                //             payload: [],
+                //         });
+                //     }
+                //     getAllInitialRecords(list);
+                //     dispatch(passRecordSales(list));
+                //     setOpen(false);
+                // })
             }
         });
     }
@@ -600,8 +609,8 @@ const DailyRecordSales = () => {
             </div>
 
             <div className='form-body'>
-                {linkedData.page === 1 && <PumpUpdateComponent />}
-                {linkedData.page === 2 && <ReturnToTankComponent />}
+                {linkedData.page === 1 && <PumpUpdateComponent update={setPumpMetrics} />}
+                {linkedData.page === 2 && <ReturnToTankComponent update={setPumpMetricsRT} />}
                 {linkedData.page === 3 && <LPOComponent />}
                 {linkedData.page === 4 && <SupplyComponent />}
                 {linkedData.page === 5 && <ExpenseComponents /> }
