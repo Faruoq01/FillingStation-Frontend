@@ -154,8 +154,8 @@ const DPKDailySales = () => {
                                 <div key={index} className='table-heads2'>
                                     <div className='col'>{data.pumpName}</div>
                                     <div className='col'>{data.openingMeter}</div>
-                                    <div className='col'>{data.closingMeter}</div>
-                                    <div className='col'>{data.difference}</div>
+                                    <div className='col'>{data.closingMeter + data.lpoLitre}</div>
+                                    <div className='col'>{data.difference + data.lpoLitre}</div>
                                     <div className='col'>{data.lpoLitre}</div>
                                     <div className='col'>{data.PMSRate}</div>
                                     <div className='col'>{data.rtLitre}</div>

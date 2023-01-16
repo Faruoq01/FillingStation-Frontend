@@ -44,7 +44,7 @@ const PumpUpdateComponent = (props) => {
     const [dpk, setDPK] = useState([]);
 
     useEffect(()=>{
-        if(linkedData?.head?.data?.pms.length === 0){
+        if(linkedData?.head?.data?.pms?.length === 0){
             setSelected([]);
             setSelectedTanks([]);
             setPMS(getPMSPump());
@@ -54,7 +54,7 @@ const PumpUpdateComponent = (props) => {
             setSelectedTanks(linkedData?.head?.data?.selectedTanks);
         }
 
-        if(linkedData?.head?.data?.ago.length === 0){
+        if(linkedData?.head?.data?.ago?.length === 0){
             setSelected([]);
             setSelectedTanks([]);
             setAGO(getAGOPump());
@@ -64,7 +64,7 @@ const PumpUpdateComponent = (props) => {
             setSelectedTanks(linkedData?.head?.data?.selectedTanks);
         }
         
-        if(linkedData?.head?.data?.dpk.length === 0){
+        if(linkedData?.head?.data?.dpk?.length === 0){
             setSelected([]);
             setSelectedTanks([]);
             setDPK(getDPKPump());
@@ -345,7 +345,7 @@ const PumpUpdateComponent = (props) => {
                         <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                     </div>:
                     productType === "PMS"?
-                    pms.map((data, index) => {
+                    pms?.map((data, index) => {
                         return(
                             <div key={index}>
                                 {data.identity === index &&
@@ -364,7 +364,7 @@ const PumpUpdateComponent = (props) => {
                         )
                     }):
                     productType === "AGO"?
-                    ago.map((data, index) => {
+                    ago?.map((data, index) => {
                         return(
                             <div key={index} >
                                 {data.identity === index &&
@@ -382,7 +382,7 @@ const PumpUpdateComponent = (props) => {
                             </div>
                         )
                     }):
-                    dpk.map((data, index) => {
+                    dpk?.map((data, index) => {
                         return(
                             <div key={index} >
                                 {data.identity === index &&
@@ -408,7 +408,7 @@ const PumpUpdateComponent = (props) => {
                     pumpList.length === 0?
                     <div>Please click to select a pump</div>:
                     productType === "PMS"?
-                    pms.map((item, index) => {
+                    pms?.map((item, index) => {
                         return(
                             <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
@@ -430,7 +430,7 @@ const PumpUpdateComponent = (props) => {
                         )
                     }):
                     productType === "AGO"?
-                    ago.map((item, index) => {
+                    ago?.map((item, index) => {
                         return(
                             <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
@@ -451,7 +451,7 @@ const PumpUpdateComponent = (props) => {
                             </div>
                         )
                     }):
-                    dpk.map((item, index) => {
+                    dpk?.map((item, index) => {
                         return(
                             <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>

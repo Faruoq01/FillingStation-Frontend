@@ -115,7 +115,8 @@ const Dashboard = (props) => {
             pumps: {
                 activePumps: {count: activePump.length, list: activePump},
                 inActivePumps: {count: inActivePump.length, list: inActivePump}
-            }
+            },
+
         }
         dispatch(addDashboard(payload));
     }
@@ -138,6 +139,42 @@ const Dashboard = (props) => {
                 DashboardService.allAttendanceRecords({id: data?.organisation, outletID: data?._id}).then(data => {
                     dispatch(dashEmployees(data.employees));
                     collectAndAnalyseData(data);
+                });
+
+                let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
+                rangeOne = rangeOne.map(data => {
+                    let res = "0";
+                    if(data.length === 1){
+                        res = res.concat(data);
+                    }else{
+                        res = data;
+                    }
+                    return res;
+                });
+                const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
+
+                let rangeTwo = new Date(value[1]).toLocaleDateString().split("/");
+                rangeTwo = rangeTwo.map(data => {
+                    let res = "0";
+                    if(data.length === 1){
+                        res = res.concat(data);
+                    }else{
+                        res = data;
+                    }
+                    return res;
+                });
+                const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+
+                const payload = {
+                    organisation: data?.organisation,
+                    outletID: data?._id,
+                    startDate: formatOne,
+                    endDate: formatTwo
+                }
+
+                DashboardService.allSalesRecords(payload).then(data => { console.log(data, 'sales is here')
+                    const evaluatedDashboard = collectAndEvaluateDashboard(data);
+                    dispatch(dashboardRecordMore(evaluatedDashboard));
                 }).then(()=>{
                     setLoad(false);
                 })
@@ -151,6 +188,42 @@ const Dashboard = (props) => {
                 DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
                     dispatch(dashEmployees(data.employees));
                     collectAndAnalyseData(data);
+                });
+
+                let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
+                rangeOne = rangeOne.map(data => {
+                    let res = "0";
+                    if(data.length === 1){
+                        res = res.concat(data);
+                    }else{
+                        res = data;
+                    }
+                    return res;
+                });
+                const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
+
+                let rangeTwo = new Date(value[1]).toLocaleDateString().split("/");
+                rangeTwo = rangeTwo.map(data => {
+                    let res = "0";
+                    if(data.length === 1){
+                        res = res.concat(data);
+                    }else{
+                        res = data;
+                    }
+                    return res;
+                });
+                const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+
+                const payload = {
+                    organisation: data?.organisation,
+                    outletID: data?._id,
+                    startDate: formatOne,
+                    endDate: formatTwo
+                }
+
+                DashboardService.allSalesRecords(payload).then(data => { 
+                    const evaluatedDashboard = collectAndEvaluateDashboard(data);
+                    dispatch(dashboardRecordMore(evaluatedDashboard));
                 }).then(()=>{
                     setLoad(false);
                 })
@@ -281,8 +354,7 @@ const Dashboard = (props) => {
         return details;
     }
 
-    const onChange = (data) => {
-        setLoad(true);
+    const processDate = (data) => {
         let rangeOne = new Date(data[0]).toLocaleDateString().split("/");
         rangeOne = rangeOne.map(data => {
             let res = "0";
@@ -306,6 +378,14 @@ const Dashboard = (props) => {
             return res;
         });
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+
+        return {startDate: formatOne, endDate: formatTwo}
+    }
+
+    const onChange = (data) => {
+        setLoad(true);
+        
+        const {formatOne, formatTwo} = processDate(data);
 
         const payload = {
             organisation: oneStationData?.organisation,

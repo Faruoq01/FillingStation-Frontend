@@ -446,10 +446,6 @@ const DashboardGraph = (props) => {
     const dateHandle = useRef();
 
     const updateDate = async(e) => {
-        // const date = e.target.value.split('-');
-        // const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        // setChangeDate(e.target.value);
-        // setCurrentDate(format);
 
         const firstDayOfTheWeek = getLastSunday(e.target.value);
         const lastDayOfTheWeek = getUpcomingSunday(e.target.value);
@@ -460,7 +456,6 @@ const DashboardGraph = (props) => {
             startRange: firstDayOfTheWeek,
             endRange: lastDayOfTheWeek
         }
-        console.log(payload, "week")
 
         DashboardService.getWeeklyDataFromApi(payload).then(data => {
             analyseWeeklyData(data);
@@ -468,23 +463,13 @@ const DashboardGraph = (props) => {
     }
 
     function getUpcomingSunday(data) {
-        const date = new Date(data);
-        const today = date.getDate();
-        const currentDay = date.getDay();
-        const newDate = date.setDate(today - currentDay + 7);
-        const mainDate = new Date(newDate).toLocaleDateString();
-        const format = mainDate.split('/');
-        return format[1].length === 1? `${format[2]}-0${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
+        const end = moment(data).endOf('week').format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        return end;
     }
 
     function getLastSunday(data) {
-        const date = new Date(data);
-        const today = date.getDate();
-        const currentDay = date.getDay();
-        const newDate = date.setDate(today - (currentDay || 7));
-        const mainDate = new Date(newDate).toLocaleDateString();
-        const format = mainDate.split('/');
-        return format[1].length === 1? `${format[2]}-0${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
+        const last = moment(data).startOf('week').format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        return last;
     }
 
     function getFirstAndLastDayOfTheYear(){
@@ -672,7 +657,9 @@ const DashboardGraph = (props) => {
             endRange: lastDayOfTheWeek
         }
 
-        DashboardService.getWeeklyDataFromApi(payload).then(data => {
+        console.log(payload, 'payyyyyyyyyyyyyyy')
+
+        DashboardService.getWeeklyDataFromApi(payload).then(data => {console.log(data, "current week data")
             analyseWeeklyData(data);
         })
     }, [props?.station?._id, props?.station?.organisation]);
