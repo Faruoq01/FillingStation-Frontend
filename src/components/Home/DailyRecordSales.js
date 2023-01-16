@@ -66,6 +66,11 @@ function DoublyLinkedListNode(data){
     this.data.dpk = [];
     this.data.selectedPumps = [];
     this.data.selectedTanks = [];
+    this.data.lpo = [];
+    this.data.supply = [];
+    this.data.expenses = [];
+    this.data.pay = [];
+    this.data.dipping = [];
 }
 
 function DoublyLinkedList(){
@@ -382,22 +387,22 @@ const DailyRecordSales = () => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                // setOpen(true);
-                console.log(payload, 'payload')
-                // RecordSalesService.saveRecordSales(payload).then(data => {
-                //     swal("Success!", "Daily sales recorded successfully!", "success");
-                // }).then(()=>{
-                //     const list = new DoublyLinkedList();
-                //     for(let i=7; i > 0 ; i--){
-                //         list.addNode({
-                //             currentPage: String(i),
-                //             payload: [],
-                //         });
-                //     }
-                //     getAllInitialRecords(list);
-                //     dispatch(passRecordSales(list));
-                //     setOpen(false);
-                // })
+                setOpen(true);
+                // console.log(payload, 'payload')
+                RecordSalesService.saveRecordSales(payload).then(data => {
+                    swal("Success!", "Daily sales recorded successfully!", "success");
+                }).then(()=>{
+                    const list = new DoublyLinkedList();
+                    for(let i=7; i > 0 ; i--){
+                        list.addNode({
+                            currentPage: String(i),
+                            payload: [],
+                        });
+                    }
+                    getAllInitialRecords(list);
+                    dispatch(passRecordSales(list));
+                    setOpen(false);
+                })
             }
         });
     }

@@ -1,5 +1,5 @@
 import { Button, Radio } from "@mui/material"
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import cross from '../../assets/cross.png';
@@ -39,27 +39,41 @@ const LPOComponent = (props) => {
     const [truckNo, setTruckNo] = useState("");
     const [quantity, setQuantity] = useState("");
 
-    const getPMSPump = () => {
-        const pms = pumpList.filter(data => data.productType === "PMS");
-        const newPms = pms.map(data => Object.assign({}, data));
-        return newPms;
-    }
+    const getPMSPump = useCallback(() => {
+        const newList = [...pumpList];
+        const pms = newList.filter(data => data.productType === "PMS");
+        const pmsCopy = pms.map(data => Object.assign({}, data));
+        return pmsCopy;
+    }, [pumpList]);
 
-    const getAGOPump = () => {
-        const ago = pumpList.filter(data => data.productType === "AGO");
-        const newAgo = ago.map(data => Object.assign({}, data));
-        return newAgo;
-    }
+    const getAGOPump = useCallback(() => {
+        const newList = [...pumpList];
+        const ago = newList.filter(data => data.productType === "AGO");
+        const agoCopy = ago.map(data => Object.assign({}, data));
+        return agoCopy;
+    }, [pumpList]);
 
-    const getDPKPump = () => {
-        const dpk = pumpList.filter(data => data.productType === "DPK");
-        const newDpk = dpk.map(data => Object.assign({}, data));
-        return newDpk;
-    }
+    const getDPKPump = useCallback(() => {
+        const newList = [...pumpList];
+        const dpk = newList.filter(data => data.productType === "DPK");
+        const dpkCopy = dpk.map(data => Object.assign({}, data));
+        return dpkCopy;
+    }, [pumpList]);
 
-    const [pms] = useState(getPMSPump());
-    const [ago] = useState(getAGOPump());
-    const [dpk] = useState(getDPKPump());
+    const [pms, setPMS] = useState([]);
+    const [ago, setAGO] = useState([]);
+    const [dpk, setDPK] = useState([]);
+
+    useEffect(()=>{
+        setPMS(getPMSPump());
+        setAGO(getAGOPump());
+        setDPK(getDPKPump());
+     
+    }, [
+        getAGOPump, 
+        getDPKPump, 
+        getPMSPump, 
+    ]);
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -140,8 +154,8 @@ const LPOComponent = (props) => {
 
     const addDetailsToList = () => {
         if(oneStationData === null) return swal("Warning!", "please select station", "info");
-        if(dispenseLpo === null) return swal("Warning!", "Please select lpo account", "info");
         if(dispensedPump === null) return swal("Warning!", "Please select lpo pump", "info");
+        if(dispenseLpo === null) return swal("Warning!", "Please select lpo account", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");

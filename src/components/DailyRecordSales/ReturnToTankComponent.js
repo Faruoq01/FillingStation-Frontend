@@ -185,32 +185,20 @@ const ReturnToTank = (props) => {
         if(productType === "PMS"){
             const newPms = [...pms];
             const findID = newPms.findIndex(data => data._id === item._id);
-            if(findID !== -1){
-                newPms[findID].RTlitre = e;
-                setPMS(newPms);
-            }else{
-                swal("Warning!", "Please select a pump", "info");
-            }
+            newPms[findID].RTlitre = e;
+            setPMS(newPms);
 
         }else if(productType === "AGO"){
             const newAgo = [...ago];
             const findID = newAgo.findIndex(data => data._id === item._id);
-            if(findID !== -1){
-                newAgo[findID].RTlitre = e;
-                setAGO(newAgo);
-            }else{
-                swal("Warning!", "Please select a pump", "info");
-            }
+            newAgo[findID].RTlitre = e;
+            setAGO(newAgo);
 
         }else{
             const newDpk = [...dpk];
             const findID = newDpk.findIndex(data => data._id === item._id);
-            if(findID !== -1){
-                newDpk[findID].RTlitre = e;
-                setDPK(newDpk);
-            }else{
-                swal("Warning!", "Please select a pump", "info");
-            }
+            newDpk[findID].RTlitre = e;
+            setDPK(newDpk);
         }
 
         // update tank payload
@@ -231,7 +219,6 @@ const ReturnToTank = (props) => {
     const setTotalizer = (e, item) => {
         if(selectedTanks.length !== 0){
             const clonedTanks = [...selectedTanks];
-            console.log(clonedTanks, 'tank list')
             const currentTank = clonedTanks.filter(data => data._id === item.hostTank);
 
             if(currentTank.length !== 0){
@@ -263,7 +250,6 @@ const ReturnToTank = (props) => {
             }
 
         }else{
-            updateTotalizer("0", "0", item);
             swal("Warning!", "Please select a pump", "info");
         }
     }
