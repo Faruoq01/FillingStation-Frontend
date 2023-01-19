@@ -2,14 +2,14 @@ import React from 'react';
 import '../../styles/dailySales.scss';
 import { useSelector } from 'react-redux';
 
-const DPKDailySales = () => {
+const DPKDailySales = (props) => {
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
 
     const getMasterRows = () => {
         const newRows = [];
 
-        for(let row of dailySales.DPK.sales){
+        for(let row of dailySales?.DPK?.sales){
 
             const findID = newRows.findIndex(data => data.pumpID === row.pumpID);
             
@@ -48,15 +48,15 @@ const DPKDailySales = () => {
                     PMS sales in cash price
                 ##########################*/
                 const totalPrice = filterUniqueRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.sales)*Number(current.DPKSellingPrice);
+                    return Number(accum) + Number(current.sales)*Number(current.PMSSellingPrice);
                 }, 0);
 
                 const totalLPOPrice = filterLPORows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.lpoLitre)*Number(current.DPKRate);
+                    return Number(accum) + Number(current.lpoLitre)*Number(current.PMSRate);
                 }, 0);
 
                 const totalRTPrice = filterRTRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.rtLitre)*Number(current.DPKPrice);
+                    return Number(accum) + Number(current.rtLitre)*Number(current.PMSPrice);
                 }, 0);
 
                 const uniqueRow = {
@@ -127,58 +127,60 @@ const DPKDailySales = () => {
     }
 
     return(
-        <div className='sales'>
-            <div className='top'>
-                <div className='tex'>Total Amount Of Sales (PMS)</div>
-                <div></div>
-            </div>
+        <div style={{width: props.rep === false? '100%': '96%'}}>
+            <div className='sales'>
+                <div className='top'>
+                    <div className='tex'>Total Amount Of Sales (DPK)</div>
+                    <div></div>
+                </div>
 
-            <div className='main-sales'>
-                <div className='inner'>
-                    <div className='table-heads'>
-                        <div className='col'>Pump Name</div>
-                        <div className='col'>Opening</div>
-                        <div className='col'>Closing</div>
-                        <div className='col'>Difference</div>
-                        <div className='col'>LPO</div>
-                        <div className='col'>Rate</div>
-                        <div className='col'>R/T</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                    </div>
-
-                    {
-                        getMasterRows().length === 0?
-                        <div style={dats}> No Data </div>:
-                        getMasterRows().map((data, index) => {
-                            return(
-                                <div key={index} className='table-heads2'>
-                                    <div className='col'>{data.pumpName}</div>
-                                    <div className='col'>{data.openingMeter}</div>
-                                    <div className='col'>{data.closingMeter + data.lpoLitre}</div>
-                                    <div className='col'>{data.difference + data.lpoLitre}</div>
-                                    <div className='col'>{data.lpoLitre}</div>
-                                    <div className='col'>{data.PMSRate}</div>
-                                    <div className='col'>{data.rtLitre}</div>
-                                    <div style={{marginRight:'0px'}} className='col'>
-                                        {data.amount}
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
-
-                    {getMasterRows().length === 0 ||
-                        <div className='table-heads2'>
-                            <div style={{background: "transparent"}} className='col'></div>
-                            <div style={{background: "transparent"}} className='col'></div>
-                            <div className='col'>Total</div>
-                            <div className='col'>{getTotalSums().difference}</div>
-                            <div className='col'>{getTotalSums().lpo}</div>
-                            <div className='col'></div>
-                            <div className='col'>{getTotalSums().rt}</div>
-                            <div style={{marginRight:'0px'}} className='col'>{getTotalSums().amount}</div>
+                <div className='main-sales'>
+                    <div className='inner'>
+                        <div className='table-heads'>
+                            <div className='col'>Pump Name</div>
+                            <div className='col'>Opening</div>
+                            <div className='col'>Closing</div>
+                            <div className='col'>Difference</div>
+                            <div className='col'>LPO</div>
+                            <div className='col'>Rate</div>
+                            <div className='col'>R/T</div>
+                            <div style={{marginRight:'0px'}} className='col'>Amount</div>
                         </div>
-                    }
+
+                        {
+                            getMasterRows().length === 0?
+                            <div style={dats}> No Data </div>:
+                            getMasterRows().map((data, index) => {
+                                return(
+                                    <div key={index} className='table-heads2'>
+                                        <div className='col'>{data.pumpName}</div>
+                                        <div className='col'>{data.openingMeter}</div>
+                                        <div className='col'>{data.closingMeter + data.lpoLitre}</div>
+                                        <div className='col'>{data.difference + data.lpoLitre}</div>
+                                        <div className='col'>{data.lpoLitre}</div>
+                                        <div className='col'>{data.PMSRate}</div>
+                                        <div className='col'>{data.rtLitre}</div>
+                                        <div style={{marginRight:'0px'}} className='col'>
+                                            {data.amount}
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+
+                        {getMasterRows().length === 0 ||
+                            <div className='table-heads2'>
+                                <div style={{background: "transparent"}} className='col'></div>
+                                <div style={{background: "transparent"}} className='col'></div>
+                                <div className='col'>Total</div>
+                                <div className='col'>{getTotalSums().difference}</div>
+                                <div className='col'>{getTotalSums().lpo}</div>
+                                <div className='col'></div>
+                                <div className='col'>{getTotalSums().rt}</div>
+                                <div style={{marginRight:'0px'}} className='col'>{getTotalSums().amount}</div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

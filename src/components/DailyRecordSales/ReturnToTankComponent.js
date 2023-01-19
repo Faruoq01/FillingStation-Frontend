@@ -12,32 +12,43 @@ const ReturnToTank = (props) => {
     const [productType, setProductType] = useState("PMS");
     const [selectedPumps, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
-    const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     console.log(linkedData, 'kslfhbfdkjbhfdbjhfdbjhkfvbjv')
 
     const getPMSPump = useCallback(() => {
-        const newList = [...pumpList];
-        const pms = newList.filter(data => data.productType === "PMS");
-        const pmsCopy = pms.map(data => Object.assign({}, data));
-        return pmsCopy;
-    }, [pumpList]);
+        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
+            return []
+        }else{
+            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
+            const pms = newList.filter(data => data.productType === "PMS");
+            const pmsCopy = pms.map(data => Object.assign({}, data));
+            return pmsCopy;
+        }
+    }, [linkedData?.head?.prev?.data?.selectedPumps]);
 
     const getAGOPump = useCallback(() => {
-        const newList = [...pumpList];
-        const ago = newList.filter(data => data.productType === "AGO");
-        const agoCopy = ago.map(data => Object.assign({}, data));
-        return agoCopy;
-    }, [pumpList]);
+        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
+            return []
+        }else{
+            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
+            const ago = newList.filter(data => data.productType === "AGO");
+            const agoCopy = ago.map(data => Object.assign({}, data));
+            return agoCopy;
+        }
+    }, [linkedData?.head?.prev?.data?.selectedPumps]);
 
     const getDPKPump = useCallback(() => {
-        const newList = [...pumpList];
-        const dpk = newList.filter(data => data.productType === "DPK");
-        const dpkCopy = dpk.map(data => Object.assign({}, data));
-        return dpkCopy;
-    }, [pumpList]);
+        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
+            return []
+        }else{
+            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
+            const dpk = newList.filter(data => data.productType === "DPK");
+            const dpkCopy = dpk.map(data => Object.assign({}, data));
+            return dpkCopy;
+        }
+    }, [linkedData?.head?.prev?.data?.selectedPumps]);
 
     const [pms, setPMS] = useState(getPMSPump());
     const [ago, setAGO] = useState(getAGOPump());
@@ -45,8 +56,8 @@ const ReturnToTank = (props) => {
    
     useEffect(()=>{
         if(linkedData?.head?.data?.pms.length === 0){
-            setSelected([]);
-            setSelectedTanks([]);
+            setSelected(linkedData?.head?.prev?.data?.selectedPumps);
+            setSelectedTanks(linkedData?.head?.prev?.data?.selectedTanks);
             setPMS(getPMSPump());
         }else{
             setPMS(linkedData?.head?.data?.pms);
@@ -55,8 +66,8 @@ const ReturnToTank = (props) => {
         }
 
         if(linkedData?.head?.data?.ago.length === 0){
-            setSelected([]);
-            setSelectedTanks([]);
+            setSelected(linkedData?.head?.prev?.data?.selectedPumps);
+            setSelectedTanks(linkedData?.head?.prev?.data?.selectedTanks);
             setAGO(getAGOPump());
         }else{
             setAGO(linkedData?.head?.data?.ago);
@@ -65,8 +76,8 @@ const ReturnToTank = (props) => {
         }
         
         if(linkedData?.head?.data?.dpk.length === 0){
-            setSelected([]);
-            setSelectedTanks([]);
+            setSelected(linkedData?.head?.prev?.data?.selectedPumps);
+            setSelectedTanks(linkedData?.head?.prev?.data?.selectedTanks);
             setDPK(getDPKPump());
         }else{
             setDPK(linkedData?.head?.data?.dpk);
@@ -101,7 +112,7 @@ const ReturnToTank = (props) => {
 
     const pumpItem = (e, index, item) => {
         e.preventDefault();
-        const cloneTanks = [...tankList];
+        const cloneTanks = [...linkedData?.head?.prev?.data?.selectedTanks];
         const tank = cloneTanks.filter(data => data._id === item.hostTank)[0];
 
         const findID = selectedPumps.findIndex(data => data._id === item._id);
@@ -202,13 +213,16 @@ const ReturnToTank = (props) => {
         }
 
         // update tank payload
-        const newTankList = [...selectedTanks];
+        const newTankList = [...linkedData?.head?.prev?.data?.selectedTanks];
         const tankID = newTankList.findIndex(data => data._id === item.hostTank);
+        console.log(Number(newTankList[tankID].fakeLevelOne), "fake tanks rt")
         if(tankID !== -1){
             newTankList[tankID] = {
                 ...newTankList[tankID], 
                 pumps: selectedPumps.filter(data => data.hostTank === newTankList[tankID]._id),
-                outlet: oneStationData
+                outlet: oneStationData,
+                fakeLevelTwo: Number(newTankList[tankID].fakeLevelOne) + Number(Number(e) < 0? 0: Number(e)),
+                fakeLevelThree: Number(newTankList[tankID].fakeLevelOne) + Number(Number(e) < 0? 0: Number(e))
             }
             setSelectedTanks(newTankList);
         }
@@ -271,7 +285,7 @@ const ReturnToTank = (props) => {
             pms: pms,
             ago: ago,
             dpk: dpk,
-            selectedTanks: selectedTanks,
+            selectedTanks: newTankList,
             selectedPumps: selectedPumps,
             payload: newTankList
         }
@@ -323,7 +337,7 @@ const ReturnToTank = (props) => {
             <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>
             <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
-                    pumpList.length === 0?
+                    linkedData?.head?.prev?.data?.selectedPumps?.length === 0?
                     <div style={{...box, width:'170px'}}>
                         <div style={{marginRight:'10px'}}>No pump Created</div>
                         <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
@@ -389,7 +403,7 @@ const ReturnToTank = (props) => {
 
             <div style={{width:'100%', marginTop:'20px', justifyContent:'center'}} className='pumping'>
                 {
-                    pumpList.length === 0?
+                    linkedData?.head?.prev?.data?.selectedPumps.length === 0?
                     <div>Please click to select a pump</div>:
                     productType === "PMS"?
                     pms.map((item, index) => {

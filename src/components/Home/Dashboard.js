@@ -354,7 +354,9 @@ const Dashboard = (props) => {
         return details;
     }
 
-    const processDate = (data) => {
+    const onChange = (data) => {
+        setLoad(true);
+        
         let rangeOne = new Date(data[0]).toLocaleDateString().split("/");
         rangeOne = rangeOne.map(data => {
             let res = "0";
@@ -378,14 +380,6 @@ const Dashboard = (props) => {
             return res;
         });
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
-
-        return {startDate: formatOne, endDate: formatTwo}
-    }
-
-    const onChange = (data) => {
-        setLoad(true);
-        
-        const {formatOne, formatTwo} = processDate(data);
 
         const payload = {
             organisation: oneStationData?.organisation,

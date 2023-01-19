@@ -773,7 +773,7 @@ const DailySales = (props) => {
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Net to bank</div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Payment</div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>
-                                                # {payments.hasOwnProperty("payments")? payments.payments: "0.00"}
+                                                NGN {payments.hasOwnProperty("payments")? payments.payments: "0.00"}
                                             </div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Outstanding</div>
                                         </div>
@@ -783,7 +783,7 @@ const DailySales = (props) => {
                                             </div>
                                             <div style={{color:'#0872D4'}}  className='item-count'>Teller</div>
                                             <div style={{color:'#0872D4'}} className='item-count'>
-                                                # {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0.00"}
+                                                NGN {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0.00"}
                                             </div>
                                             <div className='item-count'>
                                                 {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0.00"}

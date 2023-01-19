@@ -7,7 +7,11 @@ import {
     LPO_RECORDS,
     PAYMENTS_RECORDS,
     BULK_REPORTS,
-    RECORD_SALES
+    RECORD_SALES,
+    BALANCE_BF,
+    PMS_BBF,
+    AGO_BBF,
+    DPK_BBF
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -45,3 +49,21 @@ export const bulkReports = (params) => dispatch => {
 export const passRecordSales = (params) => dispatch => {
     dispatch({ type: RECORD_SALES, payload: params});
 }
+
+export const saveBalanceBF = (params) => dispatch => {
+    dispatch({ type: BALANCE_BF, payload: params});
+}
+
+export const pmsBBF = (params) => dispatch => {
+    dispatch({ type: PMS_BBF, payload: params});
+}
+
+export const agoBBF = (params) => dispatch => {
+    dispatch({ type: AGO_BBF, payload: params});
+}
+
+export const dpkBBF = (params) => dispatch => {
+    dispatch({ type: DPK_BBF, payload: params});
+}
+
+

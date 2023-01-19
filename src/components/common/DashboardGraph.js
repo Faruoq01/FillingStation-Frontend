@@ -289,11 +289,11 @@ const getMonthlyTotals = (day, dataList) => {
     }
 }
 
-const getAnnualTotals = (day, dataList, years) => {
+const getAnnualTotals = (day, dataList, years) => {console.log(day, 'hhhhhhhhhhhhhhhh')
     const dates = day.createdAt.split('-');
     
     switch(dates[0].toString()){
-        case years[0]:{
+        case years[0].toString():{
             let currentValue = dataList[0];
             currentValue = currentValue + Number(day.sales);
             dataList[0] = currentValue;
@@ -486,14 +486,11 @@ const DashboardGraph = (props) => {
     function getYearRange(){
         const currentYear = new Date().getFullYear();
         const firstDay = new Date(currentYear, 0, 1).toLocaleDateString();
-        const lastDay = new Date(currentYear, 11, 31).toLocaleDateString();
         const year = firstDay.split('/')[2];
-        const lowerRange =  Number(year) - 5;
-        const upperRange = Number(year) + 5;
-
-        const firstRange = `${lowerRange}-${firstDay.split("/")[0]}-${firstDay.split("/")[1]}`;
-        const secondRange = `${upperRange}-${lastDay.split("/")[0]}-${lastDay.split("/")[1]}`;
-
+    
+        const firstRange =  moment([year]).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const secondRange = moment([year]).endOf('year').format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+    
         return {firstRange: firstRange, secondRange: secondRange};
     }
 
@@ -605,7 +602,14 @@ const DashboardGraph = (props) => {
         const dataListDPK = [null, null, null, null, null, null, null, null, null, null, null, null, null];
 
         const years = [];
-        for(let i = Number(range.firstRange.split("-")[0]); i <= Number(range.secondRange.split("-")[0]); i++){
+        const getTheYear = range.firstRange.split('-')[0];
+        
+        const firstRange = Number(getTheYear) - 5;
+        const lastRangeRange = Number(getTheYear) + 5;
+        console.log(firstRange, 'range')
+        console.log(lastRangeRange, 'range')
+
+        for(let i = firstRange; i <= lastRangeRange; i++){
             years.push(i);
         }
 
@@ -656,8 +660,6 @@ const DashboardGraph = (props) => {
             startRange: firstDayOfTheWeek,
             endRange: lastDayOfTheWeek
         }
-
-        console.log(payload, 'payyyyyyyyyyyyyyy')
 
         DashboardService.getWeeklyDataFromApi(payload).then(data => {console.log(data, "current week data")
             analyseWeeklyData(data);

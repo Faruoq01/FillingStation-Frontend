@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { searchStations } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
@@ -19,10 +19,16 @@ const CostPriceModal = (props) => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [cost, setCost] = useState("");
+    const [cost1, setCost1] = useState("");
+    const [type, setType] = useState("");
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(false);
     
     const handleClose = () => props.close(false);
+
+    useEffect(()=>{
+        setType(props.type);
+    },[props.type])
 
     const handleSelection = (e, item) => {
 
@@ -40,16 +46,22 @@ const CostPriceModal = (props) => {
 
         if(props.type === "cost" && props.mode === "pms"){
             setCost(item.PMSCost);
+            setCost1(item.PMSCost);
         }else if(props.type === "cost" && props.mode === "ago"){
             setCost(item.AGOCost);
+            setCost1(item.AGOCost);
         }else if(props.type === "cost" && props.mode === "dpk"){
             setCost(item.DPKCost);
+            setCost1(item.DPKCost);
         }else if(props.type === "selling" && props.mode === "pms"){
             setCost(item.PMSCost);
+            setCost1(item.PMSCost);
         }else if(props.type === "selling" && props.mode === "ago"){
             setCost(item.AGOCost);
+            setCost1(item.AGOCost);
         }else if(props.type === "selling" && props.mode === "dpk"){
             setCost(item.DPKCost);
+            setCost1(item.DPKCost);
         }
     }
 
@@ -104,7 +116,7 @@ const CostPriceModal = (props) => {
             aria-describedby="modal-modal-description"
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
-            <div style={{height:'430px'}} className='modal'>
+            <div style={{height:'500px'}} className='modal'>
                 <div className='inner'>
                     <div className='head'>
                         <div className='head-text'>{`Edit ${props.mode.toUpperCase()} ${props.type === "cost"? "Cost": "Selling"} Price`}</div>
@@ -129,7 +141,7 @@ const CostPriceModal = (props) => {
                                         return(
                                             <div key={index} onClick={e => handleSelection(e, item)} className='inactive'>
                                                 <img style={{width:'17px', height:'13px', visibility:'hidden'}} src={tick} alt={tick} />
-                                                <div style={{marginRight:'20px'}}>{item.outletName}</div>
+                                                <div style={{marginRight:'20px'}}>{item.outletName+' ('+ item.alias +')'}</div>
                                             </div>
                                         )
                                     })
@@ -138,15 +150,38 @@ const CostPriceModal = (props) => {
                         </div>
 
                         <div className='inputs'>
-                            <div className='head-text2'>Cost price</div>
+                            <div className='head-text2'>Present {type} price</div>
                             <OutlinedInput 
                                 sx={{
                                     width:'100%',
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
+                                }} 
+                                value={cost1}
+                                placeholder="" 
+                                type="number"
+                                disabled
+                            />
+                        </div>
+                        <div style={{marginTop:"15px"}} className='inputs'>
+                            <div className='head-text2'>New {type} price</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} 
                                 value={cost==="pending"? 0: cost}
                                 placeholder="" 
@@ -154,6 +189,7 @@ const CostPriceModal = (props) => {
                                 onChange={e => setCost(e.target.value)}
                             />
                         </div>
+
                         <Button sx={{
                             width:'100%', 
                             height:'30px',  

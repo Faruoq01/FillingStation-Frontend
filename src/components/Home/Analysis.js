@@ -132,17 +132,29 @@ const Analysis = (props) => {
     }
 
     const getDateFromRange = (data) => {
-        const rangeOne = new Date(data[0]);
-        const rangeOneYear = rangeOne.getFullYear();
-        const rangeOneMonth = rangeOne.getMonth() + 1;
-        const rangeOneDay = rangeOne.getDate();
-        const formatOne = String(rangeOneDay).length === 1? rangeOneYear+"-"+rangeOneMonth+"-0"+rangeOneDay: rangeOneYear+"-"+rangeOneMonth+"-"+rangeOneDay;
+        let rangeOne = new Date(data[0]).toLocaleDateString().split("/");
+        rangeOne = rangeOne.map(data => {
+            let res = "0";
+            if(data.length === 1){
+                res = res.concat(data);
+            }else{
+                res = data;
+            }
+            return res;
+        });
+        const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
 
-        const rangeTwo = new Date(data[1]);
-        const rangeTwoYear = rangeTwo.getFullYear();
-        const rangeTwoMonth = rangeTwo.getMonth() + 1;
-        const rangeTwoDay = rangeTwo.getDate();
-        const formatTwo = String(rangeTwoDay).length === 1? rangeTwoYear+"-"+rangeTwoMonth+"-0"+rangeTwoDay : rangeTwoYear+"-"+rangeTwoMonth+"-"+rangeTwoDay;
+        let rangeTwo = new Date(data[1]).toLocaleDateString().split("/");
+        rangeTwo = rangeTwo.map(data => {
+            let res = "0";
+            if(data.length === 1){
+                res = res.concat(data);
+            }else{
+                res = data;
+            }
+            return res;
+        });
+        const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
     
         const payload = {
             organisationID: oneStationData?.organisation,

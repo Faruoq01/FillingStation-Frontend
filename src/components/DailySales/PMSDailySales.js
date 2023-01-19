@@ -9,7 +9,7 @@ const PMSDailySales = (props) => {
     const getMasterRows = () => {
         const newRows = [];
 
-        for(let row of dailySales.PMS.sales){
+        for(let row of dailySales?.PMS?.sales){
 
             const findID = newRows.findIndex(data => data.pumpID === row.pumpID);
             

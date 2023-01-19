@@ -7,7 +7,11 @@ import {
     LPO_RECORDS,
     PAYMENTS_RECORDS,
     BULK_REPORTS,
-    RECORD_SALES
+    RECORD_SALES,
+    BALANCE_BF,
+    PMS_BBF,
+    AGO_BBF,
+    DPK_BBF
 } from '../types'
 
 const initialState = {
@@ -24,6 +28,10 @@ const initialState = {
     },
     bulkReports: {},
     linkedData: { page: 1 },
+    balanceBF: {},
+    pmsBBF: {},
+    agoBBF: {},
+    dpkBBF: {}
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -92,6 +100,34 @@ const dailySalesReducer = (state = initialState, action) => {
             return{
                 ...state,
                 linkedData: payload
+            }
+        }
+
+        case BALANCE_BF: {
+            return {
+                ...state,
+                balanceBF: payload
+            }
+        }
+
+        case PMS_BBF: {
+            return {
+                ...state,
+                pmsBBF: payload
+            }
+        }
+
+        case AGO_BBF: {
+            return {
+                ...state,
+                agoBBF: payload
+            }
+        }
+
+        case DPK_BBF: {
+            return {
+                ...state,
+                dpkBBF: payload
             }
         }
 

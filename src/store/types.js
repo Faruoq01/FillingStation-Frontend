@@ -70,3 +70,7 @@ export const TANK_LIST_TYPE = "TANK_LIST_TYPE";
 export const DASHBOARD_EMPLOYEES = "DASHBOARD_EMPLOYEES";
 export const SEARCH_DASH = "SEARCH_DASH";
 export const UTILS = "UTILS";
+export const BALANCE_BF = "BALANCE_BF";
+export const PMS_BBF = "PMS_BBF";
+export const AGO_BBF = "AGO_BBF";
+export const DPK_BBF = "DPK_BBF";

@@ -21,22 +21,19 @@ const PumpUpdateComponent = (props) => {
     const getPMSPump = useCallback(() => {
         const newList = [...pumpList];
         const pms = newList.filter(data => data.productType === "PMS");
-        const pmsCopy = pms.map(data => Object.assign({}, data));
-        return pmsCopy;
+        return pms;
     }, [pumpList]);
 
     const getAGOPump = useCallback(() => {
         const newList = [...pumpList];
         const ago = newList.filter(data => data.productType === "AGO");
-        const agoCopy = ago.map(data => Object.assign({}, data));
-        return agoCopy;
+        return ago;
     }, [pumpList]);
 
     const getDPKPump = useCallback(() => {
         const newList = [...pumpList];
         const dpk = newList.filter(data => data.productType === "DPK");
-        const dpkCopy = dpk.map(data => Object.assign({}, data));
-        return dpkCopy;
+        return dpk;
     }, [pumpList]);
 
     const [pms, setPMS] = useState([]);
@@ -181,11 +178,13 @@ const PumpUpdateComponent = (props) => {
     }
 
     const updateTotalizer = (e, totalizerDiff, item) => {
+
+        const differenceT = Math.round((totalizerDiff + Number.EPSILON)*100)/100;
         
         if(productType === "PMS"){
             const newPms = [...pms];
             const findID = newPms.findIndex(data => data._id === item._id);
-            newPms[findID].sales = totalizerDiff;
+            newPms[findID].sales = differenceT < 0? 0: differenceT;
             newPms[findID].newTotalizer = e;
             setPMS(newPms);
 
@@ -195,7 +194,7 @@ const PumpUpdateComponent = (props) => {
         }else if(productType === "AGO"){
             const newAgo = [...ago];
             const findID = newAgo.findIndex(data => data._id === item._id);
-            newAgo[findID].sales = totalizerDiff;
+            newAgo[findID].sales = differenceT < 0? 0: differenceT;
             newAgo[findID].newTotalizer = e;
             setAGO(newAgo);
 
@@ -205,7 +204,7 @@ const PumpUpdateComponent = (props) => {
         }else{
             const newDpk = [...dpk];
             const findID = newDpk.findIndex(data => data._id === item._id);
-            newDpk[findID].sales = totalizerDiff;
+            newDpk[findID].sales = differenceT < 0? 0: differenceT;
             newDpk[findID].newTotalizer = e;
             setDPK(newDpk);
 
@@ -221,7 +220,10 @@ const PumpUpdateComponent = (props) => {
             newTankList[tankID] = {
                 ...newTankList[tankID], 
                 pumps: selectedPumps.filter(data => data.hostTank === newTankList[tankID]._id),
-                outlet: oneStationData
+                outlet: oneStationData,
+                fakeLevelOne: Number(newTankList[tankID].currentLevel) - Number(differenceT < 0? 0: differenceT),
+                fakeLevelTwo: Number(newTankList[tankID].currentLevel) - Number(differenceT < 0? 0: differenceT),
+                fakeLevelThree: Number(newTankList[tankID].currentLevel) - Number(differenceT < 0? 0: differenceT)
             }
             setSelectedTanks(newTankList);
         }
@@ -279,7 +281,7 @@ const PumpUpdateComponent = (props) => {
             }, 0);
 
             const findID = newTankList.findIndex(data => data._id === tank._id);
-            newTankList[findID].sales = totalSales;
+            newTankList[findID].sales = Math.round((totalSales + Number.EPSILON)*100)/100;
             setSelectedTanks(newTankList);
         }
 
@@ -287,7 +289,7 @@ const PumpUpdateComponent = (props) => {
             pms: pms,
             ago: ago,
             dpk: dpk,
-            selectedTanks: selectedTanks,
+            selectedTanks: newTankList,
             selectedPumps: selectedPumps,
             payload: newTankList
         }
@@ -416,7 +418,7 @@ const PumpUpdateComponent = (props) => {
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
                                 <div style={{width:'94%'}}>
                                     <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
-                                    <input disabled={true} defaultValue={item.totalizerReading} style={{...imps, width: "94%"}} type="text" />
+                                    <input disabled={true} value={item.totalizerReading} style={{...imps, width: "94%"}} type="text" />
 
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
@@ -438,7 +440,7 @@ const PumpUpdateComponent = (props) => {
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
                                 <div style={{width:'94%',}}>
                                     <div style={{ marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
-                                    <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                    <input disabled={true} value={item.totalizerReading} style={{...imps, width: "94%"}} type="text" />
 
                                     <div style={{width:'94%', marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
@@ -459,7 +461,7 @@ const PumpUpdateComponent = (props) => {
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
                                 <div style={{width: '94%',}}>
                                     <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
-                                    <input disabled={true} defaultValue={item.totalizerReading} style={{...imps, width: '94%',}} type="text" />
+                                    <input disabled={true} value={item.totalizerReading} style={{...imps, width: '94%',}} type="text" />
 
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 

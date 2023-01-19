@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import DailySalesService from '../../services/DailySales';
+import OutletService from '../../services/outletService';
 import '../../styles/report.scss';
 import ComprehensiveReports from '../Reports/ConprehensiveReports';
 import AGODailySales from './AGODailySales';
@@ -13,41 +14,78 @@ import PMSDailySales from './PMSDailySales';
 
 const LeftTableView = (props) => {
 
-    const getBalance = () => {
-        const PMS = props?.data?.filter(data => data.productType === "PMS") || [];
-        const AGO = props?.data?.filter(data => data.productType === "AGO") || [];
-        const DPK = props?.data?.filter(data => data.productType === "DPK") || [];
+    const getTankLevels = () => {
+        const PMS = props?.data?.filter(data => data.productType === "PMS");
+        const AGO = props?.data?.filter(data => data.productType === "AGO");
+        const DPK = props?.data?.filter(data => data.productType === "DPK");
 
-        PMS?.sort(function(a, b){
-            let res = [0];
-            if(typeof a.currentLevel === "undefined"){
-                return res;
-            }else{
-                return Number(a.currentLevel) - Number(b.currentLevel);
-            }
-        });
+        /*#########################
+            BBF current balance
+        ##########################*/
 
-        AGO?.sort(function(a, b){
-            let res = [0];
-            if(typeof a.currentLevel === "undefined"){
-                return res;
-            }else{
-                return Number(a.currentLevel) - Number(b.currentLevel);
-            }
-        });
+        const totalPMSCurrent = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        DPK?.sort(function(a, b){
-            let res = [0];
-            if(typeof a.currentLevel === "undefined"){
-                return res;
-            }else{
-                return Number(a.currentLevel) - Number(b.currentLevel);
-            }
-        });
+        const totalAGOCurrent = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        const balances = {pms: PMS[0]?.currentLevel, ago: AGO[0]?.currentLevel,  dpk: DPK[0]?.currentLevel};
+        const totalDPKCurrent = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
+
+        return {pms: totalPMSCurrent, ago: totalAGOCurrent, dpk: totalDPKCurrent}
+    }
+
+    const getSupply = () => {
+        const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.supply?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.supply?.filter(data => data.productType === "DPK") || [];
+
+        const totalPMS = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalAGO = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalDPK = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const total = [totalPMS, totalAGO, totalDPK]
         
-        return balances;
+        return total;
+    }
+
+    const getSalesRecord = () => {
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
+
+        const PMSSales = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const AGOSales = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const DPKSales = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        return {pms: PMSSales, ago: AGOSales, dpk: DPKSales}
+    }
+
+    const getBalanceBF = () => {
+        const pmsBalance = getTankLevels().pms - getSupply()[0] + getSalesRecord().pms;
+        const agoBalance = getTankLevels().ago - getSupply()[1] + getSalesRecord().ago;
+        const dpkBalance = getTankLevels().dpk - getSupply()[2] + getSalesRecord().dpk;
+
+        return {pms: pmsBalance, ago: agoBalance, dpk: dpkBalance};
     }
 
     return(
@@ -63,17 +101,17 @@ const LeftTableView = (props) => {
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>PMS</div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalance()?.pms}</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalanceBF()?.pms}</div>
                 </div>
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>AGO</div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalance()?.ago}</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalanceBF()?.ago}</div>
                 </div>
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>DPK</div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalance()?.dpk}</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalanceBF()?.dpk}</div>
                 </div>
             </div>
         </div>
@@ -96,17 +134,26 @@ const MiddleTableView = (props) => {
 
         for(let dm of PMS){
             totalPMS = totalPMS + Number(dm.quantity);
-            PMSShort = PMSShort + Number(dm.shortage);
+
+            if(dm.shortage !== "None"){
+                PMSShort = PMSShort + Number(dm.shortage);
+            }
         }
 
         for(let dm of AGO){
             totalAGO = totalAGO + Number(dm.quantity);
-            AGOShort = AGOShort + Number(dm.shortage);
+
+            if(dm.shortage !== "None"){
+                AGOShort = AGOShort + Number(dm.shortage);
+            }
         }
 
         for(let dm of DPK){
             totalDPK = totalDPK + Number(dm.quantity);
-            DPKShort = DPKShort + Number(dm.shortage);
+
+            if(dm.shortage !== "None"){
+                DPKShort = DPKShort + Number(dm.shortage);
+            }
         }
 
         const total = [totalPMS, PMSShort, totalAGO, AGOShort, totalDPK, DPKShort]
@@ -149,30 +196,78 @@ const MiddleTableView = (props) => {
 
 const RightTableView = (props) => {
 
-    const yesterday = () => {
-        const PMS = props?.data?.filter(data => data.productType === "PMS") || [];
-        const AGO = props?.data?.filter(data => data.productType === "AGO") || [];
-        const DPK = props?.data?.filter(data => data.productType === "DPK") || [];
+    const getTankLevels = () => {
+        const PMS = props?.data?.filter(data => data.productType === "PMS");
+        const AGO = props?.data?.filter(data => data.productType === "AGO");
+        const DPK = props?.data?.filter(data => data.productType === "DPK");
 
-        let totalPMS = 0;
-        let totalAGO = 0;
-        let totalDPK = 0;
+        /*#########################
+            BBF current balance
+        ##########################*/
 
-        for(let pm of PMS){
-            totalPMS = totalPMS + Number(pm.currentLevel);
-        }
+        const totalPMSCurrent = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        for(let pm of AGO){
-            totalAGO = totalAGO + Number(pm.currentLevel);
-        }
+        const totalAGOCurrent = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        for(let pm of DPK){
-            totalDPK = totalDPK + Number(pm.currentLevel);
-        }
+        const totalDPKCurrent = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        const total = {pms: totalPMS, ago: totalAGO, dpk: totalDPK};
+        return {pms: totalPMSCurrent, ago: totalAGOCurrent, dpk: totalDPKCurrent}
+    }
 
+    const getSupply = () => {
+        const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.supply?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.supply?.filter(data => data.productType === "DPK") || [];
+
+        const totalPMS = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalAGO = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalDPK = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const total = [totalPMS, totalAGO, totalDPK]
+        
         return total;
+    }
+
+    const getSalesRecord = () => {
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
+
+        const PMSSales = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const AGOSales = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const DPKSales = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        return {pms: PMSSales, ago: AGOSales, dpk: DPKSales}
+    }
+
+    const getBalanceBF = () => {
+        const pmsBalance = getTankLevels().pms - getSupply()[0] + getSalesRecord().pms;
+        const agoBalance = getTankLevels().ago - getSupply()[1] + getSalesRecord().ago;
+        const dpkBalance = getTankLevels().dpk - getSupply()[2] + getSalesRecord().dpk;
+
+        return {pms: pmsBalance + getSupply()[0] , ago: agoBalance + getSupply()[1], dpk: dpkBalance + getSupply()[2]};
     }
 
     return(
@@ -189,17 +284,17 @@ const RightTableView = (props) => {
 
                     <div className='rows'>
                         <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>PMS</div>
-                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{yesterday()?.pms}</div>
+                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalanceBF()?.pms}</div>
                     </div>
 
                     <div className='rows'>
                         <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>AGO</div>
-                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{yesterday()?.ago}</div>
+                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalanceBF()?.ago}</div>
                     </div>
 
                     <div className='rows'>
                         <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>DPK</div>
-                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{yesterday()?.dpk}</div>
+                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalanceBF()?.dpk}</div>
                     </div>
                 </div>
             </div>
@@ -328,10 +423,10 @@ const ExpensesDailySales = (props) => {
 const ExpensesSummary = ({expenses, sales}) => {
 
     const totalExpenses = () => {
-        let total = 0;
-        for(let exp of expenses){
-            total = total + Number(exp.expenseAmount);
-        }
+        const total = expenses.reduce((accum, current) => {
+            return Number(accum) + Number(current.expenseAmount);
+        }, 0);
+
         return total;
     }
 
@@ -360,7 +455,7 @@ const ExpensesSummary = ({expenses, sales}) => {
 
                     <div style={{marginTop:'5px'}} className='table-heads2'>
                         <div style={{width:'70%', display:'flex', justifyContent:'flex-end'}} className='col'>
-                            <span style={{marginRight:'20px'}}>Total</span>
+                            <span style={{marginRight:'20px'}}>Net to bank</span>
                         </div>
                         <div style={{marginRight:'0px', width:'30%'}} className='col'>{getTotalSales() - totalExpenses()}</div>
                     </div>
@@ -402,30 +497,40 @@ const PaymentDailySales = (props) => {
             <div style={{width:'350px'}} className='main-sales'>
                 <div className='inner'>
                     <div className='table-heads'>
-                        <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>Bank Name</div>
+                        <div style={{marginRight:'5px', width:'50%'}} className='col'>Bank Payment</div>
                         <div style={{width:'50%', display:'flex', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>Wema Bank</span>
+                            <span style={{marginLeft:'10px'}}>POS Payment</span>
                         </div>
                     </div>
 
-                    <div style={{marginTop:'5px'}} className='table-heads'>
-                        <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>Teller No</div>
-                        <div style={{width:'50%', display:'flex', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>892783876564</span>
+                    <div style={{marginTop:'5px', width:'98%', display: 'flex', flexDirection:'row', justifyContent:'space-between', height:'auto'}} className='table-heads'>
+                        <div style={{width:'49%', display:'flex', flexDirection:'column'}}>
+                            {
+                                props?.data?.bankPayment?.map((data, index) => {
+                                    return(
+                                        <div key={index} style={{
+                                            background:'#EDEDED', 
+                                            color:'#000', 
+                                            height:'30px', 
+                                            marginBottom:'5px'
+                                        }} className='col'>{data.bankName+' ('+ data.amountPaid +')'}</div>
+                                    )
+                                })
+                            }
                         </div>
-                    </div>
-
-                    <div style={{marginTop:'5px'}} className='table-heads'>
-                        <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>Teller</div>
-                        <div style={{width:'50%', display:'flex', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>{bankPayments()}</span>
-                        </div>
-                    </div>
-
-                    <div style={{marginTop:'5px'}} className='table-heads'>
-                        <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>POS</div>
-                        <div style={{width:'50%', display:'flex', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>{posPayments()}</span>
+                        <div style={{width:'49%', display:'flex', flexDirection:'column'}}>
+                        {
+                                props?.data?.posPayment?.map((data, index) => {
+                                    return(
+                                        <div key={index} style={{
+                                            background:'#EDEDED', 
+                                            color:'#000', 
+                                            height:'30px', 
+                                            marginBottom:'5px'
+                                        }} className='col'>{data.posName+' ('+ data.amountPaid +')'}</div>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
 
@@ -443,41 +548,86 @@ const PaymentDailySales = (props) => {
 
 const ProductDailySales = (props) => {
 
-    const getBalance = () => {
+    const getTankLevels = () => {
         const PMS = props?.data?.filter(data => data.productType === "PMS");
         const AGO = props?.data?.filter(data => data.productType === "AGO");
         const DPK = props?.data?.filter(data => data.productType === "DPK");
 
-        PMS?.sort(function(a, b){
-            let res = [0];
-            if(typeof a.currentLevel === "undefined"){
-                return res;
-            }else{
-                return Number(a.currentLevel) - Number(b.currentLevel);
-            }
-        });
+        /*#########################
+            BBF current balance
+        ##########################*/
 
-        AGO?.sort(function(a, b){
-            let res = [0];
-            if(typeof a.currentLevel === "undefined"){
-                return res;
-            }else{
-                return Number(a.currentLevel) - Number(b.currentLevel);
-            }
-        });
+        const totalPMSCurrent = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        DPK?.sort(function(a, b){
-            let res = [0];
-            if(typeof a.currentLevel === "undefined"){
-                return res;
-            }else{
-                return Number(a.currentLevel) - Number(b.currentLevel);
-            }
-        });
+        const totalAGOCurrent = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        const balances = {pms: PMS?.shift(), ago: AGO?.shift(),  dpk: DPK?.shift()};
+        const totalDPKCurrent = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel)
+        }, 0);
 
-        return balances;
+        return {pms: totalPMSCurrent, ago: totalAGOCurrent, dpk: totalDPKCurrent}
+    }
+
+    const getSupply = () => {
+        const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.supply?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.supply?.filter(data => data.productType === "DPK") || [];
+
+        const totalPMS = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalAGO = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalDPK = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const total = [totalPMS, totalAGO, totalDPK]
+        
+        return total;
+    }
+
+    const getSalesRecord = () => {
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
+
+        const PMSSales = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const AGOSales = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const DPKSales = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        return {pms: PMSSales, ago: AGOSales, dpk: DPKSales}
+    }
+
+    const getBalanceBF = () => {
+        const pmsBalance = getTankLevels().pms - getSupply()[0] + getSalesRecord().pms;
+        const agoBalance = getTankLevels().ago - getSupply()[1] + getSalesRecord().ago;
+        const dpkBalance = getTankLevels().dpk - getSupply()[2] + getSalesRecord().dpk;
+
+        /*#########################
+            Data available balance
+        ##########################*/
+
+        const pmsBal = pmsBalance + getSupply()[0] - getSalesRecord().pms;
+        const agoBal = agoBalance + getSupply()[1] - getSalesRecord().ago;
+        const dpkBal = dpkBalance + getSupply()[2] - getSalesRecord().dpk;
+
+        return {pms: pmsBal, ago: agoBal, dpk: dpkBal};
     }
 
     return(
@@ -495,19 +645,19 @@ const ProductDailySales = (props) => {
 
                     <div className='table-heads2'>
                         <div className='col'>PMS</div>
-                        <div className='col'>{getBalance().pms === 0? 0: getBalance().pms?.currentLevel}</div>
+                        <div className='col'>{getBalanceBF().pms === 0? 0: getBalanceBF().pms}</div>
                         {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
 
                     <div className='table-heads2'>
                         <div className='col'>AGO</div>
-                        <div className='col'>{getBalance().ago === 0? 0: getBalance().ago?.currentLevel}</div>
+                        <div className='col'>{getBalanceBF().ago === 0? 0: getBalanceBF().ago}</div>
                         {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
 
                     <div className='table-heads2'>
                         <div className='col'>DPK</div>
-                        <div className='col'>{getBalance().dpk === 0? 0: getBalance().dpk?.currentLevel}</div>
+                        <div className='col'>{getBalanceBF().dpk === 0? 0: getBalanceBF().dpk}</div>
                         {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
                 </div>
@@ -516,7 +666,7 @@ const ProductDailySales = (props) => {
     )
 }
 
-const DippingDailySales = (props) => {
+const DippingDailySales = (props) => {console.log(props.data, 'tanks')
 
     const PMSTanks = props?.data?.filter(data => data.productType === "PMS") || [];
     const AGOTanks = props?.data?.filter(data => data.productType === "AGO") || [];
@@ -587,17 +737,14 @@ const DippingDailySales = (props) => {
 
 const ComprehensiveReport = (props) => {
 
-    useEffect(()=>{
-        props.refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
     const lpoRecords = useSelector(state => state.dailySalesReducer.lpoRecords);
     const paymentRecords = useSelector(state => state.dailySalesReducer.paymentRecords);
     const bulkReports = useSelector(state => state.dailySalesReducer.bulkReports);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [prints, setPrints] = useState(false);
     const [forwardBalance, setForwardBalance] = useState({});
+    const [tanks, setTanks] = useState([]);
     console.log(bulkReports, "bulk report")
 
     const printReport = () => {
@@ -606,15 +753,19 @@ const ComprehensiveReport = (props) => {
 
     const getYesterdayReport = useCallback(() => {
         const payload = {
-            organisationID: props.station.organisation,
-            outletID: props.station._id,
+            organisationID: oneStationData.organisation,
+            outletID: oneStationData._id,
             onLoad: true
         }
 
-        DailySalesService.getYesterdayRecords(payload).then(data => {
+        DailySalesService.getYesterdayRecords(payload).then(data => {console.log(data, "supply")
             setForwardBalance(data);
         }) 
-    }, [props.station._id, props.station.organisation])
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            setTanks(data.stations);
+        })
+    }, [oneStationData._id, oneStationData.organisation])
 
     useEffect(()=>{
         getYesterdayReport();
@@ -668,9 +819,9 @@ const ComprehensiveReport = (props) => {
                     <div className='inner-main'>
                         <div className="contains">
                             <div style={{marginBottom:'30px'}} className='table-cont'>
-                                <LeftTableView data={forwardBalance?.sales} />
+                                <LeftTableView supply={forwardBalance?.supply} data={tanks} sales={forwardBalance?.sales} />
                                 <MiddleTableView data={forwardBalance?.supply} />
-                                <RightTableView data={forwardBalance?.dipping} />
+                                <RightTableView supply={forwardBalance?.supply} data={tanks} sales={forwardBalance?.sales} />
                             </div>
                         </div>
 
@@ -691,7 +842,7 @@ const ComprehensiveReport = (props) => {
 
                         <div className='paym2'>
                             <div className='pleft'>
-                                <ProductDailySales data={bulkReports?.sales} />
+                                <ProductDailySales supply={forwardBalance?.supply} data={tanks} sales={forwardBalance?.sales} />
                             </div>
                             <div className='pright'>
                                 <DippingDailySales data={bulkReports?.dipping} />

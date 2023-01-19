@@ -109,7 +109,9 @@ const outletReducer = (state = initialState, action) => {
                 craze['sales'] = "0";
                 craze['outlet'] = null;
                 craze['pumps'] = [];
-                craze['fakeLevel'] = craze.currentLevel;
+                craze['fakeLevelOne'] = craze.currentLevel;
+                craze['fakeLevelTwo'] = craze.currentLevel;
+                craze['fakeLevelThree'] = craze.currentLevel;
                 return craze;
             })
             return {

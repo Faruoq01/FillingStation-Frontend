@@ -19,13 +19,13 @@ const LPOComponent = (props) => {
     const dispatch = useDispatch();
     const gallery = useRef();
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const [selectedPMS, setSelectedPMS] = useState(null);
     const [selectedAGO, setSelectedAGO] = useState(null);
     const [selectedDPK, setSelectedDPK] = useState(null);
+    console.log(linkedData, "linked ssssssssssss")
 
     // selections
     const [open, setOpen] = useState(false);
@@ -40,25 +40,37 @@ const LPOComponent = (props) => {
     const [quantity, setQuantity] = useState("");
 
     const getPMSPump = useCallback(() => {
-        const newList = [...pumpList];
-        const pms = newList.filter(data => data.productType === "PMS");
-        const pmsCopy = pms.map(data => Object.assign({}, data));
-        return pmsCopy;
-    }, [pumpList]);
+        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
+            return []
+        }else{
+            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
+            const pms = newList.filter(data => data.productType === "PMS");
+            const pmsCopy = pms.map(data => Object.assign({}, data));
+            return pmsCopy;
+        }
+    }, [linkedData?.head?.prev?.data?.selectedPumps]);
 
     const getAGOPump = useCallback(() => {
-        const newList = [...pumpList];
-        const ago = newList.filter(data => data.productType === "AGO");
-        const agoCopy = ago.map(data => Object.assign({}, data));
-        return agoCopy;
-    }, [pumpList]);
+        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
+            return []
+        }else{
+            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
+            const ago = newList.filter(data => data.productType === "AGO");
+            const agoCopy = ago.map(data => Object.assign({}, data));
+            return agoCopy;
+        }
+    }, [linkedData?.head?.prev?.data?.selectedPumps]);
 
     const getDPKPump = useCallback(() => {
-        const newList = [...pumpList];
-        const dpk = newList.filter(data => data.productType === "DPK");
-        const dpkCopy = dpk.map(data => Object.assign({}, data));
-        return dpkCopy;
-    }, [pumpList]);
+        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
+            return []
+        }else{
+            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
+            const dpk = newList.filter(data => data.productType === "DPK");
+            const dpkCopy = dpk.map(data => Object.assign({}, data));
+            return dpkCopy;
+        }
+    }, [linkedData?.head?.prev?.data?.selectedPumps]);
 
     const [pms, setPMS] = useState([]);
     const [ago, setAGO] = useState([]);
@@ -153,6 +165,10 @@ const LPOComponent = (props) => {
     }
 
     const addDetailsToList = () => {
+        if(linkedData?.head?.prev?.data?.selectedPumps.length === 0){
+            setQuantity("");
+            return swal("Warning!", "No pump created in this station", "info");
+        }
         if(oneStationData === null) return swal("Warning!", "please select station", "info");
         if(dispensedPump === null) return swal("Warning!", "Please select lpo pump", "info");
         if(dispenseLpo === null) return swal("Warning!", "Please select lpo account", "info");
@@ -197,6 +213,31 @@ const LPOComponent = (props) => {
         const newList = {...linkedData};
         newList.head.data.payload.pop(index);
         dispatch(passRecordSales(newList));
+    }
+
+    const updateTankWithLPO = (e) => {
+        setQuantity(e.target.value);
+
+        if(dispensedPump === null){
+            swal("Warning!", "Please select lpo pump", "info");
+        }else{
+            // update tank payload
+            const newTankList = [...linkedData?.head?.prev?.data?.selectedTanks];
+            console.log(newTankList, "fake tanks rt")
+            const tankID = newTankList.findIndex(data => data._id === dispensedPump.hostTank);
+            if(tankID !== -1){
+                newTankList[tankID] = {
+                    ...newTankList[tankID], 
+                    pumps: linkedData?.head?.prev?.data?.selectedPumps?.filter(data => data.hostTank === newTankList[tankID]._id),
+                    outlet: oneStationData,
+                    fakeLevelThree: Number(newTankList[tankID].fakeLevelTwo) - Number(Number(e.target.value) < 0? 0: Number(e.target.value))
+                }
+                
+                const newList = {...linkedData};
+                newList.head.data.selectedTanks = newTankList;
+                dispatch(passRecordSales(newList));
+            }
+        }
     }
 
     return(
@@ -245,7 +286,7 @@ const LPOComponent = (props) => {
             <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>
             <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
-                    pumpList.length === 0?
+                    linkedData?.head?.prev?.data?.selectedPumps?.length === 0?
                     <div style={{...box, width:'170px'}}>
                         <div style={{marginRight:'10px'}}>No pump Created</div>
                         <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
@@ -345,7 +386,7 @@ const LPOComponent = (props) => {
                     <div style={{marginTop:'20px'}} className='single-form'>
                         <div className='input-d'>
                             <span style={{color:'green'}}>Quantity (Litres)</span>
-                            <input value={quantity} onChange={e => setQuantity(e.target.value)} className='text-field' type={'text'} />
+                            <input value={quantity} onChange={e => {updateTankWithLPO(e)}} className='text-field' type={'text'} />
                         </div>
                     </div>
 

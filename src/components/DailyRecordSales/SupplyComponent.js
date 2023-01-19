@@ -8,6 +8,8 @@ import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import { passRecordSales } from "../../store/actions/dailySales";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useEffect } from "react";
+import { getAllOutletTanks } from "../../store/actions/outlet";
 
 const SupplyComponent = () => {
 
@@ -19,6 +21,7 @@ const SupplyComponent = () => {
     const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
+    console.log(tankList, 'tanklist')
 
     // payload data
     const [transporter, setTransporter] = useState('');
@@ -28,6 +31,7 @@ const SupplyComponent = () => {
     const [quantityLoaded, setQuantityLoaded] = useState('');
     const [overage, setOverage] = useState('');
     const [shortage, setShortage] = useState('');
+    const [changedTank, setChangedTank] = useState();
 
     const selectedIncomingOrder = (data) => {
 
@@ -132,20 +136,30 @@ const SupplyComponent = () => {
     }
 
     const getFilteredTanks = () => {
-        const PMS = tankList.filter(data => data.productType === productSupply);
-        const AGO = tankList.filter(data => data.productType === productSupply);
-        const DPK = tankList.filter(data => data.productType === productSupply);
+        const currentTankList = linkedData?.head?.prev?.data?.selectedTanks;
+        const clonedTanks = [...tankList];
+
+        for(let tank of currentTankList){
+            const findID = clonedTanks.findIndex(data => data._id === tank._id);
+            clonedTanks[findID] = tank;
+        }
+
+        console.log(clonedTanks, 'donee')
+
+        const PMS = clonedTanks?.filter(data => data.productType === productSupply);
+        const AGO = clonedTanks?.filter(data => data.productType === productSupply);
+        const DPK = clonedTanks?.filter(data => data.productType === productSupply);
 
         if(productSupply === "PMS"){
-            return PMS.map(data => {
+            return PMS?.map(data => {
                 return {...data, newLevel: 0, addedQuantity: 0}
             });
         }else if(productSupply === "AGO"){
-            return AGO.map(data => {
+            return AGO?.map(data => {
                 return {...data, newLevel: 0, addedQuantity: 0}
             });
         }else{
-            return DPK.map(data => {
+            return DPK?.map(data => {
                 return {...data, newLevel: 0, addedQuantity: 0}
             });
         }
@@ -227,7 +241,7 @@ const SupplyComponent = () => {
                                         onChange={(e)=>{incomingTanks(e, data)}} 
                                         className="tank-input" type={'number'} 
                                         style={{width:'98%'}}
-                                        placeholder={`Current level: ${data.currentLevel}`}
+                                        placeholder={`Current level: ${data.fakeLevelThree}`}
                                     />
                                 </div>
                             )
@@ -275,7 +289,7 @@ const SupplyComponent = () => {
                 </div>
 
                 {
-                    linkedData.head?.data?.payload.length === 0?
+                    linkedData.head?.data?.payload?.length === 0?
                     <div style={{marginTop:'10px'}}>No data</div>:
                     linkedData.head?.data?.payload.map((data, index) => {
                         return(
