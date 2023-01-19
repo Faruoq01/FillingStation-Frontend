@@ -248,6 +248,8 @@ const Analysis = (props) => {
         return total;
     }
 
+    console.log(oneStationData, 'ooooooooo')
+
     return(
         <div data-aos="zoom-in-down" style={{background: user.isDark === "0"? '#fff': '#404040'}} className='paymentsCaontainer'>
             {open && <AddCostPrice type={type} open={open} close={setOpen} open2={setOpen2} setMode={setMode} />}
@@ -309,8 +311,8 @@ const Analysis = (props) => {
 
                     <div style={contain2}>
                         <div className='imgContainer'>
-                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={`NGN ${oneStationData === null? "0": oneStationData?.PMSCost}`} />
-                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${oneStationData === null? "0": oneStationData?.PMSPrice}`} />
+                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={`NGN ${oneStationData?  oneStationData?.PMSCost: "0"}`} />
+                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${oneStationData? oneStationData?.PMSPrice: "0"}`} />
                             <DashboardImage type={"expenses"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={`NGN ${calculateExpenses()}`} />
                             <DashboardImage type={"payments"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={`NGN ${calculatePayment()}`} />
                             <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${calculateTotalSales() - calculateTotalCost() - calculateExpenses()}`} />

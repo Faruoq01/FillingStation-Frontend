@@ -1,42 +1,34 @@
-import { Button } from '@mui/material';
-import React from 'react';
+import { Button, MenuItem, Select } from '@mui/material';
+import React, { useRef } from 'react';
 import { useEffect } from 'react';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DailySalesService from '../../services/DailySales';
 import OutletService from '../../services/outletService';
+import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import '../../styles/report.scss';
 import ComprehensiveReports from '../Reports/ConprehensiveReports';
 import AGODailySales from './AGODailySales';
 import DPKDailySales from './DPKDailySales';
 import PMSDailySales from './PMSDailySales';
 
+const months = {
+    '01' : 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+}
+
 const LeftTableView = (props) => {
-
-    const getTankLevels = () => {
-        const PMS = props?.data?.filter(data => data.productType === "PMS");
-        const AGO = props?.data?.filter(data => data.productType === "AGO");
-        const DPK = props?.data?.filter(data => data.productType === "DPK");
-
-        /*#########################
-            BBF current balance
-        ##########################*/
-
-        const totalPMSCurrent = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
-
-        const totalAGOCurrent = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
-
-        const totalDPKCurrent = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
-
-        return {pms: totalPMSCurrent, ago: totalAGOCurrent, dpk: totalDPKCurrent}
-    }
 
     const getSupply = () => {
         const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
@@ -58,6 +50,48 @@ const LeftTableView = (props) => {
         const total = [totalPMS, totalAGO, totalDPK]
         
         return total;
+    }
+
+    const getTankLevels = () => {
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
+
+        let minimumPMSTankLevel = 0;
+        let minimumAGOTankLevel = 0;
+        let minimumDPKTankLevel = 0;
+
+        if(PMS?.length !== 0){
+            const pmsSorted = PMS?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
+
+            if(pmsSorted?.length !== 0){
+                minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
+            }
+        }
+        console.log(minimumPMSTankLevel, "kkkkkkkkkkkkkkkkkkkk")
+
+        if(AGO?.length !== 0){
+            const agoSorted = AGO?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
+
+            if(agoSorted?.length !== 0){
+                minimumAGOTankLevel = minimumAGOTankLevel + agoSorted?.shift()?.totalTankLevel;
+            }
+        }
+
+        if(DPK?.length !== 0){
+            const dpkSorted = DPK?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
+
+            if(dpkSorted?.length !== 0){
+                minimumDPKTankLevel = minimumDPKTankLevel + dpkSorted?.shift()?.totalTankLevel;
+            }
+        }
+        return {pms: minimumPMSTankLevel, ago: minimumAGOTankLevel, dpk: minimumDPKTankLevel}
     }
 
     const getSalesRecord = () => {
@@ -197,27 +231,45 @@ const MiddleTableView = (props) => {
 const RightTableView = (props) => {
 
     const getTankLevels = () => {
-        const PMS = props?.data?.filter(data => data.productType === "PMS");
-        const AGO = props?.data?.filter(data => data.productType === "AGO");
-        const DPK = props?.data?.filter(data => data.productType === "DPK");
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        /*#########################
-            BBF current balance
-        ##########################*/
+        let minimumPMSTankLevel = 0;
+        let minimumAGOTankLevel = 0;
+        let minimumDPKTankLevel = 0;
 
-        const totalPMSCurrent = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
+        if(PMS?.length !== 0){
+            const pmsSorted = PMS?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
 
-        const totalAGOCurrent = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
+            if(pmsSorted?.length !== 0){
+                minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
+            }
+        }
+        console.log(minimumPMSTankLevel, "kkkkkkkkkkkkkkkkkkkk")
 
-        const totalDPKCurrent = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
+        if(AGO?.length !== 0){
+            const agoSorted = AGO?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
 
-        return {pms: totalPMSCurrent, ago: totalAGOCurrent, dpk: totalDPKCurrent}
+            if(agoSorted?.length !== 0){
+                minimumAGOTankLevel = minimumAGOTankLevel + agoSorted?.shift()?.totalTankLevel;
+            }
+        }
+
+        if(DPK?.length !== 0){
+            const dpkSorted = DPK?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
+
+            if(dpkSorted?.length !== 0){
+                minimumDPKTankLevel = minimumDPKTankLevel + dpkSorted?.shift()?.totalTankLevel;
+            }
+        }
+        return {pms: minimumPMSTankLevel, ago: minimumAGOTankLevel, dpk: minimumDPKTankLevel}
     }
 
     const getSupply = () => {
@@ -549,27 +601,45 @@ const PaymentDailySales = (props) => {
 const ProductDailySales = (props) => {
 
     const getTankLevels = () => {
-        const PMS = props?.data?.filter(data => data.productType === "PMS");
-        const AGO = props?.data?.filter(data => data.productType === "AGO");
-        const DPK = props?.data?.filter(data => data.productType === "DPK");
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        /*#########################
-            BBF current balance
-        ##########################*/
+        let minimumPMSTankLevel = 0;
+        let minimumAGOTankLevel = 0;
+        let minimumDPKTankLevel = 0;
 
-        const totalPMSCurrent = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
+        if(PMS?.length !== 0){
+            const pmsSorted = PMS?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
 
-        const totalAGOCurrent = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
+            if(pmsSorted?.length !== 0){
+                minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
+            }
+        }
+        console.log(minimumPMSTankLevel, "kkkkkkkkkkkkkkkkkkkk")
 
-        const totalDPKCurrent = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel)
-        }, 0);
+        if(AGO?.length !== 0){
+            const agoSorted = AGO?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
 
-        return {pms: totalPMSCurrent, ago: totalAGOCurrent, dpk: totalDPKCurrent}
+            if(agoSorted?.length !== 0){
+                minimumAGOTankLevel = minimumAGOTankLevel + agoSorted?.shift()?.totalTankLevel;
+            }
+        }
+
+        if(DPK?.length !== 0){
+            const dpkSorted = DPK?.sort((a, b) => {
+                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
+            });
+
+            if(dpkSorted?.length !== 0){
+                minimumDPKTankLevel = minimumDPKTankLevel + dpkSorted?.shift()?.totalTankLevel;
+            }
+        }
+        return {pms: minimumPMSTankLevel, ago: minimumAGOTankLevel, dpk: minimumDPKTankLevel}
     }
 
     const getSupply = () => {
@@ -737,6 +807,9 @@ const DippingDailySales = (props) => {console.log(props.data, 'tanks')
 
 const ComprehensiveReport = (props) => {
 
+    const dispatch = useDispatch();
+    const dateInput = useRef();
+    const user = useSelector(state => state.authReducer.user);
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
     const lpoRecords = useSelector(state => state.dailySalesReducer.lpoRecords);
     const paymentRecords = useSelector(state => state.dailySalesReducer.paymentRecords);
@@ -745,7 +818,9 @@ const ComprehensiveReport = (props) => {
     const [prints, setPrints] = useState(false);
     const [forwardBalance, setForwardBalance] = useState({});
     const [tanks, setTanks] = useState([]);
-    console.log(bulkReports, "bulk report")
+    const [defaultState, setDefault] = useState(0);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [currentDate, setCurrentDate] = useState();
 
     const printReport = () => {
         setPrints(true);
@@ -753,65 +828,198 @@ const ComprehensiveReport = (props) => {
 
     const getYesterdayReport = useCallback(() => {
         const payload = {
-            organisationID: oneStationData.organisation,
-            outletID: oneStationData._id,
+            organisationID: oneStationData?.organisation,
+            outletID: oneStationData?._id,
             onLoad: true
         }
 
-        DailySalesService.getYesterdayRecords(payload).then(data => {console.log(data, "supply")
+        DailySalesService.getYesterdayRecords(payload).then(data => {
             setForwardBalance(data);
         }) 
 
         OutletService.getAllOutletTanks(payload).then(data => {
             setTanks(data.stations);
         })
-    }, [oneStationData._id, oneStationData.organisation])
+    }, [oneStationData?._id, oneStationData?.organisation])
+
+    const getAllProductData = useCallback(() => {
+
+        const payload = {
+            organisation: user._id
+        }
+
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            // setLoads(true);
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
+                dispatch(adminOutlet(data.station[0]));
+                return data.station[0];
+            }).then(async(data)=>{
+                props.getDailySales(data, true, "");
+                // setLoads(false);
+            });
+        }else{
+            // setLoads(true);
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                return data.station;
+            }).then(async(data)=>{
+                props.getDailySales(data, true, "");
+                // setLoads(false);
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, user._id, user.outletID, user.userType]);
 
     useEffect(()=>{
+        const date = new Date();
+        const toString = date.toDateString();
+        const [month, day, year] = toString.split(' ');
+        const date2 = `${day} ${month} ${year}`;
+
+        setCurrentDate(date2);
+
+        getAllProductData();
         getYesterdayReport();
-    }, [getYesterdayReport])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+        dispatch(adminOutlet(item));
+        // setLoads(true);
+
+        props.getDailySales(item, true, "");
+
+        const payload = {
+            organisationID: item.organisation,
+            outletID: item._id,
+            onLoad: true
+        }
+
+        DailySalesService.getYesterdayRecords(payload).then(data => {
+            setForwardBalance(data);
+        }) 
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            setTanks(data.stations);
+        })
+
+        const date = new Date();
+        const toString = date.toDateString();
+        const [month, day, year] = toString.split(' ');
+        const date2 = `${day} ${month} ${year}`;
+        setCurrentDate(date2);
+    }
+
+    const changeSalesDate = () => {
+        dateInput.current.showPicker();
+    }
+
+    const changeDailySales = (e) => {
+        const date = e.target.value.split('-');
+        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
+        setCurrentDate(format);
+        props.getDailySales(oneStationData, false, e.target.value);
+
+        const [year, month, day] = e.target.value.split('-');
+        const date2 = `${year}-${month}-${day}`;
+
+        const payload = {
+            organisationID: oneStationData?.organisation,
+            outletID: oneStationData?._id,
+            date: date2,
+            onLoad: false
+        }
+
+        DailySalesService.getYesterdayRecords(payload).then(data => {
+            setForwardBalance(data);
+        }) 
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            setTanks(data.stations);
+        })
+    }
 
     return(
         <div className='reportContainer'>
             { prints && <ComprehensiveReports data={dailySales} open={prints} close={setPrints}/>}
-            <div className='controls'>
-                {/* <Button 
-                    variant="contained" 
-                    sx={{
-                        width:'120px',
-                        height:'30px',
-                        background:'#06805B',
-                        fontSize:'13px',
-                        marginLeft:'10px',
-                        borderRadius:'5px',
-                        textTransform:'capitalize',
-                        '&:hover': {
-                            backgroundColor: '#06805B'
-                        }
-                    }}
-                    // onClick={()=>{openDailySales("report")}}
-                >
-                    Date Range
-                </Button> */}
-                <Button 
-                    variant="contained" 
-                    disabled
-                    sx={{
-                        width:'80px',
-                        height:'30px',
-                        background:'#F36A4C',
-                        fontSize:'13px',
-                        marginLeft:'10px',
-                        borderRadius:'5px',
-                        textTransform:'capitalize',
-                        '&:hover': {
-                            backgroundColor: '#F36A4C'
-                        }
-                    }}
-                    onClick={printReport}
-                >
-                    Print
-                </Button>
+            <div style={cont} className='controls'>
+                <div>
+                    {(user.userType === "superAdmin" || user.userType === "admin") &&
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={defaultState}
+                            sx={selectStyle2}
+                        >
+                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                            {
+                                allOutlets.map((item, index) => {
+                                    return(
+                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
+                                    )
+                                })  
+                            }
+                        </Select>
+                    }
+                    {user.userType === "staff" &&
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={0}
+                            sx={selectStyle2}
+                            disabled
+                        >
+                            <MenuItem style={menu} value={0}>{user.userType === "staff" ?oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                        </Select>
+                    }
+                </div>
+                <div style={{position: 'relative'}}>
+                    <input onChange={e => {changeDailySales(e)}} ref={dateInput} style={{visibility:'hidden', marginRight:'20px'}} type="date" />
+                    <Button 
+                        variant="contained" 
+                        sx={{
+                            width:'100px',
+                            height:'30px',
+                            background:'#06805B',
+                            fontSize:'11px',
+                            marginLeft:'10px',
+                            borderRadius:'0px',
+                            textTransform:'capitalize',
+                            position:'absolute',
+                            zIndex:'20',
+                            right:'75px',
+                            '&:hover': {
+                                backgroundColor: '#06805B'
+                            }
+                        }}
+                        onClick={changeSalesDate}
+                    >
+                        <div>{currentDate}</div>
+                    </Button>
+                    <Button 
+                        variant="contained" 
+                        sx={{
+                            width:'60px',
+                            height:'30px',
+                            background:'#F36A4C',
+                            fontSize:'11px',
+                            marginLeft:'10px',
+                            borderRadius:'0px',
+                            textTransform:'capitalize',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                        }}
+                        // onClick={printReport}
+                    >
+                        Print
+                    </Button>
+                </div>
             </div>
 
             <div className='mains-report'>
@@ -861,6 +1069,31 @@ const dats = {
     fontSize:'14px',
     fontWeight:'bold',
     fontFamily:'Nunito-Regular'
+}
+
+const cont = {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent:'space-between'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
+}
+
+const selectStyle2 = {
+    width:'150px', 
+    height:'35px', 
+    borderRadius:'5px',
+    background: '#F2F1F1B2',
+    color:'#000',
+    fontFamily: 'Nunito-Regular',
+    fontSize:'14px',
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 export default ComprehensiveReport;

@@ -182,30 +182,48 @@ const PumpUpdateComponent = (props) => {
         const differenceT = Math.round((totalizerDiff + Number.EPSILON)*100)/100;
         
         if(productType === "PMS"){
+            const onlyPMS = [...tankList].filter(data => data.productType === "PMS");
+            const totalTankLevel = onlyPMS.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel);
+            }, 0);
+
             const newPms = [...pms];
             const findID = newPms.findIndex(data => data._id === item._id);
             newPms[findID].sales = differenceT < 0? 0: differenceT;
             newPms[findID].newTotalizer = e;
+            newPms[findID].totalTankLevel = totalTankLevel;
             setPMS(newPms);
 
             // const newList = {...linkedData};
             // newList.head.data.payload = selected;
             // dispatch(passRecordSales(newList));
         }else if(productType === "AGO"){
+            const onlyAGO = [...tankList].filter(data => data.productType === "AGO");
+            const totalTankLevel = onlyAGO.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel);
+            }, 0);
+
             const newAgo = [...ago];
             const findID = newAgo.findIndex(data => data._id === item._id);
             newAgo[findID].sales = differenceT < 0? 0: differenceT;
             newAgo[findID].newTotalizer = e;
+            newAgo[findID].totalTankLevel = totalTankLevel;
             setAGO(newAgo);
 
             // const newList = {...linkedData};
             // newList.head.data.payload = selected;
             // dispatch(passRecordSales(newList));
         }else{
+            const onlyDPK = [...tankList].filter(data => data.productType === "DPK");
+            const totalTankLevel = onlyDPK.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel);
+            }, 0);
+
             const newDpk = [...dpk];
             const findID = newDpk.findIndex(data => data._id === item._id);
             newDpk[findID].sales = differenceT < 0? 0: differenceT;
             newDpk[findID].newTotalizer = e;
+            newDpk[findID].totalTankLevel = totalTankLevel;
             setDPK(newDpk);
 
             // const newList = {...linkedData};

@@ -293,8 +293,8 @@ const DailySales = (props) => {
     const getAndAnalyzeDailySales = async(data, onLoad, selectedDate) => {
 
         const salesPayload = {
-            organisationID: data.organisation,
-            outletID: data._id,
+            organisationID: data?.organisation,
+            outletID: data?._id,
             onLoad: onLoad,
             selectedDate: selectedDate
         }
@@ -904,7 +904,7 @@ const DailySales = (props) => {
                             <DPKDailySales/>
                         </Route>
                         <Route path='/home/daily-sales/report'>
-                            <ComprehensiveReport refresh = {getAllProductData} station={oneStationData}/>
+                            <ComprehensiveReport getDailySales = {getAndAnalyzeDailySales} station={oneStationData}/>
                         </Route>
                         <Route path='/home/outlets/list'>
                             <ListAllTanks refresh={getAllProductData}/>
