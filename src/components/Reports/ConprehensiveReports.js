@@ -3,6 +3,10 @@ import Modal from '@mui/material/Modal';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { ThreeDots } from  'react-loader-spinner';
+import { useSelector } from 'react-redux';
+import DPKDailySales from '../DailySales/DPKDailySales';
+import AGODailySales from '../DailySales/AGODailySales';
+import PMSDailySales from '../DailySales/PMSDailySales';
 
 
 const mediaMatch = window.matchMedia('(max-width: 1000px)');
@@ -110,66 +114,6 @@ const RightTableView = () => {
                         <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>4,234.00</div>
                     </div>
                 </div>
-            </div>
-        </div>
-    )
-}
-
-const PMSDailySales = (props) => {
-    return(
-        <div style={mainSales}>
-            <div style={inner}>
-                <div style={tableHeads}>
-                    <div style={col}>{props.name}</div>
-                    <div style={col}>Opening</div>
-                    <div style={col}>Closing</div>
-                    <div style={col}>Difference</div>
-                    <div style={col}>LPO</div>
-                    <div style={col}>Rate</div>
-                    <div style={col}>R/T</div>
-                    <div style={{...col, marginRight:'0px'}}>Amount</div>
-                </div>
-
-                {
-                    props.data.rows.length === 0?
-                    <div style={dats}> No Data </div>:
-                    props.data.rows.map(data => {
-                        return(
-                            <div style={tableHeads2}>
-                                <div style={col2}>{data.pumpName}</div>
-                                <div style={col2}>{data.openingMeter}</div>
-                                <div style={col2}>{data.closingMeter}</div>
-                                <div style={col2}>{Number(data.closingMeter) - Number(data.openingMeter)}</div>
-                                <div style={col2}>{data.lpoLitre}</div>
-                                <div style={col2}>
-                                    {data.productType === "PMS" && data.PMSRate}
-                                    {data.productType === "AGO" && data.AGORate}
-                                    {data.productType === "DPK" && data.DPKRate}
-                                </div>
-                                <div style={col2}>{data.rtLitre}</div>
-                                <div style={{...col2, marginRight:'0px'}}>
-                                    {data.productType === "PMS" && Number(data.sales)*Number(data.PMSSellingPrice) + Number(data.lpoLitre)*Number(data.PMSRate) - Number(data.rtLitre)*Number(data.PMSSellingPrice)}
-                                    {data.productType === "AGO" && Number(data.sales)*Number(data.AGOSellingPrice) + Number(data.lpoLitre)*Number(data.AGORate) - Number(data.rtLitre)*Number(data.AGOSellingPrice)}
-                                    {data.productType === "DPK" && Number(data.sales)*Number(data.DPKSellingPrice) + Number(data.lpoLitre)*Number(data.DPKRate) - Number(data.rtLitre)*Number(data.DPKSellingPrice)}
-                                </div>
-                            </div>
-                        )
-                    })
-                }
-
-                {
-                    props.data.rows.length === 0 ||
-                    <div style={tableHeads2}>
-                        <div style={{...col2, background: "transparent"}}></div>
-                        <div style={{...col2, background: "transparent"}}></div>
-                        <div style={col2}>Total</div>
-                        <div style={col2}>{props.data.total.totalDifference}</div>
-                        <div style={col2}>{props.data.total.totalLpo}</div>
-                        <div style={col2}></div>
-                        <div style={col2}>{props.data.total.totalrt}</div>
-                        <div style={{...col2, marginRight:'0px'}}>{props.data.total.amount}</div>
-                    </div>
-                }
             </div>
         </div>
     )
@@ -453,6 +397,10 @@ const ComprehensiveReports = (props) => {
     const iframe = useRef();
     const [dom, setDom] = useState('');
     const [loading, setLoading] = useState(false);
+    const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
+    const lpoRecords = useSelector(state => state.dailySalesReducer.lpoRecords);
+    const paymentRecords = useSelector(state => state.dailySalesReducer.paymentRecords);
+    const bulkReports = useSelector(state => state.dailySalesReducer.bulkReports);
 
     const handleClose = () => {
         props.close(false);
@@ -477,33 +425,32 @@ const ComprehensiveReports = (props) => {
                     <div style={left}>
                         <div style={innerMain}>
                             <div style={tableCont}>
-                                <LeftTableView />
-                                <MiddleTableView />
-                                <RightTableView />
+                                <LeftTableView supply={props.forwardBalance?.supply} data={props.tanks} sales={props.forwardBalance?.sales} />
+                                <MiddleTableView data={props.forwardBalance?.supply} />
+                                <RightTableView supply={props.forwardBalance?.supply} data={props.tanks} sales={props.forwardBalance?.sales} />
                             </div>
 
-                            <PMSDailySales name={'PMS'} data={props.data.PMS} />
-                            <PMSDailySales name={'PMS'} data={props.data.AGO} />
-                            <PMSDailySales name={'PMS'} data={props.data.DPK} />
-
-                            <LPODailySales />
-                            <ExpensesDailySales />
+                            <PMSDailySales rep={false} />
+                            <AGODailySales rep={false} />
+                            <DPKDailySales rep={false} />
+                            <LPODailySales data={lpoRecords} />
+                            <ExpensesDailySales data = {paymentRecords.expenses} />
 
                             <div style={paym}>
                                 <div style={pleft}>
-                                    <ExpensesSummary />
+                                    <ExpensesSummary expenses={paymentRecords.expenses} sales={dailySales} />
                                 </div>
                                 <div style={pleft}>
-                                    <PaymentDailySales />
+                                    <PaymentDailySales data={paymentRecords} />
                                 </div>
                             </div>
 
                             <div style={paym2}>
                                 <div style={pleft}>
-                                    <ProductDailySales />
+                                    <ProductDailySales supply={props.forwardBalance?.supply} data={props.tanks} sales={props.forwardBalance?.sales} />
                                 </div>
                                 <div style={pleft}>
-                                    <DippingDailySales />
+                                    <DippingDailySales data={bulkReports?.dipping} />
                                 </div>
                             </div>
                         </div>

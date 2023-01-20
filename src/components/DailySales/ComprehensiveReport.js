@@ -70,7 +70,6 @@ const LeftTableView = (props) => {
                 minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
             }
         }
-        console.log(minimumPMSTankLevel, "kkkkkkkkkkkkkkkkkkkk")
 
         if(AGO?.length !== 0){
             const agoSorted = AGO?.sort((a, b) => {
@@ -248,7 +247,6 @@ const RightTableView = (props) => {
                 minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
             }
         }
-        console.log(minimumPMSTankLevel, "kkkkkkkkkkkkkkkkkkkk")
 
         if(AGO?.length !== 0){
             const agoSorted = AGO?.sort((a, b) => {
@@ -618,7 +616,6 @@ const ProductDailySales = (props) => {
                 minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
             }
         }
-        console.log(minimumPMSTankLevel, "kkkkkkkkkkkkkkkkkkkk")
 
         if(AGO?.length !== 0){
             const agoSorted = AGO?.sort((a, b) => {
@@ -821,6 +818,7 @@ const ComprehensiveReport = (props) => {
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [currentDate, setCurrentDate] = useState();
+    const [dateValue, setDateValue] = useState(new Date());
 
     const printReport = () => {
         setPrints(true);
@@ -881,6 +879,7 @@ const ComprehensiveReport = (props) => {
         const date2 = `${day} ${month} ${year}`;
 
         setCurrentDate(date2);
+        setDateValue(date);
 
         getAllProductData();
         getYesterdayReport();
@@ -888,6 +887,7 @@ const ComprehensiveReport = (props) => {
     }, [])
 
     const changeMenu = (index, item ) => {
+        setDateValue(new Date());
         setDefault(index);
         dispatch(adminOutlet(item));
         // setLoads(true);
@@ -920,6 +920,7 @@ const ComprehensiveReport = (props) => {
     }
 
     const changeDailySales = (e) => {
+        setDateValue(e.target.value);
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
         setCurrentDate(format);
@@ -946,7 +947,7 @@ const ComprehensiveReport = (props) => {
 
     return(
         <div className='reportContainer'>
-            { prints && <ComprehensiveReports data={dailySales} open={prints} close={setPrints}/>}
+            { prints && <ComprehensiveReports tanks={tanks} forwardBalance={forwardBalance} data={dailySales} open={prints} close={setPrints}/>}
             <div style={cont} className='controls'>
                 <div>
                     {(user.userType === "superAdmin" || user.userType === "admin") &&
@@ -979,7 +980,7 @@ const ComprehensiveReport = (props) => {
                     }
                 </div>
                 <div style={{position: 'relative'}}>
-                    <input onChange={e => {changeDailySales(e)}} ref={dateInput} style={{visibility:'hidden', marginRight:'20px'}} type="date" />
+                    <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{visibility:'hidden', marginRight:'20px'}} type="date" />
                     <Button 
                         variant="contained" 
                         sx={{
@@ -1015,7 +1016,7 @@ const ComprehensiveReport = (props) => {
                                 backgroundColor: '#F36A4C'
                             }
                         }}
-                        // onClick={printReport}
+                        onClick={printReport}
                     >
                         Print
                     </Button>
