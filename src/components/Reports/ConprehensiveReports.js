@@ -714,15 +714,4 @@ const tableContainer = {
     margintop: '20px',
 }
 
-const dats = {
-    width:'100%',
-    marginTop:'20px',
-    fontSize:'14px',
-    fontWeight:'bold',
-    fontFamily:'Nunito-Regular',
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'center'
-}
-
 export default ComprehensiveReports;

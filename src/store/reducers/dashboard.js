@@ -3,7 +3,8 @@ import {
     DASHBOARD_RECORDS,
     DASHBOARD_EMPLOYEES,
     SEARCH_DASH, 
-    UTILS
+    UTILS,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -85,6 +86,46 @@ const dashboardReducer = (state = initialState, action) => {
             return{
                 ...state,
                 utils: payload
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                dashboardData: {
+                    count:0,
+                    tanks: {
+                        activeTank: {count:0, list:[]},
+                        inActiveTank: {count:0, list:[]}
+                    },
+                    pumps: {
+                        activePumps: {count:0, list:[]},
+                        inActivePumps: {count:0, list:[]}
+                    },
+                },
+                dashboardRecords: {
+                    sales: {
+                        totalAmount: 0,
+                        totalVolume: 0,
+                    },
+            
+                    supply:{
+                        pmsSupply: 0,
+                        agoSupply: 0,
+                        dpkSupply: 0
+                    },
+                    totalExpenses: 0,
+                    incoming: [],
+                    payments: {
+                        totalPayments: 0,
+                        totalPosPayments: 0,
+                        netToBank: 0
+                    }
+                },
+            
+                employees:[],
+                searchData: [],
+                utils:{}
             }
         }
 

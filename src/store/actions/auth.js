@@ -5,7 +5,7 @@ export const login = (params, history) => dispatch => {
     return AuthService.login(params)
     .then(data => {
         dispatch({ type: LOGIN, payload: data });
-        if(data.user.userType === "admin" || data.user.userType === "superAdmin") history.push('/home');
+        if(data.user.userType === "admin" || data.user.userType === "superAdmin" || data.user.userType === "staff") history.push('/home');
     })
     .catch(err => {
             

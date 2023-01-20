@@ -189,13 +189,4 @@ const imps = {
     marginTop:'10px'
 }
 
-const add = {
-    width:'100%',
-    display: 'flex',
-    flexDirection:'row',
-    justifyContent:'flex-start',
-    alignItems:'center',
-    marginTop:'30px'
-}
-
 export default DippingComponents;

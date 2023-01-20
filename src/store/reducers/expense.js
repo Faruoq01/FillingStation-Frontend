@@ -1,6 +1,7 @@
 import { 
     EXPENSE, 
-    SEARCH_EXPENSE
+    SEARCH_EXPENSE,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -29,6 +30,14 @@ const expenseReducer = (state = initialState, action) => {
             return {
                 ...state,
                 expense: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                expense: [],
+                searchData: []
             }
         }
 

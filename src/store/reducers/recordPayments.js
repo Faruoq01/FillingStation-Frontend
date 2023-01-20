@@ -2,7 +2,8 @@ import {
     BANK_PAYMENT, 
     SEARCH_BANK_PAYMENT,
     POS_PAYMENT,
-    SEARCH_POS_PAYMENT
+    SEARCH_POS_PAYMENT,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -52,6 +53,16 @@ const recordPaymentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 pos: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                bank: [],
+                searchBank: [],
+                pos:[],
+                searchPos: []
             }
         }
 

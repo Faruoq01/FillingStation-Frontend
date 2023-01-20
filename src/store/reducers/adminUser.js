@@ -1,6 +1,7 @@
 import { 
     ADMIN_USER,
-    SEARCH_USERS
+    SEARCH_USERS,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -29,6 +30,14 @@ const adminUserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 adminUsers: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                adminUsers: [],
+                searchData: [],
             }
         }
 

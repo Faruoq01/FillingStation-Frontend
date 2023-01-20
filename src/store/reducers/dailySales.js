@@ -11,7 +11,8 @@ import {
     BALANCE_BF,
     PMS_BBF,
     AGO_BBF,
-    DPK_BBF
+    DPK_BBF,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -128,6 +129,29 @@ const dailySalesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dpkBBF: payload
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                dailySales: {},
+                payments: {},
+                dailyIncoming:[],
+                cummulative: {},
+                dailySupplies: {},
+                lpoRecords: [],
+                paymentRecords: {
+                    bankPayment: [],
+                    posPayment: [],
+                    expenses: []
+                },
+                bulkReports: {},
+                linkedData: { page: 1 },
+                balanceBF: {},
+                pmsBBF: {},
+                agoBBF: {},
+                dpkBBF: {}
             }
         }
 

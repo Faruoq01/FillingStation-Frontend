@@ -18,7 +18,7 @@ import {
     ADMIN_OUTLET,
     FILTER_PUMPS_RECORD,
     FILTER_TANKS_RECORD,
-    TANK_LIST_TYPE
+    TANK_LIST_TYPE,
 } from '../types'
 
 const initialState = {
@@ -186,13 +186,6 @@ const outletReducer = (state = initialState, action) => {
             }
         }
 
-        case LOGOUT:{
-            return {
-                ...state,
-                oneStation: {}
-            }
-        }
-
         case SEARCH_USERS:{
             const search = state.searchData.filter(data => !data.tankName.toUpperCase().indexOf(payload.toUpperCase()) ||
                 !data.productType.toUpperCase().indexOf(payload.toUpperCase())
@@ -228,6 +221,27 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 mainPumpList: list,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                openModal: 0,
+                loadingSpinner: false,
+                newOutlet: {},
+                allOutlets:[],
+                newTank: {},
+                tankList: [],
+                searchData: [],
+                pumpList: [],
+                mainPumpList: [],
+                mainTankList: [],
+                oneTank: {},
+                oneStation: {},
+                searchStation:[],
+                adminOutlet: null,
+                tankListType: ""
             }
         }
 

@@ -1,36 +1,14 @@
 import React, {useRef, useEffect} from 'react';
 import Tooltip from '@mui/material/Tooltip';
-import { useSelector } from 'react-redux';
-import { useCallback } from 'react';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
-    const tankList = useSelector(state => state.outletReducer.tankList);
-
-    const getCummulativeVolume = useCallback(() => {
-        const PMSList = tankList.filter(tank => tank.productType === "PMS");
-
-        const currentLevel = PMSList.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel);
-        }, 0);
-
-        const capacity = PMSList.reduce((accum, current) => {
-            return Number(accum) + Number(current.tankCapacity);
-        }, 0);
-
-        const deadStock = PMSList.reduce((accum, current) => {
-            return Number(accum) + Number(current.deadStockLevel);
-        }, 0);
-
-        console.log(currentLevel, "current level")
-
-        createTankCanvas(currentLevel, capacity, deadStock);
-    }, [tankList]);
 
     useEffect(()=>{
-        getCummulativeVolume();
-    }, [getCummulativeVolume]);
+        createTankCanvas(props.data.totalPMS, props.data.PMSTankCapacity, props.data.PMSDeadStock);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const createTankCanvas = (level, capacity, deadstock) => {
 
@@ -79,10 +57,8 @@ const TankComponent = (props) => {
             drawSmallLine(i);
         }
 
-        ctx.fillStyle= "#399A19"
-        
+        ctx.fillStyle= "#399A19";
         var z = 1;
-
         function myLoop(){
             setTimeout(function(){
                 ctx.fillRect(70*dpi, (300 - z)*dpi , 230*dpi, current*dpi);
@@ -92,7 +68,6 @@ const TankComponent = (props) => {
                 }
             }, 5)
         }
-
         if(current > 0){
             myLoop();
         }

@@ -1,6 +1,7 @@
 import { 
     QUERY,
     SEARCH_QUERY,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -29,6 +30,14 @@ const queryReducer = (state = initialState, action) => {
             return {
                 ...state,
                 query: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                query: [],
+                searchData: [],
             }
         }
 

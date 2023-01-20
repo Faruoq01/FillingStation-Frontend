@@ -9,69 +9,71 @@ const AGODailySales = (props) => {
     const getMasterRows = () => {
         const newRows = [];
 
-        for(let row of dailySales?.AGO?.sales){
+        if(dailySales?.AGO?.sales){
+            for(let row of dailySales?.AGO?.sales){
 
-            const findID = newRows.findIndex(data => data.pumpID === row.pumpID);
-            
-            if(findID === -1){
-                const filterUniqueRows = dailySales.AGO.sales.filter(data => data.pumpID === row.pumpID);
-                const filterLPORows = dailySales.AGO.lpo.filter(data => data.pumpID === row.pumpID);
-                const filterRTRows = dailySales.AGO.rt.filter(data => data.pumpID === row.pumpID);
-
-                /*#########################
-                    Pump totalizer reading
-                ##########################*/
-                const openingMeter = filterUniqueRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.openingMeter);
-                }, 0);
-
-                const closingMeter = filterUniqueRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.closingMeter);
-                }, 0);
-
-                /*#########################
-                    PMS sales in litres
-                ##########################*/
-                const totalRate = filterUniqueRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.sales);
-                }, 0);
-
-                const totalLPO = filterLPORows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.lpoLitre);
-                }, 0);
-
-                const totalRT = filterRTRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.rtLitre);
-                }, 0);
-
-                /*#########################
-                    PMS sales in cash price
-                ##########################*/
-                const totalPrice = filterUniqueRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.sales)*Number(current.PMSSellingPrice);
-                }, 0);
-
-                const totalLPOPrice = filterLPORows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.lpoLitre)*Number(current.PMSRate);
-                }, 0);
-
-                const totalRTPrice = filterRTRows.reduce((accum, current) => {
-                    return Number(accum) + Number(current.rtLitre)*Number(current.PMSPrice);
-                }, 0);
-
-                const uniqueRow = {
-                    id: row.pumpID,
-                    pumpName: row.pumpName, 
-                    openingMeter: openingMeter, 
-                    closingMeter: closingMeter, 
-                    difference: closingMeter - openingMeter,
-                    PMSRate: totalRate/filterUniqueRows.length,
-                    lpoLitre: totalLPO,
-                    rtLitre: totalRT,
-                    amount: totalPrice + totalLPOPrice - totalRTPrice,
+                const findID = newRows.findIndex(data => data.pumpID === row.pumpID);
+                
+                if(findID === -1){
+                    const filterUniqueRows = dailySales.AGO.sales.filter(data => data.pumpID === row.pumpID);
+                    const filterLPORows = dailySales.AGO.lpo.filter(data => data.pumpID === row.pumpID);
+                    const filterRTRows = dailySales.AGO.rt.filter(data => data.pumpID === row.pumpID);
+    
+                    /*#########################
+                        Pump totalizer reading
+                    ##########################*/
+                    const openingMeter = filterUniqueRows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.openingMeter);
+                    }, 0);
+    
+                    const closingMeter = filterUniqueRows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.closingMeter);
+                    }, 0);
+    
+                    /*#########################
+                        PMS sales in litres
+                    ##########################*/
+                    const totalRate = filterUniqueRows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.sales);
+                    }, 0);
+    
+                    const totalLPO = filterLPORows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.lpoLitre);
+                    }, 0);
+    
+                    const totalRT = filterRTRows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.rtLitre);
+                    }, 0);
+    
+                    /*#########################
+                        PMS sales in cash price
+                    ##########################*/
+                    const totalPrice = filterUniqueRows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.sales)*Number(current.PMSSellingPrice);
+                    }, 0);
+    
+                    const totalLPOPrice = filterLPORows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.lpoLitre)*Number(current.PMSRate);
+                    }, 0);
+    
+                    const totalRTPrice = filterRTRows.reduce((accum, current) => {
+                        return Number(accum) + Number(current.rtLitre)*Number(current.PMSPrice);
+                    }, 0);
+    
+                    const uniqueRow = {
+                        id: row.pumpID,
+                        pumpName: row.pumpName, 
+                        openingMeter: openingMeter, 
+                        closingMeter: closingMeter, 
+                        difference: closingMeter - openingMeter,
+                        PMSRate: totalRate/filterUniqueRows.length,
+                        lpoLitre: totalLPO,
+                        rtLitre: totalRT,
+                        amount: totalPrice + totalLPOPrice - totalRTPrice,
+                    }
+    
+                    newRows.push(uniqueRow);
                 }
-
-                newRows.push(uniqueRow);
             }
         }
 

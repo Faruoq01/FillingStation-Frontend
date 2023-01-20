@@ -12,7 +12,6 @@ const ReturnToTank = (props) => {
     const [productType, setProductType] = useState("PMS");
     const [selectedPumps, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
-    const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     console.log(linkedData, 'kslfhbfdkjbhfdbjhfdbjhkfvbjv')
@@ -85,16 +84,8 @@ const ReturnToTank = (props) => {
             setSelectedTanks(linkedData?.head?.data?.selectedTanks);
         }
      
-    }, [
-        getAGOPump, 
-        getDPKPump, 
-        getPMSPump, 
-        linkedData?.head?.data?.ago, 
-        linkedData?.head?.data?.dpk, 
-        linkedData?.head?.data?.pms, 
-        linkedData?.head?.data?.selectedPumps, 
-        linkedData?.head?.data?.selectedTanks
-    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -497,15 +488,6 @@ const imps = {
     outline:'none',
     border:'1px solid #000',
     paddingLeft:'10px'
-}
-
-const add = {
-    width:'100%',
-    display: 'flex',
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:'30px'
 }
 
 export default ReturnToTank;

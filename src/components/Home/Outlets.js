@@ -202,15 +202,17 @@ const Outlets = (props) => {
                                 </div>
                             </div>
                             <div style={{width:'195px'}} className='butt'>
-                                <Button sx={{
-                                    width:'100%', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
+                                <Button 
+                                    disabled={user.userType === "staff"}
+                                    sx={{
+                                        width:'100%', 
+                                        height:'30px',  
+                                        background: '#427BBE',
+                                        borderRadius: '3px',
+                                        fontSize:'10px',
+                                        '&:hover': {
+                                            backgroundColor: '#427BBE'
+                                        }
                                     }} 
                                     onClick={()=>{handleOpenModal(1)}} 
                                     variant="contained"> Create new filling station

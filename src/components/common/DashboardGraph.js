@@ -661,10 +661,11 @@ const DashboardGraph = (props) => {
             endRange: lastDayOfTheWeek
         }
 
-        DashboardService.getWeeklyDataFromApi(payload).then(data => {console.log(data, "current week data")
+        DashboardService.getWeeklyDataFromApi(payload).then(data => {
             analyseWeeklyData(data);
         })
-    }, [props?.station?._id, props?.station?.organisation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const getAllMonthlyData = () => {
         const dateRange = getFirstAndLastDayOfTheYear();

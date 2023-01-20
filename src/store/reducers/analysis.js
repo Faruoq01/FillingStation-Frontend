@@ -1,5 +1,6 @@
 import { 
-    ANALYSIS_DATA
+    ANALYSIS_DATA,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -23,6 +24,20 @@ const analysisReducer = (state = initialState, action) => {
             return {
                 ...state,
                 analysisData: payload
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                analysisData: {
+                    sales: [],
+                    lpo: [],
+                    rtVolumes: [],
+                    payments: [],
+                    pospayment: [],
+                    expenses: []
+                },
             }
         }
 

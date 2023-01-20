@@ -1,23 +1,14 @@
 import React, {useRef, useEffect} from 'react';
-import { useState } from 'react';
 import Tooltip from '@mui/material/Tooltip';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
-    const [currentLevel, setCurrentLevel] = useState(0);
-    const [capacity, setCapacity] = useState(33000);
-    const [deadstock, setDeadStock] = useState(0);
 
     useEffect(()=>{
-        createTankCanvas(currentLevel, capacity, deadstock);
-    }, [capacity, currentLevel, deadstock]);
-
-    useEffect(()=>{
-        setCapacity(props.data.AGOTankCapacity);
-        setCurrentLevel(props.data.totalAGO);
-        setDeadStock(props.data.AGODeadStock);
-    }, [props.data.AGOTankCapacity, props.data.totalAGO, props.data.AGODeadStock]);
+        createTankCanvas(props.data.totalAGO, props.data.AGOTankCapacity, props.data.AGODeadStock);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const createTankCanvas = (level, capacity, deadstock) => {
 

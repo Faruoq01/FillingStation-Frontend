@@ -1,6 +1,7 @@
 import { 
     ATTENDANCE,
     SEARCH_ATTENDANCE,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -29,6 +30,14 @@ const attendanceReducer = (state = initialState, action) => {
             return {
                 ...state,
                 attendance: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                attendance: [],
+                searchData: [],
             }
         }
 

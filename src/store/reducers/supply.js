@@ -2,6 +2,7 @@ import {
     SUPPLY ,
     SEARCH_SUPPLY,
     PENDING_SUPPLY,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -38,6 +39,15 @@ const supplyReducer = (state = initialState, action) => {
             return {
                 ...state,
                 pendingSupply: payload
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                supply: [],
+                searchData: [],
+                pendingSupply: [],
             }
         }
 

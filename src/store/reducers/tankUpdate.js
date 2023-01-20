@@ -1,5 +1,6 @@
 import { 
-    TANK_UPDATE 
+    TANK_UPDATE,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -16,6 +17,13 @@ const tankUpdateReducer = (state = initialState, action) => {
             return {
                 ...state,
                 tankUpdate: payload,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                tankUpdate: [],
             }
         }
 

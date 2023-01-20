@@ -2,8 +2,7 @@ import React, {useRef} from 'react';
 import Modal from '@mui/material/Modal';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { ThreeDots } from  'react-loader-spinner';
-import avatar from '../../assets/avatar.png';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 1000px)');
 

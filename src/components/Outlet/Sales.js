@@ -1,17 +1,5 @@
 import React from 'react';
 import '../../styles/sales.scss';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import Button from '@mui/material/Button';
-import { Line } from 'react-chartjs-2';
 import me4 from '../../assets/me4.png';
 import me5 from '../../assets/me5.png';
 import PMSTank from './PMSTank';
@@ -24,61 +12,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import DashboardGraph from '../common/DashboardGraph';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-);
-
-const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-];
-
-const data = {
-    labels: labels,
-    datasets: [
-        {
-            label: 'AGO',
-            borderColor: '#399A19',
-            data: [0, 10, 5, 2, 20, 30, 45, 25, 50, 35, 10, 40],
-        },
-        {
-            label: 'PMS',
-            borderColor: '#FFA010',
-            data: [40, 10, 20, 26, 20, 10, 45, 30, 10, 15, 25, 40],
-        },
-        {
-            label: 'DPK',
-            borderColor: '#000',
-            data: [20, 40, 10, 20, 30, 5, 18, 50, 35, 40, 25, 30],
-        }
-    ]
-};
-
-const options = {
-    plugins: {
-        legend: {
-            display: false,
-        }
-    },
-    maintainAspectRatio: false,
-}
 
 const Sales = (props) => {
 

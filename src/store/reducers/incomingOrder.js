@@ -1,6 +1,7 @@
 import { 
     CREATE_INCOMING_ORDER ,
-    SEARCH_INCOMING_ORDERS
+    SEARCH_INCOMING_ORDERS,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -32,6 +33,14 @@ const incomingOrderReducer = (state = initialState, action) => {
             return {
                 ...state,
                 incomingOrder: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                incomingOrder: [],
+                searchData: []
             }
         }
 

@@ -2,7 +2,8 @@ import {
     PAYMENT ,
     CERTIFICATE,
     RECEIPT,
-    SEARCH_PAYMENT
+    SEARCH_PAYMENT,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -47,6 +48,16 @@ const paymentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 payment: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                payment: [],
+                certificate: {},
+                receipt: {},
+                searchData: []
             }
         }
 

@@ -1,6 +1,7 @@
 import { 
     CREATE_PRODUCT_ORDER ,
-    SEARCH_PRODUCT_ORDER
+    SEARCH_PRODUCT_ORDER,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -29,6 +30,14 @@ const productOrderReducer = (state = initialState, action) => {
             return {
                 ...state,
                 productOrder: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                productOrder: [],
+                searchData: []
             }
         }
 

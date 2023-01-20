@@ -104,7 +104,7 @@ const Employee = () => {
             });
         }
 
-    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
+    }, [user._id, user.userType, user.outletID, dispatch, roles, filter, skip, limit]);
 
     useEffect(()=>{
         getAllEmployeeData();

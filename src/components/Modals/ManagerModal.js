@@ -49,6 +49,7 @@ const ManagerModal = (props) => {
         const existingRoles = [...role].concat(extensions);
         existingRoles.push("Others");
         setRole(existingRoles);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const submit = () => {

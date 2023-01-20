@@ -1,6 +1,7 @@
 import { 
     SALARY,
     SEARCH_SALARY,
+    LOGOUT
 } from '../types'
 
 const initialState = {
@@ -29,6 +30,14 @@ const salaryReducer = (state = initialState, action) => {
             return {
                 ...state,
                 salary: search,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                salary: [],
+                searchData: [],
             }
         }
 

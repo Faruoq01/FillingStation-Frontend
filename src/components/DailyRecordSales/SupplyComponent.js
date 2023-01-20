@@ -8,8 +8,6 @@ import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import { passRecordSales } from "../../store/actions/dailySales";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useEffect } from "react";
-import { getAllOutletTanks } from "../../store/actions/outlet";
 
 const SupplyComponent = () => {
 
@@ -31,7 +29,6 @@ const SupplyComponent = () => {
     const [quantityLoaded, setQuantityLoaded] = useState('');
     const [overage, setOverage] = useState('');
     const [shortage, setShortage] = useState('');
-    const [changedTank, setChangedTank] = useState();
 
     const selectedIncomingOrder = (data) => {
 

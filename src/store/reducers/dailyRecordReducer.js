@@ -1,7 +1,8 @@
 import { 
     DAILY_ALL_STATIONS, 
     ADMIN_STATION,
-    FORM_STATION
+    FORM_STATION,
+    LOGOUT
 } from '../types';
 
 const initialState = {
@@ -34,6 +35,15 @@ const dailyRecordReducer = (state = initialState, action) => {
             return{
                 ...state,
                 formStation: payload
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                allAdminStations: [{}],
+                singleAdminStation: {},
+                formStation: null,
             }
         }
 

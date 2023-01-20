@@ -1,24 +1,15 @@
 import React, {useRef, useEffect} from 'react';
-import { useState } from 'react';
 import Tooltip from '@mui/material/Tooltip';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
-    const [currentLevel, setCurrentLevel] = useState(0);
-    const [capacity, setCapacity] = useState(33000);
-    const [deadstock, setDeadStock] = useState(0);
 
     useEffect(()=>{
-        createTankCanvas(currentLevel, capacity, deadstock);
-    }, [capacity, currentLevel, deadstock]);
-
-    useEffect(()=>{
-        setCapacity(props.data.DPKTankCapacity);
-        setCurrentLevel(props.data.totalDPK);
-        setDeadStock(props.data.DPKDeadStock);
-        
-    }, [props.data.DPKTankCapacity, props.data.totalDPK, props.data.DPKDeadStock]);
+        createTankCanvas(props.data.totalDPK, props.data.DPKTankCapacity, props.data.DPKDeadStock);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    
     const createTankCanvas = (level, capacity, deadstock) => {
 
         let dpi = window.devicePixelRatio;
