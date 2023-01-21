@@ -397,6 +397,11 @@ const Dashboard = (props) => {
         setValue(data);
     }
 
+    const getPMSDetails = (data) => {
+        let formattedSale = data?.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return formattedSale;
+    }
+
     return(
         <>
             { props.activeRoute.split('/').length === 2 &&
@@ -449,9 +454,9 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='top-text'>
                                                 <div style={{ width:'100%', fontSize:'14px', textAlign:'right', fontFamily:'Nunito-Regular'}}>
-                                                    <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'14px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>{dashboardRecords.sales.totalVolume}</span> LTR</div>
+                                                    <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'14px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>{getPMSDetails(dashboardRecords.sales.totalVolume)}</span> LTR</div>
                                                     <div style={{marginTop:'10px', fontWeight:'bold', fontSize:'14px'}}>
-                                                        Total Sales: <span style={{fontWeight:'bold'}}>NGN {dashboardRecords.sales.totalAmount}</span>
+                                                        Total Sales: <span style={{fontWeight:'bold'}}>NGN {getPMSDetails(dashboardRecords.sales.totalAmount)}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -531,7 +536,7 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='right'>
                                                 <div>Litre Qty</div>
-                                                <div>{dashboardRecords.supply.pmsSupply} Litres</div>
+                                                <div>{getPMSDetails(dashboardRecords.supply.pmsSupply)} Litres</div>
                                             </div>
                                         </>
                                     }
@@ -545,7 +550,7 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='right'>
                                                 <div>Litre Qty</div>
-                                                <div>{dashboardRecords.supply.agoSupply} Litres</div>
+                                                <div>{getPMSDetails(dashboardRecords.supply.agoSupply)} Litres</div>
                                             </div>
                                         </>
                                     }
@@ -559,7 +564,7 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='right'>
                                                 <div>Litre Qty</div>
-                                                <div>{dashboardRecords.supply.dpkSupply} Litres</div>
+                                                <div>{getPMSDetails(dashboardRecords.supply.dpkSupply)} Litres</div>
                                             </div>
                                         </>
                                     }
@@ -575,15 +580,15 @@ const Dashboard = (props) => {
                                     <div className='inner-content'>
                                         <div className='conts'>
                                             <div className='row-count'>
-                                                <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.netToBank}</div>
+                                                <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.netToBank)}</div>
                                                 <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                                <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPayments}</div>
-                                                <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPosPayments}</div>
+                                                <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.totalPayments)}</div>
+                                                <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.totalPosPayments)}</div>
                                             </div>
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.outstanding}</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.outstanding)}</div>
                                                 <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">
@@ -615,7 +620,7 @@ const Dashboard = (props) => {
                                         justifyContent:'flex-end',
                                         alignItems:'center',
                                         }} className='inner-content'>
-                                        <span style={{marginRight:'30px', fontSize:'14px', fontWeight:'900'}}>NGN {dashboardRecords.totalExpenses}</span>
+                                        <span style={{marginRight:'30px', fontSize:'14px', fontWeight:'900'}}>NGN {getPMSDetails(dashboardRecords.totalExpenses)}</span>
                                     </div>
                                 }
                             </div>

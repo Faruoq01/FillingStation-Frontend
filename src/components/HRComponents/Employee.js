@@ -104,7 +104,8 @@ const Employee = () => {
             });
         }
 
-    }, [user._id, user.userType, user.outletID, dispatch, roles, filter, skip, limit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
         getAllEmployeeData();

@@ -8,7 +8,6 @@ const PMSDailySales = (props) => {
 
     const getMasterRows = () => {
         const newRows = [];
-        console.log(dailySales?.PMS?.sales, "salesssssssssssssss")
 
         if(dailySales?.PMS?.sales){
             for(let row of dailySales?.PMS?.sales){
@@ -70,7 +69,7 @@ const PMSDailySales = (props) => {
                         PMSRate: totalRate/filterUniqueRows.length,
                         lpoLitre: totalLPO,
                         rtLitre: totalRT,
-                        amount: totalPrice + totalLPOPrice - totalRTPrice,
+                        amount: totalPrice - totalLPOPrice + totalRTPrice,
                     }
     
                     newRows.push(uniqueRow);
@@ -158,8 +157,8 @@ const PMSDailySales = (props) => {
                                     <div key={index} className='table-heads2'>
                                         <div className='col'>{data.pumpName}</div>
                                         <div className='col'>{data.openingMeter}</div>
-                                        <div className='col'>{data.closingMeter + data.lpoLitre}</div>
-                                        <div className='col'>{data.difference + data.lpoLitre}</div>
+                                        <div className='col'>{data.closingMeter}</div>
+                                        <div className='col'>{data.difference}</div>
                                         <div className='col'>{data.lpoLitre}</div>
                                         <div className='col'>{data.PMSRate}</div>
                                         <div className='col'>{data.rtLitre}</div>

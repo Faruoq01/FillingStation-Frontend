@@ -33,6 +33,7 @@ const LPOComponent = (props) => {
     // payload records
     const [cam, setCam] = useState(null);
     const [gall, setGall] = useState(null);
+    const pumpList = useSelector(state => state.outletReducer.pumpList);
     const [productType, setProductType] = useState(null);
     const [dispenseLpo, setDispensedLPO] = useState(null);
     const [dispensedPump, setDispensedPump] = useState(null);
@@ -40,37 +41,22 @@ const LPOComponent = (props) => {
     const [quantity, setQuantity] = useState("");
 
     const getPMSPump = useCallback(() => {
-        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
-            return []
-        }else{
-            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
-            const pms = newList.filter(data => data.productType === "PMS");
-            const pmsCopy = pms.map(data => Object.assign({}, data));
-            return pmsCopy;
-        }
-    }, [linkedData?.head?.prev?.data?.selectedPumps]);
+        const newList = [...pumpList];
+        const pms = newList.filter(data => data.productType === "PMS");
+        return pms;
+    }, [pumpList]);
 
     const getAGOPump = useCallback(() => {
-        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
-            return []
-        }else{
-            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
-            const ago = newList.filter(data => data.productType === "AGO");
-            const agoCopy = ago.map(data => Object.assign({}, data));
-            return agoCopy;
-        }
-    }, [linkedData?.head?.prev?.data?.selectedPumps]);
+        const newList = [...pumpList];
+        const ago = newList.filter(data => data.productType === "AGO");
+        return ago;
+    }, [pumpList]);
 
     const getDPKPump = useCallback(() => {
-        if(linkedData?.head?.prev?.data?.selectedPumps?.length === 0){
-            return []
-        }else{
-            const newList = [...linkedData?.head?.prev?.data?.selectedPumps];
-            const dpk = newList.filter(data => data.productType === "DPK");
-            const dpkCopy = dpk.map(data => Object.assign({}, data));
-            return dpkCopy;
-        }
-    }, [linkedData?.head?.prev?.data?.selectedPumps]);
+        const newList = [...pumpList];
+        const dpk = newList.filter(data => data.productType === "DPK");
+        return dpk;
+    }, [pumpList]);
 
     const [pms, setPMS] = useState([]);
     const [ago, setAGO] = useState([]);
@@ -165,10 +151,6 @@ const LPOComponent = (props) => {
     }
 
     const addDetailsToList = () => {
-        if(linkedData?.head?.prev?.data?.selectedPumps.length === 0){
-            setQuantity("");
-            return swal("Warning!", "No pump created in this station", "info");
-        }
         if(oneStationData === null) return swal("Warning!", "please select station", "info");
         if(dispensedPump === null) return swal("Warning!", "Please select lpo pump", "info");
         if(dispenseLpo === null) return swal("Warning!", "Please select lpo account", "info");
@@ -190,8 +172,8 @@ const LPOComponent = (props) => {
             pumpID: dispensedPump._id,
             tank: tank,
             PMSRate: oneStationData?.PMSPrice,
-            AGORate: oneStationData?.PMSPrice,
-            DPKRate: oneStationData?.PMSPrice,
+            AGORate: oneStationData?.AGOPrice,
+            DPKRate: oneStationData?.AGOPrice,
             PMSCost: oneStationData?.PMSCost,
             AGOCost: oneStationData?.AGOCost,
             DPKCost: oneStationData?.DPKCost,
@@ -286,7 +268,7 @@ const LPOComponent = (props) => {
             <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>
             <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
-                    linkedData?.head?.prev?.data?.selectedPumps?.length === 0?
+                    pumpList.length === 0?
                     <div style={{...box, width:'170px'}}>
                         <div style={{marginRight:'10px'}}>No pump Created</div>
                         <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>

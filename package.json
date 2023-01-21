@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@wojtekmaj/react-daterange-picker": "^4.1.0",
     "aos": "^2.3.4",
+    "approximate-number": "^2.1.0",
     "axios": "^0.27.2",
     "chart.js": "^3.9.1",
     "compress-base64": "^1.0.2",

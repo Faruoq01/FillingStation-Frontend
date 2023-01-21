@@ -49,15 +49,15 @@ const DPKDailySales = (props) => {
                         PMS sales in cash price
                     ##########################*/
                     const totalPrice = filterUniqueRows.reduce((accum, current) => {
-                        return Number(accum) + Number(current.sales)*Number(current.PMSSellingPrice);
+                        return Number(accum) + Number(current.sales)*Number(current.DPKSellingPrice);
                     }, 0);
     
                     const totalLPOPrice = filterLPORows.reduce((accum, current) => {
-                        return Number(accum) + Number(current.lpoLitre)*Number(current.PMSRate);
+                        return Number(accum) + Number(current.lpoLitre)*Number(current.DPKRate);
                     }, 0);
     
                     const totalRTPrice = filterRTRows.reduce((accum, current) => {
-                        return Number(accum) + Number(current.rtLitre)*Number(current.PMSPrice);
+                        return Number(accum) + Number(current.rtLitre)*Number(current.DPKPrice);
                     }, 0);
     
                     const uniqueRow = {
@@ -69,7 +69,7 @@ const DPKDailySales = (props) => {
                         PMSRate: totalRate/filterUniqueRows.length,
                         lpoLitre: totalLPO,
                         rtLitre: totalRT,
-                        amount: totalPrice + totalLPOPrice - totalRTPrice,
+                        amount: totalPrice - totalLPOPrice + totalRTPrice,
                     }
     
                     newRows.push(uniqueRow);
@@ -158,8 +158,8 @@ const DPKDailySales = (props) => {
                                     <div key={index} className='table-heads2'>
                                         <div className='col'>{data.pumpName}</div>
                                         <div className='col'>{data.openingMeter}</div>
-                                        <div className='col'>{data.closingMeter + data.lpoLitre}</div>
-                                        <div className='col'>{data.difference + data.lpoLitre}</div>
+                                        <div className='col'>{data.closingMeter}</div>
+                                        <div className='col'>{data.difference}</div>
                                         <div className='col'>{data.lpoLitre}</div>
                                         <div className='col'>{data.PMSRate}</div>
                                         <div className='col'>{data.rtLitre}</div>

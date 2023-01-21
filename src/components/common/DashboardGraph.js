@@ -25,6 +25,21 @@ ChartJS.register(
     Legend
 );
 
+const months = {
+    '01' : 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+}
+
 const labels = [
     'Jan',
     'Feb',
@@ -289,7 +304,7 @@ const getMonthlyTotals = (day, dataList) => {
     }
 }
 
-const getAnnualTotals = (day, dataList, years) => {console.log(day, 'hhhhhhhhhhhhhhhh')
+const getAnnualTotals = (day, dataList, years) => {
     const dates = day.createdAt.split('-');
     
     switch(dates[0].toString()){
@@ -441,11 +456,16 @@ const DashboardGraph = (props) => {
     const [weeklyDataSet, setWeeklyDataSet] = useState(weeklyData);
     const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
     const [annualDataSet, setAnnualDataSet] = useState(annualData);
+    const [currentDate, setCurrentDate] = useState();
 
     const [currentSelection, setCurrentSelection] = useState(0);
     const dateHandle = useRef();
 
     const updateDate = async(e) => {
+
+        const date = e.target.value.split('-');
+        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
+        setCurrentDate(format);
 
         const firstDayOfTheWeek = getLastSunday(e.target.value);
         const lastDayOfTheWeek = getUpcomingSunday(e.target.value);
@@ -721,8 +741,18 @@ const DashboardGraph = (props) => {
     }
 
     useEffect(()=>{
+        const date = new Date();
+        const toString = date.toDateString();
+        const [month, day, year] = toString.split(' ');
+        const date2 = `${day} ${month} ${year}`;
+        setCurrentDate(date2);
+
         getAllCurrentWeekData();
     }, [getAllCurrentWeekData]);
+
+    const changeSalesDate = () => {
+        dateHandle.current.showPicker();
+    }
 
     return(
         <div style={{marginTop:'10px'}} className='dash-records'>
@@ -735,33 +765,44 @@ const DashboardGraph = (props) => {
                             <Button onClick={()=>{switchGraphTab("month")}} sx={currentSelection === 1? activeButton: inActive}  variant="contained"> Month </Button>
                             <Button onClick={()=>{switchGraphTab("year")}} sx={currentSelection === 2? activeButton: inActive}  variant="contained"> Year </Button>
                         </div>
-                        <div className='dates'>
-                            <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                                <input 
-                                    onChange={updateDate} 
-                                    ref={dateHandle} 
-                                    style={{
-                                        width:'140px',
-                                        height:'30px',
-                                        background:'#06805B',
-                                        fontSize:'12px',
-                                        borderRadius:'0px',
-                                        textTransform:'capitalize',
-                                        display:'flex',
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        color:'#fff',
-                                        border:'none',
-                                        boxShadow:'0px 0px 5px 5px #ccc',
-                                        outline:'none',
-                                        paddingLeft:'6px',
-                                        '&:hover': {
-                                            backgroundColor: '#06805B',
-                                            opacity:'0.9'
-                                        }
-                                    }} 
-                                    type="date" />
-                            </div>
+                        <div 
+                            style={{
+                                height:'auto', 
+                                position:'relative',
+                                display:'flex',
+                                flexDirection:'row',
+                                alignItems:'center',
+                                justifyContent:'flex-end',
+                            }}>
+                            <input 
+                                onChange={updateDate} 
+                                ref={dateHandle} 
+                                style={{visibility:'hidden', marginRight:'20px'}} 
+                                type="date"
+                            />
+                            <Button 
+                                variant="contained" 
+                                sx={{
+                                    width:'100px',
+                                    height:'30px',
+                                    background:'#06805B',
+                                    fontSize:'11px',
+                                    marginLeft:'10px',
+                                    borderRadius:'0px',
+                                    textTransform:'capitalize',
+                                    position:'absolute',
+                                    zIndex:'20',
+                                    display: 'flex',
+                                    flexDirection:'row',
+                                    alignItems: 'center',
+                                    '&:hover': {
+                                        backgroundColor: '#06805B'
+                                    }
+                                }}
+                                onClick={changeSalesDate}
+                            >
+                                <div>{currentDate}</div>
+                            </Button>
                         </div>
                     </div>
                     <div className='type'>

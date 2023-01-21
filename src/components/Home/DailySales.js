@@ -112,12 +112,12 @@ const DailySales = (props) => {
             }, 0);
 
             const pmsTotalDetails = {
-                totalDifference: pmsSales + pmsLpoSales - pmsRTSales,
+                totalDifference: pmsSales - pmsLpoSales + pmsRTSales,
                 totalLpo: pmsLpoSales,
                 totalrt: pmsRTSales,
-                amount: pmsPrice + pmsLPOPrice - pmsRTPrice,
+                amount: pmsPrice - pmsLPOPrice + pmsRTPrice,
                 lpoAmount: pmsLPOPrice,
-                noLpoAmount: pmsPrice - pmsRTPrice,
+                noLpoAmount: pmsPrice - pmsLPOPrice - pmsRTPrice,
             }
 
             return pmsTotalDetails;
@@ -157,12 +157,12 @@ const DailySales = (props) => {
             }, 0);
 
             const agoTotalDetails = {
-                totalDifference: agoSales + agoLpoSales - agoRTSales,
+                totalDifference: agoSales - agoLpoSales + agoRTSales,
                 totalLpo: agoLpoSales,
                 totalrt: agoRTSales,
-                amount: agoPrice + agoLPOPrice - agoRTPrice,
+                amount: agoPrice - agoLPOPrice + agoRTPrice,
                 lpoAmount: agoLPOPrice,
-                noLpoAmount: agoPrice - agoRTPrice,
+                noLpoAmount: agoPrice - agoLPOPrice - agoRTPrice,
             }
 
             return agoTotalDetails;
@@ -202,12 +202,12 @@ const DailySales = (props) => {
             }, 0);
 
             const dpkTotalDetails = {
-                totalDifference: dpkSales + dpkLpoSales - dpkRTSales,
+                totalDifference: dpkSales - dpkLpoSales + dpkRTSales,
                 totalLpo: dpkLpoSales,
                 totalrt: dpkRTSales,
-                amount: dpkPrice + dpkLPOPrice - dpkRTPrice,
+                amount: dpkPrice - dpkLPOPrice + dpkRTPrice,
                 lpoAmount: dpkLPOPrice,
-                noLpoAmount: dpkPrice - dpkRTPrice
+                noLpoAmount: dpkPrice - dpkLPOPrice - dpkRTPrice
             }
 
             return dpkTotalDetails;
@@ -473,6 +473,13 @@ const DailySales = (props) => {
         getAndAnalyzeDailySales(oneStationData, false, e.target.value);
     }
 
+    const getPMSDetails = (data) => {
+        if(data){
+            let formattedSale = String(Number(data)?.toFixed(2)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return formattedSale;
+        }
+    }
+
     return(
         <>
             { props.activeRoute.split('/').length === 3 &&
@@ -541,10 +548,10 @@ const DailySales = (props) => {
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                                 <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>PMS</div>
                                                 <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0
+                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0)
                                                 } ltr</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
-                                                    dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
+                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -562,10 +569,10 @@ const DailySales = (props) => {
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                                 <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>AGO</div>
                                                 <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0
+                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0)
                                                 } ltr</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
-                                                    dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
+                                                    getPMSDetails(dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -583,10 +590,10 @@ const DailySales = (props) => {
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                                 <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>DPK</div>
                                                 <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0
+                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0)
                                                 } ltr</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
-                                                    dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>TotaL NGN {
+                                                    getPMSDetails(dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -602,24 +609,24 @@ const DailySales = (props) => {
                                 <div className="tank-inner">
                                     <div className="tanks">
                                         <div className='tank-head'>PMS</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalPMS} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.PMSTankCapacity} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {getPMSDetails(cummulative.totalPMS)} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {getPMSDetails(cummulative.PMSTankCapacity)} Litres</div>
                                         <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                             <PMSTank data = {cummulatives}/>
                                         </div>
                                     </div>
                                     <div className="tanks">
                                         <div className='tank-head'>AGO</div>
-                                            <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalAGO} Litres</div>
-                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.AGOTankCapacity} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='level'>Level: {getPMSDetails(cummulative.totalAGO)} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {getPMSDetails(cummulative.AGOTankCapacity)} Litres</div>
                                             <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
                                                 <AGOTank data = {cummulatives}/>
                                             </div>
                                         </div>
                                     <div className="tanks">
                                         <div className='tank-head'>DPK</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalDPK} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.DPKTankCapacity} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {getPMSDetails(cummulative.totalDPK)} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {getPMSDetails(cummulative.DPKTankCapacity)} Litres</div>
                                         <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
                                             <DPKTank data = {cummulatives}/>
                                         </div>
@@ -660,7 +667,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Expenses</div>
-                                        <div>NGN {payments.hasOwnProperty("payments")? payments.expenses: "0"}</div>
+                                        <div>NGN {getPMSDetails(payments.hasOwnProperty("payments")? payments.expenses: "0")}</div>
                                     </div>
                                 }
                             </div>
@@ -669,7 +676,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Payments</div>
-                                        <div>NGN {payments.hasOwnProperty("payments")? payments.payments: "0"}</div>
+                                        <div>NGN {getPMSDetails(payments.hasOwnProperty("payments")? payments.payments: "0")}</div>
                                     </div>
                                 }
                             </div>
@@ -710,7 +717,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0"}</div>
+                                            <div>{getPMSDetails(dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -724,7 +731,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0"}</div>
+                                            <div>{getPMSDetails(dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -738,7 +745,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0"}</div>
+                                            <div>{getPMSDetails(dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -773,27 +780,27 @@ const DailySales = (props) => {
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Net to bank</div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Payment</div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>
-                                                NGN {payments.hasOwnProperty("payments")? payments.payments: "0.00"}
+                                                NGN {getPMSDetails(payments.hasOwnProperty("payments")? payments.payments: "0")}
                                             </div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Outstanding</div>
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0.00"}
+                                                NGN {getPMSDetails((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0")}
                                             </div>
                                             <div style={{color:'#0872D4'}}  className='item-count'>Teller</div>
                                             <div style={{color:'#0872D4'}} className='item-count'>
-                                                NGN {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0.00"}
+                                                NGN {getPMSDetails(payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0")}
                                             </div>
                                             <div className='item-count'>
-                                                {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0.00"}
+                                                {getPMSDetails((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0")}
                                             </div>
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'></div>
                                             <div style={{color:'#000'}}  className='item-count'>POS</div>
                                             <div style={{color:'#000'}} className='item-count'>
-                                                # {payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0.00"}
+                                                NGN {getPMSDetails(payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0")}
                                             </div>
                                             <div className='item-count'></div>
                                         </div>
@@ -832,10 +839,10 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                {dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0.00"} Litres
+                                                {getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0")} Litres
                                             </div>
                                             <div className='item-count'>
-                                                # {dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0.00"}: 00
+                                                NGN {getPMSDetails(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0")}
                                             </div>
                                         </div>
                                     </div>

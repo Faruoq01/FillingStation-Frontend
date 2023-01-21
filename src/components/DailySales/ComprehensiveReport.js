@@ -28,69 +28,38 @@ const months = {
     '12': 'Dec',
 }
 
+const approx = (data) => {
+    if(data){
+        let formattedSale = String(Number(data)?.toFixed(2)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return formattedSale;
+    }
+}
+
 const LeftTableView = (props) => {
 
-    const getSupply = () => {
-        const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
-        const AGO = props?.supply?.filter(data => data.productType === "AGO") || [];
-        const DPK = props?.supply?.filter(data => data.productType === "DPK") || [];
-
-        const totalPMS = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.quantity);
-        }, 0);
-
-        const totalAGO = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.quantity);
-        }, 0);
-
-        const totalDPK = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.quantity);
-        }, 0);
-
-        const total = [totalPMS, totalAGO, totalDPK]
-        
-        return total;
-    }
-
     const getTankLevels = () => {
+
         const PMS = props?.sales?.filter(data => data.productType === "PMS");
         const AGO = props?.sales?.filter(data => data.productType === "AGO");
         const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        let minimumPMSTankLevel = 0;
-        let minimumAGOTankLevel = 0;
-        let minimumDPKTankLevel = 0;
+        let pmsBF = 0;
+        let agoBF = 0;
+        let dpkBF = 0;
 
-        if(PMS?.length !== 0){
-            const pmsSorted = PMS?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(pmsSorted?.length !== 0){
-                minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
-            }
+        if(PMS){
+            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
         }
 
-        if(AGO?.length !== 0){
-            const agoSorted = AGO?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(agoSorted?.length !== 0){
-                minimumAGOTankLevel = minimumAGOTankLevel + agoSorted?.shift()?.totalTankLevel;
-            }
+        if(AGO){
+            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
         }
 
-        if(DPK?.length !== 0){
-            const dpkSorted = DPK?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(dpkSorted?.length !== 0){
-                minimumDPKTankLevel = minimumDPKTankLevel + dpkSorted?.shift()?.totalTankLevel;
-            }
+        if(DPK){
+            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
         }
-        return {pms: minimumPMSTankLevel, ago: minimumAGOTankLevel, dpk: minimumDPKTankLevel}
+
+        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
     }
 
     const getSalesRecord = () => {
@@ -114,11 +83,11 @@ const LeftTableView = (props) => {
     }
 
     const getBalanceBF = () => {
-        const pmsBalance = getTankLevels().pms - getSupply()[0] + getSalesRecord().pms;
-        const agoBalance = getTankLevels().ago - getSupply()[1] + getSalesRecord().ago;
-        const dpkBalance = getTankLevels().dpk - getSupply()[2] + getSalesRecord().dpk;
+        const pmsBalance = getTankLevels().pms + getSalesRecord().pms;
+        const agoBalance = getTankLevels().ago + getSalesRecord().ago;
+        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk;
 
-        return {pms: pmsBalance, ago: agoBalance, dpk: dpkBalance};
+        return {pms: isNaN(pmsBalance)? 0: pmsBalance, ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
     }
 
     return(
@@ -230,44 +199,28 @@ const MiddleTableView = (props) => {
 const RightTableView = (props) => {
 
     const getTankLevels = () => {
+
         const PMS = props?.sales?.filter(data => data.productType === "PMS");
         const AGO = props?.sales?.filter(data => data.productType === "AGO");
         const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        let minimumPMSTankLevel = 0;
-        let minimumAGOTankLevel = 0;
-        let minimumDPKTankLevel = 0;
+        let pmsBF = 0;
+        let agoBF = 0;
+        let dpkBF = 0;
 
-        if(PMS?.length !== 0){
-            const pmsSorted = PMS?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(pmsSorted?.length !== 0){
-                minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
-            }
+        if(PMS){
+            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
         }
 
-        if(AGO?.length !== 0){
-            const agoSorted = AGO?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(agoSorted?.length !== 0){
-                minimumAGOTankLevel = minimumAGOTankLevel + agoSorted?.shift()?.totalTankLevel;
-            }
+        if(AGO){
+            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
         }
 
-        if(DPK?.length !== 0){
-            const dpkSorted = DPK?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(dpkSorted?.length !== 0){
-                minimumDPKTankLevel = minimumDPKTankLevel + dpkSorted?.shift()?.totalTankLevel;
-            }
+        if(DPK){
+            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
         }
-        return {pms: minimumPMSTankLevel, ago: minimumAGOTankLevel, dpk: minimumDPKTankLevel}
+
+        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
     }
 
     const getSupply = () => {
@@ -313,11 +266,12 @@ const RightTableView = (props) => {
     }
 
     const getBalanceBF = () => {
-        const pmsBalance = getTankLevels().pms - getSupply()[0] + getSalesRecord().pms;
-        const agoBalance = getTankLevels().ago - getSupply()[1] + getSalesRecord().ago;
-        const dpkBalance = getTankLevels().dpk - getSupply()[2] + getSalesRecord().dpk;
 
-        return {pms: pmsBalance + getSupply()[0] , ago: agoBalance + getSupply()[1], dpk: dpkBalance + getSupply()[2]};
+        const pmsBalance = getTankLevels().pms + getSalesRecord().pms + getSupply()[0];
+        const agoBalance = getTankLevels().ago + getSalesRecord().ago + getSupply()[1];
+        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk + getSupply()[2];
+        
+        return {pms: isNaN(pmsBalance)? 0:  pmsBalance , ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
     }
 
     return(
@@ -368,6 +322,16 @@ const LPODailySales = (props) => {
         return total;
     }
 
+    const getLpoTotal = (data) => {
+        if(data.productType === "PMS"){
+            return Number(data.PMSRate)*Number(data.lpoLitre);
+        }else if(data.productType === "AGO"){
+            return Number(data.AGORate)*Number(data.lpoLitre)
+        }else{
+            return Number(data.DPKRate)*Number(data.lpoLitre)
+        }
+    }
+
     return(
         <div className='sales'>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>LPO</div>
@@ -395,10 +359,10 @@ const LPODailySales = (props) => {
                                     <div className='col'>{data.truckNo}</div>
                                     <div className='col'>{data.lpoLitre}</div>
                                     <div className='col'>{
-                                        data.productType === "PMS"? data.PMSRate: data.productType === "AGO"? data.AGORate: data.DPKRate
+                                        approx(data.productType === "PMS"? data.PMSRate: data.productType === "AGO"? data.AGORate: data.DPKRate)
                                     }</div>
                                     <div style={{marginRight:'0px'}} className='col'>{
-                                        data.productType === "PMS"? Number(data.PMSRate)*Number(data.lpoLitre): data.productType === "AGO"? Number(data.AGORate)*Number(data.lpoLitre): Number(data.DPKRate)*Number(data.lpoLitre)
+                                        approx(getLpoTotal(data))
                                     }</div>
                                 </div>
                             )
@@ -599,44 +563,28 @@ const PaymentDailySales = (props) => {
 const ProductDailySales = (props) => {
 
     const getTankLevels = () => {
+
         const PMS = props?.sales?.filter(data => data.productType === "PMS");
         const AGO = props?.sales?.filter(data => data.productType === "AGO");
         const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        let minimumPMSTankLevel = 0;
-        let minimumAGOTankLevel = 0;
-        let minimumDPKTankLevel = 0;
+        let pmsBF = 0;
+        let agoBF = 0;
+        let dpkBF = 0;
 
-        if(PMS?.length !== 0){
-            const pmsSorted = PMS?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(pmsSorted?.length !== 0){
-                minimumPMSTankLevel = minimumPMSTankLevel + pmsSorted?.shift()?.totalTankLevel;
-            }
+        if(PMS){
+            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
         }
 
-        if(AGO?.length !== 0){
-            const agoSorted = AGO?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(agoSorted?.length !== 0){
-                minimumAGOTankLevel = minimumAGOTankLevel + agoSorted?.shift()?.totalTankLevel;
-            }
+        if(AGO){
+            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
         }
 
-        if(DPK?.length !== 0){
-            const dpkSorted = DPK?.sort((a, b) => {
-                return Number(a.totalTankLevel) - Number(b.totalTankLevel);
-            });
-
-            if(dpkSorted?.length !== 0){
-                minimumDPKTankLevel = minimumDPKTankLevel + dpkSorted?.shift()?.totalTankLevel;
-            }
+        if(DPK){
+            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
         }
-        return {pms: minimumPMSTankLevel, ago: minimumAGOTankLevel, dpk: minimumDPKTankLevel}
+
+        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
     }
 
     const getSupply = () => {
@@ -682,19 +630,15 @@ const ProductDailySales = (props) => {
     }
 
     const getBalanceBF = () => {
-        const pmsBalance = getTankLevels().pms - getSupply()[0] + getSalesRecord().pms;
-        const agoBalance = getTankLevels().ago - getSupply()[1] + getSalesRecord().ago;
-        const dpkBalance = getTankLevels().dpk - getSupply()[2] + getSalesRecord().dpk;
-
         /*#########################
             Data available balance
         ##########################*/
 
-        const pmsBal = pmsBalance + getSupply()[0] - getSalesRecord().pms;
-        const agoBal = agoBalance + getSupply()[1] - getSalesRecord().ago;
-        const dpkBal = dpkBalance + getSupply()[2] - getSalesRecord().dpk;
+        const pmsBal = getTankLevels().pms + getSupply()[0];
+        const agoBal = getTankLevels().ago + getSupply()[1];
+        const dpkBal = getTankLevels().dpk + getSupply()[2];
 
-        return {pms: pmsBal, ago: agoBal, dpk: dpkBal};
+        return {pms: isNaN(pmsBal)? 0: pmsBal, ago:isNaN(agoBal)? 0: agoBal, dpk: isNaN(dpkBal)? 0: dpkBal};
     }
 
     return(
@@ -870,7 +814,7 @@ const ComprehensiveReport = (props) => {
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, user._id, user.outletID, user.userType]);
+    }, []);
 
     useEffect(()=>{
         const date = new Date();
