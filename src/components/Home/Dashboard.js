@@ -100,6 +100,14 @@ const Dashboard = (props) => {
     const [value, setValue] = useState([new Date(), new Date()]);
     const [load, setLoad] = useState(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const collectAndAnalyseData = (data) => {
         let activeTank = data.station.tanks.filter(data => data.activeState === "1");
         let inActiveTank = data.station.tanks.filter(data => data.activeState === "0");
@@ -123,20 +131,17 @@ const Dashboard = (props) => {
 
     const getAllStationData = useCallback(() => {
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
             setLoad(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
+                dispatch(adminOutlet(null));
                 return data.station[0];
             }).then(data => {
-                DashboardService.allAttendanceRecords({id: data?.organisation, outletID: data?._id}).then(data => {
+                DashboardService.allAttendanceRecords({id: resolveUserID().id, outletID: "None"}).then(data => {
                     dispatch(dashEmployees(data.employees));
                     collectAndAnalyseData(data);
                 });
@@ -166,13 +171,13 @@ const Dashboard = (props) => {
                 const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
 
                 const payload = {
-                    organisation: data?.organisation,
-                    outletID: data?._id,
+                    organisation: resolveUserID().id,
+                    outletID: "None",
                     startDate: formatOne,
                     endDate: formatTwo
                 }
 
-                DashboardService.allSalesRecords(payload).then(data => { console.log(data, 'sales is here')
+                DashboardService.allSalesRecords(payload).then(data => {
                     const evaluatedDashboard = collectAndEvaluateDashboard(data);
                     dispatch(dashboardRecordMore(evaluatedDashboard));
                 }).then(()=>{
@@ -240,6 +245,51 @@ const Dashboard = (props) => {
     const changeMenu = (index, item ) => {
         setDefault(index);
         dispatch(adminOutlet(item));
+
+        setLoad(true);
+        
+        let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
+        rangeOne = rangeOne.map(data => {
+            let res = "0";
+            if(data.length === 1){
+                res = res.concat(data);
+            }else{
+                res = data;
+            }
+            return res;
+        });
+        const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
+
+        let rangeTwo = new Date(value[1]).toLocaleDateString().split("/");
+        rangeTwo = rangeTwo.map(data => {
+            let res = "0";
+            if(data.length === 1){
+                res = res.concat(data);
+            }else{
+                res = data;
+            }
+            return res;
+        });
+        const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+
+        DashboardService.allAttendanceRecords({id: resolveUserID().id, outletID: item === null? "None": item?._id}).then(data => {
+            dispatch(dashEmployees(data.employees));
+            collectAndAnalyseData(data);
+        });
+
+        const payload = {
+            organisation: resolveUserID().id,
+            outletID: item === null? "None": item?._id,
+            startDate: formatOne,
+            endDate: formatTwo
+        }
+
+        DashboardService.allSalesRecords(payload).then(data => { 
+            const evaluatedDashboard = collectAndEvaluateDashboard(data);
+            dispatch(dashboardRecordMore(evaluatedDashboard));
+        }).then(()=>{
+            setLoad(false);
+        });
     }
 
     const goToPayments = () => {
@@ -382,8 +432,8 @@ const Dashboard = (props) => {
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
 
         const payload = {
-            organisation: oneStationData?.organisation,
-            outletID: oneStationData?._id,
+            organisation: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id,
             startDate: formatOne,
             endDate: formatTwo
         }
@@ -419,7 +469,7 @@ const Dashboard = (props) => {
                                         value={defaultState}
                                         sx={selectStyle2}
                                     >
-                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                        <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                         {
                                             allOutlets.map((item, index) => {
                                                 return(

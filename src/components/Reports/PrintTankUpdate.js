@@ -3,7 +3,6 @@ import Modal from '@mui/material/Modal';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { ThreeDots } from  'react-loader-spinner';
-import {ClassNames} from '@emotion/react'
 
 const mediaMatch = window.matchMedia('(max-width: 1000px)');
 

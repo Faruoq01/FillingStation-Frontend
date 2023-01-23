@@ -1,10 +1,11 @@
-import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA } from '../types'
+import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA, CONNECTION_ERROR } from '../types'
 
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')) || {},
     token: localStorage.getItem('token') || '',
     isLoggedIn: !!JSON.parse(localStorage.getItem('user')),
     loadingSpinner: false,
+    connection: true,
 }
 
 const authReducer = (state = initialState, action) => {
@@ -50,6 +51,13 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 user: payload
+            }
+        }
+
+        case CONNECTION_ERROR: {
+            return {
+                ...state,
+                connection: payload
             }
         }
 

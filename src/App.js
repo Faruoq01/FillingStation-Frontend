@@ -5,15 +5,34 @@ import ProtectedRoute from './screens/ProtectedRoute';
 import {HashRouter, Route, Switch} from 'react-router-dom';
 import AOS from 'aos';
 import "aos/dist/aos.css";
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import Homepage from './components/LandingPage/Home';
+import Connection from './screens/Connection';
+import { useDispatch } from 'react-redux';
+import { network } from './store/actions/auth';
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  const detectNetworkStatus = useCallback((status) => { 
+    if(status.target.rtt === 0){ 
+      dispatch(network(false));
+    }else{
+      dispatch(network(true));
+    }
+  }, [dispatch]);
 
   useEffect(()=>{
     AOS.init();
     AOS.refresh();
-  }, [])
+
+    navigator.connection.addEventListener('change', detectNetworkStatus);
+
+    return () => {
+      navigator.connection.removeEventListener('change', detectNetworkStatus);
+    }
+  }, [detectNetworkStatus])
 
   return (
     <HashRouter>
@@ -56,6 +75,7 @@ function App() {
           <Route path='/home/hr/recruitment' component={HomeScreen} />
           <Route path='/home/hr/attendance' component={HomeScreen} />
           <Route path='/login' component={LoginScreen} />
+          <Route path='/connection' component={Connection} />
           <Route render = {() => <h1>404 page not found</h1>} />
         </Switch>
       </div>

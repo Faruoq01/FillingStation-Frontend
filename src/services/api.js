@@ -1,6 +1,6 @@
 import axios from 'axios';
 import store from '../store';
-import { logout, removeSpinner } from '../store/actions/auth';
+import { logout, network, removeSpinner } from '../store/actions/auth';
 import swal from 'sweetalert';
 import config from '../constants';
 
@@ -17,6 +17,11 @@ APIs.interceptors.response.use(
         return res
     },
     err => {
+
+        // network error
+        if(err.code === "ERR_NETWORK"){
+            store.dispatch(network(false));
+        }
 
         if (err.response.status === 404) {
             swal("Error!", err.response.data.message, "error");

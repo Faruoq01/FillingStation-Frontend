@@ -59,12 +59,15 @@ import StationPumps from '../components/Home/StationPumps';
 import config from '../constants';
 import DailyRecordSales from '../components/Home/DailyRecordSales';
 import DashboardEmployee from '../components/DashboardComponents/DashboardEmp';
+import { useHistory } from 'react-router-dom';
 
-const HomeScreen = ({history}) => {
+const HomeScreen = () => {
 
     const user = useSelector(state => state.authReducer.user);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const online = useSelector(data => data.authReducer.connection);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const routes = useMemo(()=>{
         return(
@@ -123,9 +126,17 @@ const HomeScreen = ({history}) => {
     }
 
     useEffect(()=>{
+        if(!online){
+            history.push('/connection');
+        }
+    });
+
+    useEffect(()=>{
         setActiveRoute(history.location.pathname);
         setName(routes[history.location.pathname]);
-    }, [history.location.pathname, routes]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const goBackToPreviousPage = () => {
         history.goBack();
@@ -183,7 +194,7 @@ const HomeScreen = ({history}) => {
 
     const getStationDetails = () => {
         if(oneStationData === null){
-            return ""
+            return "( All Stations )"
         }else if(name === "Admin Department"){
             return null;
         }else if(typeof oneStationData?.outletName !== "undefined"){

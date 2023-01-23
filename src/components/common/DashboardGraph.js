@@ -14,6 +14,7 @@ import {
 import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
 ChartJS.register(
     CategoryScale,
@@ -457,9 +458,19 @@ const DashboardGraph = (props) => {
     const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
     const [annualDataSet, setAnnualDataSet] = useState(annualData);
     const [currentDate, setCurrentDate] = useState();
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const user = useSelector(state => state.authReducer.user);
 
     const [currentSelection, setCurrentSelection] = useState(0);
     const dateHandle = useRef();
+
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
 
     const updateDate = async(e) => {
 
@@ -471,8 +482,8 @@ const DashboardGraph = (props) => {
         const lastDayOfTheWeek = getUpcomingSunday(e.target.value);
 
         const payload = {
-            organisation: props?.station?.organisation,
-            outletID: props?.station?._id,
+            organisation: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id,
             startRange: firstDayOfTheWeek,
             endRange: lastDayOfTheWeek
         }
@@ -675,8 +686,8 @@ const DashboardGraph = (props) => {
         const lastDayOfTheWeek = getUpcomingSunday(gate);
 
         const payload = {
-            organisation: props?.station?.organisation,
-            outletID: props?.station?._id,
+            organisation: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id,
             startRange: firstDayOfTheWeek,
             endRange: lastDayOfTheWeek
         }
@@ -691,8 +702,8 @@ const DashboardGraph = (props) => {
         const dateRange = getFirstAndLastDayOfTheYear();
 
         const payload = {
-            organisation: props.station.organisation,
-            outletID: props.station._id,
+            organisation: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id,
             startRange: dateRange.firstDay,
             endRange: dateRange.lastDay
         }
@@ -706,8 +717,8 @@ const DashboardGraph = (props) => {
         const dateRange = getYearRange();
         
         const payload = {
-            organisation: props.station.organisation,
-            outletID: props.station._id,
+            organisation: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id,
             startRange: dateRange.firstRange,
             endRange: dateRange.secondRange
         }

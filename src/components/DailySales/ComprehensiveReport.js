@@ -609,26 +609,6 @@ const ProductDailySales = (props) => {
         return total;
     }
 
-    const getSalesRecord = () => {
-        const PMS = props?.sales?.filter(data => data.productType === "PMS");
-        const AGO = props?.sales?.filter(data => data.productType === "AGO");
-        const DPK = props?.sales?.filter(data => data.productType === "DPK");
-
-        const PMSSales = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
-        }, 0);
-
-        const AGOSales = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
-        }, 0);
-
-        const DPKSales = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
-        }, 0);
-
-        return {pms: PMSSales, ago: AGOSales, dpk: DPKSales}
-    }
-
     const getBalanceBF = () => {
         /*#########################
             Data available balance

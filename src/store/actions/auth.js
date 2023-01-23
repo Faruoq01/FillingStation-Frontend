@@ -1,5 +1,5 @@
 import AuthService from '../../services/authService';
-import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA } from '../types';
+import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA, CONNECTION_ERROR } from '../types';
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
@@ -37,4 +37,8 @@ export const logout = () => dispatch => {
 
 export const updateUser = (param) => dispatch => {
     dispatch({ type: UPDATE_USER_DATA, payload: param })
+}
+
+export const network = (param) => dispatch => {
+    dispatch({ type: CONNECTION_ERROR, payload: param })
 }
