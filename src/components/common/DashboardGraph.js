@@ -698,6 +698,23 @@ const DashboardGraph = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const getAllWeeklyData = () => {
+        const gate = new Date();
+        const firstDayOfTheWeek = getLastSunday(gate);
+        const lastDayOfTheWeek = getUpcomingSunday(gate);
+
+        const payload = {
+            organisation: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            startRange: firstDayOfTheWeek,
+            endRange: lastDayOfTheWeek
+        }
+
+        DashboardService.getWeeklyDataFromApi(payload).then(data => {
+            analyseWeeklyData(data);
+        })
+    }
+
     const getAllMonthlyData = () => {
         const dateRange = getFirstAndLastDayOfTheYear();
 
@@ -732,7 +749,7 @@ const DashboardGraph = (props) => {
         switch(data){
             case "week":{
                 setCurrentSelection(0);
-                getAllCurrentWeekData();
+                getAllWeeklyData();
                 break;
             }
 

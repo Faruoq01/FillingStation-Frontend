@@ -431,6 +431,11 @@ const Dashboard = (props) => {
         });
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
 
+        DashboardService.allAttendanceRecords({id: resolveUserID().id, outletID: oneStationData === null? "None": oneStationData?._id}).then(data => {
+            dispatch(dashEmployees(data.employees));
+            collectAndAnalyseData(data);
+        });
+
         const payload = {
             organisation: resolveUserID().id,
             outletID: oneStationData === null? "None": oneStationData?._id,

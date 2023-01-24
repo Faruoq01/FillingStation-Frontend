@@ -13,8 +13,6 @@ const LoginScreen = () => {
     const history = useHistory();
     const online = useSelector(data => data.authReducer.connection);
 
-    console.log(navigator.onLine, "network status")
-
     useEffect(()=>{
 
         if(!online){
