@@ -75,3 +75,4 @@ export const PMS_BBF = "PMS_BBF";
 export const AGO_BBF = "AGO_BBF";
 export const DPK_BBF = "DPK_BBF";
 export const CONNECTION_ERROR = "CONNECTION_ERROR";
+export const BAR_DATA = "BAR_DATA";

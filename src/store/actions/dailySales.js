@@ -11,7 +11,8 @@ import {
     BALANCE_BF,
     PMS_BBF,
     AGO_BBF,
-    DPK_BBF
+    DPK_BBF,
+    BAR_DATA
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -64,6 +65,10 @@ export const agoBBF = (params) => dispatch => {
 
 export const dpkBBF = (params) => dispatch => {
     dispatch({ type: DPK_BBF, payload: params});
+}
+
+export const storemonthlyBarData = (params) => dispatch => {
+    dispatch({type: BAR_DATA, payload: params});
 }
 
 

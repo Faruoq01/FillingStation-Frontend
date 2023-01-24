@@ -22,25 +22,36 @@ const ListAllTanks = () => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [list, setList] = useState({});
     const tankListType = useSelector(state => state.outletReducer.tankListType);
+    console.log(tankList, 'all')
+
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
 
     const getAllProductData = useCallback(() => {
 
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
+        const payload = {
+            organisation: resolveUserID().id, 
+        }
+
+        OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            dispatch(adminOutlet(data.station[0]));
-            setDefault(1);
-            return data.station[0]
         }).then((data)=>{
             const payload = {
-                organisationID: data.organisation,
-                outletID: data._id
+                organisationID: resolveUserID().id,
+                outletID: oneStationData === null? "None": oneStationData?._id
             }
             OutletService.getAllOutletTanks(payload).then(data => {
                 dispatch(getAllOutletTanks(data.stations));
             });
         });
 
-    }, [dispatch, user.organisationID, user._id, user.userType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const getTanksLists = useCallback(() => {
         const PMS = tankList.filter(tank => tank.productType === "PMS");
@@ -70,18 +81,18 @@ const ListAllTanks = () => {
         dispatch(adminOutlet(item));
 
         const payload = {
-            organisationID: item.organisation,
-            outletID: item._id
+            organisationID: resolveUserID().id,
+            outletID: item === null? "None": item?._id
         }
-        OutletService.getAllOutletTanks(payload).then(data => {
+        OutletService.getAllOutletTanks(payload).then(data => {console.log(data, 'all tanks')
             dispatch(getAllOutletTanks(data.stations));
         });
     }
 
     const refresh = () => {
         const payload = {
-            organisationID: oneStationData?.organisation,
-            outletID: oneStationData?._id
+            organisationID: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
@@ -181,7 +192,7 @@ const ListAllTanks = () => {
                         value={defaultState}
                         sx={selectStyle2}
                     >
-                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                        <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                         {
                             allOutlets.map((item, index) => {
                                 return(

@@ -20,7 +20,7 @@ import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
-import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords } from '../../store/actions/dailySales';
+import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
 
@@ -61,6 +61,14 @@ const DailySales = (props) => {
     const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
     const cummulative = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
+
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
 
     const getMasterRows = ({sales, lpo, rtVolumes}) => {
 
@@ -293,8 +301,8 @@ const DailySales = (props) => {
     const getAndAnalyzeDailySales = async(data, onLoad, selectedDate) => {
 
         const salesPayload = {
-            organisationID: data?.organisation,
-            outletID: data?._id,
+            organisationID: resolveUserID().id,
+            outletID: data === null? "None": data?._id,
             onLoad: onLoad,
             selectedDate: selectedDate
         }
@@ -331,34 +339,54 @@ const DailySales = (props) => {
     const getAllProductData = useCallback(() => {
 
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
             setLoads(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then(async(data)=>{
                 getAndAnalyzeDailySales(data, true, "");
+
+                const payload = {
+                    organisationID: resolveUserID().id,
+                    outletID: oneStationData === null? "None": oneStationData?._id,
+                }
+
+                DailySalesService.getAllMonthlyReports(payload).then(data => { 
+                    const payments = data.expense.payment.concat(data.expense.posPayment);
+                    const expense = data.expense.expense;
+        
+                    dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
+                });
                 setLoads(false);
             });
         }else{
             setLoads(true);
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+            OutletService.getOneOutletStation({outletID: resolveUserID().id}).then(data => {
                 dispatch(adminOutlet(data.station));
                 return data.station;
             }).then(async(data)=>{
                 getAndAnalyzeDailySales(data, true, "");
+
+                const payload = {
+                    organisationID: resolveUserID().id,
+                    outletID: oneStationData === null? "None": oneStationData?._id,
+                }
+
+                DailySalesService.getAllMonthlyReports(payload).then(data => { 
+                    const payments = data.expense.payment.concat(data.expense.posPayment);
+                    const expense = data.expense.expense;
+        
+                    dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
+                });
                 setLoads(false);
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, user._id, user.outletID, user.userType]);
+    }, []);
 
     useEffect(()=>{
         getAllProductData();
@@ -436,12 +464,19 @@ const DailySales = (props) => {
         getAndAnalyzeDailySales(item, true, "");
 
         const payload = {
-            organisationID: item.organisation,
-            outletID: item._id
+            organisationID: resolveUserID().id,
+            outletID: item === null? "None": item?._id
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
             setLoads(false);
+        });
+
+        DailySalesService.getAllMonthlyReports(payload).then(data => { 
+            const payments = data.expense.payment.concat(data.expense.posPayment);
+            const expense = data.expense.expense;
+
+            dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
         });
     }
 
@@ -494,7 +529,7 @@ const DailySales = (props) => {
                                         value={defaultState}
                                         sx={selectStyle2}
                                     >
-                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                        <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                         {
                                             allOutlets.map((item, index) => {
                                                 return(

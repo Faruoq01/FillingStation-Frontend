@@ -7,12 +7,11 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import { useCallback } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
-import DailySalesService from '../../services/DailySales';
 import { Skeleton } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 ChartJS.register(
     CategoryScale,
@@ -246,17 +245,22 @@ const getMonthlyPayTotals = (exp, payments) => {
 const BarChartGraph = (props) => {
 
     const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
+    const barData = useSelector(data => data.dailySalesReducer.barData);
 
     const analyseMonthlyData = (expense, payment) => {
         const expenses = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         const payments = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        for(let exp of expense){
-            getMonthlyTotals(exp, expenses);
+        if(expense){
+            for(let exp of expense){
+                getMonthlyTotals(exp, expenses);
+            }
         }
 
-        for(let exp of payment){
-            getMonthlyPayTotals(exp, payments);
+        if(payment){
+            for(let exp of payment){
+                getMonthlyPayTotals(exp, payments);
+            }
         }
 
         const monthlyData = {
@@ -278,25 +282,9 @@ const BarChartGraph = (props) => {
         setMonthlyDataSet(monthlyData);
     }
 
-    const getAllMonthlyRecords = useCallback(() => {
-        const payload = {
-            organisationID: props.station?.organisation,
-            outletID: props.station?._id,
-        }
-
-        DailySalesService.getAllMonthlyReports(payload).then(data => { 
-            const payments = data.expense.payment.concat(data.expense.posPayment);
-            const expense = data.expense.expense;
-            console.log(payments, "from bar graph")
-            console.log(expense, "from bar graph")
-
-            analyseMonthlyData(expense, payments);
-        });
-    },[props.station?._id, props.station?.organisation])
-
     useEffect(()=>{
-        getAllMonthlyRecords()
-    }, [getAllMonthlyRecords]);
+        analyseMonthlyData(barData.expenses, barData.payments)
+    }, [barData.expenses, barData.payments])
 
     return(
         <div className='bar-chart'>

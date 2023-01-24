@@ -12,7 +12,8 @@ import {
     PMS_BBF,
     AGO_BBF,
     DPK_BBF,
-    LOGOUT
+    LOGOUT,
+    BAR_DATA
 } from '../types'
 
 const initialState = {
@@ -32,7 +33,8 @@ const initialState = {
     balanceBF: {},
     pmsBBF: {},
     agoBBF: {},
-    dpkBBF: {}
+    dpkBBF: {},
+    barData: {},
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -129,6 +131,13 @@ const dailySalesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dpkBBF: payload
+            }
+        }
+
+        case BAR_DATA: {
+            return {
+                ...state,
+                barData: payload
             }
         }
 

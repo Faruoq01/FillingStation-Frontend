@@ -21,6 +21,8 @@ const SupplyComponent = () => {
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
     console.log(tankList, 'tanklist')
 
+    console.log(linkedData.head.prev.prev.prev.data.payload, "here is the tank update list")
+
     // payload data
     const [transporter, setTransporter] = useState('');
     const [waybillNo, setWaybillNo] = useState('Select waybill no');
@@ -162,6 +164,11 @@ const SupplyComponent = () => {
         }
     }
 
+    const updatedTankSupply = (e) => {
+        setQuantityLoaded(e.target.value);
+        console.log(e.target.value, 'details')
+    }
+
     return(
         <div className='inner-body'>
             <div className='left-supply'>
@@ -212,7 +219,7 @@ const SupplyComponent = () => {
 
                     <div className='input-d'>
                         <span style={{color:'green'}}>Quantity Loaded</span>
-                        <input disabled value={quantityLoaded} onChange={e => setQuantityLoaded(e.target.value)} className='text-field' type={'text'} />
+                        <input disabled value={quantityLoaded} onChange={e => {updatedTankSupply(e)}} className='text-field' type={'text'} />
                     </div>
                 </div>
 

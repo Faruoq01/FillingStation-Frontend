@@ -178,7 +178,6 @@ const PumpUpdateComponent = (props) => {
     }
 
     const updateTotalizer = (e, totalizerDiff, item) => {
-
         const differenceT = Math.round((totalizerDiff + Number.EPSILON)*100)/100;
         
         if(productType === "PMS"){
@@ -271,7 +270,7 @@ const PumpUpdateComponent = (props) => {
                     swal("Warning!", "Please select a pump", "info");
         
                 }else{
-                    if(totalizerDiff > quantity){
+                    if(totalizerDiff > quantity ){
                         updateTotalizer("0", "0", item);
                         swal("Warning!", "Reading exceeded tank level", "info");
         
