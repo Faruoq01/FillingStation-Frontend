@@ -346,6 +346,7 @@ const DailySales = (props) => {
             setLoads(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
+                dispatch(adminOutlet(null));
                 return data.station[0];
             }).then(async(data)=>{
                 getAndAnalyzeDailySales(data, true, "");

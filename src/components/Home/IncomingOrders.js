@@ -62,6 +62,7 @@ const IncomingOrder = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
+                dispatch(adminOutlet(null));
             }).then((data)=>{
                 const payload = {
                     skip: skip * limit,

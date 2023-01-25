@@ -79,6 +79,7 @@ const Attendance = () => {
 
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
+                dispatch(adminOutlet(null));
             }).then((data)=>{
                 const payload = {
                     skip: skip * limit,
