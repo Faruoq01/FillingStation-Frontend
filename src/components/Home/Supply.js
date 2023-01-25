@@ -9,16 +9,19 @@ import SupplyService from '../../services/supplyService';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { adminOutlet, getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
 import PrintSupplyRecords from '../Reports/SupplyRecords';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import CreateSupply from '../Supply/CreateSupply';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
-const Supply = () => {
+const Supply = (props) => {
 
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
+    const history = useHistory();
     const [defaultState, setDefault] = useState(0);
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
@@ -30,8 +33,16 @@ const Supply = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const openPaymentModal = () => {
-        setOpen(true);
+        history.push("/home/supply/create");
     }
 
     const getAllSupplyData = useCallback(() => {
@@ -43,44 +54,55 @@ const Supply = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0];
-            }).then((data)=>{
+            }).then(()=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: 'None', 
+                    organisationID: resolveUserID().id,
                 }
     
                 SupplyService.getAllSupply(payload).then((data) => {
                     setTotal(data.count);
                     dispatch(createSupply(data.supply));
+                });
+
+                const payload2 = {
+                    organisationID: resolveUserID().id,
+                    outletID: "None"
+                }
+                OutletService.getAllOutletTanks(payload2).then(data => {
+                    dispatch(getAllOutletTanks(data.stations));
                 });
             });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                return data.station;
             }).then((data)=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id,
                 }
     
                 SupplyService.getAllSupply(payload).then((data) => {
                     setTotal(data.count);
                     dispatch(createSupply(data.supply));
                 });
+
+                const payload2 = {
+                    organisationID: resolveUserID().id,
+                    outletID: "None"
+                }
+                OutletService.getAllOutletTanks(payload2).then(data => {
+                    dispatch(getAllOutletTanks(data.stations));
+                });
             });
         }
 
-    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
         getAllSupplyData();
@@ -91,12 +113,20 @@ const Supply = () => {
             skip: skip * limit,
             limit: limit,
             outletID: oneStationData?._id, 
-            organisationID: oneStationData?.organisation
+            organisationID: resolveUserID().id,
         }
 
         SupplyService.getAllSupply(payload).then((data) => {
             setTotal(data.count);
             dispatch(createSupply(data.supply));
+        });
+
+        const payload2 = {
+            organisationID: resolveUserID().id,
+            outletID: "None"
+        }
+        OutletService.getAllOutletTanks(payload2).then(data => {
+            dispatch(getAllOutletTanks(data.stations));
         });
     }
 
@@ -108,12 +138,20 @@ const Supply = () => {
             skip: skip * limit,
             limit: limit,
             outletID: item._id, 
-            organisationID: item.organisation
+            organisationID: resolveUserID().id,
         }
 
         SupplyService.getAllSupply(payload).then((data) => {
             setTotal(data.count);
             dispatch(createSupply(data.supply));
+        });
+
+        const payload2 = {
+            organisationID: resolveUserID().id,
+            outletID: "None"
+        }
+        OutletService.getAllOutletTanks(payload2).then(data => {
+            dispatch(getAllOutletTanks(data.stations));
         });
     }
 
@@ -149,7 +187,9 @@ const Supply = () => {
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <SupplyModal station={oneStationData} open={open} close={setOpen} refresh={refresh} />}
             { prints && <PrintSupplyRecords allOutlets={supply} open={prints} close={setPrints}/>}
-            <div className='inner-pay'>
+
+            {props.activeRoute.split('/').length === 3 &&
+                <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
                         <Select
@@ -176,7 +216,7 @@ const Supply = () => {
                                     value={defaultState}
                                     sx={selectStyle2}
                                 >
-                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                     {
                                         allOutlets.map((item, index) => {
                                             return(
@@ -215,20 +255,21 @@ const Supply = () => {
                                 />
                         </div>
                     </div>
-                    <div style={{width:'130px'}} className='butt'>
-                        {/* <Button sx={{
+                    <div style={{width:'100px'}} className='butt'>
+                        <Button sx={{
                             width:'100%', 
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',
-                            fontSize:'10px',
+                            fontSize:'11px',
+                            textTransform:'capitalize',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
                             }}  
                             onClick={openPaymentModal}
                             variant="contained"> Add Supply
-                        </Button> */}
+                        </Button>
                     </div>
                 </div>
 
@@ -327,7 +368,18 @@ const Supply = () => {
                         <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
-            </div>
+                </div>
+            }
+
+            { props.activeRoute.split('/').length === 4 &&
+                <div style={{width:'100%', marginTop:'30px'}}>
+                    <Switch>
+                        <Route path='/home/supply/create'>
+                            <CreateSupply history={props.history}/>
+                        </Route>
+                    </Switch>
+                </div>
+            }
         </div>
     )
 }

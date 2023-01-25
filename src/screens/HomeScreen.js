@@ -95,6 +95,7 @@ const HomeScreen = () => {
                 '/home/product-orders': 'Product Orders',
                 '/home/inc-orders': 'Incoming Orders',
                 '/home/supply': 'Supply',
+                '/home/supply/create': 'Create Supply',
                 '/home/regulatory': 'Regulatory Payment',
                 '/home/tank': 'Tank Update',
                 '/home/hr': 'Human Resources',
@@ -367,7 +368,7 @@ const HomeScreen = () => {
                         />
                     </Route>
                     <Route path='/home/supply'>
-                        <Supply/>
+                        <Supply activeRoute={activeRoute}/>
                     </Route>
                     <Route path='/home/daily-record-sales'>
                         <DailyRecordSales history={history}/>

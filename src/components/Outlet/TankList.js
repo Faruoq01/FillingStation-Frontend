@@ -84,7 +84,7 @@ const ListAllTanks = () => {
             organisationID: resolveUserID().id,
             outletID: item === null? "None": item?._id
         }
-        OutletService.getAllOutletTanks(payload).then(data => {console.log(data, 'all tanks')
+        OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
         });
     }
