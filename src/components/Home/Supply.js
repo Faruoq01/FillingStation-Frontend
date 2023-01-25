@@ -14,6 +14,7 @@ import { OutlinedInput } from '@mui/material';
 import PrintSupplyRecords from '../Reports/SupplyRecords';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import CreateSupply from '../Supply/CreateSupply';
+import swal from "sweetalert";
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -42,6 +43,9 @@ const Supply = (props) => {
     }
 
     const openPaymentModal = () => {
+        if(oneStationData === null){
+            return swal("Warning!", "Please select a station to proceed", "info");
+        }
         history.push("/home/supply/create");
     }
 
@@ -375,7 +379,7 @@ const Supply = (props) => {
                 <div style={{width:'100%', marginTop:'30px'}}>
                     <Switch>
                         <Route path='/home/supply/create'>
-                            <CreateSupply history={props.history}/>
+                            <CreateSupply refresh={refresh} history={props.history}/>
                         </Route>
                     </Switch>
                 </div>

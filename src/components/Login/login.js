@@ -64,7 +64,7 @@ const Login = (props) => {
         }
 
         const list = new DoublyLinkedList();
-        for(let i=7; i > 0 ; i--){
+        for(let i=6; i > 0 ; i--){
             list.addNode({
                 currentPage: i,
                 payload: [],

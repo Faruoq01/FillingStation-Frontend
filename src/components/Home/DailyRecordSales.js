@@ -6,7 +6,6 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import InventoryIcon from '@mui/icons-material/Inventory';
 import SanitizerIcon from '@mui/icons-material/Sanitizer';
 import PropaneTankIcon from '@mui/icons-material/PropaneTank';
 import CreditScoreIcon from '@mui/icons-material/CreditScore';
@@ -15,7 +14,6 @@ import PaidIcon from '@mui/icons-material/Paid';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import '../../styles/newSales.scss';
 import { Button, IconButton, MenuItem, Select } from '@mui/material';
-import SupplyComponent from '../DailyRecordSales/SupplyComponent';
 import PumpUpdateComponent from '../DailyRecordSales/PumpUpdateComponent';
 import LPOComponent from '../DailyRecordSales/LPOComponent';
 import ExpenseComponents from '../DailyRecordSales/ExpenseComponents';
@@ -158,10 +156,9 @@ function ColorlibStepIcon(props) {
     1: <SanitizerIcon />,
     2: <AssignmentReturnedIcon />,
     3: <CreditScoreIcon />,
-    4: <InventoryIcon />,
-    5: <PaidIcon />,
-    6: <AddCardIcon />,
-    7: <PropaneTankIcon />,
+    4: <PaidIcon />,
+    5: <AddCardIcon />,
+    6: <PropaneTankIcon />,
   };
 
   return (
@@ -189,7 +186,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const steps = ['Pump Update', 'Return to Tank', 'LPO', 'Supply', 'Expenses', 'Payments', 'Dipping'];
+const steps = ['Pump Update', 'Return to Tank', 'LPO', 'Expenses', 'Payments', 'Dipping'];
 
 const DailyRecordSales = () => {
     const date = new Date();
@@ -298,7 +295,7 @@ const DailyRecordSales = () => {
 
     useEffect(()=>{
         const list = new DoublyLinkedList();
-        for(let i=7; i > 0 ; i--){
+        for(let i=6; i > 0 ; i--){
             list.addNode({
                 currentPage: String(i),
                 payload: [],
@@ -363,8 +360,8 @@ const DailyRecordSales = () => {
         let payload = {
             currentDate: linkedData.currentDate,
             load: {
-                '8':[],
-                '7': linkedData.head.data.payload,
+                '7':[],
+                '6': linkedData.head.data.payload,
             }
         }
 
@@ -393,7 +390,7 @@ const DailyRecordSales = () => {
                     swal("Success!", "Daily sales recorded successfully!", "success");
                 }).then(()=>{
                     const list = new DoublyLinkedList();
-                    for(let i=7; i > 0 ; i--){
+                    for(let i=6; i > 0 ; i--){
                         list.addNode({
                             currentPage: String(i),
                             payload: [],
@@ -452,7 +449,7 @@ const DailyRecordSales = () => {
         dispatch(passRecordSales(newList));
     }
 
-    const [pages, setPages] = useState([1, 0, 0, 0, 0, 0, 0]);
+    const [pages, setPages] = useState([1, 0, 0, 0, 0, 0]);
 
     return (
         <div className='salesRecordStyle'>
@@ -580,7 +577,7 @@ const DailyRecordSales = () => {
                             backgroundImage: pages[3]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
                             'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
                         }}>
-                            <InventoryIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                            <PaidIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
                     </div>
 
                     <div className='cont' 
@@ -588,20 +585,12 @@ const DailyRecordSales = () => {
                             backgroundImage: pages[4]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
                             'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
                         }}>
-                            <PaidIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
-                    </div>
-
-                    <div className='cont' 
-                        style={{
-                            backgroundImage: pages[5]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
-                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
-                        }}>
                             <AddCardIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
                     </div>
 
                     <div className='cont' 
                         style={{
-                            backgroundImage: pages[6]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            backgroundImage: pages[5]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
                             'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
                         }}>
                             <PropaneTankIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
@@ -617,10 +606,9 @@ const DailyRecordSales = () => {
                 {linkedData.page === 1 && <PumpUpdateComponent update={setPumpMetrics} />}
                 {linkedData.page === 2 && <ReturnToTankComponent update={setPumpMetricsRT} />}
                 {linkedData.page === 3 && <LPOComponent />}
-                {linkedData.page === 4 && <SupplyComponent />}
-                {linkedData.page === 5 && <ExpenseComponents /> }
-                {linkedData.page === 6 && <PaymentsComponents /> }
-                {linkedData.page === 7 && <DippingComponents /> }
+                {linkedData.page === 4 && <ExpenseComponents /> }
+                {linkedData.page === 5 && <PaymentsComponents /> }
+                {linkedData.page === 6 && <DippingComponents /> }
             </div>
 
             <div className="navs">

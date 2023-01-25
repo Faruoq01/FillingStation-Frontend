@@ -8,8 +8,9 @@ import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import "../../styles/supplystyle.scss";
+import SupplyService from "../../services/supplyService";
 
-const CreateSupply = () => {
+const CreateSupply = (props) => {
 
     const [selected, setSelected] = useState([]);
     const [menus, setMenus] = useState(false);
@@ -165,7 +166,21 @@ const CreateSupply = () => {
     }
 
     const saveSupply = () => {
-        console.log(supplyList, "all selected")
+
+        if(supplyList.length !== 0){
+            const payload = {
+                load: supplyList
+            }
+    
+            SupplyService.createSupply(payload).then(data => {
+                swal("Succes!", `Supply recorded successfully!. `, "success");
+            }).then(()=>{
+                setSupplyList([]);
+                props.refresh();
+            })
+        }else{
+            swal("Warning!", `You can not submit an empty supply list. `, "info");
+        }
     }
 
     return(
