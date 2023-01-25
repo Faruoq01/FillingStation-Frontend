@@ -36,23 +36,26 @@ const Analysis = (props) => {
     const [type, setType] = useState(false);
     const [mode, setMode] = useState("");
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const getAllOutletData = useCallback(() => {
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0];
             }).then(data => {
                 const payload = {
-                    organisationID: data.organisation,
-                    outletID: data._id,
+                    organisationID: resolveUserID().id,
+                    outletID: "None",
                     onLoad: true,
                 }
 
@@ -63,11 +66,10 @@ const Analysis = (props) => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                return data.station;
             }).then(data => {
                 const payload = {
-                    organisationID: data.organisation,
-                    outletID: data._id,
+                    organisationID: resolveUserID().id,
+                    outletID:"None",
                     onLoad: true,
                 }
 
@@ -77,7 +79,8 @@ const Analysis = (props) => {
             });
         }
 
-    }, [user._id, user.userType, user.outletID, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
         getAllOutletData();
@@ -88,8 +91,8 @@ const Analysis = (props) => {
         dispatch(adminOutlet(item));
 
         const payload = {
-            organisationID: item.organisation,
-            outletID: item._id,
+            organisationID: resolveUserID().id,
+            outletID: item === null? "None": item?._id,
             onLoad: true,
         }
 
@@ -157,8 +160,8 @@ const Analysis = (props) => {
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
     
         const payload = {
-            organisationID: oneStationData?.organisation,
-            outletID: oneStationData?._id,
+            organisationID: resolveUserID().id,
+            outletID: oneStationData === null? "None": oneStationData?._id,
             startDate: formatOne,
             endDate: formatTwo
         }
@@ -175,27 +178,27 @@ const Analysis = (props) => {
             return 0;
         }
 
-        let expenseSum = 0;
-        for(let exp of analysisData.expenses){
-            expenseSum = expenseSum + Number(exp.expenseAmount);
-        }
+        const expenseSum = analysisData.expenses.reduce((accum, current) => {
+            return Number(accum) + Number(current.expenseAmount);
+        }, 0);
+
         return expenseSum;
     }
 
     const calculatePayment = () => {
-        if(analysisData.payments.length === 0 || analysisData.pospayment.length === 0){
-            return 0;
-        }
 
-        let paymentSum = 0;
-        for(let pay of analysisData.payments){
-            paymentSum = paymentSum + Number(pay.amountPaid);
-        }
+        const bank = analysisData.payments.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid);
+        }, 0);
 
-        for(let pos of analysisData.pospayment){
-            paymentSum = paymentSum + Number(pos.amountPaid);
-        }
-        return paymentSum;
+        const pos = analysisData.pospayment.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid);
+        }, 0);
+
+        const sum = bank + pos;
+        console.log(sum, "sums")
+
+        return bank + pos;
     }
 
     const calculateTotalSales = () => {
@@ -218,7 +221,7 @@ const Analysis = (props) => {
             rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale.PMSPrice): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale.AGOPrice): Number(sale.rtLitre)*Number(sale.DPKPrice);
         }
 
-        const total = sales + lpo - rtPrice;
+        const total = sales - lpo + rtPrice;
 
         return total;
     }
@@ -243,12 +246,10 @@ const Analysis = (props) => {
             rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale?.PMSCost): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale?.AGOCost): Number(sale.rtLitre)*Number(sale?.DPKCost);
         }
 
-        const total = cost + lpo - rtPrice;
+        const total = cost - lpo + rtPrice;
 
         return total;
     }
-
-    console.log(oneStationData, 'ooooooooo')
 
     return(
         <div data-aos="zoom-in-down" style={{background: user.isDark === "0"? '#fff': '#404040'}} className='paymentsCaontainer'>
@@ -281,7 +282,7 @@ const Analysis = (props) => {
                                         value={defaultState}
                                         sx={selectStyle2}
                                     >
-                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                        <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                         {
                                             allOutlets.map((item, index) => {
                                                 return(

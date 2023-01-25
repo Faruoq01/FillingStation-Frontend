@@ -14,6 +14,7 @@ import AdminUserService from '../../services/adminUsers';
 import { storeStaffUsers } from '../../store/actions/staffUsers';
 import ClockOutModal from '../Modals/AttendanceClockOut';
 import PrintAttendanceRecords from '../Reports/Attendance';
+import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -34,37 +35,58 @@ const Attendance = () => {
     const [entries, setEntries] = useState(10);
     const [prints, setPrints] = useState(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const openModal = () => {
-        setOpen(true);
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            if(oneStationData === null){
+                swal("Warning!", "Please select a station first", "info");
+            }else{
+                setOpen(true);
+            }
+            
+        }else{
+            swal("Warning!", "You do not have a permission", "info");
+        }
     }
 
     const openModal2 = () => {
-        setOpen2(true);
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            if(oneStationData === null){
+                swal("Warning!", "Please select a station first", "info");
+            }else{
+                setOpen2(true);
+            }
+            
+        }else{
+            swal("Warning!", "You do not have a permission", "info");
+        }
     }
 
     const getAllAtendanceData = useCallback((getDataRange) => {
 
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
 
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0]
             }).then((data)=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
                     today: getDataRange.today,
                     tomorrow: getDataRange.tomorrow,
-                    outletID: data._id,
-                    organisationID: data.organisation,
+                    outletID: "None",
+                    organisationID: resolveUserID().id,
                 }
                 AdminUserService.allStaffUserRecords(payload).then(data => {
                     dispatch(storeStaffUsers(data.staff.staff));
@@ -85,8 +107,8 @@ const Attendance = () => {
                     limit: limit,
                     today: getDataRange.today,
                     tomorrow: getDataRange.tomorrow,
-                    outletID: data._id,
-                    organisationID: data.organisation,
+                    outletID: "None",
+                    organisationID: resolveUserID().id,
                 }
                 AdminUserService.allStaffUserRecords(payload).then(data => {
                     dispatch(storeStaffUsers(data.staff.staff));
@@ -99,7 +121,8 @@ const Attendance = () => {
             })
         }
         
-    }, [user.userType, user._id, user.outletID, dispatch, skip, limit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const getTodayAndTomorrow = () => {
         const today = moment();
@@ -121,8 +144,8 @@ const Attendance = () => {
             limit: limit,
             today: range.today,
             tomorrow: range.tomorrow,
-            outletID: oneStationData?._id,
-            organisationID: oneStationData?.organisation,
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            organisationID: resolveUserID().id
         }
         AdminUserService.allStaffUserRecords(payload).then(data => {
             dispatch(storeStaffUsers(data.staff.staff));
@@ -144,15 +167,15 @@ const Attendance = () => {
             limit: limit,
             today: range.today,
             tomorrow: range.tomorrow,
-            outletID: item._id,
-            organisationID: item.organisation,
+            outletID: item === null? "None": item?._id,
+            organisationID: resolveUserID().id
         }
 
         const menyPayload = {
             today: range.today,
             tomorrow: range.tomorrow,
-            outletID: item._id,
-            organisationID: item.organisation,
+            outletID: item === null? "None": item?._id,
+            organisationID: resolveUserID().id
         }
 
         AdminUserService.allStaffUserRecords(menyPayload).then(data => {
@@ -180,8 +203,8 @@ const Attendance = () => {
             limit: limit,
             today: todayMoment,
             tomorrow: tomorrowMoment,
-            outletID: oneStationData?._id,
-            organisationID: oneStationData?.organisation,
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            organisationID: resolveUserID().id
         }
         AtendanceService.allAttendanceRecords(payload).then(data => {
             setTotal(data.attendance.count)
@@ -257,7 +280,7 @@ const Attendance = () => {
                                     value={defaultState}
                                     sx={selectStyle2}
                                 >
-                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                     {
                                         allOutlets.map((item, index) => {
                                             return(

@@ -12,6 +12,7 @@ import IncomingService from '../../services/IncomingService';
 import OutletService from '../../services/outletService';
 import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import IncomingReport from '../Reports/IncomingReport';
+import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -29,32 +30,44 @@ const IncomingOrder = () => {
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const [open, setOpen] = useState(false);
 
     const openCreateModal = () => {
-        setOpen(true);
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            if(oneStationData === null){
+                swal("Warning!", "Please select a station first", "info");
+            }else{
+                setOpen(true);
+            }
+            
+        }else{
+            swal("Warning!", "You do not have a permission", "info");
+        }
     }
 
     const getAllIncomingOrder = useCallback(() => {
 
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0];
             }).then((data)=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
     
                 IncomingService.getAllIncoming(payload).then((data) => {
@@ -65,13 +78,12 @@ const IncomingOrder = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                return data.station;
             }).then((data)=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
     
                 IncomingService.getAllIncoming(payload).then((data) => {
@@ -81,7 +93,8 @@ const IncomingOrder = () => {
             });
         }
 
-    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
         getAllIncomingOrder();
@@ -91,8 +104,8 @@ const IncomingOrder = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: oneStationData?._id, 
-            organisationID: oneStationData?.organisation
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            organisationID: resolveUserID().id
         }
  
         IncomingService.getAllIncoming(payload).then((data) => {
@@ -108,8 +121,8 @@ const IncomingOrder = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: item._id, 
-            organisationID: item.organisation
+            outletID: item === null? "None": item?._id,
+            organisationID: resolveUserID().id
         }
         
         IncomingService.getAllIncoming(payload).then((data) => {
@@ -177,7 +190,7 @@ const IncomingOrder = () => {
                                     value={defaultState}
                                     sx={selectStyle2}
                                 >
-                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                     {
                                         allOutlets.map((item, index) => {
                                             return(

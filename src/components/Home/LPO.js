@@ -17,6 +17,7 @@ import LPORateModal from '../Modals/SetLPORate';
 import { Route, Switch } from 'react-router-dom';
 import ListLPO from '../LPO/ListLPO';
 import LPOReport from '../Reports/LpoReport';
+import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -37,29 +38,41 @@ const LPO = (props) => {
     const [prints, setPrints] = useState(false);
     const [priceModal, setPriceModal] = useState(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const openModal = () => {
-        setLpo(true);
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            if(oneStationData === null){
+                swal("Warning!", "Please select a station first", "info");
+            }else{
+                setLpo(true);
+            }
+            
+        }else{
+            swal("Warning!", "You do not have a permission", "info");
+        }
     }
 
     const getAllLPOData = useCallback(() => {
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0];
-            }).then((data)=>{
+            }).then(()=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
     
                 LPOService.getAllLPO(payload).then((data) => {
@@ -70,13 +83,12 @@ const LPO = (props) => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then((data)=>{
+            }).then(()=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
     
                 LPOService.getAllLPO(payload).then((data) => {
@@ -85,7 +97,8 @@ const LPO = (props) => {
                 })
             });
         }
-    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
         getAllLPOData();
@@ -103,8 +116,8 @@ const LPO = (props) => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: oneStationData?._id, 
-            organisationID: oneStationData?.organisation
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            organisationID: resolveUserID().id
         }
 
         LPOService.getAllLPO(payload).then((data) => {
@@ -120,8 +133,8 @@ const LPO = (props) => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: item._id, 
-            organisationID: item.organisation
+            outletID: item === null? "None": item?._id,
+            organisationID: resolveUserID().id
         }
 
         LPOService.getAllLPO(payload).then((data) => {
@@ -202,7 +215,7 @@ const LPO = (props) => {
                                             value={defaultState}
                                             sx={selectStyle2}
                                         >
-                                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                            <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                             {
                                                 allOutlets.map((item, index) => {
                                                     return(

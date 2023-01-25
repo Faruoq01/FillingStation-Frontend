@@ -38,30 +38,42 @@ const Query = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const handleQuery = () => {
-        setOpen(true);
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            if(oneStationData === null){
+                swal("Warning!", "Please select a station first", "info");
+            }else{
+                setOpen(true);
+            }
+            
+        }else{
+            swal("Warning!", "You do not have a permission", "info");
+        }
     }
 
     const getAllQueryData = useCallback(() => {
 
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0];
-            }).then((data)=>{
+            }).then(()=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
                 QueryService.allQueryRecords(payload).then(data => {
                     setTotal(data.query.count);
@@ -71,13 +83,12 @@ const Query = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then((data)=>{
+            }).then(()=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
                 QueryService.allQueryRecords(payload).then(data => {
                     setTotal(data.query.count);
@@ -85,7 +96,8 @@ const Query = () => {
                 });
             })
         }
-    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
         getAllQueryData();
@@ -95,8 +107,8 @@ const Query = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: oneStationData._id, 
-            organisationID: oneStationData.organisation
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            organisationID: resolveUserID().id
         }
         QueryService.allQueryRecords(payload).then(data => {
             setTotal(data.query.count);
@@ -111,8 +123,8 @@ const Query = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: item._id, 
-            organisationID: item.organisation
+            outletID: item === null? "None": item?._id,
+            organisationID: resolveUserID().id
         }
         QueryService.allQueryRecords(payload).then(data => {
             dispatch(createQuery(data.query.query));
@@ -209,7 +221,7 @@ const Query = () => {
                                     value={defaultState}
                                     sx={selectStyle2}
                                 >
-                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                     {
                                         allOutlets.map((item, index) => {
                                             return(

@@ -29,6 +29,7 @@ import inactiveList from '../../assets/inactiveList.png';
 import activeGrid from '../../assets/activeGrid.png';
 import inactiveGrid from '../../assets/inactiveGrid.png';
 import ListAllTanks from '../Outlet/TankList';
+import swal from 'sweetalert';
 
 const Outlets = (props) => {
 
@@ -40,7 +41,13 @@ const Outlets = (props) => {
     const tablePrints = useRef();
     const [switchTabs, setSwitchTabs] = useState(false);
 
-    const handleOpenModal = (value) => dispatch(openModal(value))
+    const handleOpenModal = (value) => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            dispatch(openModal(value))
+        }else{
+            swal("Warning!", "You do not have a permission", "info");
+        }
+    }
 
     const goToSales = (item) => {
         dispatch(adminOutlet(item));

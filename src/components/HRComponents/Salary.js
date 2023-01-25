@@ -35,30 +35,42 @@ const Salary = () => {
     const [total, setTotal] = useState(0);
     const [ prints, setPrints] = useState(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const openSalaryModal = () => {
-        setOpen(true);
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            if(oneStationData === null){
+                swal("Warning!", "Please select a station first", "info");
+            }else{
+                setOpen(true);
+            }
+            
+        }else{
+            swal("Warning!", "You do not have a permission", "info");
+        }
     }
 
     const getAllSalaryData = useCallback(() => {
 
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0];
-            }).then((data)=>{
+            }).then(()=>{
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
                 SalaryService.allSalaryRecords(payload).then(data => {
                     setTotal(data.salary.count);
@@ -73,8 +85,8 @@ const Salary = () => {
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
-                    organisationID: data.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
                 SalaryService.allSalaryRecords(payload).then(data => {
                     setTotal(data.salary.count);
@@ -83,7 +95,8 @@ const Salary = () => {
             })
         }
 
-    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
         getAllSalaryData();
@@ -93,8 +106,8 @@ const Salary = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: oneStationData._id, 
-            organisationID: oneStationData.organisation
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            organisationID: resolveUserID().id
         }
         SalaryService.allSalaryRecords(payload).then(data => {
             setTotal(data.salary.count);
@@ -109,8 +122,8 @@ const Salary = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: item._id, 
-            organisationID: item.organisation
+            outletID: item === null? "None": item?._id,
+            organisationID: resolveUserID().id
         }
         SalaryService.allSalaryRecords(payload).then(data => {
             setTotal(data.salary.count);
@@ -165,7 +178,7 @@ const Salary = () => {
     const entriesMenu = (value, limit) => {
         setEntries(value);
         setLimit(limit);
-        getAllSalaryData();
+        refresh();
     }
 
     const printReport = () => {
@@ -204,7 +217,7 @@ const Salary = () => {
                                     value={defaultState}
                                     sx={selectStyle2}
                                 >
-                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                     {
                                         allOutlets.map((item, index) => {
                                             return(
