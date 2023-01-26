@@ -5,34 +5,16 @@ import ProtectedRoute from './screens/ProtectedRoute';
 import {HashRouter, Route, Switch} from 'react-router-dom';
 import AOS from 'aos';
 import "aos/dist/aos.css";
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import Homepage from './components/LandingPage/Home';
 import Connection from './screens/Connection';
-import { useDispatch } from 'react-redux';
-import { network } from './store/actions/auth';
 
 function App() {
-
-  const dispatch = useDispatch();
-
-  const detectNetworkStatus = useCallback((status) => { 
-    if(status.target.rtt === 0){ 
-      dispatch(network(false));
-    }else{
-      dispatch(network(true));
-    }
-  }, [dispatch]);
 
   useEffect(()=>{
     AOS.init();
     AOS.refresh();
-
-    navigator.connection.addEventListener('change', detectNetworkStatus);
-
-    return () => {
-      navigator.connection.removeEventListener('change', detectNetworkStatus);
-    }
-  }, [detectNetworkStatus])
+  }, [])
 
   return (
     <HashRouter>

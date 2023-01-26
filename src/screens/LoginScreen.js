@@ -3,22 +3,12 @@ import '../styles/login.scss';
 import station from '../assets/station.png';
 import Register from '../components/Login/register';
 import Login from '../components/Login/login';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { useEffect } from 'react';
 
 const LoginScreen = () => {
 
     const [gotToRegister, setToRegister] = useState(false);
     const history = useHistory();
-    const online = useSelector(data => data.authReducer.connection);
-
-    useEffect(()=>{
-
-        if(!online){
-            history.push('/connection');
-        }
-    });
     
     return(
         <div className='container'>

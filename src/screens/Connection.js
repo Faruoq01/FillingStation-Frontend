@@ -1,25 +1,12 @@
 import '../styles/connection.scss';
 import connection from '../assets/connection.png';
 import { Button } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
 
 const Connection = ({history}) => {
 
-    const online = useSelector(data => data.authReducer.connection);
-
     const reload = () => {
-
-        if(online){
-            history.goBack();
-        }
+        history.goBack();
     }
-
-    useEffect(()=>{
-        if(online){
-            history.goBack();
-        }
-    });
 
     return(
         <div className='ConnectionContainer'>
