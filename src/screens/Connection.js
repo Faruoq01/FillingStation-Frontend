@@ -1,10 +1,15 @@
 import '../styles/connection.scss';
 import connection from '../assets/connection.png';
 import { Button } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { network } from '../store/actions/auth';
 
 const Connection = ({history}) => {
 
+    const dispatch = useDispatch();
+
     const reload = () => {
+        dispatch(network(true));
         history.goBack();
     }
 

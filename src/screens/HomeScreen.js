@@ -65,8 +65,16 @@ const HomeScreen = () => {
 
     const user = useSelector(state => state.authReducer.user);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const online = useSelector(data => data.authReducer.connection);
     const dispatch = useDispatch();
     const history = useHistory();
+    console.log(online, "connection")
+
+    useEffect(()=>{
+        if(!online){
+            history.push('/connection');
+        }
+    });
 
     const routes = useMemo(()=>{
         return(

@@ -8,7 +8,6 @@ import RecordSalesService from '../../services/DailyRecordSales';
 import swal from 'sweetalert';
 import { passRecordSales } from '../../store/actions/dailySales';
 import {useHistory} from 'react-router-dom'
-import { useEffect } from 'react';
 
 function DoublyLinkedListNode(data){
     this.data = data;
