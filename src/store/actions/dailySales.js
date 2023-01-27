@@ -12,7 +12,8 @@ import {
     PMS_BBF,
     AGO_BBF,
     DPK_BBF,
-    BAR_DATA
+    BAR_DATA,
+    SUMMARY_RECORD_SALES
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -69,6 +70,10 @@ export const dpkBBF = (params) => dispatch => {
 
 export const storemonthlyBarData = (params) => dispatch => {
     dispatch({type: BAR_DATA, payload: params});
+}
+
+export const summaryRecordSales = (params) => dispatch => {
+    dispatch({type: SUMMARY_RECORD_SALES, payload: params});
 }
 
 

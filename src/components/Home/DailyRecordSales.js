@@ -22,7 +22,7 @@ import ReturnToTankComponent from '../DailyRecordSales/ReturnToTankComponent';
 import DippingComponents from '../DailyRecordSales/DippingComponents';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { passRecordSales } from '../../store/actions/dailySales';
+import { passRecordSales, summaryRecordSales } from '../../store/actions/dailySales';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import IncomingService from '../../services/IncomingService';
@@ -30,13 +30,12 @@ import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import { adminOutlet, getAllOutletTanks, getAllPumps, getAllStations } from '../../store/actions/outlet';
 import LPOService from '../../services/lpo';
 import { createLPO } from '../../store/actions/lpo';
-import swal from "sweetalert";
-import RecordSalesService from '../../services/DailyRecordSales';
 import Backdrop from '@mui/material/Backdrop';
 import { BallTriangle } from 'react-loader-spinner';
 import { useState } from 'react';
 import { useRef } from 'react';
 import calendar from '../../assets/calendar.png';
+import SummaryRecord from '../Modals/SummaryRecord';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -203,6 +202,7 @@ const DailyRecordSales = () => {
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(date2);
+    const [openSummary, setOpenSummary] = useState(false);
     const [pumpMetrics, setPumpMetrics] = useState({
         pms: [],
         ago: [],
@@ -375,33 +375,8 @@ const DailyRecordSales = () => {
             }
         }
 
-        swal({
-            title: "Alert!",
-            text: "Are you sure you want to submit?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
-                setOpen(true);
-                // console.log(payload, 'payload')
-                RecordSalesService.saveRecordSales(payload).then(data => {
-                    swal("Success!", "Daily sales recorded successfully!", "success");
-                }).then(()=>{
-                    const list = new DoublyLinkedList();
-                    for(let i=6; i > 0 ; i--){
-                        list.addNode({
-                            currentPage: String(i),
-                            payload: [],
-                        });
-                    }
-                    getAllInitialRecords(list);
-                    dispatch(passRecordSales(list));
-                    setOpen(false);
-                })
-            }
-        });
+        dispatch(summaryRecordSales(payload));
+        setOpenSummary(true);
     }
 
     const changeMenu = (index, item ) => {
@@ -453,6 +428,7 @@ const DailyRecordSales = () => {
 
     return (
         <div className='salesRecordStyle'>
+            {openSummary && <SummaryRecord clops={setOpen} open={openSummary} close={setOpenSummary} />}
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={open}
