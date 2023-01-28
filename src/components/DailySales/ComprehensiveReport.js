@@ -82,10 +82,32 @@ const LeftTableView = (props) => {
         return {pms: PMSSales, ago: AGOSales, dpk: DPKSales}
     }
 
+    const getSupply = () => {
+        const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.supply?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.supply?.filter(data => data.productType === "DPK") || [];
+
+        const totalPMS = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalAGO = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalDPK = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const total = [totalPMS, totalAGO, totalDPK]
+        
+        return total;
+    }
+
     const getBalanceBF = () => {
-        const pmsBalance = getTankLevels().pms + getSalesRecord().pms;
-        const agoBalance = getTankLevels().ago + getSalesRecord().ago;
-        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk;
+        const pmsBalance = getTankLevels().pms + getSalesRecord().pms - getSupply();
+        const agoBalance = getTankLevels().ago + getSalesRecord().ago - getSupply();
+        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk - getSupply();
 
         return {pms: isNaN(pmsBalance)? 0: pmsBalance, ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
     }
@@ -223,28 +245,6 @@ const RightTableView = (props) => {
         return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
     }
 
-    const getSupply = () => {
-        const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
-        const AGO = props?.supply?.filter(data => data.productType === "AGO") || [];
-        const DPK = props?.supply?.filter(data => data.productType === "DPK") || [];
-
-        const totalPMS = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.quantity);
-        }, 0);
-
-        const totalAGO = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.quantity);
-        }, 0);
-
-        const totalDPK = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.quantity);
-        }, 0);
-
-        const total = [totalPMS, totalAGO, totalDPK]
-        
-        return total;
-    }
-
     const getSalesRecord = () => {
         const PMS = props?.sales?.filter(data => data.productType === "PMS");
         const AGO = props?.sales?.filter(data => data.productType === "AGO");
@@ -267,9 +267,9 @@ const RightTableView = (props) => {
 
     const getBalanceBF = () => {
 
-        const pmsBalance = getTankLevels().pms + getSalesRecord().pms + getSupply()[0];
-        const agoBalance = getTankLevels().ago + getSalesRecord().ago + getSupply()[1];
-        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk + getSupply()[2];
+        const pmsBalance = getTankLevels().pms + getSalesRecord().pms;
+        const agoBalance = getTankLevels().ago + getSalesRecord().ago;
+        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk;
         
         return {pms: isNaN(pmsBalance)? 0:  pmsBalance , ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
     }
@@ -614,9 +614,9 @@ const ProductDailySales = (props) => {
             Data available balance
         ##########################*/
 
-        const pmsBal = getTankLevels().pms + getSupply()[0];
-        const agoBal = getTankLevels().ago + getSupply()[1];
-        const dpkBal = getTankLevels().dpk + getSupply()[2];
+        const pmsBal = getTankLevels().pms;
+        const agoBal = getTankLevels().ago;
+        const dpkBal = getTankLevels().dpk;
 
         return {pms: isNaN(pmsBal)? 0: pmsBal, ago:isNaN(agoBal)? 0: agoBal, dpk: isNaN(dpkBal)? 0: dpkBal};
     }
