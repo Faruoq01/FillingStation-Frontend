@@ -13,7 +13,7 @@ const HeroArea = () => {
                 <div className='text'>
                     <div className='text-container'>
                         <p className='header-text'>
-                            Manage your fueling outlets in a <span className='col'>digitize way</span>
+                            Manage your fueling outlets in a <span className='col'>digitized way</span>
                         </p>
                         <p className='body-text'>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. 

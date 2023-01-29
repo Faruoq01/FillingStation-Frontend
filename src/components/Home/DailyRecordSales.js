@@ -36,6 +36,7 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import calendar from '../../assets/calendar.png';
 import SummaryRecord from '../Modals/SummaryRecord';
+import { changeStation } from '../../store/actions/records';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -381,6 +382,7 @@ const DailyRecordSales = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
+        dispatch(changeStation());
 
         const payload = {
             outletID: item._id, 

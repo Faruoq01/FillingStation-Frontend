@@ -61,12 +61,12 @@ const SummaryRecord = (props) => {
     const handleClose = () => props.close(false);
     const history = useHistory();
     const dispatch = useDispatch();
-    const summary = useSelector(state => state.dailySalesReducer.summary);
-    console.log(summary, "summary")
+    const records = useSelector(state => state.recordsReducer.load);
+    console.log(records, "summary")
 
     const saveRecordSales = () => {
         props.clops(true);
-        RecordSalesService.saveRecordSales(summary).then(data => {
+        RecordSalesService.saveRecordSales({load: records}).then(data => {
             swal("Success!", "Daily sales recorded successfully!", "success");
         }).then(()=>{
             const list = new DoublyLinkedList();
@@ -103,19 +103,35 @@ const SummaryRecord = (props) => {
                                 <div style={texts}>Pump updates and Sales</div>
                             </div>
                             {
-                                summary?.load['1']?.length === 0?
+                                records['1']?.length === 0?
                                 <div style={men}>No records</div>:
-                                summary?.load['1']?.map((data, index)=> {
+                                records['1']?.map((data, index)=> {
                                     return(
                                         <div key={index} style={tankContainer}>
                                             <div style={tankProps}>
                                                 <div style={line}>
-                                                    <span style={{marginLeft:'10px'}}>Tank Name: {data.tankName}</span>
-                                                    <span style={{marginRight:'10px'}}>Tank Capacity: {data.tankCapacity} ltrs</span>
+                                                    <span style={{marginLeft:'10px', fontSize:'14px', fontWeight:'bold', color:'#FFA010'}}>{data.productType} ({data.tankName})</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Tank Capacity: {data.tankCapacity} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                                 <div style={line}>
                                                     <span style={{marginLeft:'10px'}}>Current Level: {data.currentLevel} ltrs</span>
-                                                    <span style={{marginRight:'10px'}}>Total sales: {data.sales} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Total sales: {data.sales} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Level Before Sales: {data.beforeSales} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Level After Sales: {data.afterSales} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                             </div>
 
@@ -141,9 +157,9 @@ const SummaryRecord = (props) => {
                                 <div style={texts}>Return to Tank</div>
                             </div>
                             {
-                                summary?.load['2']?.length === 0?
+                                records['2']?.length === 0?
                                 <div style={men}>No records</div>:
-                                summary?.load['2']?.map((data, index)=> {
+                                records['2']?.map((data, index)=> {
                                     return(
                                         <div key={index} style={tankContainer}>
                                             <div style={tankProps}>
@@ -179,9 +195,9 @@ const SummaryRecord = (props) => {
                                 <div style={texts}>LPO (Corporate Sales)</div>
                             </div>
                             {
-                                summary?.load['3']?.length === 0?
+                                records['3']?.length === 0?
                                 <div style={men}>No records</div>:
-                                summary?.load['3']?.map((data, index) => {
+                                records['3']?.map((data, index) => {
                                     return(
                                         <div key={index} style={wide}>
                                             <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.truckNo}</div>
@@ -196,9 +212,9 @@ const SummaryRecord = (props) => {
                                 <div style={texts}>Expenses</div>
                             </div>
                             {
-                                summary?.load['4']?.length === 0?
+                                records['4']?.length === 0?
                                 <div style={men}>No records</div>:
-                                summary?.load['4']?.map((data, index) => {
+                                records['4']?.map((data, index) => {
                                     return(
                                         <div key={index} style={wide}>
                                             <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.expenseName}</div>
@@ -213,9 +229,9 @@ const SummaryRecord = (props) => {
                                 <div style={texts}>Payments</div>
                             </div>
                             {
-                                summary?.load['5']?.length === 0?
+                                records['5']?.length === 0?
                                 <div style={men}>No records</div>:
-                                summary?.load['5']?.map((data, index) => {
+                                records['5']?.map((data, index) => {
                                     return(
                                         <div key={index} style={wide}>
                                             <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.bankName}</div>
@@ -230,9 +246,9 @@ const SummaryRecord = (props) => {
                                 <div style={texts}>Dipping</div>
                             </div>
                             {
-                                summary?.load['6']?.length === 0?
+                                records['6']?.length === 0?
                                 <div style={men}>No records</div>:
-                                summary?.load['6']?.map((data, index) => {
+                                records['6']?.map((data, index) => {
                                     return(
                                         <div key={index} style={wide}>
                                             <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.tankName}</div>

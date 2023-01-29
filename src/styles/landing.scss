@@ -624,3 +624,18 @@
         }
     }
 }
+
+@media (max-width: 700px){
+    .footers{
+        .innerfoot{
+            flex-direction: column;
+
+            .detail{
+                .links{
+                    width: 100%;
+                    flex-direction: flex-start;
+                }
+            }
+        }
+    }
+}

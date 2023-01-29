@@ -46,8 +46,6 @@ export const SEARCH_BANK_PAYMENT = "SEARCH_BANK_PAYMENT";
 export const POS_PAYMENT = "POS_PAYMENT";
 export const SEARCH_POS_PAYMENT = "SEARCH_POS_PAYMENT";
 export const PENDING_SUPPLY = "PENDING_SUPPLY";
-export const SELECTED_PUMPS = "SELECTED_PUMPS";
-export const DESELECTED_PUMPS = "DESELECTED_PUMPS";
 export const SALES_DATA = "SALES_DATA";
 export const EXPENSES_AND_PAYMENTS = "EXPENSES_AND_PAYMENTS";
 export const DAILY_INCOMING_ORDER = "DAILY_INCOMING_ORDER";
@@ -77,3 +75,12 @@ export const DPK_BBF = "DPK_BBF";
 export const CONNECTION_ERROR = "CONNECTION_ERROR";
 export const BAR_DATA = "BAR_DATA";
 export const SUMMARY_RECORD_SALES = "SUMMARY_RECORD_SALES";
+export const DESELECTED_PUMPS = "DESELECTED_PUMPS";
+
+/////////////////////////////////////////////////////////////////////////
+
+export const UPDATE_PUMPS = "UPDATE_PUMPS";
+export const SELECTED_PUMPS = "SELECTED_PUMPS";
+export const DESELECT_PUMP_LIST = "DESELECT_PUMP_LIST";
+export const UPDATE_LOAD = "UPDATE_LOAD";
+export const CHAMGE_STATION = "CHAMGE_STATION";

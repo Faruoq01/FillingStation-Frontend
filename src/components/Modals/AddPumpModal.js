@@ -134,7 +134,7 @@ const AddPump = (props) => {
                                 fontSize:'12px',
                             }}
                         >
-                            <MenuItem style={menu} value={oneTank?.tankName}>{oneTank?.tankName}</MenuItem>
+                            <MenuItem style={menu} value={oneTank?.tankName}>{oneTank?.productType} {oneTank?.tankName}</MenuItem>
                         </Select>
                     </div>
 

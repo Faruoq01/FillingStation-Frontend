@@ -137,7 +137,7 @@ const AddPump = (props) => {
                                 <MenuItem style={menu} value={0}>No tanks available</MenuItem>:
                                 getTanks().map((item, index) => {
                                     return(
-                                        <MenuItem onClick={()=>{selectMenu(index, item)}} style={menu} value={index}>{item.tankName}</MenuItem>
+                                        <MenuItem onClick={()=>{selectMenu(index, item)}} style={menu} value={index}>{item.productType} {item.tankName}</MenuItem>
                                     )
                                 })
                             }
