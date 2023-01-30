@@ -1,41 +1,57 @@
 import { Radio } from "@mui/material"
+import { useEffect } from "react";
+import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
 import me4 from '../../assets/me4.png';
-import { passRecordSales } from "../../store/actions/dailySales";
+import { updatePayload } from "../../store/actions/records";
 
 const DippingComponents = (props) => {
 
     const [productType, setProductType] = useState("PMS");
     const tankList = useSelector(state => state.outletReducer.tankList);
     const dispatch = useDispatch();
-    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const [selected, setSelected] = useState([]);
 
-    const getPMSPump = () => {
-        const newList = [...tankList];
+    /////////////////////////////////////////////////////////
+    const records = useSelector(state => state.recordsReducer.load);
+    const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
+    const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
+
+    console.log(selectedPumps, "selected pumps")
+    console.log(selectedTanks, "selected tanks")
+    console.log(records, "records")
+
+    const getPMSPump = useCallback(() => {
+        const newList = [...selectedTanks];
         const pms = newList.filter(data => data.productType === "PMS");
         const pmsCopy = pms.map(data => Object.assign({}, data));
         return pmsCopy;
-    }
+    }, [selectedTanks]);
 
-    const getAGOPump = () => {
-        const newList = [...tankList];
+    const getAGOPump = useCallback(() => {
+        const newList = [...selectedTanks];
         const ago = newList.filter(data => data.productType === "AGO");
         const agoCopy = ago.map(data => Object.assign({}, data));
         return agoCopy;
-    }
+    }, [selectedTanks]);
 
-    const getDPKPump = () => {
-        const newList = [...tankList];
+    const getDPKPump = useCallback(() => {
+        const newList = [...selectedTanks];
         const dpk = newList.filter(data => data.productType === "DPK");
         const dpkCopy = dpk.map(data => Object.assign({}, data));
         return dpkCopy;
-    }
+    }, [selectedTanks]);
 
-    const [pms] = useState(getPMSPump());
-    const [ago] = useState(getAGOPump());
-    const [dpk] = useState(getDPKPump());
+    const [pms, setPMS] = useState([]);
+    const [ago, setAGO] = useState([]);
+    const [dpk, setDPK] = useState([]);
+
+    useEffect(()=>{
+        setPMS(getPMSPump());
+        setAGO(getAGOPump());
+        setDPK(getDPKPump());
+    }, [getAGOPump, getDPKPump, getPMSPump]);
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -53,25 +69,42 @@ const DippingComponents = (props) => {
 
     const setTotalizer = (e, item) => {
         let clonedPMS = {...item};
-        clonedPMS = {...clonedPMS, dippingValue: e.target.value}
-        const findID = selected.findIndex(data => data._id === item._id);
+        clonedPMS = {...clonedPMS, dippingValue: e.target.value};
+        const allTanks = selectedTanks.filter(data => data.productType === item.productType);
+        const findID = allTanks.findIndex(data => data._id === item._id);
 
         if(findID === -1){
-            const cloneMe = [...selected, clonedPMS]
-            setSelected(cloneMe);
-
-            const finalList = {...linkedData};
-            finalList.head.data.payload = cloneMe;
-            dispatch(passRecordSales(finalList));
+            swal("Warning!", "This was not used for sales today!", "info");
 
         }else{
-            const newList = [...selected]
-            newList[findID] = clonedPMS;
-            setSelected(newList);
 
-            const finalList = {...linkedData};
-            finalList.head.data.payload = newList;
-            dispatch(passRecordSales(finalList));
+            if(item.productType === "PMS"){
+                const newList = [...allTanks]
+                newList[findID] = clonedPMS;
+                setPMS(newList);
+
+            }else if(item.productType === "AGO"){
+                const newList = [...allTanks]
+                newList[findID] = clonedPMS;
+                setAGO(newList);
+
+            }else{
+                const newList = [...allTanks]
+                newList[findID] = clonedPMS;
+                setDPK(newList);
+            }
+
+            const tankFromPayload = {...records};
+            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            if(indices === -1){
+                tankFromPayload['6'].push(clonedPMS);
+                dispatch(updatePayload(tankFromPayload));
+
+            }else{
+                tankFromPayload['6'][indices] = clonedPMS;
+                dispatch(updatePayload(tankFromPayload));
+
+            }
         }
     }
 

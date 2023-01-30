@@ -22,7 +22,7 @@ import ReturnToTankComponent from '../DailyRecordSales/ReturnToTankComponent';
 import DippingComponents from '../DailyRecordSales/DippingComponents';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { passRecordSales, summaryRecordSales } from '../../store/actions/dailySales';
+import { passRecordSales } from '../../store/actions/dailySales';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import IncomingService from '../../services/IncomingService';
@@ -36,7 +36,7 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import calendar from '../../assets/calendar.png';
 import SummaryRecord from '../Modals/SummaryRecord';
-import { changeStation } from '../../store/actions/records';
+import { changeDate, changeStation } from '../../store/actions/records';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -204,23 +204,6 @@ const DailyRecordSales = () => {
     const [open, setOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(date2);
     const [openSummary, setOpenSummary] = useState(false);
-    const [pumpMetrics, setPumpMetrics] = useState({
-        pms: [],
-        ago: [],
-        dpk: [],
-        selectedTanks: [],
-        selectedPumps: [],
-        payload: []
-    });
-
-    const [pumpMetricsRT, setPumpMetricsRT] = useState({
-        pms: [],
-        ago: [],
-        dpk: [],
-        selectedTanks: [],
-        selectedPumps: [],
-        payload: []
-    });
 
     const getAllInitialRecords = React.useCallback((list) => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -310,26 +293,6 @@ const DailyRecordSales = () => {
     const nextQuestion = () => {
         let newList = {...linkedData}
 
-        if(linkedData.page === 1){
-            newList.head.data.payload = pumpMetrics.payload;
-            newList.head.data.selectedPumps = pumpMetrics.selectedPumps;
-            newList.head.data.selectedTanks = pumpMetrics.selectedTanks;
-            newList.head.data.pms = pumpMetrics.pms;
-            newList.head.data.ago = pumpMetrics.ago;
-            newList.head.data.dpk = pumpMetrics.dpk;
-            dispatch(passRecordSales(newList));
-        }
-
-        if(linkedData.page === 2){
-            newList.head.data.payload = pumpMetricsRT.payload;
-            newList.head.data.selectedPumps = pumpMetricsRT.selectedPumps;
-            newList.head.data.selectedTanks = pumpMetricsRT.selectedTanks;
-            newList.head.data.pms = pumpMetricsRT.pms;
-            newList.head.data.ago = pumpMetricsRT.ago;
-            newList.head.data.dpk = pumpMetricsRT.dpk;
-            dispatch(passRecordSales(newList));
-        }
-
         if(newList.head.next !== null){
             const clonePage = [...pages];
             clonePage[newList.page] = newList.page;
@@ -357,26 +320,6 @@ const DailyRecordSales = () => {
     }
 
     const finishAndSubmit = () => {
-
-        let payload = {
-            currentDate: linkedData.currentDate,
-            load: {
-                '7':[],
-                '6': linkedData.head.data.payload,
-            }
-        }
-
-        let dataLoad = {...linkedData.head}
-        while(true){
-            dataLoad = dataLoad.prev;
-            payload.load[dataLoad.data.currentPage] = dataLoad.data.payload;
-
-            if(dataLoad.prev === null){
-                break;
-            }
-        }
-
-        dispatch(summaryRecordSales(payload));
         setOpenSummary(true);
     }
 
@@ -421,9 +364,7 @@ const DailyRecordSales = () => {
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
         setCurrentDate(format);
 
-        const newList = {...linkedData};
-        newList.currentDate = e.target.value;
-        dispatch(passRecordSales(newList));
+        dispatch(changeDate(e.target.value));
     }
 
     const [pages, setPages] = useState([1, 0, 0, 0, 0, 0]);
@@ -581,8 +522,8 @@ const DailyRecordSales = () => {
             </div>
 
             <div className='form-body'>
-                {linkedData.page === 1 && <PumpUpdateComponent update={setPumpMetrics} />}
-                {linkedData.page === 2 && <ReturnToTankComponent update={setPumpMetricsRT} />}
+                {linkedData.page === 1 && <PumpUpdateComponent />}
+                {linkedData.page === 2 && <ReturnToTankComponent />}
                 {linkedData.page === 3 && <LPOComponent />}
                 {linkedData.page === 4 && <ExpenseComponents /> }
                 {linkedData.page === 5 && <PaymentsComponents /> }

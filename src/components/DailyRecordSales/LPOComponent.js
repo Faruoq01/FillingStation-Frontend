@@ -11,24 +11,28 @@ import hr8 from '../../assets/hr8.png';
 import swal from 'sweetalert';
 import axios from "axios";
 import config from '../../constants';
-import { passRecordSales } from "../../store/actions/dailySales";
 import { useEffect } from "react";
+import { updatePayload } from "../../store/actions/records";
 
 const LPOComponent = (props) => {
 
     const dispatch = useDispatch();
     const gallery = useRef();
-    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const [selectedPMS, setSelectedPMS] = useState(null);
     const [selectedAGO, setSelectedAGO] = useState(null);
     const [selectedDPK, setSelectedDPK] = useState(null);
-    console.log(linkedData, "linked ssssssssssss")
 
     // selections
     const [open, setOpen] = useState(false);
+    const records = useSelector(state => state.recordsReducer.load);
+    const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
+    const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
+
+    console.log(selectedPumps, "selected pumps")
+    console.log(selectedTanks, "selected tanks")
+    console.log(records, "records")
 
     // payload records
     const [cam, setCam] = useState(null);
@@ -41,22 +45,22 @@ const LPOComponent = (props) => {
     const [quantity, setQuantity] = useState("");
 
     const getPMSPump = useCallback(() => {
-        const newList = [...pumpList];
+        const newList = [...selectedPumps];
         const pms = newList.filter(data => data.productType === "PMS");
         return pms;
-    }, [pumpList]);
+    }, [selectedPumps]);
 
     const getAGOPump = useCallback(() => {
-        const newList = [...pumpList];
+        const newList = [...selectedPumps];
         const ago = newList.filter(data => data.productType === "AGO");
         return ago;
-    }, [pumpList]);
+    }, [selectedPumps]);
 
     const getDPKPump = useCallback(() => {
-        const newList = [...pumpList];
+        const newList = [...selectedPumps];
         const dpk = newList.filter(data => data.productType === "DPK");
         return dpk;
-    }, [pumpList]);
+    }, [selectedPumps]);
 
     const [pms, setPMS] = useState([]);
     const [ago, setAGO] = useState([]);
@@ -112,11 +116,14 @@ const LPOComponent = (props) => {
 
     const desselect = () => {
         if(productType === "PMS"){
-            setSelectedPMS("");
+            setSelectedPMS(null);
+            setDispensedPump(null);
         }else if(productType === "AGO"){
-            setSelectedAGO("")
+            setSelectedAGO(null)
+            setDispensedPump(null);
         }else{
-            setSelectedDPK("")
+            setSelectedDPK(null)
+            setDispensedPump(null);
         }
     }
 
@@ -158,7 +165,7 @@ const LPOComponent = (props) => {
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
 
-        const tank = tankList.filter(data => data._id === dispensedPump.hostTank)[0];
+        const tank = selectedTanks.filter(data => data._id === dispensedPump.hostTank)[0];
         if(Number(tank.currentLevel) < Number(quantity)) return swal("Warning!", "Tank capacity exceeded (current level is "+ tank.currentLevel +" Ltrs)", "info");
 
         const payload = {
@@ -181,9 +188,9 @@ const LPOComponent = (props) => {
             organizationID: oneStationData?.organisation,
         }
 
-        const newList = {...linkedData};
-        newList.head.data.payload.push(payload);
-        dispatch(passRecordSales(newList));
+        const tankFromPayload = {...records};
+        tankFromPayload['3'].push(payload);
+        dispatch(updatePayload(tankFromPayload));
 
         setGall(null);
         setCam(null);
@@ -192,32 +199,24 @@ const LPOComponent = (props) => {
     }
 
     const deleteFromList = (index) => {
-        const newList = {...linkedData};
-        newList.head.data.payload.pop(index);
-        dispatch(passRecordSales(newList));
+        const tankFromPayload = {...records};
+        tankFromPayload['3'].pop(index);
+        dispatch(updatePayload(tankFromPayload));
     }
 
     const updateTankWithLPO = (e) => {
         setQuantity(e.target.value);
 
         if(dispensedPump === null){
+            setQuantity("");
             swal("Warning!", "Please select lpo pump", "info");
         }else{
             // update tank payload
-            const newTankList = [...linkedData?.head?.prev?.data?.selectedTanks];
-            console.log(newTankList, "fake tanks rt")
+            const newTankList = [...selectedTanks];
             const tankID = newTankList.findIndex(data => data._id === dispensedPump.hostTank);
-            if(tankID !== -1){
-                newTankList[tankID] = {
-                    ...newTankList[tankID], 
-                    pumps: linkedData?.head?.prev?.data?.selectedPumps?.filter(data => data.hostTank === newTankList[tankID]._id),
-                    outlet: oneStationData,
-                    fakeLevelThree: Number(newTankList[tankID].fakeLevelTwo) - Number(Number(e.target.value) < 0? 0: Number(e.target.value))
-                }
-                
-                const newList = {...linkedData};
-                newList.head.data.selectedTanks = newTankList;
-                dispatch(passRecordSales(newList));
+            if(tankID === -1){
+                setQuantity("");
+                swal("Warning!", "This selected pump has not been used", "info");
             }
         }
     }
@@ -445,9 +444,9 @@ const LPOComponent = (props) => {
                     </div>
 
                     {
-                        linkedData.head?.data?.payload.length === 0?
+                        records['3'].length === 0?
                         <div style={{marginTop:'10px'}}>No data</div>:
-                        linkedData.head?.data?.payload.map((data, index) => {
+                        records['3'].map((data, index) => {
                             return(
                                 <div key={index} style={{background: '#fff', marginTop:'5px'}} className="table-head">
                                     <div style={{color:'#000'}} className="col">{index + 1}</div>

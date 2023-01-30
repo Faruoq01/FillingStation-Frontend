@@ -4,7 +4,8 @@ import {
     SELECTED_PUMPS,
     DESELECT_PUMP_LIST,
     UPDATE_LOAD,
-    CHAMGE_STATION
+    CHAMGE_STATION,
+    CHANGE_DATE
 } from '../types'
 
 const initialState = {
@@ -20,8 +21,9 @@ const initialState = {
         '4': [],
         '5': [],
         '6': [],
-        '7': []
-    }
+        '7': [],
+    },
+    currentDate: null
 }
 
 const recordsReducer = (state = initialState, action) => {
@@ -29,6 +31,13 @@ const recordsReducer = (state = initialState, action) => {
     const { type, payload } = action
 
     switch (type) {
+
+        case CHANGE_DATE: {
+            return {
+                ...state,
+                currentDate: payload
+            }
+        }
 
         case UPDATE_LOAD: {
             return {

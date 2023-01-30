@@ -3,7 +3,8 @@ import {
     SELECTED_PUMPS,
     DESELECT_PUMP_LIST,
     UPDATE_LOAD,
-    CHAMGE_STATION
+    CHAMGE_STATION,
+    CHANGE_DATE
 } from '../types';
 
 export const updateRecords = (params) => dispatch => {
@@ -24,5 +25,9 @@ export const updatePayload = (params) => dispatch => {
 
 export const changeStation = (params) => dispatch => {
     dispatch({ type: CHAMGE_STATION, payload: params});
+}
+
+export const changeDate = (params) => dispatch => {
+    dispatch({ type: CHANGE_DATE, payload: params});
 }
 

@@ -62,11 +62,13 @@ const SummaryRecord = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const records = useSelector(state => state.recordsReducer.load);
+    const currentDate = useSelector(state => state.recordsReducer.currentDate);
     console.log(records, "summary")
+
 
     const saveRecordSales = () => {
         props.clops(true);
-        RecordSalesService.saveRecordSales({load: records}).then(data => {
+        RecordSalesService.saveRecordSales({load: records, currentDate: currentDate}).then(data => {
             swal("Success!", "Daily sales recorded successfully!", "success");
         }).then(()=>{
             const list = new DoublyLinkedList();
@@ -164,12 +166,32 @@ const SummaryRecord = (props) => {
                                         <div key={index} style={tankContainer}>
                                             <div style={tankProps}>
                                                 <div style={line}>
-                                                    <span style={{marginLeft:'10px'}}>Tank Name: {data.tankName}</span>
-                                                    <span style={{marginRight:'10px'}}>Tank Capacity: {data.tankCapacity} ltrs</span>
+                                                    <span style={{marginLeft:'10px', fontSize:'14px', fontWeight:'bold', color:'#FFA010'}}>{data.productType} ({data.tankName})</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Tank Capacity: {data.tankCapacity} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                                 <div style={line}>
                                                     <span style={{marginLeft:'10px'}}>Current Level: {data.currentLevel} ltrs</span>
-                                                    <span style={{marginRight:'10px'}}>Total sales: {data.RTlitre} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Total sales: {data.sales} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Level Before Sales: {data.beforeSales} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Level After Sales: {data.afterSales} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Total Return to tank: {data.RTlitre} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                             </div>
 

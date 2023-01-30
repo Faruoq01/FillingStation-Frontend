@@ -4,12 +4,12 @@ import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
-import { passRecordSales } from "../../store/actions/dailySales";
 import ReactCamera from "../Modals/ReactCamera";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import swal from 'sweetalert';
 import config from '../../constants';
+import { updatePayload } from "../../store/actions/records";
 
 const PaymentsComponents = (props) => {
 
@@ -17,8 +17,16 @@ const PaymentsComponents = (props) => {
     const dispatch = useDispatch();
     const gallery = useRef();
     const [open, setOpen] = useState(false);
-    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+
+    ///////////////////////////////////////////////////////////
+    const records = useSelector(state => state.recordsReducer.load);
+    const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
+    const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
+
+    console.log(selectedPumps, "selected pumps")
+    console.log(selectedTanks, "selected tanks")
+    console.log(records, "records")
 
     // payload data
     const [bankName, setBankName] = useState(null);
@@ -36,9 +44,9 @@ const PaymentsComponents = (props) => {
     }
 
     const deleteFromList = (index) => {
-        const newList = {...linkedData};
-        newList.head.data.payload.pop(index);
-        dispatch(passRecordSales(newList));
+        const tankFromPayload = {...records};
+        tankFromPayload['5'].pop(index);
+        dispatch(updatePayload(tankFromPayload));
     }
 
     const openCamera = () => {
@@ -86,9 +94,9 @@ const PaymentsComponents = (props) => {
             organizationID: oneStationData?.organisation,
         }
 
-        const newList = {...linkedData};
-        newList.head.data.payload.push(payload);
-        dispatch(passRecordSales(newList));
+        const tankFromPayload = {...records};
+        tankFromPayload['5'].push(payload);
+        dispatch(updatePayload(tankFromPayload));
 
         setBankName(null);
         setTellerID(null);
@@ -240,9 +248,9 @@ const PaymentsComponents = (props) => {
                     </div>
 
                     {
-                        linkedData.head?.data?.payload.length === 0?
+                        records['5'].length === 0?
                         <div style={{marginTop:'10px'}}>No data</div>:
-                        linkedData.head?.data?.payload.map((data, index) => {
+                        records['5'].map((data, index) => {
                             return(
                                 <div key={index} style={{background: '#fff', marginTop:'5px'}} className="table-head">
                                     <div style={{color:'#000'}} className="col">{index + 1}</div>
