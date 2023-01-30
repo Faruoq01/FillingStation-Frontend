@@ -556,7 +556,6 @@ const col = {
     color: '#fff',
     marginRight: '5px',
     fontSize: '12px',
-    fontFamily: 'Nunito-Regular',
 }
 
 const tableHeads2 = {
@@ -577,7 +576,6 @@ const col2 = {
     color: '#000',
     marginRight: '5px',
     fontSize: '12px',
-    fontFamily: 'Nunito-Regular',
     marginTop: '5px',
 }
 

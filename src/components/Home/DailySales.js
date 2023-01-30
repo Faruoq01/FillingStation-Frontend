@@ -349,7 +349,7 @@ const DailySales = (props) => {
                 dispatch(adminOutlet(null));
                 return data.station[0];
             }).then(async(data)=>{
-                getAndAnalyzeDailySales(data, true, "");
+                getAndAnalyzeDailySales(null, true, "");
 
                 const payload = {
                     organisationID: resolveUserID().id,
@@ -370,7 +370,7 @@ const DailySales = (props) => {
                 dispatch(adminOutlet(data.station));
                 return data.station;
             }).then(async(data)=>{
-                getAndAnalyzeDailySales(data, true, "");
+                getAndAnalyzeDailySales(null, true, "");
 
                 const payload = {
                     organisationID: resolveUserID().id,
@@ -582,11 +582,11 @@ const DailySales = (props) => {
                                         </div>
                                         <div className="dash-details">
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>PMS</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                <div style={{ fontWeight:'bold', fontSize:'14px'}}>PMS</div>
+                                                <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
                                                     getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0)
                                                 } ltr</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
+                                                <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
                                                     getPMSDetails(dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0)
                                                 }</div>
                                             </div>
@@ -603,11 +603,11 @@ const DailySales = (props) => {
                                         </div>
                                         <div className="dash-details">
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>AGO</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                <div style={{fontWeight:'bold', fontSize:'14px'}}>AGO</div>
+                                                <div style={{fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
                                                     getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0)
                                                 } ltr</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
+                                                <div style={{fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
                                                     getPMSDetails(dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0)
                                                 }</div>
                                             </div>
@@ -624,11 +624,11 @@ const DailySales = (props) => {
                                         </div>
                                         <div className="dash-details">
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>DPK</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                <div style={{ fontWeight:'bold', fontSize:'14px'}}>DPK</div>
+                                                <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
                                                     getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0)
                                                 } ltr</div>
-                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>TotaL NGN {
+                                                <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>TotaL NGN {
                                                     getPMSDetails(dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0)
                                                 }</div>
                                             </div>
@@ -721,7 +721,7 @@ const DailySales = (props) => {
                         <BarChartGraph load={load} station={oneStationData} />
 
                         <div style={{marginTop:'30px'}} className='asset'>
-                            <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Supply</div>
                             {load?
                                 <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
                                 <Button 
@@ -790,7 +790,7 @@ const DailySales = (props) => {
 
                         <div style={{marginTop:'30px'}} className='section'>
                             <div className='alisss'>
-                                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Net to Bank</div>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Net to bank</div>
                                 <Button 
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
@@ -847,7 +847,7 @@ const DailySales = (props) => {
 
                         <div style={{marginTop:'30px'}} className='section'>
                             <div className='alisss'>
-                                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>LPO</div>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">LPO</div>
                                 <Button 
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
@@ -887,7 +887,7 @@ const DailySales = (props) => {
                         </div>
 
                         <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'40px', justifyContent:'space-between'}} className="tank-text">
-                            <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Incoming Order</div>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Incoming Order</div>
                             <Button 
                                 variant="contained" 
                                 startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} alt="icon" src={slideMenu} />}
@@ -963,7 +963,6 @@ const dats = {
     marginTop:'20px',
     fontSize:'14px',
     fontWeight:'bold',
-    fontFamily:'Nunito-Regular'
 }
 
 const contain = {
@@ -976,7 +975,6 @@ const contain = {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 const selectStyle2 = {
@@ -985,7 +983,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {

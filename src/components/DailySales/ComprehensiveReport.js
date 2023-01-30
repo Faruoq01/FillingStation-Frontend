@@ -993,7 +993,6 @@ const dats = {
     marginTop:'20px',
     fontSize:'14px',
     fontWeight:'bold',
-    fontFamily:'Nunito-Regular'
 }
 
 const cont = {
@@ -1004,7 +1003,6 @@ const cont = {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 const selectStyle2 = {
@@ -1013,7 +1011,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {

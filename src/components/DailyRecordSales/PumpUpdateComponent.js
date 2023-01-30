@@ -524,7 +524,6 @@ const box = {
     backgroundColor: '#06805B',
     borderRadius: '30px',
     color: '#fff',
-    fontFamily: 'Nunito-Regular',
     marginRight: '10px',
     marginTop: '10px',
 }

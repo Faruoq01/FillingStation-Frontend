@@ -413,7 +413,7 @@ const Supply = (props) => {
                             visible={loading}
                         />
                     </div>:
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                    <div style={{fontSize:'14px', marginTop:'20px', color:'green'}}>No pending supply record</div>:
                     pendingSupplies.map((data, index) => {
                         return(
                             <div className='rows'>
@@ -466,7 +466,6 @@ const selectStyle2 = {
     height:'35px', 
     borderRadius:'5px',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     background:'transparent',
@@ -478,7 +477,6 @@ const selectStyle2 = {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 export default Supply;

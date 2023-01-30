@@ -158,13 +158,13 @@ const HomeScreen = () => {
                                 </div>
                                 <div data-aos="zoom-out-right" className='side-focus-text'>
                                     <img style={{width:'18px', height:'18px', marginRight:'10px'}} src={user.isDark === "0"? props.icon : props.icon2} alt="icon" />
-                                    <div style={{fontFamily:'Nunito-Regular', color: user.isDark === "0"? '#054834': '#fff'}}>{props.name}</div>
+                                    <div style={{ color: user.isDark === "0"? '#054834': '#fff'}}>{props.name}</div>
                                 </div>
                             </div>
                         </div>:
                         <div className='side-item2'>
                             <img className='normal-image' src={props.icon2} alt="icon" />
-                            <div style={{fontFamily:'Nunito-Regular', color:'#fff'}}>{props.name}</div>
+                            <div style={{ color:'#fff'}}>{props.name}</div>
                         </div>
                     }
                 </div>

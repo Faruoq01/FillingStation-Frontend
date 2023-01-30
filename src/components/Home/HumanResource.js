@@ -35,7 +35,7 @@ const HumanResource = (props) => {
                             <img style={{width:'60px', height:'50px'}} src={props.image} alt="icon" />
                         </div>
                         <div style={{justifyContent:'flex-end'}} className='top-text'>
-                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                            <div style={{fontSize:'14px'}}>{props.name}</div>
                         </div>
                     </div>
                     <div className='bottom-first-image'>

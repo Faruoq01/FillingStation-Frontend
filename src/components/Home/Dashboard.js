@@ -74,8 +74,8 @@ const DashboardImage = (props) => {
                             <img style={{width:'60px', height:'60px'}} src={props.image} alt="icon" />
                         </div>
                         <div className='top-text'>
-                            <div style={{fontSize:'14px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>{props.name}</div>
-                            <div style={{fontSize:'16px', fontWeight:'bold', marginRight:'10px', fontFamily:'Nunito-Regular'}}>{props.value}</div>
+                            <div style={{fontSize:'14px', fontWeight:'bold'}}>{props.name}</div>
+                            <div style={{fontSize:'16px', fontWeight:'bold', marginRight:'10px'}}>{props.value}</div>
                         </div>
                     </div>
                     <div className='bottom-first-image'>
@@ -508,7 +508,7 @@ const Dashboard = (props) => {
                                                 <img style={{width:'60px', height:'70px'}} src={me2} alt="icon" />
                                             </div>
                                             <div className='top-text'>
-                                                <div style={{ width:'100%', fontSize:'14px', textAlign:'right', fontFamily:'Nunito-Regular'}}>
+                                                <div style={{ width:'100%', fontSize:'14px', textAlign:'right'}}>
                                                     <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'14px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>{getPMSDetails(dashboardRecords.sales.totalVolume)}</span> LTR</div>
                                                     <div style={{marginTop:'10px', fontWeight:'bold', fontSize:'14px'}}>
                                                         Total Sales: <span style={{fontWeight:'bold'}}>NGN {getPMSDetails(dashboardRecords.sales.totalAmount)}</span>
@@ -523,7 +523,7 @@ const Dashboard = (props) => {
                                 }
                             </div>
                         </div>
-                        <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', fontFamily:'Nunito-Regular', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
+                        <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
                         <DashboardGraph load={load} station={oneStationData} />
                     </div>
                     <div className='right-dash'>
@@ -560,7 +560,7 @@ const Dashboard = (props) => {
 
                         <div className='section'>
                             <div className='asset'>
-                                <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} >Supply</div>
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={130} height={35} />:
                                     <Button 
@@ -829,7 +829,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -839,7 +838,6 @@ const selectStyle2 = {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 export default Dashboard;

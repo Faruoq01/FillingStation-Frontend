@@ -331,7 +331,7 @@ const IncomingOrder = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                    <div style={{fontSize:'14px'}}>
                         Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
                     </div>
                     <div className='nav'>
@@ -351,7 +351,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -363,14 +362,12 @@ const place = {
     width:'100%',
     textAlign:'center',
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
 }
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 export default IncomingOrder;

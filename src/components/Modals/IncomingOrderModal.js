@@ -558,7 +558,6 @@ const inner = {
 
 const menu = {
     fontSize:'12px',
-    fontFamily:'Nunito-Regular'
 }
 
 const selectStyle2 = {
@@ -566,7 +565,6 @@ const selectStyle2 = {
     height:'35px', 
     background:'#EEF2F1',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     borderRadius:'0px',

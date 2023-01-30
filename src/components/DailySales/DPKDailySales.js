@@ -248,7 +248,6 @@ const col = {
     color: '#fff',
     marginRight: '5px',
     fontSize: '12px',
-    fontFamily: 'Nunito-Regular',
 }
 
 const tableHeads2 = {
@@ -269,7 +268,6 @@ const cols = {
     color: '#000',
     marginRight: '5px',
     fontSize: '12px',
-    fontFamily: 'Nunito-Regular',
     marginTop: '5px'
 }
 
@@ -277,7 +275,6 @@ const dats = {
     marginTop:'20px',
     fontSize:'14px',
     fontWeight:'bold',
-    fontFamily:'Nunito-Regular'
 }
 
 export default DPKDailySales;

@@ -88,7 +88,6 @@ const AddPumpMore = () => {
 const tanks = {
     width:'100%',
     marginTop:'20px',
-    fontFamily:'Nunito-Regular',
     fontSize:'14px',
     color:'blue',
     textAlign:'center',

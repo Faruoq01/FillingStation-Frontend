@@ -112,7 +112,7 @@ const ExpenseComponents = (props) => {
                             type={'checkbox'}
                             style={{width:'20px', height:'20px', marginRight:'10px'}}
                         />
-                        <span style={{fontSize:'14px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>Regulatory Payment</span>
+                        <span style={{fontSize:'14px', fontWeight:'bold'}}>Regulatory Payment</span>
                     </div>
 
                     <div className='single-form'>

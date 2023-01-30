@@ -316,7 +316,7 @@ const Expenses = (props) => {
                                 visible={false}
                             />
                         </div>:
-                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                        <div style={{fontSize:'14px', marginTop:'20px', color:'green'}}>No pending supply record</div>:
                         listOfExpenses.map((data, index) => {
                             return(
                                 <div className='rows'>

@@ -111,8 +111,8 @@ const Analysis = (props) => {
                             <img style={{width:'50px', height:'40px'}} src={props.image} alt="icon" />
                         </div>
                         <div style={{alignItems:'flex-end', justifyContent:'center', flexDirection:'column'}} className='top-text'>
-                            <div style={{fontSize:'14px', color:'#06805B', fontFamily:'Nunito-Regular'}}>{props.name}</div>
-                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px'}}>{props.value}</div>
+                            <div style={{fontSize:'14px', color:'#06805B'}}>{props.name}</div>
+                            <div style={{fontSize:'14px', fontWeight:'bold', marginTop:'5px'}}>{props.value}</div>
                         </div>
                     </div>
                     <div className='bottom-first-image'>
@@ -343,7 +343,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -357,7 +356,6 @@ const contain2 = {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 export default Analysis;

@@ -196,7 +196,6 @@ const EditPump = (props) => {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
 }
 
 export default EditPump;

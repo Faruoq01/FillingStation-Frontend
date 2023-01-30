@@ -338,7 +338,7 @@ const Outlets = (props) => {
                         }
         
                         <div className='footer'>
-                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                            <div style={{fontSize:'14px'}}>Showing 1 to 11 of 38 entries</div>
                             <div className='nav'>
                                 <button className='but'>Previous</button>
                                 <div className='num'>1</div>
@@ -377,7 +377,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
 }
@@ -392,7 +391,6 @@ const place = {
     width:'100%',
     textAlign:'center',
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
 }

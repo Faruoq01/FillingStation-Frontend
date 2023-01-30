@@ -498,7 +498,7 @@ const LPO = (props) => {
                                 visible={false}
                             />
                         </div>:
-                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                        <div style={{fontSize:'14px', marginTop:'20px', color:'green'}}>No pending supply record</div>:
                         listOfLpos.map((data, index) => {
                             return(
                                 <div className='rows'>
@@ -559,7 +559,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     marginTop:'10px'
@@ -567,7 +566,6 @@ const selectStyle2 = {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 const box = {
@@ -579,24 +577,8 @@ const box = {
     backgroundColor: '#06805B',
     borderRadius: '30px',
     color: '#fff',
-    fontFamily: 'Nunito-Regular',
     marginRight: '10px',
     marginTop: '10px',
-}
-
-const box2 = {
-    width: '100px',
-    height: '35px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: '30px',
-    color: '#000',
-    fontFamily: 'Nunito-Regular',
-    marginRight: '10px',
-    marginTop: '10px',
-    border: '1px solid #8D8D8D',
 }
 
 export default LPO;

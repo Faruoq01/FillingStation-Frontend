@@ -287,13 +287,13 @@ const Appearances = () => {
                 </div>
                 <div className='theme'>
                     <div className='col'> 
-                        <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Color</div>
+                        <div style={{ fontSize:'14px'}}>Color</div>
                         <div style={{marginTop:'10px'}} className='radio'>
                             <div style={{marginRight:'10px'}} className='color-group'>
                                 <div className='colors'>
                                     <img src={dark} alt="icon" style={{width:'30px', height:'30px'}} />
                                 </div>
-                                <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Light</div>
+                                <div style={{ fontSize:'12px'}}>Light</div>
                             </div>
                             <Radio onChange={selectDarkMode} checked={active}/>
                         </div>
@@ -302,32 +302,32 @@ const Appearances = () => {
                                 <div style={{background:'#fff'}} className='colors'>
                                     <img src={light} alt="icon" style={{width:'30px', height:'30px'}} />
                                 </div>
-                                <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Dark</div>
+                                <div style={{ fontSize:'12px'}}>Dark</div>
                             </div>
                             <Radio onChange={selectDarkMode} checked={inActive} />
                         </div>
                     </div>
 
                     <div className='col2'>
-                        <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Theme</div>
+                        <div style={{ fontSize:'14px'}}>Theme</div>
                         <div style={{marginTop:'10px'}} className='radio'>
                             <div className='color-group'>
                                 <div style={{background: '#054834'}} className='colors'></div>
-                                <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Green</div>
+                                <div style={{ fontSize:'12px'}}>Green</div>
                             </div>
                             <Radio onChange={()=>{changeSideBar("0", '#054834')}} checked={sideBar === "0"? true: false} />
                         </div>
                         <div className='radio'>
                             <div className='color-group'>
                                 <div style={{background:'#181017'}} className='colors'></div>
-                                <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Dark</div>
+                                <div style={{ fontSize:'12px'}}>Dark</div>
                             </div>
                             <Radio onChange={()=>{changeSideBar("1", '#181017')}}  checked={sideBar === "1"? true: false} />
                         </div>
                         <div className='radio'>
                             <div className='color-group'>
                                 <div style={{background:'#2e3f49'}} className='colors'></div>
-                                <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Party</div>
+                                <div style={{ fontSize:'12px'}}>Party</div>
                             </div>
                             <Radio onChange={()=>{changeSideBar("2", '#2e3f49')}}  checked={sideBar === "2"? true: false} />
                         </div>
@@ -402,7 +402,6 @@ const Logo = () => {
             <div className='details'>
                 <div style={{
                     fontSize:'14px',
-                    fontFamily:'Nunito-Regular',
                     display:'flex',
                     flexDirection:'row',
                     justifyContent:'flex-start',
@@ -701,9 +700,8 @@ const DeleteOutlet = (props) => {
             </div>
             <div className='details'>
                 <div className='text-group'>
-                    <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>Notice</div>
+                    <div style={{ fontWeight:'bold', fontSize:'14px'}}>Notice</div>
                     <div style={{
-                        fontFamily:'Nunito-Regular', 
                         fontSize:'12px', 
                         marginTop:'10px',
                         textAlign:'left'
@@ -930,11 +928,9 @@ const Settings = (props) => {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
 }
 
 const active = {
-    fontFamily: 'Nunito-Regular',
     fontStyle: 'normal',
     fontWeight: '700',
     fontSize: '12px',
@@ -943,7 +939,6 @@ const active = {
 }
 
 const inActive = {
-    fontFamily: 'Nunito-Regular',
     fontStyle: 'normal',
     fontWeight: '700',
     fontSize: '12px',
@@ -957,7 +952,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#054834',
     color:'#fff',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
     marginBottom: '10px',

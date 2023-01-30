@@ -395,8 +395,8 @@ const Tank = (props) => {
                             <img style={{width:'60px', height:'50px'}} src={props.image} alt="icon" />
                         </div>
                         <div style={{justifyContent:'flex-end'}} className='top-text'>
-                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>{props.name}</div>
-                            <div style={{fontSize:'18px', fontWeight:'bold', marginLeft:'20px', fontFamily:'Nunito-Regular'}}>{props.value}</div>
+                            <div style={{fontSize:'14px'}}>{props.name}</div>
+                            <div style={{fontSize:'18px', fontWeight:'bold', marginLeft:'20px'}}>{props.value}</div>
                         </div>
                     </div>
                     <div className='bottom-first-image'>
@@ -468,7 +468,6 @@ const menuItem = {
     justifyContent:'center',
     alignItems:'center',
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
     cursor: 'grab',
 }
 
@@ -496,7 +495,6 @@ const place = {
     width:'100%',
     textAlign:'center',
     fontSize:'16px',
-    fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
 }

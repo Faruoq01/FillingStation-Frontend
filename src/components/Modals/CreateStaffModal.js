@@ -519,7 +519,6 @@ const inner = {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 export default StaffModal;

@@ -190,7 +190,6 @@ const AddPump = (props) => {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
 }
 
 export default AddPump;

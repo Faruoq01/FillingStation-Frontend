@@ -173,7 +173,6 @@ const column = {
     alignItems: 'center',
     justifyContent: 'center',
     color: '#fff',
-    fontFamily: 'Nunito-Regular',
     fontSize: '14px'
 }
 
@@ -185,7 +184,6 @@ const column2 = {
     alignItems: 'center',
     justifyContent: 'center',
     color: '#000',
-    fontFamily: 'Nunito-Regular',
     fontSize: '14px'
 }
 
@@ -193,7 +191,6 @@ const place = {
     width:'100%',
     textAlign:'center',
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
 }

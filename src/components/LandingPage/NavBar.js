@@ -37,7 +37,6 @@ const Navbar = ({page, setPage}) => {
                                 height:'40px',  
                                 background: '#266910',
                                 borderRadius: '3px',
-                                fontFamily: 'Nunito',
                                 fontStyle: 'normal',
                                 fontWeight: '700',
                                 fontSize: '10px',

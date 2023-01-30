@@ -339,23 +339,6 @@ const imps = {
     paddingLeft:'10px'
 }
 
-const selectStyle2 = {
-    width:'200px', 
-    height:'35px', 
-    borderRadius:'5px',
-    background: '#F2F1F1B2',
-    color:'#000',
-    fontFamily: 'Nunito-Regular',
-    fontSize:'14px',
-    outline:'none',
-    marginTop:'10px'
-}
-
-const menu = {
-    fontSize:'14px',
-    fontFamily:'Nunito-Regular'
-}
-
 const box = {
     width: '100px',
     height: '35px',
@@ -365,24 +348,8 @@ const box = {
     backgroundColor: '#06805B',
     borderRadius: '30px',
     color: '#fff',
-    fontFamily: 'Nunito-Regular',
     marginRight: '10px',
     marginTop: '10px',
-}
-
-const box2 = {
-    width: '100px',
-    height: '35px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: '30px',
-    color: '#000',
-    fontFamily: 'Nunito-Regular',
-    marginRight: '10px',
-    marginTop: '10px',
-    border: '1px solid #8D8D8D',
 }
 
 export default Pumps;

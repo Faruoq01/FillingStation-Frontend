@@ -129,7 +129,6 @@ const inner = {
 
 const title = {
     fontSize:'12px',
-    fontFamily:'Nunito-Regular',
     padding:'12px',
     background: '#F0F9F7',
     borderRadius: '31px',
@@ -141,7 +140,6 @@ const item = {
     flexDirection:'row',
     alignItems:'center',
     fontSize:'12px',
-    fontFamily:'Nunito-Regular',
 }
 
 const item2 = {

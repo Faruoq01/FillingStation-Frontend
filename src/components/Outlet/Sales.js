@@ -273,7 +273,7 @@ const Sales = (props) => {
                         <div className='details'>
                             <div className='inner'>
                                 <div className='head'>
-                                    <span style={{fontSize:'12px', marginLeft:'10px', fontFamily:'Nunito-Regular'}}>Outlet Asset</span>
+                                    <span style={{fontSize:'12px', marginLeft:'10px'}}>Outlet Asset</span>
                                 </div>
 
                                 <div className='card'>

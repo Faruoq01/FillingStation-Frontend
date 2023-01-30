@@ -131,7 +131,7 @@ const DashboardEmployee = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                    <div style={{fontSize:'14px'}}>
                         
                     </div>
                     <div className='nav'>
@@ -145,7 +145,6 @@ const DashboardEmployee = () => {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 const selectStyle2 = {
@@ -154,7 +153,6 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
 }
@@ -163,7 +161,6 @@ const place = {
     width:'100%',
     textAlign:'center',
     fontSize:'14px',
-    fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
 }

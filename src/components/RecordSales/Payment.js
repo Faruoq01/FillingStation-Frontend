@@ -490,7 +490,7 @@ const Payments = (props) => {
                             visible={false}
                         />
                     </div>:
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                    <div style={{fontSize:'14px', marginTop:'20px', color:'green'}}>No pending supply record</div>:
                     listOfPOSPayments !== null && listOfPOSPayments.map((data, index) => {
                         return(
                             <div className='rows'>
@@ -526,7 +526,7 @@ const Payments = (props) => {
                             visible={false}
                         />
                     </div>:
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                    <div style={{fontSize:'14px', marginTop:'20px', color:'green'}}>No pending supply record</div>:
                     listOfBankPayments !== null && listOfBankPayments.map((data, index) => {
                         return(
                             <div className='rows'>
@@ -615,23 +615,6 @@ const textAreaStyle = {
 
 const inner = {
     margin:'20px',
-}
-
-const selectStyle2 = {
-    width:'200px', 
-    height:'35px', 
-    borderRadius:'5px',
-    background: '#F2F1F1B2',
-    color:'#000',
-    fontFamily: 'Nunito-Regular',
-    fontSize:'14px',
-    outline:'none',
-    marginTop:'20px'
-}
-
-const menu = {
-    fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 export default Payments;

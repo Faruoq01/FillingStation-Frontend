@@ -29,7 +29,6 @@ const HeroArea = () => {
                             height:'40px',  
                             background: '#266910',
                             borderRadius: '0px',
-                            fontFamily: 'Nunito',
                             fontStyle: 'normal',
                             fontWeight: '700',
                             fontSize: '12px',
