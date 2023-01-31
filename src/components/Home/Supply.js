@@ -250,6 +250,7 @@ const Supply = (props) => {
                                         height: '35px',  
                                         background:'#EEF2F1', 
                                         fontSize:'12px',
+                                        borderRadius:'0px',
                                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                             border:'1px solid #777777',
                                         },
@@ -265,7 +266,7 @@ const Supply = (props) => {
                             width:'100%', 
                             height:'30px',  
                             background: '#427BBE',
-                            borderRadius: '3px',
+                            borderRadius: '0px',
                             fontSize:'11px',
                             textTransform:'capitalize',
                             '&:hover': {
@@ -297,7 +298,7 @@ const Supply = (props) => {
                             width: mediaMatch.matches? '100%': '100px', 
                             height:'30px',  
                             background: '#58A0DF',
-                            borderRadius: '3px',
+                            borderRadius: '0px',
                             fontSize:'10px',
                             display: mediaMatch.matches && 'none',
                             marginTop: mediaMatch.matches? '10px': '0px',
@@ -310,7 +311,7 @@ const Supply = (props) => {
                             width: mediaMatch.matches? '100%': '80px', 
                             height:'30px',  
                             background: '#F36A4C',
-                            borderRadius: '3px',
+                            borderRadius: '0px',
                             fontSize:'10px',
                             display: mediaMatch.matches && 'none',
                             marginTop: mediaMatch.matches? '10px': '0px',
@@ -364,7 +365,7 @@ const Supply = (props) => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px'}}>
+                    <div style={{fontSize:'12px'}}>
                         Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
                     </div>
                     <div className='nav'>
@@ -392,10 +393,10 @@ const Supply = (props) => {
 const selectStyle2 = {
     width:'100%', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
@@ -405,13 +406,13 @@ const selectStyle2 = {
 const place = {
     width:'100%',
     textAlign:'center',
-    fontSize:'14px',
+    fontSize:'12px',
     marginTop:'20px',
     color:'green'
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 export default Supply;

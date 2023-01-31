@@ -111,8 +111,8 @@ const Analysis = (props) => {
                             <img style={{width:'50px', height:'40px'}} src={props.image} alt="icon" />
                         </div>
                         <div style={{alignItems:'flex-end', justifyContent:'center', flexDirection:'column'}} className='top-text'>
-                            <div style={{fontSize:'14px', color:'#06805B'}}>{props.name}</div>
-                            <div style={{fontSize:'14px', fontWeight:'bold', marginTop:'5px'}}>{props.value}</div>
+                            <div style={{fontSize:'12px', color:'#06805B'}}>{props.name}</div>
+                            <div style={{fontSize:'12px', fontWeight:'bold', marginTop:'5px'}}>{props.value}</div>
                         </div>
                     </div>
                     <div className='bottom-first-image'>
@@ -340,10 +340,10 @@ const Analysis = (props) => {
 const selectStyle2 = {
     width:'100%', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
@@ -355,7 +355,7 @@ const contain2 = {
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 export default Analysis;

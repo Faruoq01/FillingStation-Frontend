@@ -287,7 +287,7 @@ const Appearances = () => {
                 </div>
                 <div className='theme'>
                     <div className='col'> 
-                        <div style={{ fontSize:'14px'}}>Color</div>
+                        <div style={{ fontSize:'12px'}}>Color</div>
                         <div style={{marginTop:'10px'}} className='radio'>
                             <div style={{marginRight:'10px'}} className='color-group'>
                                 <div className='colors'>
@@ -309,7 +309,7 @@ const Appearances = () => {
                     </div>
 
                     <div className='col2'>
-                        <div style={{ fontSize:'14px'}}>Theme</div>
+                        <div style={{ fontSize:'12px'}}>Theme</div>
                         <div style={{marginTop:'10px'}} className='radio'>
                             <div className='color-group'>
                                 <div style={{background: '#054834'}} className='colors'></div>
@@ -401,7 +401,7 @@ const Logo = () => {
             </div>
             <div className='details'>
                 <div style={{
-                    fontSize:'14px',
+                    fontSize:'12px',
                     display:'flex',
                     flexDirection:'row',
                     justifyContent:'flex-start',
@@ -700,7 +700,7 @@ const DeleteOutlet = (props) => {
             </div>
             <div className='details'>
                 <div className='text-group'>
-                    <div style={{ fontWeight:'bold', fontSize:'14px'}}>Notice</div>
+                    <div style={{ fontWeight:'bold', fontSize:'12px'}}>Notice</div>
                     <div style={{
                         fontSize:'12px', 
                         marginTop:'10px',
@@ -832,7 +832,7 @@ const Settings = (props) => {
                         color:'#fff', 
                         height:'35px',  
                         width:'150px', 
-                        fontSize:'14px',
+                        fontSize:'12px',
                         marginRight:'20px'
                     }}
                 >
@@ -927,7 +927,7 @@ const Settings = (props) => {
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 const active = {
@@ -949,12 +949,15 @@ const inActive = {
 const selectStyle2 = {
     width:'160px', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#054834',
     color:'#fff',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     marginBottom: '10px',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 const contain = {

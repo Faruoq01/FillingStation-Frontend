@@ -71,11 +71,11 @@ const DashboardImage = (props) => {
                 <div onClick={goToNextScreen} className='inner-first-image'>
                     <div className='top-first-image'>
                         <div className='top-icon'>
-                            <img style={{width:'60px', height:'60px'}} src={props.image} alt="icon" />
+                            <img className="img" src={props.image} alt="icon" />
                         </div>
                         <div className='top-text'>
-                            <div style={{fontSize:'14px', fontWeight:'bold'}}>{props.name}</div>
-                            <div style={{fontSize:'16px', fontWeight:'bold', marginRight:'10px'}}>{props.value}</div>
+                            <div className='name'>{props.name}</div>
+                            <div className='value'>{props.value}</div>
                         </div>
                     </div>
                     <div className='bottom-first-image'>
@@ -135,7 +135,7 @@ const Dashboard = (props) => {
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
-            setLoad(true);
+            // setLoad(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 dispatch(adminOutlet(null));
@@ -463,8 +463,8 @@ const Dashboard = (props) => {
                 <div className='dashboardContainer'>
                     <div className='left-dash'>
                         <div style={{width:'auto'}} className='selectItem'>
-                            <div style={{width:'280px', marginRight:'10px'}} className='first-select'>
-                                <DateRangePicker style={{background:'red'}} onChange={onChange} value={value} />
+                            <div style={{marginRight:'10px'}} className='first-select'>
+                                <DateRangePicker onChange={onChange} value={value} />
                             </div>
                             <div style={{width: mediaMatch && '150px'}} className='second-select'>
                                 {(user.userType === "superAdmin" || user.userType === "admin") &&
@@ -497,7 +497,7 @@ const Dashboard = (props) => {
                                 }
                             </div>
                         </div>
-                        <div style={{marginTop:'0px'}} className='dashImages'>
+                        <div className='dashImages'>
                             <DashboardImage load={load} screen={"employee"} image={me1} name={'Current staff'} value={dashboardData?.count}/>
                             <div data-aos="flip-left" className='first-image'>
                                 {load?
@@ -505,12 +505,12 @@ const Dashboard = (props) => {
                                     <div className='inner-first-image'>
                                         <div className='top-first-image'>
                                             <div className='top-icon'>
-                                                <img style={{width:'60px', height:'70px'}} src={me2} alt="icon" />
+                                                <img className='img' src={me2} alt="icon" />
                                             </div>
                                             <div className='top-text'>
-                                                <div style={{ width:'100%', fontSize:'14px', textAlign:'right'}}>
-                                                    <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'14px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>{getPMSDetails(dashboardRecords.sales.totalVolume)}</span> LTR</div>
-                                                    <div style={{marginTop:'10px', fontWeight:'bold', fontSize:'14px'}}>
+                                                <div style={{ width:'100%', fontSize:'12px', textAlign:'right'}}>
+                                                    <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'12px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'12px'}}>{getPMSDetails(dashboardRecords.sales.totalVolume)}</span> LTR</div>
+                                                    <div style={{marginTop:'10px', fontWeight:'bold', fontSize:'12px'}}>
                                                         Total Sales: <span style={{fontWeight:'bold'}}>NGN {getPMSDetails(dashboardRecords.sales.totalAmount)}</span>
                                                     </div>
                                                 </div>
@@ -523,23 +523,25 @@ const Dashboard = (props) => {
                                 }
                             </div>
                         </div>
-                        <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
+                        <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'15px', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
                         <DashboardGraph load={load} station={oneStationData} />
                     </div>
                     <div className='right-dash'>
                         <div className='asset'>
-                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} >Asset</div>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff', fontSize:'16px'}} >Asset</div>
                             {load?
                                 <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={130} height={35} />:
                                 <Button 
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
                                     sx={{
-                                        width:'165px',
+                                        width:'150px',
                                         height:'30px',
                                         background:'#06805B',
                                         fontSize:'11px',
                                         borderRadius:'0px',
+                                        fontFamily:'Poppins',
+                                        textTransform:'capitalize',
                                         '&:hover': {
                                             backgroundColor: '#06805B'
                                         }
@@ -560,18 +562,20 @@ const Dashboard = (props) => {
 
                         <div className='section'>
                             <div className='asset'>
-                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} >Supply</div>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff', fontSize:'15px'}} >Supply</div>
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={130} height={35} />:
                                     <Button 
                                         variant="contained" 
                                         startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
                                         sx={{
-                                            width:'165px',
+                                            width:'150px',
                                             height:'30px',
                                             background:'#06805B',
                                             fontSize:'11px',
                                             borderRadius:'0px',
+                                            fontFamily:'Poppins',
+                                            textTransform:'capitalize',
                                             '&:hover': {
                                                 backgroundColor: '#06805B'
                                             }
@@ -626,7 +630,7 @@ const Dashboard = (props) => {
                                 </div>
                             </div>
 
-                            <div style={{marginTop:'40px', width:'100%', display:'flex', flexDirection:'row', justifyContent:'space-between', color: user.isDark === '0'? '#000': '#fff'}} className='bank'>
+                            <div style={{marginTop:'40px', width:'100%', display:'flex', flexDirection:'row', justifyContent:'space-between', color: user.isDark === '0'? '#000': '#fff', fontSize:'15px'}} className='bank'>
                                 <span>Net to Bank</span><span>Payments</span><span>Outstanding</span>
                             </div>
                             <div onClick={goToPayments} style={{height:'110px', marginTop:'0px'}} className='inner-section'>
@@ -635,16 +639,16 @@ const Dashboard = (props) => {
                                     <div className='inner-content'>
                                         <div className='conts'>
                                             <div className='row-count'>
-                                                <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.netToBank)}</div>
-                                                <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                                <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.totalPayments)}</div>
-                                                <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.totalPosPayments)}</div>
+                                                <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.netToBank)}</div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>Teller</div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.totalPayments)}</div>
+                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.totalPosPayments)}</div>
                                             </div>
                                             <div className='row-count'>
-                                                <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
+                                                <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {getPMSDetails(dashboardRecords.payments.outstanding)}</div>
-                                                <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
+                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">
                                                 <div className="image">
@@ -675,14 +679,14 @@ const Dashboard = (props) => {
                                         justifyContent:'flex-end',
                                         alignItems:'center',
                                         }} className='inner-content'>
-                                        <span style={{marginRight:'30px', fontSize:'14px', fontWeight:'900'}}>NGN {getPMSDetails(dashboardRecords.totalExpenses)}</span>
+                                        <span style={{marginRight:'30px', fontSize:'12px', fontWeight:'900'}}>NGN {getPMSDetails(dashboardRecords.totalExpenses)}</span>
                                     </div>
                                 }
                             </div>
                         </div>
 
                         <div className='station'>
-                            <div style={{ color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Station</div>
+                            <div style={{ color: user.isDark === '0'? '#000': '#fff', fontSize:'15px'}} className='bank'>Station</div>
                             <div className='station-container'>
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={300} />:
@@ -766,22 +770,25 @@ const Dashboard = (props) => {
                         </div>
 
                         <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'30px', justifyContent:'space-between'}} className="tank-text">
-                            <div style={{ color: user.isDark === '0'? '#000': '#fff'}}>Incoming Order</div>
-                            <Button 
-                                variant="contained" 
-                                startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
-                                sx={{
-                                    width:'165px',
-                                    height:'30px',
-                                    background:'#06805B',
-                                    fontSize:'11px',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                }}
-                            >
-                                View in details
-                            </Button>
+                            <div style={{ color: user.isDark === '0'? '#000': '#fff', fontSize:'15px', fontWeight:'bold'}}>Incoming Order</div>
+                                <Button 
+                                    variant="contained" 
+                                    startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
+                                    sx={{
+                                        width:'150px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'11px',
+                                        borderRadius:'0px',
+                                        fontFamily:'Poppins',
+                                        textTransform:'capitalize',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                    }}
+                                >
+                                    View in details
+                                </Button>
                         </div>
 
                         <div style={{width:'100%', marginBottom:'40px'}}>
@@ -825,11 +832,11 @@ const place = {
 
 const selectStyle2 = {
     width:'100%', 
-    height:'35px', 
-    borderRadius:'5px',
+    height:'30px', 
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
@@ -837,7 +844,7 @@ const selectStyle2 = {
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 export default Dashboard;

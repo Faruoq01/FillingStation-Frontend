@@ -15,6 +15,8 @@ import outlet from '../assets/outlet.png';
 import analysis from '../assets/analysis.png';
 import lpo from '../assets/lpo.png';
 import productOrders from '../assets/productOrders.png';
+import analysis22 from '../assets/analysis22.png';
+import lpo2 from '../assets/lpo2.png';
 import recordSales from '../assets/recordSales.png';
 import regulatory from '../assets/regulatory.png';
 import settings from '../assets/settings.png';
@@ -213,8 +215,8 @@ const HomeScreen = () => {
                     <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                     <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
                     <SideItems marginT={"135px"} link={'/home/daily-record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                    <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
-                    <SideItems marginT={"225px"} link={'/home/lpo'} name={"Corporate Sales"} icon={lpo} icon2={lpo} />
+                    <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis22} icon2={analysis} />
+                    <SideItems marginT={"225px"} link={'/home/lpo'} name={"Corporate Sales"} icon={lpo2} icon2={lpo} />
                     <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
                     <SideItems marginT={"315px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
                     <SideItems marginT={"360px"} link={'/home/supply'} name={"Supply"} icon={expenses2} icon2={expenses} />
@@ -236,8 +238,8 @@ const HomeScreen = () => {
                         <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                         <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
                         <SideItems marginT={"135px"} link={'/home/daily-record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                        <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
-                        <SideItems marginT={"225px"} link={'/home/lpo'} name={"Corporate Sales"} icon={lpo} icon2={lpo} />
+                        <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis22} icon2={analysis} />
+                        <SideItems marginT={"225px"} link={'/home/lpo'} name={"Corporate Sales"} icon={lpo2} icon2={lpo} />
                         <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
                         <SideItems marginT={"315px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
                         <SideItems marginT={"360px"} link={'/home/supply'} name={"Supply"} icon={expenses2} icon2={expenses} />

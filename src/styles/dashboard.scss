@@ -31,15 +31,13 @@
 
         .dashImages{
             width: 100%;
-            height: 110px;
-            margin-top: 20px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
 
             .first-image{
                 width: 49%;
-                height: 100%;
+                height: 110px;
                 background: #E6F5F1;
                 border-radius: 5px;
                 display: flex;
@@ -48,7 +46,6 @@
 
                 .inner-first-image{
                     width: 92%;
-                    height: 90px;
 
                     .top-first-image{
                         width: 100%;
@@ -61,6 +58,11 @@
                             height: 100%;
                             display: flex;
                             align-items: center;
+
+                            .img{
+                                width: 60px;
+                                height: 60px;
+                            }
                         }
 
                         .top-text{
@@ -70,6 +72,17 @@
                             flex-direction: row;
                             justify-content: space-between;
                             align-items: center;
+
+                            .name{
+                                font-size: 12px;
+                                font-weight: bold;
+                            }
+
+                            .value{
+                                font-size: 12px;
+                                font-weight: bold;
+                                margin-right: 10px;
+                            }
                         }
                     }
     
@@ -237,7 +250,6 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            margin-top: 10px;
 
             .first-image{
                 width: 49%;
@@ -263,6 +275,11 @@
                             height: 100%;
                             display: flex;
                             align-items: center;
+
+                            .img{
+                                width: 60px;
+                                height: 60px;
+                            }
                         }
 
                         .top-text{
@@ -272,6 +289,17 @@
                             flex-direction: row;
                             justify-content: space-between;
                             align-items: center;
+
+                            .name{
+                                font-size: 12px;
+                                font-weight: bold;
+                            }
+
+                            .value{
+                                font-size: 12px;
+                                font-weight: bold;
+                                margin-right: 10px;
+                            }
                         }
                     }
     
@@ -297,21 +325,18 @@
 
             .bank{
                 font-size: 16px;
-                font-weight: 900;
+                font-weight: bold;
                 margin-top: 10px;
             }
 
             .inner-section{
                 width: 100%;
-                height: 90px;
-                margin-top: 8px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
 
                 .inner-content{
                     width: 100%;
-                    height: 90%;
                     background: #E6F5F1;
                     border-radius: 3.56164px;
                     display: flex;
@@ -357,11 +382,9 @@
 
                 .cardss{
                     width: 100%;
-                    height: 100%;
                     background-color: #054834;
                     border-radius: 5px;
                     margin-right: 10px;
-                    margin-top: 10px;
                     display: flex;
                     flex-direction: row;
 
@@ -371,7 +394,7 @@
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        font-size: 14px;
+                        font-size: 12px;
                         color: #fff;
                     }
 
@@ -382,7 +405,7 @@
                         justify-content: center;
                         align-items: center;
                         flex-direction: column;
-                        font-size: 14px;
+                        font-size: 12px;
                         line-height: 25px;
                         color: #fff;
                     }
@@ -427,7 +450,7 @@
                         .inner-header{
                             font-style: normal;
                             font-weight: 700;
-                            font-size: 14px;
+                            font-size: 12px;
                             line-height: 25px;
                             color: #201F1F;
                             text-align: left;
@@ -503,6 +526,37 @@
 @media (max-width: 1250px){
     .dashboardContainer{
         margin-top: 10px;
+
+        .left-dash{
+
+            .dashImages{
+                .first-image{
+                    .inner-first-image{
+                        .top-first-image{
+                            .top-icon{
+                                .img{
+                                    width: 45px;
+                                    height: 60px;
+                                }
+                            }
+
+                            .top-text{
+                                .name{
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                }
+    
+                                .value{
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                    margin-right: 10px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

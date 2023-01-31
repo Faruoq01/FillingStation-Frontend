@@ -44,6 +44,7 @@ const DailySales = (props) => {
     const toString = date.toDateString();
     const [month, day, year] = toString.split(' ');
     const date2 = `${day} ${month} ${year}`;
+    const approx = require('approximate-number');
 
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
@@ -509,13 +510,6 @@ const DailySales = (props) => {
         getAndAnalyzeDailySales(oneStationData, false, e.target.value);
     }
 
-    const getPMSDetails = (data) => {
-        if(data){
-            let formattedSale = String(Number(data)?.toFixed(2)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            return formattedSale;
-        }
-    }
-
     return(
         <>
             { props.activeRoute.split('/').length === 3 &&
@@ -556,11 +550,11 @@ const DailySales = (props) => {
                                 variant="contained" 
                                 sx={{
                                     width:'210px',
-                                    height:'35px',
+                                    height:'30px',
                                     background:'#06805B',
-                                    fontSize:'13px',
+                                    fontSize:'12px',
                                     marginLeft:'10px',
-                                    borderRadius:'5px',
+                                    borderRadius:"0px",
                                     textTransform:'capitalize',
                                     '&:hover': {
                                         backgroundColor: '#06805B'
@@ -578,16 +572,16 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
                                     <div onClick={()=>{openDailySales("pms")}} className="inner-dash-item">
                                         <div className="dash-image">
-                                            <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                            <img className="imag" src={me5} alt="icon" />
                                         </div>
                                         <div className="dash-details">
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                                <div style={{ fontWeight:'bold', fontSize:'14px'}}>PMS</div>
+                                                <div style={{ fontWeight:'bold', fontSize:'12px'}}>PMS</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0)
+                                                    approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0)
                                                 } ltr</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
-                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0)
+                                                    approx(dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -599,16 +593,16 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
                                     <div onClick={()=>{openDailySales("ago")}} className="inner-dash-item">
                                         <div className="dash-image">
-                                            <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                            <img className="imag" src={me5} alt="icon" />
                                         </div>
                                         <div className="dash-details">
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                                <div style={{fontWeight:'bold', fontSize:'14px'}}>AGO</div>
+                                                <div style={{fontWeight:'bold', fontSize:'12px'}}>AGO</div>
                                                 <div style={{fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0)
+                                                    approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0)
                                                 } ltr</div>
                                                 <div style={{fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
-                                                    getPMSDetails(dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0)
+                                                    approx(dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -620,16 +614,16 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
                                     <div onClick={()=>{openDailySales("dpk")}} className="inner-dash-item">
                                         <div className="dash-image">
-                                            <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                            <img className="imag" src={me5} alt="icon" />
                                         </div>
                                         <div className="dash-details">
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                                <div style={{ fontWeight:'bold', fontSize:'14px'}}>DPK</div>
+                                                <div style={{ fontWeight:'bold', fontSize:'12px'}}>DPK</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0)
+                                                    approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0)
                                                 } ltr</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>TotaL NGN {
-                                                    getPMSDetails(dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0)
+                                                    approx(dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -645,24 +639,24 @@ const DailySales = (props) => {
                                 <div className="tank-inner">
                                     <div className="tanks">
                                         <div className='tank-head'>PMS</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {getPMSDetails(cummulative.totalPMS)} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {getPMSDetails(cummulative.PMSTankCapacity)} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulative.totalPMS, {min10k: true})} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulative.PMSTankCapacity,  {min10k: true})} Litres</div>
                                         <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                             <PMSTank data = {cummulatives}/>
                                         </div>
                                     </div>
                                     <div className="tanks">
                                         <div className='tank-head'>AGO</div>
-                                            <div style={{fontWeight:'500'}} className='level'>Level: {getPMSDetails(cummulative.totalAGO)} Litres</div>
-                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {getPMSDetails(cummulative.AGOTankCapacity)} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulative.totalAGO,  {min10k: true})} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulative.AGOTankCapacity,  {min10k: true})} Litres</div>
                                             <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
                                                 <AGOTank data = {cummulatives}/>
                                             </div>
                                         </div>
                                     <div className="tanks">
                                         <div className='tank-head'>DPK</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {getPMSDetails(cummulative.totalDPK)} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {getPMSDetails(cummulative.DPKTankCapacity)} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulative.totalDPK,  {min10k: true})} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulative.DPKTankCapacity,  {min10k: true})} Litres</div>
                                         <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
                                             <DPKTank data = {cummulatives}/>
                                         </div>
@@ -703,7 +697,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Expenses</div>
-                                        <div>NGN {getPMSDetails(payments.hasOwnProperty("payments")? payments.expenses: "0")}</div>
+                                        <div>NGN {approx(payments.hasOwnProperty("payments")? payments.expenses: "0")}</div>
                                     </div>
                                 }
                             </div>
@@ -712,7 +706,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Payments</div>
-                                        <div>NGN {getPMSDetails(payments.hasOwnProperty("payments")? payments.payments: "0")}</div>
+                                        <div>NGN {approx(payments.hasOwnProperty("payments")? payments.payments: "0")}</div>
                                     </div>
                                 }
                             </div>
@@ -753,7 +747,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{getPMSDetails(dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0")}</div>
+                                            <div>{approx(dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -767,7 +761,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{getPMSDetails(dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0")}</div>
+                                            <div>{approx(dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -781,7 +775,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{getPMSDetails(dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0")}</div>
+                                            <div>{approx(dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -813,30 +807,30 @@ const DailySales = (props) => {
                                 <div className='inner-content'>
                                     <div className='conts'>
                                         <div className='row-count'>
-                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Net to bank</div>
-                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Payment</div>
-                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>
-                                                NGN {getPMSDetails(payments.hasOwnProperty("payments")? payments.payments: "0")}
+                                            <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>Net to bank</div>
+                                            <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>Payment</div>
+                                            <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>
+                                                NGN {approx(payments.hasOwnProperty("payments")? payments.payments: "0")}
                                             </div>
-                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Outstanding</div>
+                                            <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>Outstanding</div>
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                NGN {getPMSDetails((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0")}
+                                                NGN {approx((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0")}
                                             </div>
                                             <div style={{color:'#0872D4'}}  className='item-count'>Teller</div>
                                             <div style={{color:'#0872D4'}} className='item-count'>
-                                                NGN {getPMSDetails(payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0")}
+                                                NGN {approx(payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0")}
                                             </div>
                                             <div className='item-count'>
-                                                {getPMSDetails((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0")}
+                                                {approx((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0")}
                                             </div>
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'></div>
                                             <div style={{color:'#000'}}  className='item-count'>POS</div>
                                             <div style={{color:'#000'}} className='item-count'>
-                                                NGN {getPMSDetails(payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0")}
+                                                NGN {approx(payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0")}
                                             </div>
                                             <div className='item-count'></div>
                                         </div>
@@ -875,10 +869,10 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                {getPMSDetails(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0")} Litres
+                                                {approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0")} Litres
                                             </div>
                                             <div className='item-count'>
-                                                NGN {getPMSDetails(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0")}
+                                                NGN {approx(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0")}
                                             </div>
                                         </div>
                                     </div>
@@ -961,7 +955,7 @@ const DailySales = (props) => {
 
 const dats = {
     marginTop:'20px',
-    fontSize:'14px',
+    fontSize:'12px',
     fontWeight:'bold',
 }
 
@@ -974,16 +968,16 @@ const contain = {
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 const selectStyle2 = {
-    width:'200px', 
-    height:'35px', 
-    borderRadius:'5px',
+    width:'130px', 
+    height:'30px', 
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',

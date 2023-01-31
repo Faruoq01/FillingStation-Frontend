@@ -30,6 +30,7 @@ import activeGrid from '../../assets/activeGrid.png';
 import inactiveGrid from '../../assets/inactiveGrid.png';
 import ListAllTanks from '../Outlet/TankList';
 import swal from 'sweetalert';
+import { borderRadius } from '@mui/system';
 
 const Outlets = (props) => {
 
@@ -179,9 +180,12 @@ const Outlets = (props) => {
                                     id="demo-select-small"
                                     value={10}
                                     sx={{...selectStyle2,
-                                        backgroundColor:"#F36A4C", 
+                                        backgroundColor:"#777777", 
                                         color:'#fff',
-                                        fontSize:'14px'
+                                        fontSize:'12px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }}
                                 >
                                     <MenuItem style={menu} value={10}>Action</MenuItem>
@@ -202,21 +206,26 @@ const Outlets = (props) => {
                                             height:'35px', 
                                             fontSize:'12px',
                                             background:'#F2F1F1',
-                                            color:'#000'
+                                            color:'#000',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
                                         }} 
                                         onChange={(e)=>{searchStation(e.target.value)}}
                                     />
                                 </div>
                             </div>
-                            <div style={{width:'195px'}} className='butt'>
+                            <div style={{width:'190px'}} className='butt'>
                                 <Button 
                                     disabled={user.userType === "staff"}
                                     sx={{
                                         width:'100%', 
                                         height:'30px',  
                                         background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'10px',
+                                        borderRadius: '0px',
+                                        fontSize:'12px',
+                                        textTransform:'capitalize',
                                         '&:hover': {
                                             backgroundColor: '#427BBE'
                                         }
@@ -233,11 +242,11 @@ const Outlets = (props) => {
                                     labelId="demo-select-small"
                                     id="demo-select-small"
                                     value={10}
-                                    sx={selectStyle2}
+                                    sx={{...selectStyle2, borderRadius:'0px'}}
                                 >
-                                    <MenuItem value={10}>Show entries</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                                    <MenuItem style={menu} value={20}>Twenty</MenuItem>
+                                    <MenuItem style={menu} value={30}>Thirty</MenuItem>
                                 </Select>
                             </div>
                             <div style={{width:'265px'}} className='input-cont2'>
@@ -252,7 +261,7 @@ const Outlets = (props) => {
                                         width:'120px', 
                                         height:'30px',  
                                         background: '#58A0DF',
-                                        borderRadius: '3px',
+                                        borderRadius: '0px',
                                         fontSize:'10px',
                                         '&:hover': {
                                             backgroundColor: '#58A0DF'
@@ -266,7 +275,7 @@ const Outlets = (props) => {
                                         width:'100%', 
                                         height:'30px',  
                                         background: '#F36A4C',
-                                        borderRadius: '3px',
+                                        borderRadius: '0px',
                                         fontSize:'10px',
                                         '&:hover': {
                                             backgroundColor: '#F36A4C'
@@ -338,7 +347,7 @@ const Outlets = (props) => {
                         }
         
                         <div className='footer'>
-                            <div style={{fontSize:'14px'}}>Showing 1 to 11 of 38 entries</div>
+                            <div style={{fontSize:'12px'}}>Showing 1 to 11 of 38 entries</div>
                             <div className='nav'>
                                 <button className='but'>Previous</button>
                                 <div className='num'>1</div>
@@ -377,8 +386,11 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
-    outline:'none'
+    fontSize:'12px',
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 const contain = {
@@ -390,13 +402,14 @@ const contain = {
 const place = {
     width:'100%',
     textAlign:'center',
-    fontSize:'14px',
+    fontSize:'12px',
     marginTop:'20px',
     color:'green'
 }
 
 const menu = {
-    fontSize: '14px'
+    fontSize: '12px',
+    fontFamily:'Poppins'
 }
 
 export default Outlets;

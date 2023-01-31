@@ -598,16 +598,16 @@ const DailyRecordSales = () => {
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 const selectStyle2 = {
     width: mediaMatch.matches? '170px': '200px', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
@@ -617,7 +617,7 @@ const selectStyle2 = {
 const text = {
     width: '96%',
     textAlign: 'left',
-    fontSize:'14px',
+    fontSize:'12px',
     marginTop: '30px',
     marginLeft:'4%',
     fontWeight:'bold',
