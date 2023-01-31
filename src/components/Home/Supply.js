@@ -17,6 +17,7 @@ import CreateSupply from '../Supply/CreateSupply';
 import swal from "sweetalert";
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const Supply = (props) => {
 
@@ -325,44 +326,102 @@ const Supply = (props) => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Date</div>
-                        <div className='column'>Transporter</div>
-                        <div className='column'>Truck No</div>
-                        <div className='column'>Waybill No</div>
-                        <div className='column'>Station</div>
-                        <div className='column'>Product Supply</div>
-                        <div className='column'>Quantity</div>
-                        <div className='column'>Shortage</div>
-                        <div className='column'>Overage</div>
-                    </div>
-
-                    <div className='row-container'>
-                        {
-                            supply.length === 0?
-                            <div style={place}>No supply data</div>:
-                            supply.map((data, index) => {
-                                return(
-                                    <div className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{data.date}</div>
-                                        <div className='column'>{data.transportationName}</div>
-                                        <div className='column'>{data.truckNo}</div>
-                                        <div className='column'>{data.wayBillNo}</div>
-                                        <div className='column'>{data.outletName}</div>
-                                        <div className='column'>{data.productType}</div>
-                                        <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.shortage}</div>
-                                        <div className='column'>{data.overage}</div>
+                {
+                    mobile.matches?
+                    supply.length === 0?
+                    <div style={place}>No data</div>:
+                    supply.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.transportationName}</div>
+                                            <div className='foots'>Transporter</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.wayBillNo}</div>
+                                            <div className='foots'>Waybill No</div>
+                                        </div>
                                     </div>
-                                )
-                            })
-                        }
-                        
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.truckNo}</div>
+                                            <div className='foots'>Truck No</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.productType}</div>
+                                            <div className='foots'>Product</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.outletName}</div>
+                                            <div className='foots'>Station</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.quantity}</div>
+                                            <div className='foots'>Quantity</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.shortage}</div>
+                                            <div className='foots'>Shortage</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.overage}</div>
+                                            <div className='foots'>Overage</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Date</div>
+                            <div className='column'>Transporter</div>
+                            <div className='column'>Truck No</div>
+                            <div className='column'>Waybill No</div>
+                            <div className='column'>Station</div>
+                            <div className='column'>Product Supply</div>
+                            <div className='column'>Quantity</div>
+                            <div className='column'>Shortage</div>
+                            <div className='column'>Overage</div>
+                        </div>
+
+                        <div className='row-container'>
+                            {
+                                supply.length === 0?
+                                <div style={place}>No supply data</div>:
+                                supply.map((data, index) => {
+                                    return(
+                                        <div className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>{data.date}</div>
+                                            <div className='column'>{data.transportationName}</div>
+                                            <div className='column'>{data.truckNo}</div>
+                                            <div className='column'>{data.wayBillNo}</div>
+                                            <div className='column'>{data.outletName}</div>
+                                            <div className='column'>{data.productType}</div>
+                                            <div className='column'>{data.quantity}</div>
+                                            <div className='column'>{data.shortage}</div>
+                                            <div className='column'>{data.overage}</div>
+                                        </div>
+                                    )
+                                })
+                            }
+                            
+                        </div>
                     </div>
-                </div>
+                }
+
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>

@@ -14,6 +14,7 @@ import config from '../../constants';
 import ExpenseReport from '../Reports/ExpenseReport';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 1150px)');
 
 const Expenses = () => {
 
@@ -150,7 +151,7 @@ const Expenses = () => {
     }
 
     return(
-        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" style={{marginTop: mobile.matches? "10px": "auto"}} className='paymentsCaontainer'>
             { prints && <ExpenseReport allOutlets={expense} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>

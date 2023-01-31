@@ -16,6 +16,7 @@ import config from '../../constants';
 import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const Regulatory = () => {
 
@@ -299,27 +300,27 @@ const Regulatory = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Organisation Name</div>
-                        <div className='column'>Description</div>
-                        <div className='column'>Amount</div>
-                        <div className='column'>Contact Person</div>
-                        <div className='column'>Attachment (Certificate)</div>
-                        <div className='column'>Payment reciept</div>
-                    </div>
+                {
+                    mobile.matches?
+                    payment.length === 0?
+                    <div style={place}>No data</div>:
+                    payment.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.organisationalName}</div>
+                                            <div className='foots'>Organisation</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.amount}</div>
+                                            <div className='foots'>Amount</div>
+                                        </div>
+                                    </div>
 
-                    <div className='row-container'>
-                        {
-                            payment.length === 0?
-                            <div style={place}>No payment data</div>:
-                            payment.map((item, index) => {
-                                return(
-                                    <div style={{height:'50px', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
-                                        <div className='column'>{Number(index) + 1}</div>
-                                        <div className='column'>{item.organisationalName}</div>
-                                        <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                    <div className='row'>
+                                        <div className='left-text'>
                                             <Button sx={{
                                                 width:'80px', 
                                                 height:'30px',  
@@ -334,20 +335,81 @@ const Regulatory = () => {
                                                 variant="contained"> View
                                             </Button>
                                         </div>
-                                        <div className='column'>{item.amount}</div>
-                                        <div className='column'>{item.contactPerson}</div>
-                                        <div className='column'>
-                                            <a href={config.BASE_URL + item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.contactPerson}</div>
+                                            <div className='foots'>Contact Person</div>
                                         </div>
-                                        <div className='column'>
-                                            <a href={config.BASE_URL + item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>
+                                                <a href={config.BASE_URL + item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
+                                            </div>
+                                            <div className='foots'>Certificate</div>
                                         </div>
-                                    </div> 
-                                )
-                            })
-                        }
+                                        <div className='right-text'>
+                                            <div className='heads'>
+                                                <a href={config.BASE_URL + item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
+                                            </div>
+                                            <div className='foots'>Reciept</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Organisation Name</div>
+                            <div className='column'>Description</div>
+                            <div className='column'>Amount</div>
+                            <div className='column'>Contact Person</div>
+                            <div className='column'>Attachment (Certificate)</div>
+                            <div className='column'>Payment reciept</div>
+                        </div>
+
+                        <div className='row-container'>
+                            {
+                                payment.length === 0?
+                                <div style={place}>No payment data</div>:
+                                payment.map((item, index) => {
+                                    return(
+                                        <div style={{height:'50px', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
+                                            <div className='column'>{Number(index) + 1}</div>
+                                            <div className='column'>{item.organisationalName}</div>
+                                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                                <Button sx={{
+                                                    width:'80px', 
+                                                    height:'30px',  
+                                                    background: '#F36A4C',
+                                                    borderRadius: '3px',
+                                                    fontSize:'10px',
+                                                    '&:hover': {
+                                                        backgroundColor: '#F36A4C'
+                                                    }
+                                                    }}  
+                                                    onClick={()=>{viewDescription(item)}}
+                                                    variant="contained"> View
+                                                </Button>
+                                            </div>
+                                            <div className='column'>{item.amount}</div>
+                                            <div className='column'>{item.contactPerson}</div>
+                                            <div className='column'>
+                                                <a href={config.BASE_URL + item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
+                                            </div>
+                                            <div className='column'>
+                                                <a href={config.BASE_URL + item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
+                                            </div>
+                                        </div> 
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>

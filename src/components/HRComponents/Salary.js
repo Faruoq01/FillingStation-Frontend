@@ -17,6 +17,7 @@ import swal from 'sweetalert';
 import SalaryReports from '../Reports/SalaryReport';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const Salary = () => {
 
@@ -321,38 +322,77 @@ const Salary = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Position</div>
-                        <div className='column'>Level</div>
-                        <div className='column'>Salary range</div>
-                        <div className='column'>Actions</div>
-                    </div>
+                {
+                    mobile.matches?
+                    salaryData.length === 0?
+                    <div style={place}>No data</div>:
+                    salaryData.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
 
-                    <div className='row-container'>
-                        {
-                            salaryData.length === 0?
-                            <div style={place}>No data</div>:
-                            salaryData.map((item, index) => {
-                                return(
-                                    <div data-aos="fade-up" key={index} className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{item.position}</div>
-                                        <div className='column'>{item.level}</div>
-                                        <div className='column'>{item.low_range+' - '+item.high_range}</div>
-                                        <div className='column'>
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.position}</div>
+                                            <div className='foots'>Position</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.level}</div>
+                                            <div className='foots'>Level</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.low_range+' - '+item.high_range}</div>
+                                            <div className='foots'>Salary Range</div>
+                                        </div>
+                                        <div className='right-text'>
                                             <div style={{width:'70px'}} className='actions'>
                                                 <img onClick={()=>{updateSalary(item)}} style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
                                                 <img onClick={()=>{deleteSalary(item)}} style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
                                             </div>
                                         </div>
                                     </div>
-                                )
-                            })
-                        }
+                                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Position</div>
+                            <div className='column'>Level</div>
+                            <div className='column'>Salary range</div>
+                            <div className='column'>Actions</div>
+                        </div>
+
+                        <div className='row-container'>
+                            {
+                                salaryData.length === 0?
+                                <div style={place}>No data</div>:
+                                salaryData.map((item, index) => {
+                                    return(
+                                        <div data-aos="fade-up" key={index} className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>{item.position}</div>
+                                            <div className='column'>{item.level}</div>
+                                            <div className='column'>{item.low_range+' - '+item.high_range}</div>
+                                            <div className='column'>
+                                                <div style={{width:'70px'}} className='actions'>
+                                                    <img onClick={()=>{updateSalary(item)}} style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
+                                                    <img onClick={()=>{deleteSalary(item)}} style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
+                }
+
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>

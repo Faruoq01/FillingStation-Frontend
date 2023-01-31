@@ -12,6 +12,7 @@ import PrintTankUpdate from '../Reports/PrintTankUpdate';
 import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const TankUpdate = () => {
 
@@ -284,39 +285,85 @@ const TankUpdate = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Date</div>
-                        <div className='column'>Tank Name</div>
-                        <div className='column'>Tank Product</div>
-                        <div className='column'>Station</div>
-                        <div className='column'>Previous Level</div>
-                        <div className='column'>Quantity Added</div>
-                        <div className='column'>Updated Level</div>
-                    </div>
-
-                    <div className='row-container'>
-                        {
-                            tankList.length === 0?
-                            <div style={place}>No tank updates</div>:
-                            tankList.map((data, index) => {
-                                return(
-                                    <div key={index} className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{data.dateUpdated}</div>
-                                        <div className='column'>{data.tankName}</div>
-                                        <div className='column'>{data.productType}</div>
-                                        <div className='column'>{data.station}</div>
-                                        <div className='column'>{data.previousLevel}</div>
-                                        <div className='column'>{data.quantityAdded}</div>
-                                        <div className='column'>{data.currentLevel}</div>
+                {
+                    mobile.matches?
+                    tankList.length === 0?
+                    <div style={place}>No data</div>:
+                    tankList.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.dateUpdated}</div>
+                                            <div className='foots'>Date Updated</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.tankName}</div>
+                                            <div className='foots'>Tank Name</div>
+                                        </div>
                                     </div>
-                                )
-                            })
-                        }
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.productType}</div>
+                                            <div className='foots'>Tank Product</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.previousLevel}</div>
+                                            <div className='foots'>Previous Level</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.quantityAdded}</div>
+                                            <div className='foots'>Quantity Added</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.currentLevel}</div>
+                                            <div className='foots'>Current Level</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Date</div>
+                            <div className='column'>Tank Name</div>
+                            <div className='column'>Tank Product</div>
+                            <div className='column'>Station</div>
+                            <div className='column'>Previous Level</div>
+                            <div className='column'>Quantity Added</div>
+                            <div className='column'>Updated Level</div>
+                        </div>
+
+                        <div className='row-container'>
+                            {
+                                tankList.length === 0?
+                                <div style={place}>No tank updates</div>:
+                                tankList.map((data, index) => {
+                                    return(
+                                        <div key={index} className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>{data.dateUpdated}</div>
+                                            <div className='column'>{data.tankName}</div>
+                                            <div className='column'>{data.productType}</div>
+                                            <div className='column'>{data.station}</div>
+                                            <div className='column'>{data.previousLevel}</div>
+                                            <div className='column'>{data.quantityAdded}</div>
+                                            <div className='column'>{data.currentLevel}</div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>

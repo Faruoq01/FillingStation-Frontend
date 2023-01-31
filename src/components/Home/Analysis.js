@@ -264,7 +264,7 @@ const Analysis = (props) => {
                                 labelId="demo-select-small"
                                 id="demo-select-small"
                                 value={10}
-                                sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                                sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                             >
                                 <MenuItem value={10}>Add Payments</MenuItem>
                                 <MenuItem value={20}>Download PDF</MenuItem>

@@ -13,6 +13,7 @@ import { allBankPayment, allPosPayment, searchBankPayment, searchPosPayment } fr
 import config from '../../constants';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 1150px)');
 
 const Payments = (props) => {
 
@@ -177,7 +178,7 @@ const Payments = (props) => {
 
     return(
         <React.Fragment>
-            <div data-aos="zoom-in-down" style={{width:'100%'}} className='paymentsCaontainer'>
+            <div data-aos="zoom-in-down" style={{marginTop: mobile.matches? "10px": "auto"}} className='paymentsCaontainer'>
                 {/* { prints && <LPOReport allOutlets={lpos} open={prints} close={setPrints}/>} */}
                 <div className='inner-pay'>
                     <div className='action'>

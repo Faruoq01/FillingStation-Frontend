@@ -30,7 +30,8 @@ import activeGrid from '../../assets/activeGrid.png';
 import inactiveGrid from '../../assets/inactiveGrid.png';
 import ListAllTanks from '../Outlet/TankList';
 import swal from 'sweetalert';
-import { borderRadius } from '@mui/system';
+
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const Outlets = (props) => {
 
@@ -108,8 +109,8 @@ const Outlets = (props) => {
 
     const CardItem = (props) => {
         return(
-            <div key={props.index} className='cardRapper'>
-                <div className='cardItem'>
+            <div style={{width: mobile.matches? "100%": "auto"}} key={props.index} className='cardRapper'>
+                <div style={{width: mobile.matches? "94%": "auto"}} className='cardItem'>
                     <div className='inner'>
                         <div className='row'>
                             <div className='rowdata'>
@@ -180,7 +181,7 @@ const Outlets = (props) => {
                                     id="demo-select-small"
                                     value={10}
                                     sx={{...selectStyle2,
-                                        backgroundColor:"#777777", 
+                                        backgroundColor:"#06805B", 
                                         color:'#fff',
                                         fontSize:'12px',
                                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -249,7 +250,7 @@ const Outlets = (props) => {
                                     <MenuItem style={menu} value={30}>Thirty</MenuItem>
                                 </Select>
                             </div>
-                            <div style={{width:'265px'}} className='input-cont2'>
+                            <div style={{width: mobile.matches? "100%": '295px', marginTop: mobile.matches? "20px": "auto", display:'flex', justifyContent:'flex-end'}} className='input-cont2'>
                                 <div style={{display:'flex', flexDirection:'row'}}>
                                     {switchTabs || <img onClick={changeSwitch} style={{width:'30px', height:'30px', marginRight:'6px'}} src={activeList} alt="icon" />}
                                     {switchTabs && <img onClick={changeSwitch} style={{width:'30px', height:'30px', marginRight:'6px'}} src={inactiveList} alt="icon" />}
@@ -288,51 +289,95 @@ const Outlets = (props) => {
                             </div>
                         </div>
         
-                        {switchTabs ||
-                            <div ref={tablePrints} className="table-container">
-                            <div className='table-head'>
-                                <div className='column'>S/N</div>
-                                <div className='column'>State</div>
-                                <div className='column'>Name</div>
-                                <div className='column'>Outlet Code</div>
-                                <div className='column'>No of Tanks</div>
-                                <div className='column'>No of Pumps</div>
-                                <div className='column'>Alias</div>
-                                <div className='column'>city</div>
-                                <div className='column'>Actions</div>
-                            </div>
-        
-                            {
-                                allOutlets.length === 0?
-                                <div style={place}>No data</div>:
-                                allOutlets.map((item, index) => {
-                                    return(
-                                        <div data-aos="fade-down" key={index} className='row-container'>
-                                            <div className='table-head2'>
-                                                <div className='column'>{index + 1}</div>
-                                                <div className='column'>{item.state}</div>
-                                                <div className='column'>{item.outletName}</div>
-                                                <div className='column'>{item._id.substring(0, 6)}</div>
-                                                <div className='column'>{item.noOfTanks}</div>
-                                                <div className='column'>{item.noOfPumps}</div>
-                                                <div className='column'>{item.alias}</div>
-                                                <div className='column'>{item.city}</div>
-                                                <div className='column'>
+                        {!switchTabs?
+                            mobile.matches?
+                            allOutlets.length === 0?
+                            <div style={place}>No data</div>:
+                            allOutlets.map((item, index) => {
+                                return(
+                                    <div key={index} className='mobile-table-container'>
+                                        <div className="inner-container">
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.outletName}</div>
+                                                    <div className='foots'>Station Name</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='heads'>{item.noOfTanks}</div>
+                                                    <div className='foots'>No Of Tanks</div>
+                                                </div>
+                                            </div>
+
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.alias}</div>
+                                                    <div className='foots'>Alias</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='heads'>{item.noOfPumps}</div>
+                                                    <div className='foots'>No Of Pumps</div>
+                                                </div>
+                                            </div>
+
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.state}</div>
+                                                    <div className='foots'>State</div>
+                                                </div>
+                                                <div style={{justifyContent:'center'}} className='right-text'>
                                                     <div className='actions'>
-                                                        <img onClick={()=>{goToSales(item)}} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                                        <img onClick={()=>{goToPumps(item)}} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
+                                                        <img onClick={()=>{goToSales(item)}} style={{width:'27px', height:'27px', marginRight:'7px'}} src={eye} alt="icon" />
+                                                        <img onClick={()=>{goToPumps(item)}} style={{width:'27px', height:'27px', marginRight:'7px'}} src={filling} alt="icon" />
                                                         <img onClick={()=>{goToTanks(item)}} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    )
-                                })
-                            }
-                            </div>
-                        }
+                                    </div>
+                                )
+                            }):
+                            <div ref={tablePrints} className="table-container">
+                                <div className='table-head'>
+                                    <div className='column'>S/N</div>
+                                    <div className='column'>State</div>
+                                    <div className='column'>Name</div>
+                                    <div className='column'>Outlet Code</div>
+                                    <div className='column'>No of Tanks</div>
+                                    <div className='column'>No of Pumps</div>
+                                    <div className='column'>Alias</div>
+                                    <div className='column'>city</div>
+                                    <div className='column'>Actions</div>
+                                </div>
+            
+                                {
+                                    allOutlets.length === 0?
+                                    <div style={place}>No data</div>:
+                                    allOutlets.map((item, index) => {
+                                        return(
+                                            <div data-aos="fade-down" key={index} className='row-container'>
+                                                <div className='table-head2'>
+                                                    <div className='column'>{index + 1}</div>
+                                                    <div className='column'>{item.state}</div>
+                                                    <div className='column'>{item.outletName}</div>
+                                                    <div className='column'>{item._id.substring(0, 6)}</div>
+                                                    <div className='column'>{item.noOfTanks}</div>
+                                                    <div className='column'>{item.noOfPumps}</div>
+                                                    <div className='column'>{item.alias}</div>
+                                                    <div className='column'>{item.city}</div>
+                                                    <div className='column'>
+                                                        <div className='actions'>
+                                                            <img onClick={()=>{goToSales(item)}} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
+                                                            <img onClick={()=>{goToPumps(item)}} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
+                                                            <img onClick={()=>{goToTanks(item)}} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>:
 
-                        {switchTabs &&
                             <div className="gridCard">
                                 {
                                     allOutlets.length === 0?
@@ -389,7 +434,7 @@ const selectStyle2 = {
     fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-        border:'1px solid #777777',
+        border:'1px solid #F2F1F1B2',
     },
 }
 

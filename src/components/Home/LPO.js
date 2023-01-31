@@ -20,6 +20,7 @@ import LPOReport from '../Reports/LpoReport';
 import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const LPO = (props) => {
 
@@ -354,57 +355,144 @@ const LPO = (props) => {
                             </div>
                         </div>
 
-                        {activeButton ||
+                        {!activeButton?
+                            (mobile.matches)?
+                            lpos.length === 0?
+                            <div style={place}>No data</div>:
+                            lpos.map((item, index) => {
+                                return(
+                                    <div key={index} className='mobile-table-container'>
+                                        <div className="inner-container">
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.companyName}</div>
+                                                    <div className='foots'>Company Name</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='heads'>{item.personOfContact}</div>
+                                                    <div className='foots'>Person of Contact</div>
+                                                </div>
+                                            </div>
+
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.currentPMS}</div>
+                                                    <div className='foots'>PMS Dispensed</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='heads'>{item.currentAGO}</div>
+                                                    <div className='foots'>AGO Dispensed</div>
+                                                </div>
+                                            </div>
+
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.currentDPK}</div>
+                                                    <div className='foots'>DPK Dispensed</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='column'>
+                                                        <img onClick={()=>{openLPOSales(item)}} style={{width:'28px', height:'28px'}} src={eyes} alt="icon" />
+                                                        <img onClick={()=>{createPrice(item)}} style={{width:'28px', height:'28px', marginLeft:'10px'}} src={edit2} alt="icon" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            }):
                             <div style={{marginTop:'10px'}} className='table-container'>
-                            <div className='table-head'>
-                                <div className='column'>S/N</div>
-                                <div className='column'>Company Name</div>
-                                <div className='column'>Address</div>
-                                <div className='column'>Person of Contact</div>
-                                <div className='column'>PMS Dispensed</div>
-                                <div className='column'>AGO Dispensed</div>
-                                <div className='column'>DPK Dispensed</div>
-                                <div className='column'>Payment Structure</div>
-                                <div className='column'>Actions</div>
-                            </div>
+                                <div className='table-head'>
+                                    <div className='column'>S/N</div>
+                                    <div className='column'>Company Name</div>
+                                    <div className='column'>Address</div>
+                                    <div className='column'>Person of Contact</div>
+                                    <div className='column'>PMS Dispensed</div>
+                                    <div className='column'>AGO Dispensed</div>
+                                    <div className='column'>DPK Dispensed</div>
+                                    <div className='column'>Payment Structure</div>
+                                    <div className='column'>Actions</div>
+                                </div>
 
-                            <div className='row-container'>
-                                {
-                                    lpos.length === 0?
-                                    <div style={place}>No LPO Data </div>:
-                                    lpos.map((data, index) => {
-                                        return(
-                                            <div className='table-head2'>
-                                                <div className='column'>{index + 1}</div>
-                                                <div className='column'>{data.companyName}</div>
-                                                <div className='column'>{data.address}</div>
-                                                <div className='column'>{data.personOfContact}</div>
-                                                <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
-                                                    {data.currentPMS}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.PMSRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.PMSRate) * Number(data.currentPMS))}</span>
-                                                </div>
-                                                <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
-                                                    {data.currentAGO}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.AGORate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.AGORate) * Number(data.currentAGO))}</span>
-                                                </div>
-                                                <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
-                                                    {data.currentDPK}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.DPKRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.DPKRate) * Number(data.currentDPK))}</span>
-                                                </div>
-                                                <div className='column'>{data.paymentStructure}</div>
-                                                <div className='column'>
-                                                    <img onClick={()=>{openLPOSales(data)}} style={{width:'28px', height:'28px'}} src={eyes} alt="icon" />
-                                                    <img onClick={()=>{createPrice(data)}} style={{width:'28px', height:'28px', marginLeft:'10px'}} src={edit2} alt="icon" />
-                                                </div>
-                                            </div> 
-                                        )
-                                    })
-                                } 
-                            </div>
-                            </div>
-                        }
+                                <div className='row-container'>
+                                    {
+                                        lpos.length === 0?
+                                        <div style={place}>No LPO Data </div>:
+                                        lpos.map((data, index) => {
+                                            return(
+                                                <div className='table-head2'>
+                                                    <div className='column'>{index + 1}</div>
+                                                    <div className='column'>{data.companyName}</div>
+                                                    <div className='column'>{data.address}</div>
+                                                    <div className='column'>{data.personOfContact}</div>
+                                                    <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
+                                                        {data.currentPMS}
+                                                        <span style={{color:'green', fontSize:'12px'}}>{data.PMSRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.PMSRate) * Number(data.currentPMS))}</span>
+                                                    </div>
+                                                    <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
+                                                        {data.currentAGO}
+                                                        <span style={{color:'green', fontSize:'12px'}}>{data.AGORate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.AGORate) * Number(data.currentAGO))}</span>
+                                                    </div>
+                                                    <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
+                                                        {data.currentDPK}
+                                                        <span style={{color:'green', fontSize:'12px'}}>{data.DPKRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.DPKRate) * Number(data.currentDPK))}</span>
+                                                    </div>
+                                                    <div className='column'>{data.paymentStructure}</div>
+                                                    <div className='column'>
+                                                        <img onClick={()=>{openLPOSales(data)}} style={{width:'28px', height:'28px'}} src={eyes} alt="icon" />
+                                                        <img onClick={()=>{createPrice(data)}} style={{width:'28px', height:'28px', marginLeft:'10px'}} src={edit2} alt="icon" />
+                                                    </div>
+                                                </div> 
+                                            )
+                                        })
+                                    } 
+                                </div>
+                            </div>:
 
-                        {activeButton &&
+                            (mobile.matches)?
+                            lpos.length === 0?
+                            <div style={place}>No data</div>:
+                            lpos.map((item, index) => {
+                                return(
+                                    <div key={index} className='mobile-table-container'>
+                                        <div className="inner-container">
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.companyName}</div>
+                                                    <div className='foots'>Company Name</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='heads'>{item.personOfContact}</div>
+                                                    <div className='foots'>Person of Contact</div>
+                                                </div>
+                                            </div>
+
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.PMS}</div>
+                                                    <div className='foots'>PMS Limit</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='heads'>{item.AGO}</div>
+                                                    <div className='foots'>AGO Limit</div>
+                                                </div>
+                                            </div>
+
+                                            <div className='row'>
+                                                <div className='left-text'>
+                                                    <div className='heads'>{item.DPK}</div>
+                                                    <div className='foots'>PMS Limit</div>
+                                                </div>
+                                                <div className='right-text'>
+                                                    <div className='heads'>{item.paymentStructure}</div>
+                                                    <div className='foots'>Payment Structure</div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )
+                            }):
                             <div style={{marginTop:'10px'}} className='table-container'>
                                 <div className='table-head'>
                                     <div className='column'>S/N</div>

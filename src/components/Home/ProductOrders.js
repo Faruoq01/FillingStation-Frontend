@@ -16,6 +16,7 @@ import IncomingList from '../Modals/IncomingList';
 import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const ProductOrders = () => {
 
@@ -301,39 +302,85 @@ const ProductOrders = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Date Created</div>
-                        <div className='column'>Company</div>
-                        <div className='column'>Depot Address</div>
-                        <div className='column'>Product</div>
-                        <div className='column'>Quantity Ordered (ltr)</div>
-                        <div className='column'>Quantity Loaded (ltr)</div>
-                        <div className='column'>Current balance (ltr)</div>
-                    </div>
+                {
+                    mobile.matches?
+                    productOrder.length === 0?
+                    <div style={place}>No data</div>:
+                    productOrder.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.depot}</div>
+                                            <div className='foots'>Company</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.productType}</div>
+                                            <div className='foots'>Product</div>
+                                        </div>
+                                    </div>
 
-                    <div className='row-container'>
-                        {
-                            productOrder.length === 0?
-                            <div style={place}>No product data</div>:
-                            productOrder.map((data, index) => {
-                                return(
-                                    <div onClick={()=>{openOrderDetails(data)}} className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{data.dateCreated}</div>
-                                        <div className='column'>{data.depot}</div>
-                                        <div className='column'>{data.depotAddress}</div>
-                                        <div className='column'>{data.productType}</div>
-                                        <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.quantityLoaded}</div>
-                                        <div className='column'>{data.currentBalance}</div>
-                                    </div> 
-                                )
-                            })
-                        }
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.quantity}</div>
+                                            <div className='foots'>Ordered quantity</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.quantityLoaded}</div>
+                                            <div className='foots'>Loaded Quantity</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.dateCreated}</div>
+                                            <div className='foots'>Date created</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.currentBalance}</div>
+                                            <div className='foots'>Current Balance</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Date Created</div>
+                            <div className='column'>Company</div>
+                            <div className='column'>Depot Address</div>
+                            <div className='column'>Product</div>
+                            <div className='column'>Quantity Ordered (ltr)</div>
+                            <div className='column'>Quantity Loaded (ltr)</div>
+                            <div className='column'>Current balance (ltr)</div>
+                        </div>
+
+                        <div className='row-container'>
+                            {
+                                productOrder.length === 0?
+                                <div style={place}>No product data</div>:
+                                productOrder.map((data, index) => {
+                                    return(
+                                        <div onClick={()=>{openOrderDetails(data)}} className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>{data.dateCreated}</div>
+                                            <div className='column'>{data.depot}</div>
+                                            <div className='column'>{data.depotAddress}</div>
+                                            <div className='column'>{data.productType}</div>
+                                            <div className='column'>{data.quantity}</div>
+                                            <div className='column'>{data.quantityLoaded}</div>
+                                            <div className='column'>{data.currentBalance}</div>
+                                        </div> 
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>

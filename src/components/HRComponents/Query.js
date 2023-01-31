@@ -18,6 +18,7 @@ import swal from 'sweetalert';
 import UpdateQuery from '../Modals/UpdateQuery';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const Query = () => {
 
@@ -325,27 +326,21 @@ const Query = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Staff Name</div>
-                        <div className='column'>Query Title</div>
-                        <div className='column'>Description</div>
-                        <div className='column'>Date Queried</div>
-                        <div className='column'>Action</div>
-                    </div>
+                {
+                    mobile.matches?
+                    queryData.length === 0?
+                    <div style={place}>No data</div>:
+                    queryData.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
 
-                    {
-                        queryData.length === 0?
-                        <div style={place}>No data</div>:
-                        queryData.map((item, index) => {
-                            return(
-                                <div data-aos="fade-up" key={index} className='row-container'>
-                                    <div className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{item.employeeName}</div>
-                                        <div className='column'>{item.queryTitle}</div>
-                                        <div className='column'>
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.queryTitle}</div>
+                                            <div className='foots'>Query title</div>
+                                        </div>
+                                        <div className='right-text'>
                                             <Button sx={{
                                                 width:'80px', 
                                                 height:'30px',  
@@ -360,8 +355,14 @@ const Query = () => {
                                                 variant="contained"> View
                                             </Button>
                                         </div>
-                                        <div className='column'>{item.createdAt.split('T')[0]}</div>
-                                        <div className='column'>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.employeeName}</div>
+                                            <div className='foots'>Employee Name</div>
+                                        </div>
+                                        <div className='right-text'>
                                             <div style={{width:'70px'}} className='actions'>
                                                 <img onClick={()=>{updateQuery(item)}} style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
                                                 <img onClick={()=>{deleteQuery(item)}} style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
@@ -369,10 +370,59 @@ const Query = () => {
                                         </div>
                                     </div>
                                 </div>
-                            )
-                        })
-                    }
-                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Staff Name</div>
+                            <div className='column'>Query Title</div>
+                            <div className='column'>Description</div>
+                            <div className='column'>Date Queried</div>
+                            <div className='column'>Action</div>
+                        </div>
+
+                        {
+                            queryData.length === 0?
+                            <div style={place}>No data</div>:
+                            queryData.map((item, index) => {
+                                return(
+                                    <div data-aos="fade-up" key={index} className='row-container'>
+                                        <div className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>{item.employeeName}</div>
+                                            <div className='column'>{item.queryTitle}</div>
+                                            <div className='column'>
+                                                <Button sx={{
+                                                    width:'80px', 
+                                                    height:'30px',  
+                                                    background: '#427BBE',
+                                                    borderRadius: '3px',
+                                                    fontSize:'10px',
+                                                    '&:hover': {
+                                                        backgroundColor: '#427BBE'
+                                                    }
+                                                    }}  
+                                                    onClick={()=>{openView(item)}}
+                                                    variant="contained"> View
+                                                </Button>
+                                            </div>
+                                            <div className='column'>{item.createdAt.split('T')[0]}</div>
+                                            <div className='column'>
+                                                <div style={{width:'70px'}} className='actions'>
+                                                    <img onClick={()=>{updateQuery(item)}} style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
+                                                    <img onClick={()=>{deleteQuery(item)}} style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                }
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>

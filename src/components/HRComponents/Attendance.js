@@ -17,6 +17,7 @@ import PrintAttendanceRecords from '../Reports/Attendance';
 import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const Attendance = () => {
     
@@ -387,36 +388,50 @@ const Attendance = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Staff Name</div>
-                        <div className='column'>Clock in</div>
-                        <div className='column'>Clock out</div>
-                        <div className='column'>Working Hour</div>
-                        <div className='column'>Status</div>
-                        <div className='column'>Actions</div>
-                    </div>
+                {
+                    mobile.matches?
+                    attendanceData.length === 0?
+                    <div style={place}>No data</div>:
+                    attendanceData.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
 
-                    {
-                        attendanceData.length === 0?
-                        <div style={place}>No data</div>:
-                        attendanceData.map((item, index) => {
-                            return(
-                                <div data-aos="fade-up" key={index} className='row-container'>
-                                    <div className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{item.employeeName}</div>
-                                        <div style={{color:'green'}} className='column'>{item.timeIn}</div>
-                                        <div style={{color:'red'}} className='column'>{item.timeOut}</div>
-                                        <div className='column'>{item.workingHour}</div>
-                                        {item.timeOut === '-- : --'?
-                                            <div style={{color:'green'}} className='column'>Pending</div>:
-                                            computeTime(item.timeIn, item.timeOut, item.workingHour)?
-                                            <div className='column'>Punctual</div>:
-                                            <div style={{color:'red'}} className='column'>Unpunctual</div>
-                                        }
-                                        <div className='column'>
+                                <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.employeeName}</div>
+                                            <div className='foots'>Employee Name</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>Active</div>
+                                            <div className='foots'>Status</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.timeOut}</div>
+                                            <div className='foots'>Time Out</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.timeIn}</div>
+                                            <div className='foots'>Time in</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.workingHour}</div>
+                                            <div className='foots'>
+                                                {item.timeOut === '-- : --'?
+                                                    <div style={{color:'green'}} className='column'>Pending</div>:
+                                                    computeTime(item.timeIn, item.timeOut, item.workingHour)?
+                                                    <div className='column'>Punctual</div>:
+                                                    <div style={{color:'red'}} className='column'>Unpunctual</div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className='right-text'>
                                             <div style={{width:'95px'}} className='actions'>
                                                 <Button sx={{
                                                     width:'100%', 
@@ -436,11 +451,65 @@ const Attendance = () => {
                                         </div>
                                     </div>
                                 </div>
-                            )
-                        })
-                    }
+                            </div>
+                        )
+                    }):
 
-                </div>
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Staff Name</div>
+                            <div className='column'>Clock in</div>
+                            <div className='column'>Clock out</div>
+                            <div className='column'>Working Hour</div>
+                            <div className='column'>Status</div>
+                            <div className='column'>Actions</div>
+                        </div>
+
+                        {
+                            attendanceData.length === 0?
+                            <div style={place}>No data</div>:
+                            attendanceData.map((item, index) => {
+                                return(
+                                    <div data-aos="fade-up" key={index} className='row-container'>
+                                        <div className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>{item.employeeName}</div>
+                                            <div style={{color:'green'}} className='column'>{item.timeIn}</div>
+                                            <div style={{color:'red'}} className='column'>{item.timeOut}</div>
+                                            <div className='column'>{item.workingHour}</div>
+                                            {item.timeOut === '-- : --'?
+                                                <div style={{color:'green'}} className='column'>Pending</div>:
+                                                computeTime(item.timeIn, item.timeOut, item.workingHour)?
+                                                <div className='column'>Punctual</div>:
+                                                <div style={{color:'red'}} className='column'>Unpunctual</div>
+                                            }
+                                            <div className='column'>
+                                                <div style={{width:'95px'}} className='actions'>
+                                                    <Button sx={{
+                                                        width:'100%', 
+                                                        height:'30px',  
+                                                        background: '#427BBE',
+                                                        borderRadius: '3px',
+                                                        fontSize:'10px',
+                                                        '&:hover': {
+                                                            backgroundColor: '#427BBE'
+                                                        }
+                                                        }}  
+                                                        disabled={item.timeOut === "-- : --"? false: true}
+                                                        onClick={openModal2}
+                                                        variant="contained"> Clock out
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+
+                    </div>
+                }
 
                 <div className='footer'>
                     <div 

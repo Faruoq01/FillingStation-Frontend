@@ -18,6 +18,7 @@ import ManagerModal from '../Modals/ManagerModal';
 import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const Employee = () => {
 
@@ -347,47 +348,106 @@ const Employee = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Staff Image</div>
-                        <div className='column'>Staff Name</div>
-                        <div className='column'>Sex</div>
-                        <div className='column'>Email</div>
-                        <div className='column'>Phone Number</div>
-                        <div className='column'>Date Employed</div>
-                        <div className='column'>Role</div>
-                        <div className='column'>Action</div>
-                    </div>
-
-                    <div className='row-container'>
-                        {
-                            staffUsers.length === 0?
-                            <div style={place}>No data </div>:
-                            staffUsers.map((item, index) => {
-                                return(
-                                    <div key={index} className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>
+                {
+                    mobile.matches?
+                    staffUsers.length === 0?
+                    <div style={place}>No data</div>:
+                    staffUsers.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
+                                    <div className='row'>
+                                        <div className='left-text'>
                                             <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
                                         </div>
-                                        <div className='column'>{item.staffName}</div>
-                                        <div className='column'>{item.sex}</div>
-                                        <div className='column'>{item.email}</div>
-                                        <div className='column'>{item.phone}</div>
-                                        <div className='column'>{item.dateEmployed}</div>
-                                        <div className='column'>{item.role}</div>
-                                        <div className='column'>
-                                            <div style={{justifyContent:'center'}} className='actions'>
-                                                <img onClick={()=>{openEmployee(item)}} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                            </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.staffName}</div>
+                                            <div className='foots'>Staff Name</div>
                                         </div>
                                     </div>
-                                )
-                            })
-                        }
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.sex}</div>
+                                            <div className='foots'>Gender</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.previousLevel}</div>
+                                            <div className='foots'>Previous Level</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.email}</div>
+                                            <div className='foots'>Email</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.dateEmployed}</div>
+                                            <div className='foots'>Date Employed</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.role}</div>
+                                            <div className='foots'>Role</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>
+                                                <img onClick={()=>{openEmployee(item)}} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
+                                            </div>
+                                            <div className='foots'>Details</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Staff Image</div>
+                            <div className='column'>Staff Name</div>
+                            <div className='column'>Sex</div>
+                            <div className='column'>Email</div>
+                            <div className='column'>Phone Number</div>
+                            <div className='column'>Date Employed</div>
+                            <div className='column'>Role</div>
+                            <div className='column'>Action</div>
+                        </div>
+
+                        <div className='row-container'>
+                            {
+                                staffUsers.length === 0?
+                                <div style={place}>No data </div>:
+                                staffUsers.map((item, index) => {
+                                    return(
+                                        <div key={index} className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>
+                                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
+                                            </div>
+                                            <div className='column'>{item.staffName}</div>
+                                            <div className='column'>{item.sex}</div>
+                                            <div className='column'>{item.email}</div>
+                                            <div className='column'>{item.phone}</div>
+                                            <div className='column'>{item.dateEmployed}</div>
+                                            <div className='column'>{item.role}</div>
+                                            <div className='column'>
+                                                <div style={{justifyContent:'center'}} className='actions'>
+                                                    <img onClick={()=>{openEmployee(item)}} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
+
+                }
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>

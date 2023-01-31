@@ -15,6 +15,7 @@ import IncomingReport from '../Reports/IncomingReport';
 import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
+const mobile = window.matchMedia('(max-width: 600px)');
 
 const IncomingOrder = () => {
 
@@ -297,42 +298,88 @@ const IncomingOrder = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
-                    <div className='table-head'>
-                        <div className='column'>S/N</div>
-                        <div className='column'>Date Created</div>
-                        <div className='column'>Depot Station</div>
-                        <div className='column'>Discharge Station</div>
-                        <div className='column'>Products</div>
-                        <div className='column'>Quantity</div>
-                        <div className='column'>Truck No</div>
-                        <div className='column'>Waybill No</div>
-                        <div className='column'>Delivery Status</div>
-                    </div>
-
-                    <div className='row-container'>
-
-                        {
-                            incomingOrder.length === 0?
-                            <div style={place}>No Incoming Data</div>:
-                            incomingOrder.map((data, index) => {
-                                return(
-                                    <div key={index} className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{data.dateCreated}</div>
-                                        <div className='column'>{data.depotStation}</div>
-                                        <div className='column'>{data.destination}</div>
-                                        <div className='column'>{data.product}</div>
-                                        <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.truckNo}</div>
-                                        <div className='column'>{data.wayBillNo}</div>
-                                        <div className='column'>{data.deliveryStatus}</div>
+                {
+                    mobile.matches?
+                    incomingOrder.length === 0?
+                    <div style={place}>No data</div>:
+                    incomingOrder.map((item, index) => {
+                        return(
+                            <div key={index} className='mobile-table-container'>
+                                <div className="inner-container">
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.depotStation}</div>
+                                            <div className='foots'>Depot Station</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.destination}</div>
+                                            <div className='foots'>Discharge Station</div>
+                                        </div>
                                     </div>
-                                )
-                            })
-                        }
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.product}</div>
+                                            <div className='foots'>Product</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.quantity}</div>
+                                            <div className='foots'>Loaded Quantity</div>
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='left-text'>
+                                            <div className='heads'>{item.truckNo}</div>
+                                            <div className='foots'>Truck No</div>
+                                        </div>
+                                        <div className='right-text'>
+                                            <div className='heads'>{item.wayBillNo}</div>
+                                            <div className='foots'>Waybill No</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }):
+
+                    <div className='table-container'>
+                        <div className='table-head'>
+                            <div className='column'>S/N</div>
+                            <div className='column'>Date Created</div>
+                            <div className='column'>Depot Station</div>
+                            <div className='column'>Discharge Station</div>
+                            <div className='column'>Products</div>
+                            <div className='column'>Quantity</div>
+                            <div className='column'>Truck No</div>
+                            <div className='column'>Waybill No</div>
+                            <div className='column'>Delivery Status</div>
+                        </div>
+
+                        <div className='row-container'>
+
+                            {
+                                incomingOrder.length === 0?
+                                <div style={place}>No Incoming Data</div>:
+                                incomingOrder.map((data, index) => {
+                                    return(
+                                        <div key={index} className='table-head2'>
+                                            <div className='column'>{index + 1}</div>
+                                            <div className='column'>{data.dateCreated}</div>
+                                            <div className='column'>{data.depotStation}</div>
+                                            <div className='column'>{data.destination}</div>
+                                            <div className='column'>{data.product}</div>
+                                            <div className='column'>{data.quantity}</div>
+                                            <div className='column'>{data.truckNo}</div>
+                                            <div className='column'>{data.wayBillNo}</div>
+                                            <div className='column'>{data.deliveryStatus}</div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div className='footer'>
                     <div style={{fontSize:'12px'}}>
