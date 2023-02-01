@@ -135,7 +135,7 @@ const Dashboard = (props) => {
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
-            // setLoad(true);
+            setLoad(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 dispatch(adminOutlet(null));
