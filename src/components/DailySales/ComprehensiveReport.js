@@ -43,43 +43,32 @@ const LeftTableView = (props) => {
         const AGO = props?.sales?.filter(data => data.productType === "AGO");
         const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        let pmsBF = 0;
-        let agoBF = 0;
-        let dpkBF = 0;
+        const totalTankLevel = (data) => {
+            const uniq = Array.from(new Set(data?.map(s => s.tankID)))
+            .map(id => {
+                return {
+                    sales: data.find(s => s.tankID === id).sales,
+                    afterSales: data.find(s => s.tankID === id).afterSales,
+                    beforeSales: data.find(s => s.tankID === id).beforeSales,
+                }
+            });
 
-        if(PMS){
-            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
+            return uniq;
         }
 
-        if(AGO){
-            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
-        }
-
-        if(DPK){
-            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
-        }
-
-        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
-    }
-
-    const getSalesRecord = () => {
-        const PMS = props?.sales?.filter(data => data.productType === "PMS");
-        const AGO = props?.sales?.filter(data => data.productType === "AGO");
-        const DPK = props?.sales?.filter(data => data.productType === "DPK");
-
-        const PMSSales = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
+        const totalPMSTankLevel = totalTankLevel(PMS).reduce((accum, current) => {
+            return Number(accum) + Number(current.beforeSales);
         }, 0);
 
-        const AGOSales = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
+        const totalAGOTankLevel = totalTankLevel(AGO).reduce((accum, current) => {
+            return Number(accum) + Number(current.beforeSales);
         }, 0);
 
-        const DPKSales = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
+        const totalDPKTankLevel = totalTankLevel(DPK).reduce((accum, current) => {
+            return Number(accum) + Number(current.beforeSales);
         }, 0);
 
-        return {pms: PMSSales, ago: AGOSales, dpk: DPKSales}
+        return {pms: totalPMSTankLevel, ago: totalAGOTankLevel, dpk: totalDPKTankLevel}
     }
 
     const getSupply = () => {
@@ -105,9 +94,9 @@ const LeftTableView = (props) => {
     }
 
     const getBalanceBF = () => {
-        const pmsBalance = getTankLevels().pms + getSalesRecord().pms - getSupply();
-        const agoBalance = getTankLevels().ago + getSalesRecord().ago - getSupply();
-        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk - getSupply();
+        const pmsBalance = getTankLevels().pms - getSupply()[0];
+        const agoBalance = getTankLevels().ago - getSupply()[1];
+        const dpkBalance = getTankLevels().dpk - getSupply()[2];
 
         return {pms: isNaN(pmsBalance)? 0: pmsBalance, ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
     }
@@ -226,50 +215,39 @@ const RightTableView = (props) => {
         const AGO = props?.sales?.filter(data => data.productType === "AGO");
         const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        let pmsBF = 0;
-        let agoBF = 0;
-        let dpkBF = 0;
+        const totalTankLevel = (data) => {
+            const uniq = Array.from(new Set(data?.map(s => s.tankID)))
+            .map(id => {
+                return {
+                    sales: data.find(s => s.tankID === id).sales,
+                    afterSales: data.find(s => s.tankID === id).afterSales,
+                    beforeSales: data.find(s => s.tankID === id).beforeSales,
+                }
+            });
 
-        if(PMS){
-            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
+            return uniq;
         }
 
-        if(AGO){
-            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
-        }
-
-        if(DPK){
-            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
-        }
-
-        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
-    }
-
-    const getSalesRecord = () => {
-        const PMS = props?.sales?.filter(data => data.productType === "PMS");
-        const AGO = props?.sales?.filter(data => data.productType === "AGO");
-        const DPK = props?.sales?.filter(data => data.productType === "DPK");
-
-        const PMSSales = PMS?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
+        const totalPMSTankLevel = totalTankLevel(PMS).reduce((accum, current) => {
+            return Number(accum) + Number(current.beforeSales);
         }, 0);
 
-        const AGOSales = AGO?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
+        const totalAGOTankLevel = totalTankLevel(AGO).reduce((accum, current) => {
+            return Number(accum) + Number(current.beforeSales);
         }, 0);
 
-        const DPKSales = DPK?.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
+        const totalDPKTankLevel = totalTankLevel(DPK).reduce((accum, current) => {
+            return Number(accum) + Number(current.beforeSales);
         }, 0);
 
-        return {pms: PMSSales, ago: AGOSales, dpk: DPKSales}
+        return {pms: totalPMSTankLevel, ago: totalAGOTankLevel, dpk: totalDPKTankLevel}
     }
 
     const getBalanceBF = () => {
 
-        const pmsBalance = getTankLevels().pms + getSalesRecord().pms;
-        const agoBalance = getTankLevels().ago + getSalesRecord().ago;
-        const dpkBalance = getTankLevels().dpk + getSalesRecord().dpk;
+        const pmsBalance = getTankLevels().pms;
+        const agoBalance = getTankLevels().ago;
+        const dpkBalance = getTankLevels().dpk;
         
         return {pms: isNaN(pmsBalance)? 0:  pmsBalance , ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
     }
@@ -568,23 +546,32 @@ const ProductDailySales = (props) => {
         const AGO = props?.sales?.filter(data => data.productType === "AGO");
         const DPK = props?.sales?.filter(data => data.productType === "DPK");
 
-        let pmsBF = 0;
-        let agoBF = 0;
-        let dpkBF = 0;
+        const totalTankLevel = (data) => {
+            const uniq = Array.from(new Set(data?.map(s => s.tankID)))
+            .map(id => {
+                return {
+                    sales: data.find(s => s.tankID === id).sales,
+                    afterSales: data.find(s => s.tankID === id).afterSales,
+                    beforeSales: data.find(s => s.tankID === id).beforeSales,
+                }
+            });
 
-        if(PMS){
-            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
+            return uniq;
         }
 
-        if(AGO){
-            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
-        }
+        const totalPMSTankLevel = totalTankLevel(PMS).reduce((accum, current) => {
+            return Number(accum) + Number(current.afterSales);
+        }, 0);
 
-        if(DPK){
-            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
-        }
+        const totalAGOTankLevel = totalTankLevel(AGO).reduce((accum, current) => {
+            return Number(accum) + Number(current.afterSales);
+        }, 0);
 
-        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
+        const totalDPKTankLevel = totalTankLevel(DPK).reduce((accum, current) => {
+            return Number(accum) + Number(current.afterSales);
+        }, 0);
+
+        return {pms: totalPMSTankLevel, ago: totalAGOTankLevel, dpk: totalDPKTankLevel}
     }
     
     const getBalanceBF = () => {
