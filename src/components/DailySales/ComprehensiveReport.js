@@ -969,7 +969,7 @@ const ComprehensiveReport = (props) => {
 
 const dats = {
     marginTop:'20px',
-    fontSize:'14px',
+    fontSize:'12px',
     fontWeight:'bold',
 }
 
@@ -980,16 +980,16 @@ const cont = {
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 const selectStyle2 = {
     width:'150px', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',

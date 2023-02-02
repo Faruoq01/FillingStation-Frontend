@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import swal from "sweetalert";
 import me4 from '../../assets/me4.png';
 import { updatePayload } from "../../store/actions/records";
 
@@ -23,25 +22,25 @@ const DippingComponents = (props) => {
     console.log(records, "records")
 
     const getPMSPump = useCallback(() => {
-        const newList = [...selectedTanks];
+        const newList = [...tankList];
         const pms = newList.filter(data => data.productType === "PMS");
         const pmsCopy = pms.map(data => Object.assign({}, data));
         return pmsCopy;
-    }, [selectedTanks]);
+    }, [tankList]);
 
     const getAGOPump = useCallback(() => {
-        const newList = [...selectedTanks];
+        const newList = [...tankList];
         const ago = newList.filter(data => data.productType === "AGO");
         const agoCopy = ago.map(data => Object.assign({}, data));
         return agoCopy;
-    }, [selectedTanks]);
+    }, [tankList]);
 
     const getDPKPump = useCallback(() => {
-        const newList = [...selectedTanks];
+        const newList = [...tankList];
         const dpk = newList.filter(data => data.productType === "DPK");
         const dpkCopy = dpk.map(data => Object.assign({}, data));
         return dpkCopy;
-    }, [selectedTanks]);
+    }, [tankList]);
 
     const [pms, setPMS] = useState([]);
     const [ago, setAGO] = useState([]);
@@ -68,31 +67,17 @@ const DippingComponents = (props) => {
     }
 
     const setTotalizer = (e, item) => {
-        let clonedPMS = {...item};
-        clonedPMS = {...clonedPMS, dippingValue: e.target.value};
-        const allTanks = selectedTanks.filter(data => data.productType === item.productType);
-        const findID = allTanks.findIndex(data => data._id === item._id);
+        const PMSTanks = tankList.filter(data => data.productType === "PMS");
+        const AGOTanks = tankList.filter(data => data.productType === "AGO");
+        const DPKTanks = tankList.filter(data => data.productType === "DPK");
 
-        if(findID === -1){
-            swal("Warning!", "This was not used for sales today!", "info");
-
-        }else{
-
-            if(item.productType === "PMS"){
-                const newList = [...allTanks]
-                newList[findID] = clonedPMS;
-                setPMS(newList);
-
-            }else if(item.productType === "AGO"){
-                const newList = [...allTanks]
-                newList[findID] = clonedPMS;
-                setAGO(newList);
-
-            }else{
-                const newList = [...allTanks]
-                newList[findID] = clonedPMS;
-                setDPK(newList);
-            }
+        if(item.productType === "PMS"){
+            let clonedPMS = {...item};
+            clonedPMS = {...clonedPMS, dippingValue: e.target.value};
+            const newPMSList = [...PMSTanks]
+            const pmsID = newPMSList.findIndex(data => data._id === item._id);
+            newPMSList[pmsID] = clonedPMS;
+            setPMS(newPMSList);
 
             const tankFromPayload = {...records};
             const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
@@ -102,6 +87,46 @@ const DippingComponents = (props) => {
 
             }else{
                 tankFromPayload['6'][indices] = clonedPMS;
+                dispatch(updatePayload(tankFromPayload));
+
+            }
+
+        }else if(item.productType === "AGO"){
+            let clonedAGO = {...item};
+            clonedAGO = {...clonedAGO, dippingValue: e.target.value};
+            const newAGOList = [...AGOTanks]
+            const agoID = newAGOList.findIndex(data => data._id === item._id);
+            newAGOList[agoID] = clonedAGO;
+            setAGO(newAGOList);
+
+            const tankFromPayload = {...records};
+            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            if(indices === -1){
+                tankFromPayload['6'].push(clonedAGO);
+                dispatch(updatePayload(tankFromPayload));
+
+            }else{
+                tankFromPayload['6'][indices] = clonedAGO;
+                dispatch(updatePayload(tankFromPayload));
+
+            }
+
+        }else{
+            let clonedDPK = {...item};
+            clonedDPK = {...clonedDPK, dippingValue: e.target.value};
+            const newDPKList = [...DPKTanks]
+            const agoID = newDPKList.findIndex(data => data._id === item._id);
+            newDPKList[agoID] = clonedDPK;
+            setAGO(newDPKList);
+
+            const tankFromPayload = {...records};
+            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            if(indices === -1){
+                tankFromPayload['6'].push(clonedDPK);
+                dispatch(updatePayload(tankFromPayload));
+
+            }else{
+                tankFromPayload['6'][indices] = clonedDPK;
                 dispatch(updatePayload(tankFromPayload));
 
             }

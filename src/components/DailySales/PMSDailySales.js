@@ -2,6 +2,8 @@ import React from 'react';
 import '../../styles/dailySales.scss';
 import { useSelector } from 'react-redux';
 
+const mobile = window.matchMedia('(max-width: 950px)');
+
 const PMSDailySales = (props) => {
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
@@ -129,7 +131,7 @@ const PMSDailySales = (props) => {
     }
 
     return(
-        <div style={{width: props.rep === false? '100%': '96%'}}>
+        <div style={{width: props.rep === false? '100%': '96%', overflowX: mobile.matches && 'scroll'}}>
             <div style={sales}>
                 <div style={top}>
                     <div style={tex}>Total Amount Of Sales (PMS)</div>
@@ -190,6 +192,7 @@ const PMSDailySales = (props) => {
 }
 
 const sales = {
+    minWidth:'950px',
     width: '100%',
     height: 'auto',
     marginTop: '10px',

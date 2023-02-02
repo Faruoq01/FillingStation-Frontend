@@ -15,6 +15,7 @@ const StationTanks = () => {
     const [allTanks, setAllTanks] = useState([]);
     const [defaultState] = useState(0);
     const dashboardData = useSelector(state => state.dashboardReducer.dashboardData);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const utils = useSelector(state => state.dashboardReducer.utils);
 
     useEffect(()=>{
@@ -271,103 +272,106 @@ const StationTanks = () => {
 
     return(
         <div className="stationTanksContainer">
-            <div style={{marginRight:'10px'}} className="left-form">
-                <div className="inner-tanks">
-                    <div className="inpt" style={{width:'100%'}}>
-                        <div style={{width:'100%', textAlign:'left'}}>State</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            disabled
-                            value={utils?.station?.state}
-                        />
-                    </div>
+            {oneStationData === null ||
+                <div style={{marginRight:'10px'}} className="left-form">
+                    <div className="inner-tanks">
+                        <div className="inpt" style={{width:'100%'}}>
+                            <div style={{width:'100%', textAlign:'left'}}>State</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                disabled
+                                value={utils?.station?.state}
+                            />
+                        </div>
 
-                    <div className="inpt" style={{width:'100%'}}>
-                        <div style={{width:'100%', textAlign:'left'}}>Station Name</div>
-                        <Select
-                            labelId="demo-select-small"
-                            id="demo-select-small"
-                            value={defaultState}
-                            sx={selectStyle2}
-                            disabled
-                        >
-                            <MenuItem style={menu} value={0}>{utils?.station?.outletName+ ', ' +utils?.station?.city}</MenuItem>
-                        </Select>
-                    </div>
+                        <div className="inpt" style={{width:'100%'}}>
+                            <div style={{width:'100%', textAlign:'left'}}>Station Name</div>
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={defaultState}
+                                sx={selectStyle2}
+                                disabled
+                            >
+                                <MenuItem style={menu} value={0}>{utils?.station?.outletName+ ', ' +utils?.station?.city}</MenuItem>
+                            </Select>
+                        </div>
 
-                    <div className="inpt" style={{width:'100%'}}>
-                        <div style={{width:'100%', textAlign:'left'}}>City/Town</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            disabled
-                            value={utils?.station?.city}
-                        />
-                    </div>
+                        <div className="inpt" style={{width:'100%'}}>
+                            <div style={{width:'100%', textAlign:'left'}}>City/Town</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                disabled
+                                value={utils?.station?.city}
+                            />
+                        </div>
 
-                    <div className="inpt" style={{width:'100%'}}>
-                        <div style={{width:'100%', textAlign:'left'}}>Tank ID</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            disabled
-                            value={utils?.station?._id}
-                        />
-                    </div>
+                        <div className="inpt" style={{width:'100%'}}>
+                            <div style={{width:'100%', textAlign:'left'}}>Tank ID</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                disabled
+                                value={utils?.station?._id}
+                            />
+                        </div>
 
-                    <div className="inpt" style={{width:'100%'}}>
-                        <div style={{width:'100%', textAlign:'left'}}>LGA</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            disabled
-                            value={utils?.station?.lga}
-                        />
-                    </div>
+                        <div className="inpt" style={{width:'100%'}}>
+                            <div style={{width:'100%', textAlign:'left'}}>LGA</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                disabled
+                                value={utils?.station?.lga}
+                            />
+                        </div>
 
-                    <div className="inpt" style={{width:'100%'}}>
-                        <div style={{width:'100%', textAlign:'left'}}>Street</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            disabled
-                            value={utils?.station?.area}
-                        />
+                        <div className="inpt" style={{width:'100%'}}>
+                            <div style={{width:'100%', textAlign:'left'}}>Street</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                disabled
+                                value={utils?.station?.area}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="pump-container">
+            }
+
+            <div style={{width: oneStationData === null && "100%"}} className="pump-container">
                 <div className='head'>
                     <div className='tabs'>
                         <div onClick={()=>{setTabs(0)}} style={tabs === 0? tab1 : tab2}>All</div>

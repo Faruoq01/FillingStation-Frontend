@@ -697,7 +697,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Expenses</div>
-                                        <div>NGN {approx(payments.hasOwnProperty("payments")? payments.expenses: "0")}</div>
+                                        <div>NGN {payments.hasOwnProperty("payments")? payments.expenses: "0"}</div>
                                     </div>
                                 }
                             </div>
@@ -706,7 +706,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Payments</div>
-                                        <div>NGN {approx(payments.hasOwnProperty("payments")? payments.payments: "0")}</div>
+                                        <div>NGN {payments.hasOwnProperty("payments")? payments.payments: "0"}</div>
                                     </div>
                                 }
                             </div>
@@ -722,11 +722,13 @@ const DailySales = (props) => {
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
                                     sx={{
-                                        width:'165px',
+                                        width:'150px',
                                         height:'30px',
                                         background:'#06805B',
                                         fontSize:'11px',
                                         borderRadius:'0px',
+                                        fontFamily:'Poppins',
+                                        textTransform:'capitalize',
                                         '&:hover': {
                                             backgroundColor: '#06805B'
                                         }
@@ -747,7 +749,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{approx(dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0")}</div>
+                                            <div>{dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0"}</div>
                                         </div>
                                     </>
                                 }
@@ -761,7 +763,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{approx(dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0")}</div>
+                                            <div>{dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0"}</div>
                                         </div>
                                     </>
                                 }
@@ -775,7 +777,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{approx(dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0")}</div>
+                                            <div>{dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0"}</div>
                                         </div>
                                     </>
                                 }
@@ -789,11 +791,13 @@ const DailySales = (props) => {
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
                                     sx={{
-                                        width:'165px',
+                                        width:'150px',
                                         height:'30px',
                                         background:'#06805B',
                                         fontSize:'11px',
                                         borderRadius:'0px',
+                                        fontFamily:'Poppins',
+                                        textTransform:'capitalize',
                                         '&:hover': {
                                             backgroundColor: '#06805B'
                                         }
@@ -810,27 +814,27 @@ const DailySales = (props) => {
                                             <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>Net to bank</div>
                                             <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>Payment</div>
                                             <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>
-                                                NGN {approx(payments.hasOwnProperty("payments")? payments.payments: "0")}
+                                                NGN {payments.hasOwnProperty("payments")? payments.payments: "0"}
                                             </div>
                                             <div style={{fontSize:'12px', fontWeight:'bold'}} className='item-count'>Outstanding</div>
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                NGN {approx((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0")}
+                                                NGN {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0"}
                                             </div>
                                             <div style={{color:'#0872D4'}}  className='item-count'>Teller</div>
                                             <div style={{color:'#0872D4'}} className='item-count'>
-                                                NGN {approx(payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0")}
+                                                NGN {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0"}
                                             </div>
                                             <div className='item-count'>
-                                                {approx((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0")}
+                                                {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0"}
                                             </div>
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'></div>
                                             <div style={{color:'#000'}}  className='item-count'>POS</div>
                                             <div style={{color:'#000'}} className='item-count'>
-                                                NGN {approx(payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0")}
+                                                NGN {payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0"}
                                             </div>
                                             <div className='item-count'></div>
                                         </div>
@@ -846,11 +850,13 @@ const DailySales = (props) => {
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
                                     sx={{
-                                        width:'165px',
+                                        width:'150px',
                                         height:'30px',
                                         background:'#06805B',
                                         fontSize:'11px',
                                         borderRadius:'0px',
+                                        fontFamily:'Poppins',
+                                        textTransform:'capitalize',
                                         '&:hover': {
                                             backgroundColor: '#06805B'
                                         }
@@ -869,10 +875,10 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                {approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0")} Litres
+                                                {dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0"} Litres
                                             </div>
                                             <div className='item-count'>
-                                                NGN {approx(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0")}
+                                                NGN {dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0"}
                                             </div>
                                         </div>
                                     </div>
@@ -883,21 +889,24 @@ const DailySales = (props) => {
                         <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'40px', justifyContent:'space-between'}} className="tank-text">
                             <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Incoming Order</div>
                             <Button 
-                                variant="contained" 
-                                startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} alt="icon" src={slideMenu} />}
-                                sx={{
-                                    width:'165px',
-                                    height:'30px',
-                                    background:'#06805B',
-                                    fontSize:'11px',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                }}
-                                onClick={()=>{history.push("/home/inc-orders")}}
-                            >
-                                View in details
-                            </Button>
+                                    variant="contained" 
+                                    startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
+                                    sx={{
+                                        width:'150px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'11px',
+                                        borderRadius:'0px',
+                                        fontFamily:'Poppins',
+                                        textTransform:'capitalize',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                    }}
+                                    onClick={()=>{history.push("/home/inc-orders")}}
+                                >
+                                    View in details
+                                </Button>
                         </div>
 
                         <div style={{width:'100%', marginBottom:'40px'}}>

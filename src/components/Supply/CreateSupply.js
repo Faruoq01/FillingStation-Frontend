@@ -259,7 +259,7 @@ const CreateSupply = (props) => {
                                         onChange={(e)=>{incomingTanks(e, data)}} 
                                         className="tank-input" type={'text'} 
                                         style={{width:'98%'}}
-                                        placeholder={`Current level: ${data.fakeLevelThree}`}
+                                        placeholder={`Current level: ${data.currentLevel}`}
                                     />
                                 </div>
                             )

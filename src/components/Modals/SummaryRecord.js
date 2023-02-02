@@ -8,6 +8,7 @@ import RecordSalesService from '../../services/DailyRecordSales';
 import swal from 'sweetalert';
 import { passRecordSales } from '../../store/actions/dailySales';
 import {useHistory} from 'react-router-dom'
+import { changeStation } from '../../store/actions/records';
 
 function DoublyLinkedListNode(data){
     this.data = data;
@@ -79,6 +80,7 @@ const SummaryRecord = (props) => {
                 });
             }
             dispatch(passRecordSales(list));
+            dispatch(changeStation());
             history.push("/home/daily-sales");
             props.clops(false);
         })
@@ -256,7 +258,7 @@ const SummaryRecord = (props) => {
                                 records['5']?.map((data, index) => {
                                     return(
                                         <div key={index} style={wide}>
-                                            <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.bankName}</div>
+                                            <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.bankName === null? data.posName: data.bankName}</div>
                                             <div style={secondBox}>&nbsp;&nbsp;&nbsp; {data.amountPaid} Ltrs</div>
                                         </div>
                                     )
@@ -273,7 +275,7 @@ const SummaryRecord = (props) => {
                                 records['6']?.map((data, index) => {
                                     return(
                                         <div key={index} style={wide}>
-                                            <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.tankName}</div>
+                                            <div style={firstBox}>&nbsp;&nbsp;&nbsp; {data.tankName + "( "+ data.productType +" )"}</div>
                                             <div style={secondBox}>&nbsp;&nbsp;&nbsp; {data.dippingValue} Ltrs</div>
                                         </div>
                                     )

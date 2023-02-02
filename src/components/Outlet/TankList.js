@@ -345,17 +345,20 @@ const tankss = {
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 const selectStyle2 = {
     width:'200px', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
-    outline:'none'
+    fontSize:'12px',
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 export default ListAllTanks;

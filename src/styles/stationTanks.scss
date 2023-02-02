@@ -165,3 +165,19 @@
         margin-top: 80px;
     }
 }
+
+@media (max-width: 600px){
+    .stationTanksContainer{
+        height: auto;
+        flex-direction: column;
+
+        .left-form{
+            width: 96%;
+        }
+
+        .pump-container{
+            width: 100%;
+            margin-top: 20px;
+        }
+    }
+}
