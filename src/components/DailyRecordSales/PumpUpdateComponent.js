@@ -147,9 +147,16 @@ const PumpUpdateComponent = (props) => {
                 load.sales = totalSales;
                 load.beforeSales =  load.currentLevel;
                 load.afterSales =  Number(load.currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
+                load.balanceCF = totalTankLevel - totalSales;
                 load.outlet = oneStationData;
                 load.totalTankLevel = totalTankLevel;
                 tankFromPayload['1'].push(load);
+
+                const getAllSalesData = [...tankFromPayload['1']];
+                for(let i = 0; i < getAllSalesData.length; i++ ){
+                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
+                }
+
                 dispatch(updatePayload(tankFromPayload));
 
             }else{
@@ -162,8 +169,15 @@ const PumpUpdateComponent = (props) => {
                 tankFromPayload['1'][currentHostTank].sales = totalSales;
                 tankFromPayload['1'][currentHostTank].outlet = oneStationData;
                 tankFromPayload['1'][currentHostTank].totalTankLevel = totalTankLevel;
+                tankFromPayload['1'][currentHostTank].balanceCF = totalTankLevel - totalSales;
                 tankFromPayload['1'][currentHostTank].beforeSales = tankFromPayload['1'][currentHostTank].currentLevel;
                 tankFromPayload['1'][currentHostTank].afterSales = Number(tankFromPayload['1'][currentHostTank].currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
+                
+                const getAllSalesData = [...tankFromPayload['1']];
+                for(let i = 0; i < getAllSalesData.length; i++ ){
+                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
+                }
+                
                 dispatch(updatePayload(tankFromPayload));
             }
 
@@ -203,9 +217,16 @@ const PumpUpdateComponent = (props) => {
                 load.sales = totalSales;
                 load.beforeSales =  load.currentLevel;
                 load.afterSales =  Number(load.currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
+                load.balanceCF = totalTankLevel - totalSales;
                 load.outlet = oneStationData;
                 load.totalTankLevel = totalTankLevel;
                 tankFromPayload['1'].push(load);
+
+                const getAllSalesData = [...tankFromPayload['1']];
+                for(let i = 0; i < getAllSalesData.length; i++ ){
+                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
+                }
+
                 dispatch(updatePayload(tankFromPayload));
 
             }else{
@@ -218,8 +239,15 @@ const PumpUpdateComponent = (props) => {
                 tankFromPayload['1'][currentHostTank].sales = totalSales;
                 tankFromPayload['1'][currentHostTank].outlet = oneStationData;
                 tankFromPayload['1'][currentHostTank].totalTankLevel = totalTankLevel;
+                tankFromPayload['1'][currentHostTank].balanceCF = totalTankLevel - totalSales;
                 tankFromPayload['1'][currentHostTank].beforeSales = tankFromPayload['1'][currentHostTank].currentLevel;
                 tankFromPayload['1'][currentHostTank].afterSales = Number(tankFromPayload['1'][currentHostTank].currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
+                
+                const getAllSalesData = [...tankFromPayload['1']];
+                for(let i = 0; i < getAllSalesData.length; i++ ){
+                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
+                }
+
                 dispatch(updatePayload(tankFromPayload));
             }
 
@@ -260,8 +288,15 @@ const PumpUpdateComponent = (props) => {
                 load.beforeSales =  load.currentLevel;
                 load.outlet = oneStationData;
                 load.totalTankLevel = totalTankLevel;
+                load.balanceCF = totalTankLevel - totalSales;
                 load.afterSales =  Number(load.currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
                 tankFromPayload['1'].push(load);
+
+                const getAllSalesData = [...tankFromPayload['1']];
+                for(let i = 0; i < getAllSalesData.length; i++ ){
+                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
+                }
+
                 dispatch(updatePayload(tankFromPayload));
 
             }else{
@@ -274,8 +309,15 @@ const PumpUpdateComponent = (props) => {
                 tankFromPayload['1'][currentHostTank].sales = totalSales;
                 tankFromPayload['1'][currentHostTank].outlet = oneStationData;
                 tankFromPayload['1'][currentHostTank].totalTankLevel = totalTankLevel;
+                tankFromPayload['1'][currentHostTank].balanceCF = totalTankLevel - totalSales;
                 tankFromPayload['1'][currentHostTank].beforeSales = tankFromPayload['1'][currentHostTank].currentLevel;
                 tankFromPayload['1'][currentHostTank].afterSales = Number(tankFromPayload['1'][currentHostTank].currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
+                
+                const getAllSalesData = [...tankFromPayload['1']];
+                for(let i = 0; i < getAllSalesData.length; i++ ){
+                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
+                }
+                
                 dispatch(updatePayload(tankFromPayload));
             }
         }

@@ -67,87 +67,70 @@ const DippingComponents = (props) => {
     }
 
     const setTotalizer = (e, item) => {
-        let clonedPMS = {...item};
-        clonedPMS = {...clonedPMS, dippingValue: e.target.value};
-        const allTanks = [...tankList];
-        const tankID = allTanks.findIndex(data => data._id === item._id);
-        allTanks[tankID] = clonedPMS;
+        const PMSTanks = tankList.filter(data => data.productType === "PMS");
+        const AGOTanks = tankList.filter(data => data.productType === "AGO");
+        const DPKTanks = tankList.filter(data => data.productType === "DPK");
 
-        const tankFromPayload = {...records};
-        const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
-        tankFromPayload['6'][indices] = clonedPMS;
-        dispatch(updatePayload(tankFromPayload));
-        // const PMSTanks = tankList.filter(data => data.productType === "PMS");
-        // const AGOTanks = tankList.filter(data => data.productType === "AGO");
-        // const DPKTanks = tankList.filter(data => data.productType === "DPK");
+        if(item.productType === "PMS"){
+            let clonedPMS = {...item};
+            clonedPMS = {...clonedPMS, dippingValue: e.target.value};
+            const newPMSList = [...PMSTanks];
+            const pmsID = newPMSList.findIndex(data => data._id === item._id);
+            newPMSList[pmsID] = clonedPMS;
+            setPMS(newPMSList);
 
-        // if(item.productType === "PMS"){
-        //     let clonedPMS = {...item};
-        //     clonedPMS = {...clonedPMS, dippingValue: e.target.value};
-        //     const newPMSList = [...PMSTanks]
-        //     const pmsID = newPMSList.findIndex(data => data._id === item._id);
-        //     newPMSList[pmsID] = clonedPMS;
-        //     setPMS(newPMSList);
+            const tankFromPayload = {...records};
+            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            if(indices === -1){
+                tankFromPayload['6'].push(clonedPMS);
+                dispatch(updatePayload(tankFromPayload));
 
-        //     const tankFromPayload = {...records};
-        //     const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
-        //     if(indices === -1){
-        //         tankFromPayload['6'].push(clonedPMS);
-        //         dispatch(updatePayload(tankFromPayload));
+            }else{
+                tankFromPayload['6'][indices] = clonedPMS;
+                dispatch(updatePayload(tankFromPayload));
 
-        //     }else{
-        //         tankFromPayload['6'][indices] = clonedPMS;
-        //         dispatch(updatePayload(tankFromPayload));
+            }
 
-        //     }
+        }else if(item.productType === "AGO"){
+            let clonedAGO = {...item};
+            clonedAGO = {...clonedAGO, dippingValue: e.target.value};
+            const newAGOList = [...AGOTanks]
+            const agoID = newAGOList.findIndex(data => data._id === item._id);
+            newAGOList[agoID] = clonedAGO;
+            setAGO(newAGOList);
 
-        // }else if(item.productType === "AGO"){
-        //     let clonedAGO = {...item};
-        //     clonedAGO = {...clonedAGO, dippingValue: e.target.value};
-        //     const newAGOList = [...AGOTanks]
-        //     const agoID = newAGOList.findIndex(data => data._id === item._id);
-        //     newAGOList[agoID] = clonedAGO;
-        //     setAGO(newAGOList);
+            const tankFromPayload = {...records};
+            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            if(indices === -1){
+                tankFromPayload['6'].push(clonedAGO);
+                dispatch(updatePayload(tankFromPayload));
 
-        //     const tankFromPayload = {...records};
-        //     const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
-        //     if(indices === -1){
-        //         tankFromPayload['6'].push(clonedAGO);
-        //         dispatch(updatePayload(tankFromPayload));
+            }else{
+                tankFromPayload['6'][indices] = clonedAGO;
+                dispatch(updatePayload(tankFromPayload));
 
-        //     }else{
-        //         tankFromPayload['6'][indices] = clonedAGO;
-        //         dispatch(updatePayload(tankFromPayload));
+            }
 
-        //     }
+        }else{
+            let clonedDPK = {...item};
+            clonedDPK = {...clonedDPK, dippingValue: e.target.value};
+            const newDPKList = [...DPKTanks]
+            const agoID = newDPKList.findIndex(data => data._id === item._id);
+            newDPKList[agoID] = clonedDPK;
+            setAGO(newDPKList);
 
-        // }else{
-        //     let clonedDPK = {...item};
-        //     clonedDPK = {...clonedDPK, dippingValue: e.target.value};
-        //     const newDPKList = [...DPKTanks]
-        //     const agoID = newDPKList.findIndex(data => data._id === item._id);
-        //     newDPKList[agoID] = clonedDPK;
-        //     setAGO(newDPKList);
+            const tankFromPayload = {...records};
+            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            if(indices === -1){
+                tankFromPayload['6'].push(clonedDPK);
+                dispatch(updatePayload(tankFromPayload));
 
-        //     const tankFromPayload = {...records};
-        //     const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
-        //     if(indices === -1){
-        //         tankFromPayload['6'].push(clonedDPK);
-        //         dispatch(updatePayload(tankFromPayload));
+            }else{
+                tankFromPayload['6'][indices] = clonedDPK;
+                dispatch(updatePayload(tankFromPayload));
 
-        //     }else{
-        //         tankFromPayload['6'][indices] = clonedDPK;
-        //         dispatch(updatePayload(tankFromPayload));
-
-        //     }
-        // }
-    }
-
-    const getPMS = () => {
-        const pms = tankList.filter(data => data.productType === "PMS");
-        const ago = tankList.filter(data => data.productType === "AGO");
-        const dpk = tankList.filter(data => data.productType === "DPK");
-        return {pms: pms, ago: ago, dpk: dpk};
+            }
+        }
     }
 
     return(
@@ -199,7 +182,7 @@ const DippingComponents = (props) => {
                     tankList.length === 0?
                     <div style={created}>No PMS tank created</div>:
                     productType === "PMS"?
-                    getPMS().pms.map((item, index) => {
+                    pms.map((item, index) => {
                         return(
                             <div style={{justifyContent:'flex-start', height:'210px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
@@ -212,7 +195,7 @@ const DippingComponents = (props) => {
                         )
                     }):
                     productType === "AGO"?
-                    getPMS().ago.map((item, index) => {
+                    ago.map((item, index) => {
                         return(
                             <div style={{justifyContent:'flex-start', height:'210px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
@@ -225,7 +208,7 @@ const DippingComponents = (props) => {
                         )
                     }):
                     productType === "DPK"?
-                    getPMS().dpk.map((item, index) => {
+                    dpk.map((item, index) => {
                         return(
                             <div style={{justifyContent:'flex-start', height:'210px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>

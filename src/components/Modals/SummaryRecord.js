@@ -137,6 +137,14 @@ const SummaryRecord = (props) => {
                                                     <span style={{marginLeft:'10px'}}>Level After Sales: {data.afterSales} ltrs</span>
                                                     <span style={{marginRight:'10px'}}></span>
                                                 </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Balance Brought Forward: {data.totalTankLevel} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
+                                                <div style={line}>
+                                                    <span style={{marginLeft:'10px'}}>Balance Carried Forward: {data.balanceCF} ltrs</span>
+                                                    <span style={{marginRight:'10px'}}></span>
+                                                </div>
                                             </div>
 
                                             {
