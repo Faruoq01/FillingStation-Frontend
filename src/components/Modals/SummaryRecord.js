@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import close from '../../assets/close.png';
 import Modal from '@mui/material/Modal';
 import '../../styles/lpo.scss';
@@ -6,56 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@mui/material';
 import RecordSalesService from '../../services/DailyRecordSales';
 import swal from 'sweetalert';
-import { passRecordSales } from '../../store/actions/dailySales';
 import {useHistory} from 'react-router-dom'
-import { changeStation } from '../../store/actions/records';
-
-function DoublyLinkedListNode(data){
-    this.data = data;
-    this.next = null;
-    this.prev = null;
-    this.data.ago = [];
-    this.data.pms = [];
-    this.data.dpk = [];
-    this.data.selectedPumps = [];
-    this.data.selectedTanks = [];
-    this.data.lpo = [];
-    this.data.supply = [];
-    this.data.expenses = [];
-    this.data.pay = [];
-    this.data.dipping = [];
-}
-
-function DoublyLinkedList(){
-    this.head = null;
-    this.currentDate = null;
-    this.size = 0;
-    this.page = 1;
-
-    this.isEmpty = function(){
-        return this.size === 0;
-    }
-
-    this.addNode = function(value){
-        if(this.head === null){
-            this.head = new DoublyLinkedListNode(value);
-        }else{
-            var temp = new DoublyLinkedListNode(value);
-            temp.next = this.head;
-            this.head.prev = temp;
-            this.head = temp;
-        }
-        this.size++;
-    }
-
-    this.nextPage = function(){
-        this.head = this.head.next
-    }
-
-    this.previousPage = function(){
-        this.head = this.head.prev
-    }
-}
+import { changeStation, updatePayload } from '../../store/actions/records';
 
 const SummaryRecord = (props) => {
 
@@ -63,27 +15,114 @@ const SummaryRecord = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const records = useSelector(state => state.recordsReducer.load);
+    const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
+    const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
     const currentDate = useSelector(state => state.recordsReducer.currentDate);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const tankList = useSelector(state => state.outletReducer.tankList);
     console.log(records, "summary")
+    console.log(selectedPumps, "Pumps")
+    console.log(selectedTanks, "Tanks")
 
+    const updateTankDetails = (product, tank) => {
+        const onlyPMS = [...tankList].filter(data => data.productType === product);
+        const totalTankLevel = onlyPMS.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel);
+        }, 0);
+
+        const allPumps = selectedPumps.filter(pump => pump.hostTank === tank._id);
+        const allProductPumps = selectedPumps.filter(pump => pump.productType === product);
+
+        const sales = allPumps.reduce((accum, current) => {
+            return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
+        }, 0);
+
+        const productSales = allProductPumps.reduce((accum, current) => {
+            return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
+        }, 0);
+
+        const finalUpdate = {
+            ...tank,
+            pumps: allPumps,
+            totalSales: sales,
+            afterSales: Number(tank.currentLevel) - sales,
+            outlet: oneStationData,
+            totalTankLevel: totalTankLevel,
+            balanceCF: totalTankLevel - productSales,
+        }
+
+        return finalUpdate;
+    }
+
+    const updateAllTanks = () => {
+
+        const updatedTanks = selectedTanks?.map(data => {
+            let update;
+
+            if(data.productType === "PMS"){
+                update = updateTankDetails("PMS", data);
+
+            }else if(data.productType === "AGO"){
+                update = updateTankDetails("AGO", data);
+
+            }else if(data.productType === "DPK"){
+                update = updateTankDetails("DPK", data);
+
+            }
+
+            return update;
+        });
+
+        const tankFromPayload = {...records};
+        tankFromPayload['1'] = updatedTanks;
+        dispatch(updatePayload(tankFromPayload));
+    };
+
+    useEffect(()=>{
+        updateAllTanks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const saveRecordSales = () => {
         props.clops(true);
         RecordSalesService.saveRecordSales({load: records, currentDate: currentDate}).then(data => {
             swal("Success!", "Daily sales recorded successfully!", "success");
         }).then(()=>{
-            const list = new DoublyLinkedList();
-            for(let i=6; i > 0 ; i--){
-                list.addNode({
-                    currentPage: String(i),
-                    payload: [],
-                });
-            }
-            dispatch(passRecordSales(list));
             dispatch(changeStation());
             history.push("/home/daily-sales");
             props.clops(false);
         })
+    }
+
+    const getBackground = (type) => {
+        if(type === "PMS"){
+            return "#50C878";
+
+        }else if(type === "AGO"){
+            return "#FFA010";
+
+        }else if(type === "DPK"){
+            return "#35393E";
+        }
+    }
+
+    const removeData = (index) => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to delete this record?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                const pumpUpdate = [...records['1']];
+                pumpUpdate.pop(index);
+                const cloneRecords  = {...records};
+                cloneRecords['1'] = pumpUpdate;
+                dispatch(updatePayload(cloneRecords));
+            }
+        });
     }
 
     return(
@@ -111,11 +150,11 @@ const SummaryRecord = (props) => {
                                 <div style={men}>No records</div>:
                                 records['1']?.map((data, index)=> {
                                     return(
-                                        <div key={index} style={tankContainer}>
+                                        <div key={index} style={{...tankContainer, background: getBackground(data.productType)}}>
                                             <div style={tankProps}>
                                                 <div style={line}>
-                                                    <span style={{marginLeft:'10px', fontSize:'14px', fontWeight:'bold', color:'#FFA010'}}>{data.productType} ({data.tankName})</span>
-                                                    <span style={{marginRight:'10px'}}></span>
+                                                    <span style={{marginLeft:'10px', fontSize:'14px', fontWeight:'bold', color: getBackground(data.productType)}}>{data.productType} ({data.tankName})</span>
+                                                    <span onClick={()=>{removeData(index)}} style={butt}>Delete</span>
                                                 </div>
                                                 <div style={line}>
                                                     <span style={{marginLeft:'10px'}}>Tank Capacity: {data.tankCapacity} ltrs</span>
@@ -126,7 +165,7 @@ const SummaryRecord = (props) => {
                                                     <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                                 <div style={line}>
-                                                    <span style={{marginLeft:'10px'}}>Total sales: {data.sales} ltrs</span>
+                                                    <span style={{marginLeft:'10px'}}>Total sales: {data.totalSales} ltrs</span>
                                                     <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                                 <div style={line}>
@@ -152,7 +191,7 @@ const SummaryRecord = (props) => {
                                                 <div style={men}>No records</div>:
                                                 data?.pumps?.map((item, index) => {
                                                     return(
-                                                        <div key={index} style={{...wide, width:'96%'}}>
+                                                        <div key={index} style={{...wide, width:'98%'}}>
                                                             <div style={secondBox}>&nbsp;&nbsp;&nbsp; {item.pumpName}</div>
                                                             <div style={secondBox}>&nbsp;&nbsp;&nbsp; {item.sales} Ltrs</div>
                                                         </div>
@@ -173,10 +212,10 @@ const SummaryRecord = (props) => {
                                 <div style={men}>No records</div>:
                                 records['2']?.map((data, index)=> {
                                     return(
-                                        <div key={index} style={tankContainer}>
+                                        <div key={index} style={{...tankContainer, background: getBackground(data.productType)}}>
                                             <div style={tankProps}>
                                                 <div style={line}>
-                                                    <span style={{marginLeft:'10px', fontSize:'14px', fontWeight:'bold', color:'#FFA010'}}>{data.productType} ({data.tankName})</span>
+                                                    <span style={{marginLeft:'10px', fontSize:'14px', fontWeight:'bold', color: getBackground(data.productType)}}>{data.productType} ({data.tankName})</span>
                                                     <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                                 <div style={line}>
@@ -210,7 +249,7 @@ const SummaryRecord = (props) => {
                                                 <div style={men}>No records</div>:
                                                 data?.pumps?.map((item, index) => {
                                                     return(
-                                                        <div key={index} style={{...wide, width:'96%'}}>
+                                                        <div key={index} style={{...wide, width:'98%'}}>
                                                             <div style={secondBox}>&nbsp;&nbsp;&nbsp; {item.pumpName}</div>
                                                             <div style={secondBox}>&nbsp;&nbsp;&nbsp; {item.RTlitre} Ltrs</div>
                                                         </div>
@@ -315,6 +354,17 @@ const SummaryRecord = (props) => {
     )
 }
 
+const butt = {
+    width:'50px',
+    height:'25px',
+    marginRight:'10px',
+    marginTop:'10px',
+    background:'red',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center'
+}
+
 const line = {
     width:'100%',
     fontSize:'12px',
@@ -329,10 +379,11 @@ const line = {
 }
 
 const tankProps = {
-    width:'96%',
+    width:'98%',
     height:'auto',
     borderRadius:'5px',
-    overflow:'hidden'
+    overflow:'hidden',
+    background:'#525252'
 }
 
 const tankContainer = {
@@ -341,9 +392,9 @@ const tankContainer = {
     display:'flex',
     flexDirection:'column',
     alignItems:'center',
-    background:'#E6F5F1',
-    paddingTop:'10px',
-    paddingBottom:'10px'
+    paddingTop:'5px',
+    paddingBottom:'5px',
+    marginTop:'10px'
 }
 
 const add = {

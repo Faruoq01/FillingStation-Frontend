@@ -1,5 +1,6 @@
 import { 
     UPDATE_PUMPS,
+    UPDATE_SELECTED_PUMPS,
     LOGOUT,
     SELECTED_PUMPS,
     DESELECT_PUMP_LIST,
@@ -53,6 +54,13 @@ const recordsReducer = (state = initialState, action) => {
                 PMS: payload.pms,
                 AGO: payload.ago,
                 DPK: payload.dpk,
+            }
+        }
+
+        case UPDATE_SELECTED_PUMPS:{
+            return {
+                ...state,
+                selectedPumps: payload
             }
         }
 

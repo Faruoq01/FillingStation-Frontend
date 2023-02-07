@@ -1,5 +1,6 @@
 import { 
     UPDATE_PUMPS,
+    UPDATE_SELECTED_PUMPS,
     SELECTED_PUMPS,
     DESELECT_PUMP_LIST,
     UPDATE_LOAD,
@@ -29,5 +30,9 @@ export const changeStation = (params) => dispatch => {
 
 export const changeDate = (params) => dispatch => {
     dispatch({ type: CHANGE_DATE, payload: params});
+}
+
+export const updateSelectedPumps = (params) => dispatch => {
+    dispatch({ type: UPDATE_SELECTED_PUMPS, payload: params });
 }
 

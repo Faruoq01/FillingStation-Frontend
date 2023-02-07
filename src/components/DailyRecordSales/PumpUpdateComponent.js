@@ -1,10 +1,12 @@
-import { Radio } from "@mui/material"
+import { Radio } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { desselectedListPumps, selectedListPumps, updatePayload, updateRecords } from "../../store/actions/records";
+import { desselectedListPumps, selectedListPumps, updateRecords, updateSelectedPumps } from "../../store/actions/records";
+import OutletService from "../../services/outletService";
+import { getAllPumps } from "../../store/actions/outlet";
 
 const mediaMatch = window.matchMedia('(max-width: 500px)');
 
@@ -48,7 +50,6 @@ const PumpUpdateComponent = (props) => {
 
     useEffect(()=>{
         dispatch(updateRecords({pms: getPMSPump(), ago: getAGOPump(), dpk: getDPKPump()}));
-        
     }, [dispatch, getAGOPump, getDPKPump, getPMSPump]);
 
     const onRadioClick = (data) => {
@@ -109,7 +110,7 @@ const PumpUpdateComponent = (props) => {
         }
     }
 
-    const updateTotalizer = (e, totalizerDiff, pump, connectedTank) => {
+    const updateTotalizer = (e, totalizerDiff, index, pump) => {
         
         if(productType === "PMS"){
 
@@ -118,68 +119,24 @@ const PumpUpdateComponent = (props) => {
             ############################################*/
 
             const onlyPMS = [...tankList].filter(data => data.productType === "PMS");
-            const totalTankLevel = onlyPMS.reduce((accum, current) => {
+            const totalPMSTankLevel = onlyPMS.reduce((accum, current) => {
                 return Number(accum) + Number(current.currentLevel);
             }, 0);
 
             const newPms = [...PMS];
-            const findID = newPms.findIndex(data => data._id === pump._id);
-            newPms[findID].sales = Number(totalizerDiff) < 0? 0: Number(totalizerDiff);
-            newPms[findID].newTotalizer = e;
-            newPms[findID].totalTankLevel = totalTankLevel;
+            newPms[index].sales = totalizerDiff;
+            newPms[index].newTotalizer = e;
+            newPms[index].totalTankLevel = totalPMSTankLevel;
+
+            const selectedPMS = [...selectedPumps];
+            const pumpID = selectedPMS.findIndex(data => data._id === pump._id);
+            selectedPMS[pumpID].sales = totalizerDiff;
+            selectedPMS[pumpID].newTotalizer = e;
+            selectedPMS[pumpID].totalTankLevel = totalPMSTankLevel;
+
+
             dispatch(updateRecords({pms: newPms, ago: AGO, dpk: DPK}));
-
-            /*###########################################
-                Update the tank readings for PMS
-            ############################################*/
-
-            const tankFromPayload = {...records};
-            const currentHostTank = tankFromPayload['1'].findIndex(data => data._id === pump.hostTank);
-
-            if(currentHostTank === -1){
-                const load = {...connectedTank};
-                const allPMSPumps = selectedPumps.filter(data => data.hostTank === load._id);
-                const totalSales = allPMSPumps.reduce((accum, current) => {
-                    return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
-                }, 0);
-
-                load.pumps = allPMSPumps;
-                load.sales = totalSales;
-                load.beforeSales =  load.currentLevel;
-                load.afterSales =  Number(load.currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
-                load.balanceCF = totalTankLevel - totalSales;
-                load.outlet = oneStationData;
-                load.totalTankLevel = totalTankLevel;
-                tankFromPayload['1'].push(load);
-
-                const getAllSalesData = [...tankFromPayload['1']];
-                for(let i = 0; i < getAllSalesData.length; i++ ){
-                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
-                }
-
-                dispatch(updatePayload(tankFromPayload));
-
-            }else{
-                const allPMSPumps = selectedPumps.filter(data => data.hostTank === tankFromPayload['1'][currentHostTank]._id);
-                const totalSales = allPMSPumps.reduce((accum, current) => {
-                    return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
-                }, 0);
-
-                tankFromPayload['1'][currentHostTank].pumps = allPMSPumps;
-                tankFromPayload['1'][currentHostTank].sales = totalSales;
-                tankFromPayload['1'][currentHostTank].outlet = oneStationData;
-                tankFromPayload['1'][currentHostTank].totalTankLevel = totalTankLevel;
-                tankFromPayload['1'][currentHostTank].balanceCF = totalTankLevel - totalSales;
-                tankFromPayload['1'][currentHostTank].beforeSales = tankFromPayload['1'][currentHostTank].currentLevel;
-                tankFromPayload['1'][currentHostTank].afterSales = Number(tankFromPayload['1'][currentHostTank].currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
-                
-                const getAllSalesData = [...tankFromPayload['1']];
-                for(let i = 0; i < getAllSalesData.length; i++ ){
-                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
-                }
-                
-                dispatch(updatePayload(tankFromPayload));
-            }
+            dispatch(updateSelectedPumps(selectedPMS));
 
         }else if(productType === "AGO"){
 
@@ -188,68 +145,24 @@ const PumpUpdateComponent = (props) => {
             ############################################*/
 
             const onlyAGO = [...tankList].filter(data => data.productType === "AGO");
-            const totalTankLevel = onlyAGO.reduce((accum, current) => {
+            const totalAG0TankLevel = onlyAGO.reduce((accum, current) => {
                 return Number(accum) + Number(current.currentLevel);
             }, 0);
 
             const newAgo = [...AGO];
-            const findID = newAgo.findIndex(data => data._id === pump._id);
-            newAgo[findID].sales = Number(totalizerDiff) < 0? 0: Number(totalizerDiff);
-            newAgo[findID].newTotalizer = e;
-            newAgo[findID].totalTankLevel = totalTankLevel;
+            newAgo[index].sales = totalizerDiff;
+            newAgo[index].newTotalizer = e;
+            newAgo[index].totalTankLevel = totalAG0TankLevel;
+            
+            const selectedAGO = [...selectedPumps];
+            const pumpID = selectedAGO.findIndex(data => data._id === pump._id);
+            selectedAGO[pumpID].sales = totalizerDiff;
+            selectedAGO[pumpID].newTotalizer = e;
+            selectedAGO[pumpID].totalTankLevel = totalAG0TankLevel;
+
+
             dispatch(updateRecords({pms: PMS, ago: newAgo, dpk: DPK}));
-
-            /*###########################################
-                Update the tank readings for AGO
-            ############################################*/
-
-            const tankFromPayload = {...records};
-            const currentHostTank = tankFromPayload['1'].findIndex(data => data._id === pump.hostTank);
-
-            if(currentHostTank === -1){
-                const load = {...connectedTank};
-                const allAGOPumps = selectedPumps.filter(data => data.hostTank === load._id);
-                const totalSales = allAGOPumps.reduce((accum, current) => {
-                    return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
-                }, 0);
-
-                load.pumps = allAGOPumps;
-                load.sales = totalSales;
-                load.beforeSales =  load.currentLevel;
-                load.afterSales =  Number(load.currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
-                load.balanceCF = totalTankLevel - totalSales;
-                load.outlet = oneStationData;
-                load.totalTankLevel = totalTankLevel;
-                tankFromPayload['1'].push(load);
-
-                const getAllSalesData = [...tankFromPayload['1']];
-                for(let i = 0; i < getAllSalesData.length; i++ ){
-                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
-                }
-
-                dispatch(updatePayload(tankFromPayload));
-
-            }else{
-                const allAGOPumps = selectedPumps.filter(data => data.hostTank === tankFromPayload['1'][currentHostTank]._id);
-                const totalSales = allAGOPumps.reduce((accum, current) => {
-                    return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
-                }, 0);
-
-                tankFromPayload['1'][currentHostTank].pumps = allAGOPumps;
-                tankFromPayload['1'][currentHostTank].sales = totalSales;
-                tankFromPayload['1'][currentHostTank].outlet = oneStationData;
-                tankFromPayload['1'][currentHostTank].totalTankLevel = totalTankLevel;
-                tankFromPayload['1'][currentHostTank].balanceCF = totalTankLevel - totalSales;
-                tankFromPayload['1'][currentHostTank].beforeSales = tankFromPayload['1'][currentHostTank].currentLevel;
-                tankFromPayload['1'][currentHostTank].afterSales = Number(tankFromPayload['1'][currentHostTank].currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
-                
-                const getAllSalesData = [...tankFromPayload['1']];
-                for(let i = 0; i < getAllSalesData.length; i++ ){
-                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
-                }
-
-                dispatch(updatePayload(tankFromPayload));
-            }
+            dispatch(updateSelectedPumps(selectedAGO));
 
         }else if(productType === "DPK"){
 
@@ -258,72 +171,39 @@ const PumpUpdateComponent = (props) => {
             ############################################*/
 
             const onlyDPK = [...tankList].filter(data => data.productType === "DPK");
-            const totalTankLevel = onlyDPK.reduce((accum, current) => {
+            const totalDPKTankLevel = onlyDPK.reduce((accum, current) => {
                 return Number(accum) + Number(current.currentLevel);
             }, 0);
 
             const newDpk = [...DPK];
-            const findID = newDpk.findIndex(data => data._id === pump._id);
-            newDpk[findID].sales = Number(totalizerDiff) < 0? 0: Number(totalizerDiff);
-            newDpk[findID].newTotalizer = e;
-            newDpk[findID].totalTankLevel = totalTankLevel;
+            newDpk[index].sales = totalizerDiff;
+            newDpk[index].newTotalizer = e;
+            newDpk[index].totalTankLevel = totalDPKTankLevel;
+            
+            const selectedDPK = [...selectedPumps];
+            const pumpID = selectedDPK.findIndex(data => data._id === pump._id);
+            selectedDPK[pumpID].sales = totalizerDiff;
+            selectedDPK[pumpID].newTotalizer = e;
+            selectedDPK[pumpID].totalTankLevel = totalDPKTankLevel;
+
             dispatch(updateRecords({pms: PMS, ago: AGO, dpk: newDpk}));
+            dispatch(updateSelectedPumps(selectedDPK));
 
-            /*###########################################
-                Update the tank readings for DPK
-            ############################################*/
-
-            const tankFromPayload = {...records};
-            const currentHostTank = tankFromPayload['1'].findIndex(data => data._id === pump.hostTank);
-
-            if(currentHostTank === -1){
-                const load = {...connectedTank};
-                const allDPKPumps = selectedPumps.filter(data => data.hostTank === load._id);
-                const totalSales = allDPKPumps.reduce((accum, current) => {
-                    return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
-                }, 0);
-
-                load.pumps = allDPKPumps;
-                load.sales = totalSales;
-                load.beforeSales =  load.currentLevel;
-                load.outlet = oneStationData;
-                load.totalTankLevel = totalTankLevel;
-                load.balanceCF = totalTankLevel - totalSales;
-                load.afterSales =  Number(load.currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
-                tankFromPayload['1'].push(load);
-
-                const getAllSalesData = [...tankFromPayload['1']];
-                for(let i = 0; i < getAllSalesData.length; i++ ){
-                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
-                }
-
-                dispatch(updatePayload(tankFromPayload));
-
-            }else{
-                const allDPKPumps = selectedPumps.filter(data => data.hostTank === tankFromPayload['1'][currentHostTank]._id);
-                const totalSales = allDPKPumps.reduce((accum, current) => {
-                    return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
-                }, 0);
-
-                tankFromPayload['1'][currentHostTank].pumps = allDPKPumps;
-                tankFromPayload['1'][currentHostTank].sales = totalSales;
-                tankFromPayload['1'][currentHostTank].outlet = oneStationData;
-                tankFromPayload['1'][currentHostTank].totalTankLevel = totalTankLevel;
-                tankFromPayload['1'][currentHostTank].balanceCF = totalTankLevel - totalSales;
-                tankFromPayload['1'][currentHostTank].beforeSales = tankFromPayload['1'][currentHostTank].currentLevel;
-                tankFromPayload['1'][currentHostTank].afterSales = Number(tankFromPayload['1'][currentHostTank].currentLevel) - Math.round((totalSales + Number.EPSILON)*100)/100;
-                
-                const getAllSalesData = [...tankFromPayload['1']];
-                for(let i = 0; i < getAllSalesData.length; i++ ){
-                    getAllSalesData[i].balanceCF = totalTankLevel - totalSales;
-                }
-                
-                dispatch(updatePayload(tankFromPayload));
-            }
         }
     }
 
-    const setTotalizer = (e, pump) => {
+    const refreshPumps = (data) => {
+        const payload = {
+            outletID: data?.outletID, 
+            organisationID: data?.organisationID
+        }
+
+        OutletService.getAllStationPumps(payload).then(data => {
+            dispatch(getAllPumps(data));
+        });
+    }
+
+    const setTotalizer = (e, pump, index) => {
         
         if(selectedTanks.length !== 0){
             const clonedTanks = [...selectedTanks];
@@ -335,32 +215,33 @@ const PumpUpdateComponent = (props) => {
                 const quantity = Number(connectedTank[0].currentLevel) - Number(connectedTank[0].deadStockLevel);
 
                 if(oneStationData === null){
+                    refreshPumps(pump)
                     swal("Warning!", "Please select a station", "info");
         
                 }else if(pump.identity === null){
-                    updateTotalizer("0", "0", pump, connectedTank[0]);
+                    refreshPumps(pump)
                     swal("Warning!", "Please select a pump", "info");
         
                 }else if(selectedPumps.length === 0){
-                    updateTotalizer("0", "0", pump, connectedTank[0]);
+                    refreshPumps(pump)
                     swal("Warning!", "Please select a pump", "info");
         
                 }else{
                     if(totalizerDiff > quantity ){
-                        updateTotalizer("0", "0", pump, connectedTank[0]);
+                        refreshPumps(pump)
                         swal("Warning!", "Reading exceeded tank level", "info");
         
                     }else{
-                        updateTotalizer(e.target.value, totalizerDiff, pump, connectedTank[0]);
+                        updateTotalizer(e.target.value, totalizerDiff, index, pump);
                     }
                 }
             }else{
-                updateTotalizer("0", "0", pump, connectedTank[0]);
+                refreshPumps(pump)
                 swal("Warning!", "Please select a pump", "info");
             }
 
         }else{
-            updateTotalizer("0", "0", pump);
+            refreshPumps(pump)
             swal("Warning!", "Please select a pump", "info");
         }
     }
@@ -492,7 +373,7 @@ const PumpUpdateComponent = (props) => {
 
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
-                                        onChange={e => setTotalizer(e, item)} 
+                                        onChange={e => setTotalizer(e, item, index)} 
                                         style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                         value={item.newTotalizer}
@@ -514,7 +395,7 @@ const PumpUpdateComponent = (props) => {
 
                                     <div style={{width:'94%', marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
-                                        onChange={e => setTotalizer(e, item)} 
+                                        onChange={e => setTotalizer(e, item, index)} 
                                         value={item.newTotalizer}
                                         style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
@@ -536,7 +417,7 @@ const PumpUpdateComponent = (props) => {
 
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
-                                        onChange={e => setTotalizer(e, item)} 
+                                        onChange={e => setTotalizer(e, item, index)} 
                                         value={item.newTotalizer}
                                         style={{...imps, width: '94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 

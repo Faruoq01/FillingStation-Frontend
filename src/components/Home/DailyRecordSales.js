@@ -205,32 +205,35 @@ const DailyRecordSales = () => {
     const [currentDate, setCurrentDate] = useState(date2);
     const [openSummary, setOpenSummary] = useState(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const getAllInitialRecords = React.useCallback((list) => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
             const payload = {
-                organisation: user._id
+                organisation: resolveUserID().id
             }
     
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                dispatch(adminOutlet(data.station[0]));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
+                dispatch(adminOutlet(null));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
-                    outletID: data?._id, 
-                    organisationID: data?.organisation
+                    outletID: "None", 
+                    organisationID: resolveUserID().id
                 }
         
                 IncomingService.getAllIncoming3(payload).then((data) => {
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
 
-                OutletService.getAllStationPumps(payload).then(data => {
-                    dispatch(getAllPumps(data));
-                });
+                dispatch(getAllPumps([]));
 
                 OutletService.getAllOutletTanks(payload).then(data => {
                     const outletTanks = data.stations.map(data => {
@@ -275,7 +278,8 @@ const DailyRecordSales = () => {
                 });
             });
         }
-    }, [dispatch, user._id, user.outletID, user.userType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, user.outletID, user.userType]);
 
     useEffect(()=>{
         const list = new DoublyLinkedList();
