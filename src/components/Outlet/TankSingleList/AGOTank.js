@@ -1,16 +1,14 @@
 import React, {useRef, useEffect} from 'react';
 import Tooltip from '@mui/material/Tooltip';
-import { useSelector } from 'react-redux';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
-    const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
 
     useEffect(()=>{
-        createTankCanvas(cummulativeTotals.totalDPK, cummulativeTotals.DPKTankCapacity, cummulativeTotals.DPKDeadStock);
-    }, [cummulativeTotals.DPKDeadStock, cummulativeTotals.DPKTankCapacity, cummulativeTotals.totalDPK]);
-    
+        createTankCanvas(props.data.totalAGO, props.data.AGOTankCapacity, props.data.AGODeadStock);
+    }, [props.data.AGODeadStock, props.data.AGOTankCapacity, props.data.totalAGO]);
+
     const createTankCanvas = (level, capacity, deadstock) => {
 
         let dpi = window.devicePixelRatio;
@@ -58,7 +56,7 @@ const TankComponent = (props) => {
             drawSmallLine(i);
         }
 
-        ctx.fillStyle= "#35393E";
+        ctx.fillStyle= "#FFA010";
         var z = 1;
         function myLoop(){
             setTimeout(function(){
@@ -76,7 +74,7 @@ const TankComponent = (props) => {
 
     return(
         <div style={canvases}>
-            <Tooltip title={`${cummulativeTotals.totalDPK} Litres`} followCursor>
+            <Tooltip title={`${props.data.totalAGO} Litres`} followCursor>
                 <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
             </Tooltip>
         </div>

@@ -809,7 +809,15 @@ const ComprehensiveReport = (props) => {
 
     return(
         <div className='reportContainer'>
-            { prints && <ComprehensiveReports tanks={tanks} forwardBalance={forwardBalance} data={dailySales} open={prints} close={setPrints}/>}
+            { prints && <ComprehensiveReports 
+                    data={tanks} 
+                    supply={forwardBalance.supply} 
+                    sales={forwardBalance?.sales} 
+                    open={prints} 
+                    close={setPrints}
+                    lpoRecords={lpoRecords}
+                />
+            }
             <div style={cont} className='controls'>
                 <div>
                     {(user.userType === "superAdmin" || user.userType === "admin") &&

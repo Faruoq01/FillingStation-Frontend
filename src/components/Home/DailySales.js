@@ -54,13 +54,12 @@ const DailySales = (props) => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
-    const [cummulatives, setCummulatives] = useState({});
     const dateHandle = useRef();
     const [currentDate, setCurrentDate] = useState(date2);
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
     const payments = useSelector(state => state.dailySalesReducer.payments);
     const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
-    const cummulative = useSelector(state => state.dailySalesReducer.cummulative);
+    const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
 
     const resolveUserID = () => {
@@ -451,7 +450,6 @@ const DailySales = (props) => {
 
         const cummulative = getCummulativeVolumePerProduct(PMSList, AGOList, DPKList);
         dispatch(passCummulative(cummulative));
-        setCummulatives(cummulative);
     }, [tankList, dispatch]);
 
     useEffect(()=>{
@@ -639,26 +637,26 @@ const DailySales = (props) => {
                                 <div className="tank-inner">
                                     <div className="tanks">
                                         <div className='tank-head'>PMS</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulative.totalPMS, {min10k: true})} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulative.PMSTankCapacity,  {min10k: true})} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulativeTotals.totalPMS, {min10k: true})} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulativeTotals.PMSTankCapacity,  {min10k: true})} Litres</div>
                                         <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
-                                            <PMSTank data = {cummulatives}/>
+                                            <PMSTank/>
                                         </div>
                                     </div>
                                     <div className="tanks">
                                         <div className='tank-head'>AGO</div>
-                                            <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulative.totalAGO,  {min10k: true})} Litres</div>
-                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulative.AGOTankCapacity,  {min10k: true})} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulativeTotals.totalAGO,  {min10k: true})} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulativeTotals.AGOTankCapacity,  {min10k: true})} Litres</div>
                                             <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
-                                                <AGOTank data = {cummulatives}/>
+                                                <AGOTank/>
                                             </div>
                                         </div>
                                     <div className="tanks">
                                         <div className='tank-head'>DPK</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulative.totalDPK,  {min10k: true})} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulative.DPKTankCapacity,  {min10k: true})} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {approx(cummulativeTotals.totalDPK,  {min10k: true})} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {approx(cummulativeTotals.DPKTankCapacity,  {min10k: true})} Litres</div>
                                         <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
-                                            <DPKTank data = {cummulatives}/>
+                                            <DPKTank/>
                                         </div>
                                     </div>
                                 </div>

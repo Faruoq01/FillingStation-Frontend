@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { adminOutlet, getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
 import '../../styles/listTanks.scss';
-import PMSTank from './PMSTank';
-import AGOTank from './AGOTank';
-import DPKTank from './DPKTank';
+import PMSTank from './TankSingleList/PMSTank.js';
+import AGOTank from './TankSingleList/AGOTank.js';
+import DPKTank from './TankSingleList/DPKTank.js';
 import { styled } from '@mui/material/styles';
 import swal from 'sweetalert';
 import Button from '@mui/material/Button';
@@ -40,10 +40,10 @@ const ListAllTanks = () => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-        }).then((data)=>{
+        }).then(()=>{
             const payload = {
                 organisationID: resolveUserID().id,
-                outletID: oneStationData === null? "None": oneStationData?._id
+                outletID: "None"
             }
             OutletService.getAllOutletTanks(payload).then(data => {
                 dispatch(getAllOutletTanks(data.stations));
@@ -51,7 +51,7 @@ const ListAllTanks = () => {
         });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [dispatch]);
 
     const getTanksLists = useCallback(() => {
         const PMS = tankList.filter(tank => tank.productType === "PMS");
@@ -286,7 +286,7 @@ const ListAllTanks = () => {
                                     </div>
                                 )
                             })
-                            : tankListType === "AGO"?
+                            : tankListType === "DPK"?
                             list.DPK.map((item, index) => {
                                 return(
                                     <div className='item'>

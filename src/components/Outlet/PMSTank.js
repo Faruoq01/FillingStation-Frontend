@@ -1,14 +1,15 @@
 import React, {useRef, useEffect} from 'react';
 import Tooltip from '@mui/material/Tooltip';
+import { useSelector } from 'react-redux';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
+    const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
 
     useEffect(()=>{
-        createTankCanvas(props.data.totalPMS, props.data.PMSTankCapacity, props.data.PMSDeadStock);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        createTankCanvas(cummulativeTotals.totalPMS, cummulativeTotals.PMSTankCapacity, cummulativeTotals.PMSDeadStock);
+    }, [cummulativeTotals.PMSDeadStock, cummulativeTotals.PMSTankCapacity, cummulativeTotals.totalPMS]);
 
     const createTankCanvas = (level, capacity, deadstock) => {
 
@@ -75,7 +76,7 @@ const TankComponent = (props) => {
 
     return(
         <div style={canvases}>
-            <Tooltip title={`${props.data.totalPMS} Litres`} followCursor>
+            <Tooltip title={`${cummulativeTotals.totalPMS} Litres`} followCursor>
                 <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
             </Tooltip>
         </div>

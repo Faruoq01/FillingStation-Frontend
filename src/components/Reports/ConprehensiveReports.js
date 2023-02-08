@@ -8,10 +8,72 @@ import DPKDailySales from '../DailySales/DPKDailySales';
 import AGODailySales from '../DailySales/AGODailySales';
 import PMSDailySales from '../DailySales/PMSDailySales';
 
+const approx = (data) => {
+    if(data){
+        let formattedSale = String(Number(data)?.toFixed(2)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return formattedSale;
+    }
+}
+
 
 const mediaMatch = window.matchMedia('(max-width: 1000px)');
 
-const LeftTableView = () => {
+const LeftTableView = (props) => {
+
+    const getTankLevels = () => {
+
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
+
+        let pmsBF = 0;
+        let agoBF = 0;
+        let dpkBF = 0; 
+
+        if(PMS){
+            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
+        }
+
+        if(AGO){
+            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
+        }
+
+        if(DPK){
+            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
+        }
+
+        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
+    }
+
+    const getSupply = () => {
+        const PMS = props?.supply?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.supply?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.supply?.filter(data => data.productType === "DPK") || [];
+
+        const totalPMS = PMS?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalAGO = AGO?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const totalDPK = DPK?.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const total = [totalPMS, totalAGO, totalDPK]
+        
+        return total;
+    }
+
+    const getBalanceBF = () => {
+        const pmsBalance = getTankLevels().pms - getSupply()[0];
+        const agoBalance = getTankLevels().ago - getSupply()[1];
+        const dpkBalance = getTankLevels().dpk - getSupply()[2];
+
+        return {pms: isNaN(pmsBalance)? 0: pmsBalance, ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
+    }
 
     return(
         <div style={columnHead1}>
@@ -25,25 +87,66 @@ const LeftTableView = () => {
                 </div>
 
                 <div style={rows}>
-                    <div style={{...cell, color:'#06805B', fontSize:'11px'}} className='cell'>PMS</div>
-                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                    <div style={{...cell, color:'#06805B', fontSize:'11px'}}>PMS</div>
+                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>{getBalanceBF()?.pms}</div>
                 </div>
 
                 <div style={rows}>
-                    <div style={{...cell, color:'#06805B', fontSize:'11px'}} className='cell'>AGO</div>
-                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                    <div style={{...cell, color:'#06805B', fontSize:'11px'}}>AGO</div>
+                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>{getBalanceBF()?.ago}</div>
                 </div>
 
                 <div style={rows}>
-                    <div style={{...cell, color:'#06805B', fontSize:'11px'}} className='cell'>DPK</div>
-                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                    <div style={{...cell, color:'#06805B', fontSize:'11px'}}>DPK</div>
+                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>{getBalanceBF()?.dpk}</div>
                 </div>
             </div>
         </div>
     )
 }
 
-const MiddleTableView = () => {
+const MiddleTableView = (props) => {
+    const getSupply = () => {
+        const PMS = props?.data?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.data?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.data?.filter(data => data.productType === "DPK") || [];
+
+        let totalPMS = 0;
+        let totalAGO = 0;
+        let totalDPK = 0;
+
+        let PMSShort = 0;
+        let AGOShort = 0;
+        let DPKShort = 0;
+
+        for(let dm of PMS){
+            totalPMS = totalPMS + Number(dm.quantity);
+
+            if(dm.shortage !== "None"){
+                PMSShort = PMSShort + Number(dm.shortage);
+            }
+        }
+
+        for(let dm of AGO){
+            totalAGO = totalAGO + Number(dm.quantity);
+
+            if(dm.shortage !== "None"){
+                AGOShort = AGOShort + Number(dm.shortage);
+            }
+        }
+
+        for(let dm of DPK){
+            totalDPK = totalDPK + Number(dm.quantity);
+
+            if(dm.shortage !== "None"){
+                DPKShort = DPKShort + Number(dm.shortage);
+            }
+        }
+
+        const total = [totalPMS, PMSShort, totalAGO, AGOShort, totalDPK, DPKShort]
+        
+        return total;
+    }
     return(
         <div style={columnHead2}>
             <div style={header2}>
@@ -52,41 +155,68 @@ const MiddleTableView = () => {
             <div style={rowCont}>
                 <div style={rows}>
                     <div style={cell}>Product Type</div>
-                    <div style={cell}>Truck No</div>
                     <div style={cell}>Litre Qty</div>
-                    <div style={cell}>Transportation</div>
                     <div style={{...cell, marginRight:'0px'}}>Shortage</div>
                 </div>
 
                 <div style={rows}>
-                    <div style={{...cell, color:'#06805B', fontSize:'11px'}} >PMS</div>
-                    <div style={{...cell, fontSize:'11px'}} >Truck No</div>
-                    <div style={{...cell, fontSize:'11px'}} >Litre Qty</div>
-                    <div style={{...cell, fontSize:'11px'}} ></div>
-                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}} >Shortage</div>
+                    <div style={{...cell, color:'#06805B', fontSize:'11px'}}>PMS</div>
+                    <div style={{...cell, fontSize:'11px'}}>{getSupply()[0]}</div>
+                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}} >{getSupply()[1]}</div>
                 </div>
 
                 <div style={rows}>
                     <div style={{...cell, color:'#06805B', fontSize:'11px'}}>AGO</div>
-                    <div style={{...cell, fontSize:'11px'}}>Truck No</div>
-                    <div style={{...cell, fontSize:'11px'}}>Litre Qty</div>
-                    <div style={{...cell, fontSize:'11px'}}></div>
-                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>Shortage</div>
+                    <div style={{...cell, fontSize:'11px'}}>{getSupply()[2]}</div>
+                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>{getSupply()[3]}</div>
                 </div>
 
                 <div style={rows}>
-                    <div style={{...cell, color:'#06805B', fontSize:'11px'}}>AGO</div>
-                    <div style={{...cell, fontSize:'11px'}}>Truck No</div>
-                    <div style={{...cell, fontSize:'11px'}}>Litre Qty</div>
-                    <div style={{...cell, fontSize:'11px'}}></div>
-                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>Shortage</div>
+                    <div style={{...cell, color:'#06805B', fontSize:'11px'}}>DPK</div>
+                    <div style={{...cell, fontSize:'11px'}}>{getSupply()[4]}</div>
+                    <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>{getSupply()[5]}</div>
                 </div>
             </div>
         </div>
     )
 }
 
-const RightTableView = () => {
+const RightTableView = (props) => {
+
+    const getTankLevels = () => {
+
+        const PMS = props?.sales?.filter(data => data.productType === "PMS");
+        const AGO = props?.sales?.filter(data => data.productType === "AGO");
+        const DPK = props?.sales?.filter(data => data.productType === "DPK");
+
+        let pmsBF = 0;
+        let agoBF = 0;
+        let dpkBF = 0;
+
+        if(PMS){
+            pmsBF = pmsBF + Number(PMS[0]?.totalTankLevel)
+        }
+
+        if(AGO){
+            agoBF = agoBF + Number(AGO[0]?.totalTankLevel)
+        }
+
+        if(DPK){
+            dpkBF = dpkBF + Number(DPK[0]?.totalTankLevel)
+        }
+
+        return {pms: pmsBF, ago: agoBF, dpk: dpkBF}
+    }
+
+    const getBalanceBF = () => {
+
+        const pmsBalance = getTankLevels().pms;
+        const agoBalance = getTankLevels().ago;
+        const dpkBalance = getTankLevels().dpk;
+        
+        return {pms: isNaN(pmsBalance)? 0:  pmsBalance , ago: isNaN(agoBalance)? 0: agoBalance, dpk: isNaN(dpkBalance)? 0: dpkBalance};
+    }
+
     return(
         <div style={{...columnHead1, marginRight:'0px', marginLeft:'5px'}}>
             <div style={header1}>
@@ -100,18 +230,18 @@ const RightTableView = () => {
                     </div>
 
                     <div style={rows}>
-                        <div style={{...cell, color:'#06805B', fontSize:'11px'}} >PMS</div>
-                        <div style={{...cell, marginRight:'0px', fontSize:'11px'}} >4,234.00</div>
+                        <div style={{...cell, color:'#06805B', fontSize:'11px'}}>PMS</div>
+                        <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>{getBalanceBF()?.pms}</div>
                     </div>
 
                     <div style={rows}>
                         <div style={{...cell, color:'#06805B', fontSize:'11px'}} >AGO</div>
-                        <div style={{...cell, marginRight:'0px', fontSize:'11px'}} >4,234.00</div>
+                        <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>{getBalanceBF()?.ago}</div>
                     </div>
 
                     <div style={rows}>
                         <div style={{...cell, color:'#06805B', fontSize:'11px'}}>DPK</div>
-                        <div style={{...cell, marginRight:'0px', fontSize:'11px'}}>4,234.00</div>
+                        <div style={{...cell, marginRight:'0px', fontSize:'11px'}} >{getBalanceBF()?.dpk}</div>
                     </div>
                 </div>
             </div>
@@ -119,15 +249,40 @@ const RightTableView = () => {
     )
 }
 
-const LPODailySales = () => {
+const LPODailySales = (props) => {
+
+    const getTotal = () => {
+        let total = 0;
+        for(let lpo of props?.data){
+            if(lpo.productType === "PMS"){
+                total = total + Number(lpo.PMSRate)*Number(lpo.lpoLitre)
+            }else if(lpo.productType === "AGO"){
+                total = total + Number(lpo.AGORate)*Number(lpo.lpoLitre)
+            }else if(lpo.productType === "DPK"){
+                total = total + Number(lpo.DPKRate)*Number(lpo.lpoLitre)
+            }
+        }
+        return total;
+    }
+
+    const getLpoTotal = (data) => {
+        if(data.productType === "PMS"){
+            return Number(data.PMSRate)*Number(data.lpoLitre);
+        }else if(data.productType === "AGO"){
+            return Number(data.AGORate)*Number(data.lpoLitre)
+        }else{
+            return Number(data.DPKRate)*Number(data.lpoLitre)
+        }
+    }
+
     return(
-        <div>
+        <div className='sales'>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>LPO</div>
             <div style={mainSales}>
                 <div style={inner}>
                     <div style={tableHeads}>
                         <div style={col}>S/N</div>
-                        <div style={col}>Amount Name</div>
+                        <div style={col}>Account Name</div>
                         <div style={col}>Products</div>
                         <div style={col}>Truck No</div>
                         <div style={col}>Litre (Qty)</div>
@@ -135,44 +290,40 @@ const LPODailySales = () => {
                         <div style={{...col, marginRight:'0px'}}>Amount</div>
                     </div>
 
-                    <div style={tableHeads2}>
-                        <div style={col2}>1</div>
-                        <div style={col2}>Opening</div>
-                        <div style={col2}>Closing</div>
-                        <div style={col2}>Difference</div>
-                        <div style={col2}>LPO</div>
-                        <div style={col2}>Rate</div>
-                        <div style={{...col2, marginRight:'0px'}} >Amount</div>
-                    </div>
+                    {
+                        props?.data?.length === 0?
+                        <div style={dats}> No Data </div>:
+                        props?.data?.map((data, index) => {
+                            return(
+                                <div key={index} style={{...rows, fontSize: '12px'}}>
+                                    <div style={cell}>{index + 1}</div>
+                                    <div style={cell}>{data.accountName}</div>
+                                    <div style={cell}>{data.productType}</div>
+                                    <div style={cell}>{data.truckNo}</div>
+                                    <div style={cell}>{data.lpoLitre}</div>
+                                    <div style={cell}>{
+                                        approx(data.productType === "PMS"? data.PMSRate: data.productType === "AGO"? data.AGORate: data.DPKRate)
+                                    }</div>
+                                    <div style={{...cell, marginRight:'0px'}}>{
+                                        approx(getLpoTotal(data))
+                                    }</div>
+                                </div>
+                            )
+                        })
+                    }
 
                     <div style={tableHeads2}>
-                        <div style={col2}>1</div>
-                        <div style={col2}>Opening</div>
-                        <div style={col2}>Closing</div>
-                        <div style={col2}>Difference</div>
-                        <div style={col2}>LPO</div>
-                        <div style={col2}>Rate</div>
-                        <div style={{...col2, marginRight:'0px'}} >Amount</div>
-                    </div>
-
-                    <div style={tableHeads2}>
-                        <div style={col2}>1</div>
-                        <div style={col2}>Opening</div>
-                        <div style={col2}>Closing</div>
-                        <div style={col2}>Difference</div>
-                        <div style={col2}>LPO</div>
-                        <div style={col2}>Rate</div>
-                        <div style={{...col2, marginRight:'0px'}} >Amount</div>
-                    </div>
-
-                    <div style={tableHeads2}>
-                        <div style={{...col2, background: "transparent"}} ></div>
-                        <div style={{...col2, background: "transparent"}}></div>
-                        <div style={{...col2, background: "transparent"}}></div>
-                        <div style={{...col2, background: "transparent"}}></div>
-                        <div style={{...col2, background: "transparent"}}></div>
-                        <div style={col2}>Total</div>
-                        <div style={{...col2, marginRight:'0px'}}>435, 000</div>
+                        <div style={{...cell, background: "transparent"}}></div>
+                        <div style={{...cell, background: "transparent"}}></div>
+                        <div style={{...cell, background: "transparent"}}></div>
+                        <div style={{...cell, background: "transparent"}}></div>
+                        <div style={{...cell, background: "transparent"}}></div>
+                        <div style={cell}>Total</div>
+                        <div style={{...cell, marginRight:'0px'}}>
+                            {
+                                getTotal()
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -398,7 +549,6 @@ const ComprehensiveReports = (props) => {
     const [dom, setDom] = useState('');
     const [loading, setLoading] = useState(false);
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
-    const lpoRecords = useSelector(state => state.dailySalesReducer.lpoRecords);
     const paymentRecords = useSelector(state => state.dailySalesReducer.paymentRecords);
     const bulkReports = useSelector(state => state.dailySalesReducer.bulkReports);
 
@@ -425,15 +575,15 @@ const ComprehensiveReports = (props) => {
                     <div style={left}>
                         <div style={innerMain}>
                             <div style={tableCont}>
-                                <LeftTableView supply={props.forwardBalance?.supply} data={props.tanks} sales={props.forwardBalance?.sales} />
-                                <MiddleTableView data={props.forwardBalance?.supply} />
-                                <RightTableView supply={props.forwardBalance?.supply} data={props.tanks} sales={props.forwardBalance?.sales} />
+                                <LeftTableView supply={props?.supply} data={props.data} sales={props?.sales} />
+                                <MiddleTableView data={props?.supply} />
+                                <RightTableView supply={props?.supply} data={props.data} sales={props?.sales} />
                             </div>
 
                             <PMSDailySales rep={false} />
                             <AGODailySales rep={false} />
                             <DPKDailySales rep={false} />
-                            <LPODailySales data={lpoRecords} />
+                            <LPODailySales data={props.lpoRecords} />
                             <ExpensesDailySales data = {paymentRecords.expenses} />
 
                             <div style={paym}>
@@ -498,6 +648,12 @@ const ComprehensiveReports = (props) => {
             </div>
         </Modal>
     )
+}
+
+const dats = {
+    marginTop:'20px',
+    fontSize:'12px',
+    fontWeight:'bold',
 }
 
 const pleft = {

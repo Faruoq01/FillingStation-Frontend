@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import DashboardGraph from '../common/DashboardGraph';
+import { passCummulative } from '../../store/actions/dailySales';
 
 const Sales = (props) => {
 
@@ -20,6 +21,7 @@ const Sales = (props) => {
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const [pumpAndTankMetric, setTankAndPumpMetrics] = useState({});
+    const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
 
     const getAllStationTanks = useCallback(() => {
         const payload = {
@@ -96,8 +98,12 @@ const Sales = (props) => {
         const DPKList = tankList.filter(tank => tank.productType === "DPK");
 
         const cummulative = getCummulativeVolumePerProduct(PMSList, AGOList, DPKList);
-        return cummulative;
-    }, [tankList]);
+        dispatch(passCummulative(cummulative));
+    }, [dispatch, tankList]);
+
+    useEffect(()=>{
+        getProductTanks();
+    }, [getProductTanks]);
 
     const getActiveTankAndPumps = useCallback(() => {
 
@@ -165,27 +171,27 @@ const Sales = (props) => {
                             <div className="tank-inner">
                                 <div className="tanks">
                                     <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
-                                        <PMSTank data = {getProductTanks()}/>
+                                        <PMSTank />
                                     </div>
                                     <div style={{marginTop:'10px', color:'#399A19'}} className='tank-head'>PMS</div>
-                                    <div className='level'>Level: {getProductTanks().totalPMS} Litres</div>
-                                    <div className='capacity'>Capacity: {getProductTanks().PMSTankCapacity} Litres</div>
+                                    <div className='level'>Level: {cummulativeTotals?.totalPMS} Litres</div>
+                                    <div className='capacity'>Capacity: {cummulativeTotals?.PMSTankCapacity} Litres</div>
                                 </div>
                                 <div className="tanks">
                                     <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
-                                        <AGOTank data = {getProductTanks()}/>
+                                        <AGOTank />
                                     </div>
                                     <div style={{marginTop:'10px', color:'#FFA010'}} className='tank-head'>AGO</div>
-                                    <div className='level'>Level: {getProductTanks().totalAGO} Litres</div>
-                                    <div className='capacity'>Capacity: {getProductTanks().AGOTankCapacity} Litres</div>
+                                    <div className='level'>Level: {cummulativeTotals?.totalAGO} Litres</div>
+                                    <div className='capacity'>Capacity: {cummulativeTotals?.AGOTankCapacity} Litres</div>
                                 </div>
                                 <div className="tanks">
                                     <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
-                                        <DPKTank data = {getProductTanks()}/>
+                                        <DPKTank />
                                     </div>
                                     <div style={{marginTop:'10px', color:'#35393E'}} className='tank-head'>DPK</div>
-                                        <div className='level'>Level: {getProductTanks().totalDPK} Litres</div>
-                                        <div className='capacity'>Capacity: {getProductTanks().DPKTankCapacity} Litres</div>
+                                        <div className='level'>Level: {cummulativeTotals?.totalDPK} Litres</div>
+                                        <div className='capacity'>Capacity: {cummulativeTotals?.DPKTankCapacity} Litres</div>
                                     </div>
                             </div>
                         </div>
