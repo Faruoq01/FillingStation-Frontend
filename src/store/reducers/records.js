@@ -23,7 +23,6 @@ const initialState = {
         '5': [],
         '6': [],
         '7': [],
-        '8': [],
     },
     currentDate: null
 }
@@ -169,7 +168,6 @@ const recordsReducer = (state = initialState, action) => {
                     '5': [],
                     '6': [],
                     '7': [],
-                    '8': [],
                 }
             }
         }
@@ -190,7 +188,6 @@ const recordsReducer = (state = initialState, action) => {
                     '5': [],
                     '6': [],
                     '7': [],
-                    '8': [],
                 }
             }
         }

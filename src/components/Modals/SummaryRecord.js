@@ -8,6 +8,7 @@ import RecordSalesService from '../../services/DailyRecordSales';
 import swal from 'sweetalert';
 import {useHistory} from 'react-router-dom'
 import { changeStation, updatePayload } from '../../store/actions/records';
+import OutletService from '../../services/outletService';
 
 const SummaryRecord = (props) => {
 
@@ -84,14 +85,29 @@ const SummaryRecord = (props) => {
     }, []);
 
     const saveRecordSales = () => {
+        const tankFromPayload = {...records};
+        const tanksRecords = tankFromPayload['1'];
         props.clops(true);
+
         RecordSalesService.saveRecordSales({load: records, currentDate: currentDate}).then(data => {
             swal("Success!", "Daily sales recorded successfully!", "success");
         }).then(()=>{
+            tanksRecords.forEach(async(item) => {
+                const payload = {
+                    id: item._id,
+                    previousLevel: item.previousLevel,
+                    currentLevel: item.afterSales
+                };
+
+                let res = await OutletService.updateTank(payload);
+                console.log(res, "updates");
+            });
+
+
             dispatch(changeStation());
-            history.push("/home/daily-sales");
             props.clops(false);
-        })
+            history.push("/home/daily-sales");
+        });
     }
 
     const getBackground = (type) => {
