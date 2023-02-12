@@ -15,6 +15,8 @@ import PrintSupplyRecords from '../Reports/SupplyRecords';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import CreateSupply from '../Supply/CreateSupply';
 import swal from "sweetalert";
+import IncomingService from '../../services/IncomingService';
+import { createIncomingOrder } from '../../store/actions/incomingOrder';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -127,11 +129,17 @@ const Supply = (props) => {
             dispatch(createSupply(data.supply));
         });
 
-        const payload2 = {
-            organisationID: resolveUserID().id,
-            outletID: "None"
+        const income = {
+            outletID: oneStationData === null? "None": oneStationData?._id,
+            organisationID: resolveUserID().id
         }
-        OutletService.getAllOutletTanks(payload2).then(data => {
+ 
+        IncomingService.getAllIncoming3(income).then((data) => {
+            setTotal(data.incoming.count);
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
+
+        OutletService.getAllOutletTanks(income).then(data => {
             dispatch(getAllOutletTanks(data.stations));
         });
     }
@@ -152,11 +160,17 @@ const Supply = (props) => {
             dispatch(createSupply(data.supply));
         });
 
-        const payload2 = {
-            organisationID: resolveUserID().id,
-            outletID: "None"
+        const income = {
+            outletID: item._id,
+            organisationID: resolveUserID().id
         }
-        OutletService.getAllOutletTanks(payload2).then(data => {
+ 
+        IncomingService.getAllIncoming3(income).then((data) => {
+            setTotal(data.incoming.count);
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
+
+        OutletService.getAllOutletTanks(income).then(data => {
             dispatch(getAllOutletTanks(data.stations));
         });
     }

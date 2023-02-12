@@ -59,6 +59,7 @@ const TankComponent = (props) => {
         }
 
         ctx.fillStyle= "#FFA010";
+        ctx.fillRect(70*dpi, 300*dpi , 0, 0);
         var z = 1;
         function myLoop(){
             setTimeout(function(){

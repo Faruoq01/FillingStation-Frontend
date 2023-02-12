@@ -6,15 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@mui/material';
 import RecordSalesService from '../../services/DailyRecordSales';
 import swal from 'sweetalert';
-import {useHistory} from 'react-router-dom'
 import { changeStation, updatePayload } from '../../store/actions/records';
 import OutletService from '../../services/outletService';
+import { useHistory } from 'react-router-dom';
 
 const SummaryRecord = (props) => {
 
     const handleClose = () => props.close(false);
-    const history = useHistory();
     const dispatch = useDispatch();
+    const history = useHistory();
     const records = useSelector(state => state.recordsReducer.load);
     const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
     const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
@@ -90,8 +90,6 @@ const SummaryRecord = (props) => {
         props.clops(true);
 
         RecordSalesService.saveRecordSales({load: records, currentDate: currentDate}).then(data => {
-            swal("Success!", "Daily sales recorded successfully!", "success");
-        }).then(()=>{
             tanksRecords.forEach(async(item) => {
                 const payload = {
                     id: item._id,
@@ -102,11 +100,16 @@ const SummaryRecord = (props) => {
                 let res = await OutletService.updateTank(payload);
                 console.log(res, "updates");
             });
-
-
+            
             dispatch(changeStation());
+            props.refresh();
+            props.setPages([1, 0, 0, 0, 0, 0]);
             props.clops(false);
-            history.push("/home/daily-sales");
+            props.close(false);
+        }).then(()=>{
+            
+            history.push('/home/daily-sales')
+            swal("Success!", "Daily sales recorded successfully!", "success");
         });
     }
 

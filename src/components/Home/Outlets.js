@@ -354,7 +354,7 @@ const Outlets = (props) => {
                                     <div style={place}>No data</div>:
                                     allOutlets.map((item, index) => {
                                         return(
-                                            <div data-aos="fade-down" key={index} className='row-container'>
+                                            <div key={index} className='row-container'>
                                                 <div className='table-head2'>
                                                     <div className='column'>{index + 1}</div>
                                                     <div className='column'>{item.state}</div>

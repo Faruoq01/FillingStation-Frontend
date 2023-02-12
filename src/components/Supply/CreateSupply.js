@@ -30,6 +30,7 @@ const CreateSupply = (props) => {
     const [quantityLoaded, setQuantityLoaded] = useState('');
     const [overage, setOverage] = useState('');
     const [shortage, setShortage] = useState('');
+    const [supplyDate, setSupplyDate] = useState('');
 
     const selectedIncomingOrder = (data) => {
 
@@ -80,6 +81,7 @@ const CreateSupply = (props) => {
         if(transporter === "") return swal("Warning!", "Transporter field cannot be empty", "info");
         if(waybillNo === "") return swal("Warning!", "waybill no field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
+        if(supplyDate === "") return swal("Warning!", "Supply date field cannot be empty", "info");
         if(oneStationData === null) return swal("Warning!", "Outlet field cannot be empty", "info");
         if(productSupply === "") return swal("Warning!", "Product type field cannot be empty", "info");
         if(selectedIncomingOrders === "") return swal("Warning!", "Incoming order field cannot be empty", "info");
@@ -101,7 +103,7 @@ const CreateSupply = (props) => {
                 shortage: shortage,
                 overage: overage,
                 incomingID: selectedIncomingOrders._id,
-                date: "None",
+                date: supplyDate,
                 tankUpdate: selected,
                 outletID: oneStationData?._id,
                 organizationID: oneStationData?.organisation,
@@ -122,6 +124,7 @@ const CreateSupply = (props) => {
             setTruckNo("");
             setQuantityLoaded("");
             setProductSupply("");
+            setSupplyDate("");
             setSelected([]);
         
         }else{
@@ -236,6 +239,14 @@ const CreateSupply = (props) => {
                         <input disabled value={quantityLoaded} onChange={e => {updatedTankSupply(e)}} className='text-field' type={'text'} />
                     </div>
                 </div>
+
+                <div style={{marginTop:'20px'}} className='single-form'>
+                    <div className='input-d'>
+                        <span style={{color:'green'}}>Date of supply</span>
+                        <input style={{width:'96%'}} value={supplyDate} onChange={e => setSupplyDate(e.target.value)} className='text-field' type="date" />
+                    </div>
+                </div>
+
 
                 <div className='single-form'>
                     <div className='input-d'>

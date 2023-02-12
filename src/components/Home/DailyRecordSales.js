@@ -375,7 +375,7 @@ const DailyRecordSales = () => {
 
     return (
         <div className='salesRecordStyle'>
-            {openSummary && <SummaryRecord clops={setOpen} open={openSummary} close={setOpenSummary} />}
+            {openSummary && <SummaryRecord setPages={setPages} refresh={getAllInitialRecords} clops={setOpen} open={openSummary} close={setOpenSummary} />}
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={open}
