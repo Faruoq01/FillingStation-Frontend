@@ -302,35 +302,80 @@ const Dashboard = (props) => {
     }
 
     const collectAndEvaluateDashboard = (data) => { 
+
         /* ############################################################
-            Analyze total sales
+            Analyze lpo sales
+        ##############################################################*/
+        let PMSLPO = data.lpo.filter(data => data.productType === "PMS");
+        let AGOLPO = data.lpo.filter(data => data.productType === "AGO");
+        let DPKLPO = data.lpo.filter(data => data.productType === "DPK");
+
+        const PMSTotalLpoSales = PMSLPO.reduce((accum, current) => {
+            return Number(accum) + Number(current.lpoLitre) * Number(current.PMSRate);
+        }, 0);
+
+        const AGOTotalLpoSales = AGOLPO.reduce((accum, current) => {
+            return Number(accum) + Number(current.lpoLitre) * Number(current.AGORate);
+        }, 0);
+
+        const DPKTotalLpoSales = DPKLPO.reduce((accum, current) => {
+            return Number(accum) + Number(current.lpoLitre) * Number(current.DPKRate);
+        }, 0);
+        console.log(PMSTotalLpoSales, "ggggggggggggg")
+
+
+        /* ############################################################
+            Analyze lpo Volume
+        ##############################################################*/
+
+        // const PMSTotalLpoLitre = PMSLPO.reduce((accum, current) => {
+        //     return Number(accum) + Number(current.lpoLitre);
+        // }, 0);
+
+        // const AGOTotalLpoLitre = AGOLPO.reduce((accum, current) => {
+        //     return Number(accum) + Number(current.lpoLitre);
+        // }, 0);
+
+        // const DPKTotalLpoLitre = DPKLPO.reduce((accum, current) => {
+        //     return Number(accum) + Number(current.lpoLitre);
+        // }, 0);
+
+
+        /* ############################################################
+            Analyze total sales Volume
         ##############################################################*/
         let PMS = data.sales.filter(data => data.productType === "PMS");
         let AGO = data.sales.filter(data => data.productType === "AGO");
         let DPK = data.sales.filter(data => data.productType === "DPK");
 
-        let pmsTotalSales = 0;
-        let agoTotalSales = 0;
-        let dpkTotalSales = 0;
+        const pmsTotalLitre = PMS.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
 
-        let pmsTotalLitre = 0;
-        let agoTotalLitre = 0;
-        let dpkTotalLitre = 0;
+        const agoTotalLitre = AGO.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
 
-        for(let pms of PMS){
-            pmsTotalSales = pmsTotalSales + Number(pms.sales)*Number(pms.PMSSellingPrice);
-            pmsTotalLitre = pmsTotalLitre + Number(pms.sales);
-        }
+        const dpkTotalLitre = DPK.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
 
-        for(let ago of AGO){
-            agoTotalSales = agoTotalSales + Number(ago.sales)*Number(ago.AGOSellingPrice);
-            agoTotalLitre = agoTotalLitre + Number(ago.sales);
-        }
+        /* ############################################################
+            Analyze total sales
+        ##############################################################*/
 
-        for(let dpk of DPK){
-            dpkTotalSales = dpkTotalSales + Number(dpk.sales)*Number(dpk.DPKSellingPrice);
-            dpkTotalLitre = dpkTotalLitre + Number(dpk.sales);
-        }
+        const pmsTotalSales = PMS.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales) * Number(current.PMSSellingPrice);
+        }, 0);
+
+        const agoTotalSales = AGO.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales) * Number(current.AGOSellingPrice);
+        }, 0);
+
+        const dpkTotalSales = DPK.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales) * Number(current.DPKSellingPrice);
+        }, 0);
+
 
         /* ############################################################
             Analyze total supply
@@ -340,47 +385,45 @@ const Dashboard = (props) => {
         let AGOSupply  = data.supply.filter(data => data.productType === "AGO");
         let DPKSupply  = data.supply.filter(data => data.productType === "DPK");
 
-        let pmsSupply = 0;
-        let agoSupply = 0;
-        let dpkSupply = 0;
+        const pmsSupply = PMSSupply.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
 
-        for(let sup of PMSSupply){
-            pmsSupply = pmsSupply + Number(sup.quantity);
-        }
+        const agoSupply = AGOSupply.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
 
-        for(let sup of AGOSupply){
-            agoSupply = agoSupply + Number(sup.quantity);
-        }
+        const dpkSupply = DPKSupply.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
 
-        for(let sup of DPKSupply){
-            dpkSupply = dpkSupply + Number(sup.quantity);
-        }
 
         /* ############################################################
             Analyze total expenses
         ##############################################################*/
 
-        let totalExpenses = 0;
+        const totalExpenses = data.expense.reduce((accum, current) => {
+            return Number(accum) + Number(current.expenseAmount);
+        }, 0);
 
-        for(let exp of data.expense){
-            totalExpenses = totalExpenses + Number(exp.expenseAmount);
-        }
 
         /* ############################################################
             Analyze total payments
         ##############################################################*/
 
-        let totalPayments = 0;
-        let totalPosPayments = 0;
+        const totalPayments = data.payment.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid);
+        }, 0);
 
-        for(let pay of data.payment){
-            totalPayments = totalPayments + Number(pay.amountPaid);
-        }
+        const totalPosPayments = data.posPayment.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid);
+        }, 0);
+        console.log(totalPosPayments, "total bank payment")
 
-        for(let pay of data.posPayment){
-            totalPosPayments = totalPosPayments + Number(pay.amountPaid);
-        }
-
+        const netToBank = ((pmsTotalSales - PMSTotalLpoSales) + (agoTotalSales - AGOTotalLpoSales) + (dpkTotalSales - DPKTotalLpoSales)) - totalExpenses;
+        
+        console.log(agoTotalSales, "total ago sales")
+        console.log(AGOTotalLpoSales, "total ago lpo sales")
         const details = {
             sales:{
                 totalAmount: pmsTotalSales + agoTotalSales + dpkTotalSales,
@@ -397,8 +440,8 @@ const Dashboard = (props) => {
             payments: {
                 totalPayments: totalPayments,
                 totalPosPayments: totalPosPayments,
-                netToBank: (pmsTotalSales + agoTotalSales + dpkTotalSales) - totalExpenses,
-                outstanding: ((pmsTotalSales + agoTotalSales + dpkTotalSales) - totalExpenses) - totalPayments - totalPosPayments
+                netToBank: netToBank - totalExpenses,
+                outstanding: netToBank - totalPayments - totalPosPayments
             }
         }
 
@@ -638,12 +681,12 @@ const Dashboard = (props) => {
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.netToBank)}</div>
                                                 <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>Teller</div>
                                                 <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPayments)}</div>
-                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPosPayments)}</div>
+                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.outstanding)}</div>
                                             </div>
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.outstanding)}</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPosPayments)}</div>
                                                 <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">

@@ -87,6 +87,7 @@ const SummaryRecord = (props) => {
     const saveRecordSales = () => {
         const tankFromPayload = {...records};
         const tanksRecords = tankFromPayload['1'];
+        props.close(false);
         props.clops(true);
 
         RecordSalesService.saveRecordSales({load: records, currentDate: currentDate}).then(data => {
@@ -105,7 +106,6 @@ const SummaryRecord = (props) => {
             props.refresh();
             props.setPages([1, 0, 0, 0, 0, 0]);
             props.clops(false);
-            props.close(false);
         }).then(()=>{
             
             history.push('/home/daily-sales')
