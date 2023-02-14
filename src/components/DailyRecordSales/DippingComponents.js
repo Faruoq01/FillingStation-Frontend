@@ -6,20 +6,26 @@ import { useDispatch, useSelector } from "react-redux";
 import me4 from '../../assets/me4.png';
 import { updatePayload } from "../../store/actions/records";
 
+const returnColor = (data, style) => {
+    if(data === "PMS"){
+        return {...style, background: "#054834", color: '#fff'};
+
+    }else if(data === "AGO"){
+        return {...style, background: "#FFA010"};
+
+    }else if(data === "DPK"){
+        return {...style, background: "#35393E", color: '#fff'};
+    }
+}
+
 const DippingComponents = (props) => {
 
     const [productType, setProductType] = useState("PMS");
-    const tankList = useSelector(state => state.outletReducer.tankList);
     const dispatch = useDispatch();
 
     /////////////////////////////////////////////////////////
     const records = useSelector(state => state.recordsReducer.load);
-    const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
-    const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
-
-    console.log(selectedPumps, "selected pumps")
-    console.log(selectedTanks, "selected tanks")
-    console.log(records, "records")
+    const tankList = useSelector(state => state.outletReducer.tankList);
 
     const getPMSPump = useCallback(() => {
         const newList = [...tankList];
@@ -50,6 +56,7 @@ const DippingComponents = (props) => {
         setPMS(getPMSPump());
         setAGO(getAGOPump());
         setDPK(getDPKPump());
+        
     }, [getAGOPump, getDPKPump, getPMSPump]);
 
     const onRadioClick = (data) => {
@@ -67,14 +74,11 @@ const DippingComponents = (props) => {
     }
 
     const setTotalizer = (e, item) => {
-        const PMSTanks = tankList.filter(data => data.productType === "PMS");
-        const AGOTanks = tankList.filter(data => data.productType === "AGO");
-        const DPKTanks = tankList.filter(data => data.productType === "DPK");
 
         if(item.productType === "PMS"){
             let clonedPMS = {...item};
             clonedPMS = {...clonedPMS, dippingValue: e.target.value};
-            const newPMSList = [...PMSTanks];
+            const newPMSList = [...pms];
             const pmsID = newPMSList.findIndex(data => data._id === item._id);
             newPMSList[pmsID] = clonedPMS;
             setPMS(newPMSList);
@@ -94,7 +98,7 @@ const DippingComponents = (props) => {
         }else if(item.productType === "AGO"){
             let clonedAGO = {...item};
             clonedAGO = {...clonedAGO, dippingValue: e.target.value};
-            const newAGOList = [...AGOTanks]
+            const newAGOList = [...ago]
             const agoID = newAGOList.findIndex(data => data._id === item._id);
             newAGOList[agoID] = clonedAGO;
             setAGO(newAGOList);
@@ -114,7 +118,7 @@ const DippingComponents = (props) => {
         }else{
             let clonedDPK = {...item};
             clonedDPK = {...clonedDPK, dippingValue: e.target.value};
-            const newDPKList = [...DPKTanks]
+            const newDPKList = [...dpk]
             const agoID = newDPKList.findIndex(data => data._id === item._id);
             newDPKList[agoID] = clonedDPK;
             setAGO(newDPKList);
@@ -175,7 +179,9 @@ const DippingComponents = (props) => {
                 </div>
             </div>
             
-            <div style={{width:'100%'}} className='pmscont'>{productType}</div>
+            <div style={returnColor(productType, pro)} className='pmscont'>
+                <span style={{marginLeft:'15px'}}>{productType}</span>
+            </div>
 
             <div className='pumping'>
                 {
@@ -224,6 +230,17 @@ const DippingComponents = (props) => {
             </div>
         </div>
     )
+}
+
+const pro = {
+    width:'96%',
+    height: "35px",
+    borderRadius:'20px',
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'flex-start',
+    fontWeight:'bold',
+    marginTop:'20px'
 }
 
 const rad = {

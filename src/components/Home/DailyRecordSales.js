@@ -228,6 +228,11 @@ const DailyRecordSales = () => {
                     outletID: "None", 
                     organisationID: resolveUserID().id
                 }
+
+                const payload2 = {
+                    outletID: oneStationData?._id,
+                    organisationID: resolveUserID().id,
+                }
         
                 IncomingService.getAllIncoming3(payload).then((data) => {
                     dispatch(createIncomingOrder(data.incoming.incoming));
@@ -235,7 +240,7 @@ const DailyRecordSales = () => {
 
                 dispatch(getAllPumps([]));
 
-                OutletService.getAllOutletTanks(payload).then(data => {
+                OutletService.getAllOutletTanks(payload2).then(data => {
                     const outletTanks = data.stations.map(data => {
                         const newData = {...data, label: data.tankName, value: data._id};
                         return newData;
@@ -256,6 +261,11 @@ const DailyRecordSales = () => {
                     outletID: data?._id, 
                     organisationID: data?.organisation
                 }
+
+                const payload2 = {
+                    outletID: oneStationData?._id,
+                    organisationID: resolveUserID().id,
+                }
         
                 IncomingService.getAllIncoming3(payload).then((data) => {
                     dispatch(createIncomingOrder(data.incoming.incoming));
@@ -265,7 +275,7 @@ const DailyRecordSales = () => {
                     dispatch(getAllPumps(data));
                 });
 
-                OutletService.getAllOutletTanks(payload).then(data => {
+                OutletService.getAllOutletTanks(payload2).then(data => {
                     const outletTanks = data.stations.map(data => {
                         const newData = {...data, label: data.tankName, value: data._id};
                         return newData;
@@ -346,7 +356,7 @@ const DailyRecordSales = () => {
 
         OutletService.getAllOutletTanks(payload).then(data => {
             const outletTanks = data.stations.map(data => {
-                const newData = {...data, label: data.tankName, value: data._id};
+                const newData = {...data, label: data.tankName, value: data._id, dippingValue: "0"};
                 return newData;
             });
             dispatch(getAllOutletTanks(outletTanks));

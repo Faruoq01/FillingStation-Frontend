@@ -135,6 +135,16 @@ const Dashboard = (props) => {
             organisation: resolveUserID().id
         }
 
+        const getAttendance = async(payload) => {
+            const data = await DashboardService.allAttendanceRecords(payload);
+            return data;
+        }
+
+        const getSalesRecord = async(payload) => {
+            const data = await DashboardService.allSalesRecords(payload);
+            return data;
+        }
+
         if(user.userType === "superAdmin" || user.userType === "admin"){
             setLoad(true);
             OutletService.getAllOutletStations(payload).then(data => {
@@ -142,10 +152,6 @@ const Dashboard = (props) => {
                 dispatch(adminOutlet(null));
                 return data.station[0];
             }).then(data => {
-                DashboardService.allAttendanceRecords({id: resolveUserID().id, outletID: "None"}).then(data => {
-                    dispatch(dashEmployees(data.employees));
-                    collectAndAnalyseData(data);
-                });
 
                 let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
                 rangeOne = rangeOne.map(data => {
@@ -178,23 +184,31 @@ const Dashboard = (props) => {
                     endDate: formatTwo
                 }
 
-                DashboardService.allSalesRecords(payload).then(data => {
-                    const evaluatedDashboard = collectAndEvaluateDashboard(data);
+                const payload2 = {
+                    id: resolveUserID().id, 
+                    outletID: "None"
+                }
+
+                Promise.all([getAttendance(payload), getSalesRecord(payload2)]).then(data => {
+                    // attendance records
+                    dispatch(dashEmployees(data[0].employees));
+                    collectAndAnalyseData(data[0]);
+
+                    // sales record
+                    const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
                     dispatch(dashboardRecordMore(evaluatedDashboard));
-                }).then(()=>{
-                    setLoad(false);
-                })
+                });
+
+            }).then(()=>{
+                setLoad(false);
             });
+
         }else{
             setLoad(true);
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
                 return data.station;
             }).then(data => {
-                DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
-                    dispatch(dashEmployees(data.employees));
-                    collectAndAnalyseData(data);
-                });
 
                 let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
                 rangeOne = rangeOne.map(data => {
@@ -227,12 +241,23 @@ const Dashboard = (props) => {
                     endDate: formatTwo
                 }
 
-                DashboardService.allSalesRecords(payload).then(data => { 
-                    const evaluatedDashboard = collectAndEvaluateDashboard(data);
+                const payload2 = {
+                    id: data.organisation, 
+                    outletID: data._id
+                }
+
+                Promise.all([getAttendance(payload), getSalesRecord(payload2)]).then(data => {
+                    // attendance records
+                    dispatch(dashEmployees(data[0].employees));
+                    collectAndAnalyseData(data[0]);
+
+                    // sales record
+                    const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
                     dispatch(dashboardRecordMore(evaluatedDashboard));
-                }).then(()=>{
-                    setLoad(false);
-                })
+                });
+
+            }).then(()=>{
+                setLoad(false);
             });
         }
         
@@ -243,10 +268,23 @@ const Dashboard = (props) => {
         getAllStationData();
     },[getAllStationData]);
 
+    const attendanceData = async() => {
+        const data = await DashboardService.allAttendanceRecords({
+            id: resolveUserID().id, 
+            outletID: oneStationData === null? "None": oneStationData?._id
+        });
+
+        return data;
+    }
+
+    const salesDataRecord = async(payload) => {
+        const data = await DashboardService.allSalesRecords(payload);
+        return data;
+    }
+
     const changeMenu = (index, item ) => {
         setDefault(index);
         dispatch(adminOutlet(item));
-
         setLoad(true);
         
         let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
@@ -273,11 +311,6 @@ const Dashboard = (props) => {
         });
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
 
-        DashboardService.allAttendanceRecords({id: resolveUserID().id, outletID: item === null? "None": item?._id}).then(data => {
-            dispatch(dashEmployees(data.employees));
-            collectAndAnalyseData(data);
-        });
-
         const payload = {
             organisation: resolveUserID().id,
             outletID: item === null? "None": item?._id,
@@ -285,8 +318,13 @@ const Dashboard = (props) => {
             endDate: formatTwo
         }
 
-        DashboardService.allSalesRecords(payload).then(data => { 
-            const evaluatedDashboard = collectAndEvaluateDashboard(data);
+        Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {
+            // employee details
+            dispatch(dashEmployees(data[0].employees));
+            collectAndAnalyseData(data[0]);
+
+            // sales details
+            const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
             dispatch(dashboardRecordMore(evaluatedDashboard));
         }).then(()=>{
             setLoad(false);
@@ -321,7 +359,6 @@ const Dashboard = (props) => {
         const DPKTotalLpoSales = DPKLPO.reduce((accum, current) => {
             return Number(accum) + Number(current.lpoLitre) * Number(current.DPKRate);
         }, 0);
-        console.log(PMSTotalLpoSales, "ggggggggggggg")
 
 
         /* ############################################################
@@ -418,12 +455,9 @@ const Dashboard = (props) => {
         const totalPosPayments = data.posPayment.reduce((accum, current) => {
             return Number(accum) + Number(current.amountPaid);
         }, 0);
-        console.log(totalPosPayments, "total bank payment")
 
         const netToBank = ((pmsTotalSales - PMSTotalLpoSales) + (agoTotalSales - AGOTotalLpoSales) + (dpkTotalSales - DPKTotalLpoSales)) - totalExpenses;
         
-        console.log(agoTotalSales, "total ago sales")
-        console.log(AGOTotalLpoSales, "total ago lpo sales")
         const details = {
             sales:{
                 totalAmount: pmsTotalSales + agoTotalSales + dpkTotalSales,
@@ -475,11 +509,6 @@ const Dashboard = (props) => {
         });
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
 
-        DashboardService.allAttendanceRecords({id: resolveUserID().id, outletID: oneStationData === null? "None": oneStationData?._id}).then(data => {
-            dispatch(dashEmployees(data.employees));
-            collectAndAnalyseData(data);
-        });
-
         const payload = {
             organisation: resolveUserID().id,
             outletID: oneStationData === null? "None": oneStationData?._id,
@@ -487,12 +516,17 @@ const Dashboard = (props) => {
             endDate: formatTwo
         }
 
-        DashboardService.allSalesRecords(payload).then(data => { 
-            const evaluatedDashboard = collectAndEvaluateDashboard(data);
+        Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {
+            // employee details
+            dispatch(dashEmployees(data[0].employees));
+            collectAndAnalyseData(data[0]);
+
+            // sales details
+            const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
             dispatch(dashboardRecordMore(evaluatedDashboard));
         }).then(()=>{
             setLoad(false);
-        })
+        });
         setValue(data);
     }
 
