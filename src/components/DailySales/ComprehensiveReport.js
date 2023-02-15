@@ -12,6 +12,7 @@ import ComprehensiveReports from '../Reports/ConprehensiveReports';
 import AGODailySales from './AGODailySales';
 import DPKDailySales from './DPKDailySales';
 import PMSDailySales from './PMSDailySales';
+import { isSafari } from "react-device-detect";
 
 const months = {
     '01' : 'Jan',
@@ -851,9 +852,30 @@ const ComprehensiveReport = (props) => {
                 </div>
                 <div style={{position: 'relative'}}>
                     <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{visibility:'hidden', marginRight:'20px'}} type="date" />
-                    <Button 
-                        variant="contained" 
-                        sx={{
+                    {!isSafari?
+                        <Button 
+                            variant="contained" 
+                            sx={{
+                                width:'100px',
+                                height:'30px',
+                                background:'#06805B',
+                                fontSize:'11px',
+                                marginLeft:'10px',
+                                borderRadius:'0px',
+                                textTransform:'capitalize',
+                                position:'absolute',
+                                zIndex:'20',
+                                right:'75px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                            }}
+                            onClick={changeSalesDate}
+                        >
+                            <div>{currentDate}</div>
+                        </Button>:
+
+                        <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{
                             width:'100px',
                             height:'30px',
                             background:'#06805B',
@@ -864,14 +886,8 @@ const ComprehensiveReport = (props) => {
                             position:'absolute',
                             zIndex:'20',
                             right:'75px',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
-                            }
-                        }}
-                        onClick={changeSalesDate}
-                    >
-                        <div>{currentDate}</div>
-                    </Button>
+                        }} type="date" />
+                    }
                     <Button 
                         variant="contained" 
                         sx={{

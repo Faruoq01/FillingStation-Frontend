@@ -23,6 +23,7 @@ import DailySalesService from '../../services/DailySales';
 import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
+import { isSafari } from "react-device-detect";
 
 const months = {
     '01' : 'Jan',
@@ -666,11 +667,34 @@ const DailySales = (props) => {
                     </div>
 
                     <div className='daily-right'>
-                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                            <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
-                            <Button 
-                                variant="contained" 
-                                sx={{
+                        {!isSafari?
+                            <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                                <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
+                                <Button 
+                                    variant="contained" 
+                                    sx={{
+                                        width:'170px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        textTransform:'capitalize',
+                                        display:'flex',
+                                        flexDirection:'row',
+                                        alignItems:'center',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                    }}
+                                    onClick={dateHandleInputDate}
+                                >
+                                    <div style={{marginRight:'10px'}}>{currentDate}</div>
+                                    <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
+                                </Button>
+                            </div>: 
+
+                            <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                                <input onChange={updateDate} ref={dateHandle} style={{
                                     width:'170px',
                                     height:'30px',
                                     background:'#06805B',
@@ -680,16 +704,10 @@ const DailySales = (props) => {
                                     display:'flex',
                                     flexDirection:'row',
                                     alignItems:'center',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                }}
-                                onClick={dateHandleInputDate}
-                            >
-                                <div style={{marginRight:'10px'}}>{currentDate}</div>
-                                <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
-                            </Button>
-                        </div>
+                                }} type="date" />
+                            </div>
+                        }
+
                         <div style={{marginTop:'10px'}} className='expen'>
                             <div style={{background:'#108CFF'}} className='child'>
                                 {load?

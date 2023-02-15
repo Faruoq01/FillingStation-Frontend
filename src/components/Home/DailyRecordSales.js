@@ -37,6 +37,7 @@ import { useRef } from 'react';
 import calendar from '../../assets/calendar.png';
 import SummaryRecord from '../Modals/SummaryRecord';
 import { changeDate, changeStation } from '../../store/actions/records';
+import { isSafari } from "react-device-detect";
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -434,11 +435,34 @@ const DailyRecordSales = () => {
                     }
                 </div>
                 <div>
-                    <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                        <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
-                        <Button 
-                            variant="contained" 
-                            sx={{
+                    {!isSafari?
+                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                            <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
+                            <Button 
+                                variant="contained" 
+                                sx={{
+                                    width: mediaMatch? '140px': '170px',
+                                    height:'30px',
+                                    background:'#06805B',
+                                    fontSize:'12px',
+                                    borderRadius:'0px',
+                                    textTransform:'capitalize',
+                                    display:'flex',
+                                    flexDirection:'row',
+                                    alignItems:'center',
+                                    '&:hover': {
+                                        backgroundColor: '#06805B'
+                                    }
+                                }}
+                                onClick={dateHandleInputDate}
+                            >
+                                <div style={{marginRight:'10px'}}>{currentDate}</div>
+                                <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
+                            </Button>
+                        </div>:
+
+                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                            <input onChange={updateDate} ref={dateHandle} style={{
                                 width: mediaMatch? '140px': '170px',
                                 height:'30px',
                                 background:'#06805B',
@@ -448,16 +472,9 @@ const DailyRecordSales = () => {
                                 display:'flex',
                                 flexDirection:'row',
                                 alignItems:'center',
-                                '&:hover': {
-                                    backgroundColor: '#06805B'
-                                }
-                            }}
-                            onClick={dateHandleInputDate}
-                        >
-                            <div style={{marginRight:'10px'}}>{currentDate}</div>
-                            <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
-                        </Button>
-                    </div>
+                            }} type="date" />
+                        </div>
+                    }
                 </div>
             </div>
             
