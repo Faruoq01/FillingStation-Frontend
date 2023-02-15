@@ -110,61 +110,63 @@ const Dashboard = (props) => {
         }
     }
 
-    const getTopStations = () => {
+    const getTopStations = () => {console.log(dashboardRecords, "kkkkkkkkkkk")
 
-        const stations = dashboardRecords.station;
-        const sales = dashboardRecords.salesList;
+        const stations = dashboardRecords?.station;
+        const sales = dashboardRecords?.salesList;
 
         const stationSales = new Map();
         const stationDetails = new Map();
         const salesDetails = new Map();
 
-        for(let station of stations){
-            const filteredCurrentStationSales = sales.filter(data => data.outletID === station._id);
-            stationSales.set(station._id, filteredCurrentStationSales);
-            stationDetails.set(station._id, station);
-        }
-
-        for(let station of stations){
-            const oneData = stationSales.get(station._id);
-
-            const pms = oneData.filter(data => data.productType === "PMS").reduce((accum, current) => {
-                return Number(accum) + Number(current.sales);
-            }, 0);
-
-            const ago = oneData.filter(data => data.productType === "AGO").reduce((accum, current) => {
-                return Number(accum) + Number(current.sales);
-            }, 0);
-
-            const dpk = oneData.filter(data => data.productType === "DPK").reduce((accum, current) => {
-                return Number(accum) + Number(current.sales);
-            }, 0);
-
-            const summary = {
-                pms: pms,
-                ago: ago,
-                dpk: dpk
+        if(stations){
+            for(let station of stations){
+                const filteredCurrentStationSales = sales.filter(data => data.outletID === station._id);
+                stationSales.set(station._id, filteredCurrentStationSales);
+                stationDetails.set(station._id, station);
             }
-
-            salesDetails.set(station._id, summary);
-        }
-
-        const totalSales = Array.from(salesDetails.entries());
-        const sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-            return Number(sales1.pms) - Number(sales2.pms);
-        });
-        // eslint-disable-next-line no-unused-vars
-        const [first, second, ...tops] = sortedSales.reverse();
-
-        return {
-            first: {
-                station: stationDetails.get(first[0]),
-                sales: first[1]
-            },
-
-            second: {
-                station: stationDetails.get(second[0]),
-                sales: second[1]
+    
+            for(let station of stations){
+                const oneData = stationSales.get(station._id);
+    
+                const pms = oneData.filter(data => data.productType === "PMS").reduce((accum, current) => {
+                    return Number(accum) + Number(current.sales);
+                }, 0);
+    
+                const ago = oneData.filter(data => data.productType === "AGO").reduce((accum, current) => {
+                    return Number(accum) + Number(current.sales);
+                }, 0);
+    
+                const dpk = oneData.filter(data => data.productType === "DPK").reduce((accum, current) => {
+                    return Number(accum) + Number(current.sales);
+                }, 0);
+    
+                const summary = {
+                    pms: pms,
+                    ago: ago,
+                    dpk: dpk
+                }
+    
+                salesDetails.set(station._id, summary);
+            }
+    
+            const totalSales = Array.from(salesDetails.entries());
+            const sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
+                return Number(sales1.pms) - Number(sales2.pms);
+            });
+            // eslint-disable-next-line no-unused-vars
+            const [first, second, ...tops] = sortedSales.reverse();
+    
+            return {
+                first: {
+                    station: stationDetails.get(first[0])? stationDetails.get(first[0]): {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+                    sales: first[1]? first[1]: {pms: 0, ago: 0, dpk: 0}
+                },
+    
+                second: {
+                    station: stationDetails.get(second[0])? stationDetails.get(second[0]): {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+                    sales: second[1]? second[1] : {pms: 0, ago: 0, dpk: 0}
+                }
             }
         }
     }
@@ -406,19 +408,19 @@ const Dashboard = (props) => {
         /* ############################################################
             Analyze lpo sales
         ##############################################################*/
-        let PMSLPO = data.lpo.filter(data => data.productType === "PMS");
-        let AGOLPO = data.lpo.filter(data => data.productType === "AGO");
-        let DPKLPO = data.lpo.filter(data => data.productType === "DPK");
+        let PMSLPO = data?.lpo?.filter(data => data.productType === "PMS");
+        let AGOLPO = data?.lpo?.filter(data => data.productType === "AGO");
+        let DPKLPO = data?.lpo?.filter(data => data.productType === "DPK");
 
-        const PMSTotalLpoSales = PMSLPO.reduce((accum, current) => {
+        const PMSTotalLpoSales = PMSLPO?.reduce((accum, current) => {
             return Number(accum) + Number(current.lpoLitre) * Number(current.PMSRate);
         }, 0);
 
-        const AGOTotalLpoSales = AGOLPO.reduce((accum, current) => {
+        const AGOTotalLpoSales = AGOLPO?.reduce((accum, current) => {
             return Number(accum) + Number(current.lpoLitre) * Number(current.AGORate);
         }, 0);
 
-        const DPKTotalLpoSales = DPKLPO.reduce((accum, current) => {
+        const DPKTotalLpoSales = DPKLPO?.reduce((accum, current) => {
             return Number(accum) + Number(current.lpoLitre) * Number(current.DPKRate);
         }, 0);
 
@@ -539,9 +541,11 @@ const Dashboard = (props) => {
                 netToBank: netToBank - totalExpenses,
                 outstanding: netToBank - totalPayments - totalPosPayments
             },
-            station: data.station,
-            salesList: data.sales
+            station: data?.station,
+            salesList: data?.sales
         }
+
+        console.log(data, "qqqqqqqqqqqqqqqqq")
 
         return details;
     }
@@ -830,36 +834,36 @@ const Dashboard = (props) => {
                                     <>
                                         <div className='station-content'>
                                             <div className='inner-stat'>
-                                                <div className='inner-header'>{getTopStations().first.station.outletName+" "+ getTopStations().first.station.alias}</div>
+                                                <div className='inner-header'>{getTopStations()?.first?.station?.outletName+" "+ getTopStations()?.first?.station?.alias}</div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>PMS</div>
                                                         <progress className='prog' value="70" max="100"> 70% </progress>
                                                     </div>
-                                                    <div className='slideQty'>{approx(getTopStations().first.sales.pms)} Ltr</div>
+                                                    <div className='slideQty'>{approx(getTopStations()?.first?.sales?.pms)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>AGO</div>
                                                         <progress className='prog' value="50" max="100"> 50% </progress>
                                                     </div>
-                                                    <div className='slideQty'>{approx(getTopStations().first.sales.ago)} Ltr</div>
+                                                    <div className='slideQty'>{approx(getTopStations()?.first?.sales?.ago)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>DPK</div>
                                                         <progress className='prog' value="32" max="100"> 32% </progress>
                                                     </div>
-                                                    <div className='slideQty'>{approx(getTopStations().first.sales.dpk)} Ltr</div>
+                                                    <div className='slideQty'>{approx(getTopStations()?.first?.sales?.dpk)} Ltr</div>
                                                 </div>
                                                 <div className='butom'>
                                                     <div className='pump-cont'>
                                                         <div>No of Pump</div>
-                                                        <div className='amount'>{getTopStations().first.station.noOfPumps}</div>
+                                                        <div className='amount'>{getTopStations()?.first?.station?.noOfPumps}</div>
                                                     </div>
                                                     <div style={{marginLeft:'20px'}} className='pump-cont'>
                                                         <div>No of Pump</div>
-                                                        <div className='amount'>{getTopStations().first.station.noOfTanks}</div>
+                                                        <div className='amount'>{getTopStations()?.first?.station?.noOfTanks}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -867,36 +871,36 @@ const Dashboard = (props) => {
 
                                         <div className='station-content'>
                                             <div className='inner-stat'>
-                                                <div className='inner-header'>{getTopStations().second.station.outletName+" "+ getTopStations().second.station.alias}</div>
+                                                <div className='inner-header'>{getTopStations()?.second?.station?.outletName+" "+ getTopStations()?.second?.station?.alias}</div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>PMS</div>
                                                         <progress className='prog' value="70" max="100"> 70% </progress>
                                                     </div>
-                                                    <div className='slideQty'>{approx(getTopStations().second.sales.pms)} Ltr</div>
+                                                    <div className='slideQty'>{approx(getTopStations()?.second?.sales?.pms)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>AGO</div>
                                                         <progress className='prog' value="50" max="100"> 50% </progress>
                                                     </div>
-                                                    <div className='slideQty'>{approx(getTopStations().second.sales.ago)} Ltr</div>
+                                                    <div className='slideQty'>{approx(getTopStations()?.second?.sales?.ago)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>DPK</div>
                                                         <progress className='prog' value="32" max="100"> 32% </progress>
                                                     </div>
-                                                    <div className='slideQty'>{approx(getTopStations().second.sales.dpk)} Ltr</div>
+                                                    <div className='slideQty'>{approx(getTopStations()?.second?.sales?.dpk)} Ltr</div>
                                                 </div>
                                                 <div className='butom'>
                                                     <div className='pump-cont'>
                                                         <div>No of Pump</div>
-                                                        <div className='amount'>{getTopStations().second.station.noOfPumps}</div>
+                                                        <div className='amount'>{getTopStations()?.second?.station?.noOfPumps}</div>
                                                     </div>
                                                     <div style={{marginLeft:'20px'}} className='pump-cont'>
                                                         <div>No of Pump</div>
-                                                        <div className='amount'>{getTopStations().second.station.noOfTanks}</div>
+                                                        <div className='amount'>{getTopStations()?.second?.station?.noOfTanks}</div>
                                                     </div>
                                                 </div>
                                             </div>
