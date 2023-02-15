@@ -299,7 +299,7 @@ const DailySales = (props) => {
     }
 
     const getAndAnalyzeDailySales = async(data, onLoad, selectedDate) => {
-
+        setLoads(true);
         const salesPayload = {
             organisationID: resolveUserID().id,
             outletID: data === null? "None": data?._id,
@@ -333,6 +333,9 @@ const DailySales = (props) => {
             dispatch(getAllOutletTanks(data.dailyRecords.tanks));
             dispatch(dailySupplies(supplyRecords));
             dispatch(passIncomingOrder(data.dailyRecords.incoming));
+
+        }).then(()=>{
+            setLoads(false);
         });
     }
 
@@ -343,7 +346,6 @@ const DailySales = (props) => {
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
-            setLoads(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 dispatch(adminOutlet(null));
@@ -362,10 +364,9 @@ const DailySales = (props) => {
         
                     dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
                 });
-                setLoads(false);
             });
         }else{
-            setLoads(true);
+
             OutletService.getOneOutletStation({outletID: resolveUserID().id}).then(data => {
                 dispatch(adminOutlet(data.station));
                 return data.station;
@@ -383,7 +384,7 @@ const DailySales = (props) => {
         
                     dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
                 });
-                setLoads(false);
+                
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
