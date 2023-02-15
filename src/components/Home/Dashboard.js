@@ -110,7 +110,7 @@ const Dashboard = (props) => {
         }
     }
 
-    const getTopStations = () => {console.log(dashboardRecords, "kkkkkkkkkkk")
+    const getTopStations = () => {
 
         const stations = dashboardRecords?.station;
         const sales = dashboardRecords?.salesList;
@@ -170,8 +170,6 @@ const Dashboard = (props) => {
             }
         }
     }
-
-    console.log(getTopStations(), "hhhhhhhhhhhhhhhhhhhh")
 
     const collectAndAnalyseData = (data) => {
         let activeTank = data.station.tanks.filter(data => data.activeState === "1");
@@ -545,8 +543,6 @@ const Dashboard = (props) => {
             salesList: data?.sales
         }
 
-        console.log(data, "qqqqqqqqqqqqqqqqq")
-
         return details;
     }
 
@@ -584,7 +580,7 @@ const Dashboard = (props) => {
             endDate: formatTwo
         }
 
-        Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {console.log(data, "llllllllllll")
+        Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {
             // employee details
             dispatch(dashEmployees(data[0].employees));
             collectAndAnalyseData(data[0]);
