@@ -92,15 +92,16 @@ const Dashboard = (props) => {
     const dispatch = useDispatch();
     const history  = useHistory();
     const approx = require('approximate-number');
+    const moment = require('moment-timezone');
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const dashboardData = useSelector(state => state.dashboardReducer.dashboardData);
     const dashboardRecords = useSelector(state => state.dashboardReducer.dashboardRecords);
     const [defaultState, setDefault] = useState(0);
-    const [value, setValue] = useState([new Date(), new Date()]);
     const [load, setLoad] = useState(false);
     const [product, setProduct] = useState('PMS');
+    const [value, setValue] = React.useState([new Date(), new Date()]);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -215,29 +216,8 @@ const Dashboard = (props) => {
                 return data.station[0];
             }).then(data => {
 
-                let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
-                rangeOne = rangeOne.map(data => {
-                    let res = "0";
-                    if(data.length === 1){
-                        res = res.concat(data);
-                    }else{
-                        res = data;
-                    }
-                    return res;
-                });
-                const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
-
-                let rangeTwo = new Date(value[1]).toLocaleDateString().split("/");
-                rangeTwo = rangeTwo.map(data => {
-                    let res = "0";
-                    if(data.length === 1){
-                        res = res.concat(data);
-                    }else{
-                        res = data;
-                    }
-                    return res;
-                });
-                const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+                const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+                const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
                 const payload = {
                     organisation: resolveUserID().id,
@@ -251,7 +231,7 @@ const Dashboard = (props) => {
                     outletID: "None"
                 }
 
-                Promise.all([getAttendance(payload), getSalesRecord(payload2)]).then(data => {
+                Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {
                     // attendance records
                     dispatch(dashEmployees(data[0].employees));
                     collectAndAnalyseData(data[0]);
@@ -272,29 +252,8 @@ const Dashboard = (props) => {
                 return data.station;
             }).then(data => {
 
-                let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
-                rangeOne = rangeOne.map(data => {
-                    let res = "0";
-                    if(data.length === 1){
-                        res = res.concat(data);
-                    }else{
-                        res = data;
-                    }
-                    return res;
-                });
-                const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
-
-                let rangeTwo = new Date(value[1]).toLocaleDateString().split("/");
-                rangeTwo = rangeTwo.map(data => {
-                    let res = "0";
-                    if(data.length === 1){
-                        res = res.concat(data);
-                    }else{
-                        res = data;
-                    }
-                    return res;
-                });
-                const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+                const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+                const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
                 const payload = {
                     organisation: data?.organisation,
@@ -308,7 +267,7 @@ const Dashboard = (props) => {
                     outletID: data._id
                 }
 
-                Promise.all([getAttendance(payload), getSalesRecord(payload2)]).then(data => {
+                Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {
                     // attendance records
                     dispatch(dashEmployees(data[0].employees));
                     collectAndAnalyseData(data[0]);
@@ -349,29 +308,8 @@ const Dashboard = (props) => {
         dispatch(adminOutlet(item));
         setLoad(true);
         
-        let rangeOne = new Date(value[0]).toLocaleDateString().split("/");
-        rangeOne = rangeOne.map(data => {
-            let res = "0";
-            if(data.length === 1){
-                res = res.concat(data);
-            }else{
-                res = data;
-            }
-            return res;
-        });
-        const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
-
-        let rangeTwo = new Date(value[1]).toLocaleDateString().split("/");
-        rangeTwo = rangeTwo.map(data => {
-            let res = "0";
-            if(data.length === 1){
-                res = res.concat(data);
-            }else{
-                res = data;
-            }
-            return res;
-        });
-        const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+        const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
         const payload = {
             organisation: resolveUserID().id,
@@ -546,32 +484,11 @@ const Dashboard = (props) => {
         return details;
     }
 
-    const onChange = (data) => {
+    const onChangeRange = (date) => {
         setLoad(true);
-        
-        let rangeOne = new Date(data[0]).toLocaleDateString().split("/");
-        rangeOne = rangeOne.map(data => {
-            let res = "0";
-            if(data.length === 1){
-                res = res.concat(data);
-            }else{
-                res = data;
-            }
-            return res;
-        });
-        const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
 
-        let rangeTwo = new Date(data[1]).toLocaleDateString().split("/");
-        rangeTwo = rangeTwo.map(data => {
-            let res = "0";
-            if(data.length === 1){
-                res = res.concat(data);
-            }else{
-                res = data;
-            }
-            return res;
-        });
-        const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+        const formatOne = moment(new Date(date[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const formatTwo = moment(new Date(date[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
         const payload = {
             organisation: resolveUserID().id,
@@ -591,7 +508,7 @@ const Dashboard = (props) => {
         }).then(()=>{
             setLoad(false);
         });
-        setValue(data);
+        setValue(date);
     }
 
     return(
@@ -601,7 +518,7 @@ const Dashboard = (props) => {
                     <div className='left-dash'>
                         <div style={{width:'auto'}} className='selectItem'>
                             <div style={{marginRight:'10px'}} className='first-select'>
-                                <DateRangePicker onChange={onChange} value={value} />
+                                <DateRangePicker onChange={onChangeRange} value={value} />
                             </div>
                             <div style={{width: mobile.matches? '230px': "150px"}} className='second-select'>
                                 {(user.userType === "superAdmin" || user.userType === "admin") &&
