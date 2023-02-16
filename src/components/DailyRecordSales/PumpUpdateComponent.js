@@ -214,6 +214,9 @@ const PumpUpdateComponent = (props) => {
                 const totalizerDiff = Number(e.target.value) - Number(pump.totalizerReading);
                 const quantity = Number(connectedTank[0].currentLevel) - Number(connectedTank[0].deadStockLevel);
 
+                console.log(totalizerDiff, "difference")
+                console.log(connectedTank[0].currentLevel, "current tank")
+
                 if(oneStationData === null){
                     refreshPumps(pump)
                     swal("Warning!", "Please select a station", "info");

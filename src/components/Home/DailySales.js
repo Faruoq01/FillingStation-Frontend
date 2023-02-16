@@ -704,6 +704,7 @@ const DailySales = (props) => {
                                     display:'flex',
                                     flexDirection:'row',
                                     alignItems:'center',
+                                    color:'#fff'
                                 }} type="date" />
                             </div>
                         }

@@ -472,6 +472,7 @@ const DailyRecordSales = () => {
                                 display:'flex',
                                 flexDirection:'row',
                                 alignItems:'center',
+                                color:'#fff'
                             }} type="date" />
                         </div>
                     }
