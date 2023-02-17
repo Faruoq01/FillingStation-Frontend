@@ -377,6 +377,10 @@ const Dashboard = (props) => {
         //     return Number(accum) + Number(current.lpoLitre);
         // }, 0);
 
+        // console.log(PMSTotalLpoLitre, "pms volume")
+        // console.log(AGOTotalLpoLitre, "ago volume")
+        // console.log(DPKTotalLpoLitre, "dpk volume")
+
 
         /* ############################################################
             Analyze total sales Volume
@@ -457,7 +461,14 @@ const Dashboard = (props) => {
         }, 0);
 
         const netToBank = ((pmsTotalSales - PMSTotalLpoSales) + (agoTotalSales - AGOTotalLpoSales) + (dpkTotalSales - DPKTotalLpoSales)) - totalExpenses;
-        
+        console.log(pmsTotalSales, "pms sales")
+        console.log(PMSTotalLpoSales, "pms lpo")
+
+        console.log(agoTotalSales, "pms sales")
+        console.log(AGOTotalLpoSales, "pms lpo")
+
+        console.log(dpkTotalSales, "pms sales")
+        console.log(DPKTotalLpoSales, "pms lpo")
         const details = {
             sales:{
                 totalAmount: pmsTotalSales + agoTotalSales + dpkTotalSales,
@@ -695,13 +706,13 @@ const Dashboard = (props) => {
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.netToBank)}</div>
                                                 <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPayments)}</div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPayments}</div>
                                                 <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.outstanding)}</div>
                                             </div>
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPosPayments)}</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPosPayments}</div>
                                                 <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">

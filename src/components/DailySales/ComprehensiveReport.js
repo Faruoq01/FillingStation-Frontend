@@ -293,6 +293,20 @@ const LPODailySales = (props) => {
         }
     }
 
+    const getTotalVol = () => {
+        let total = 0;
+        for(let lpo of props?.data){
+            if(lpo.productType === "PMS"){
+                total = total + Number(lpo.lpoLitre)
+            }else if(lpo.productType === "AGO"){
+                total = total + Number(lpo.lpoLitre)
+            }else if(lpo.productType === "DPK"){
+                total = total + Number(lpo.lpoLitre)
+            }
+        }
+        return total;
+    }
+
     return(
         <div className='sales'>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>LPO</div>
@@ -334,9 +348,13 @@ const LPODailySales = (props) => {
                         <div style={{background: "transparent"}} className='col'></div>
                         <div style={{background: "transparent"}} className='col'></div>
                         <div style={{background: "transparent"}} className='col'></div>
-                        <div style={{background: "transparent"}} className='col'></div>
-                        <div style={{background: "transparent"}} className='col'></div>
-                        <div className='col'>Total</div>
+                        <div style={{background: "transparent"}} className='col'>Total</div>
+                        <div className='col'>
+                            {
+                                getTotalVol()
+                            }
+                        </div>
+                        <div className='col'></div>
                         <div style={{marginRight:'0px'}} className='col'>
                             {
                                 getTotal()
