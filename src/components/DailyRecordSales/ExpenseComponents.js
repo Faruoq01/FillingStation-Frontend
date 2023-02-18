@@ -183,7 +183,7 @@ const ExpenseComponents = (props) => {
 
                     <div style={add}>
                         <Button sx={{
-                            width:'140px', 
+                            width:'180px', 
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',

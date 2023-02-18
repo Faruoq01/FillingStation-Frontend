@@ -869,7 +869,7 @@ const ComprehensiveReport = (props) => {
                     }
                 </div>
                 <div style={{position: 'relative'}}>
-                    <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{visibility:'hidden', marginRight:'20px'}} type="date" />
+                    <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{visibility:'hidden'}} type="date" />
                     {!isSafari?
                         <Button 
                             variant="contained" 
@@ -878,7 +878,6 @@ const ComprehensiveReport = (props) => {
                                 height:'30px',
                                 background:'#06805B',
                                 fontSize:'11px',
-                                marginLeft:'10px',
                                 borderRadius:'0px',
                                 textTransform:'capitalize',
                                 position:'absolute',
@@ -898,7 +897,6 @@ const ComprehensiveReport = (props) => {
                             height:'30px',
                             background:'#06805B',
                             fontSize:'11px',
-                            marginLeft:'10px',
                             borderRadius:'0px',
                             textTransform:'capitalize',
                             position:'absolute',
@@ -913,7 +911,6 @@ const ComprehensiveReport = (props) => {
                             height:'30px',
                             background:'#F36A4C',
                             fontSize:'11px',
-                            marginLeft:'10px',
                             borderRadius:'0px',
                             textTransform:'capitalize',
                             '&:hover': {
