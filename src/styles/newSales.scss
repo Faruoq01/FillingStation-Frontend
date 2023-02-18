@@ -19,7 +19,7 @@
 
         .inner-body{
             width: 100%;
-            margin: 15px;
+            margin-top: 15px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -29,8 +29,9 @@
             }
 
             .left-supply{
-                width: 54%;
+                width: 50%;
                 height: 100%;
+                background: green;
 
                 .tanks{
                     width: 100%;
@@ -200,8 +201,9 @@
             }
 
             .right-supply{
-                width: 44%;
+                width: 50%;
                 height: auto;
+                background: blue;
 
                 .table-head{
                     width: 100%;

@@ -513,6 +513,7 @@
                                     display: flex;
                                     align-items: center;
                                     color: #000;
+                                    font-size: 12px;
                                 }
                             }
                         }
@@ -651,4 +652,8 @@
             }
         }
     }
+}
+
+.wrapper{
+    width:100%;
 }

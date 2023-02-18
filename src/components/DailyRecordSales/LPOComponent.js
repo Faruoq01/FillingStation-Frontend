@@ -13,6 +13,7 @@ import axios from "axios";
 import config from '../../constants';
 import { useEffect } from "react";
 import { updatePayload } from "../../store/actions/records";
+import "../../styles/lpoNew.scss";
 
 const LPOComponent = (props) => {
 
@@ -331,8 +332,8 @@ const LPOComponent = (props) => {
                 }
             </div>
 
-            <div className='inner-body'>
-                <div className='left-supply'>
+            <div className='lpo-body'>
+                <div className='lpo-left'>
 
                     <div className='single-form'>
                         <div className='input-d'>
@@ -353,25 +354,25 @@ const LPOComponent = (props) => {
                     <div className='single-form'>
                         <div className='input-d'>
                             <span style={{color:'green'}}>Product Type</span>
-                            <input defaultValue={productType} disabled className='text-field' type={'text'} />
+                            <input defaultValue={productType} disabled className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
                     <div className='single-form'>
                         <div className='input-d'>
                             <span style={{color:'green'}}>Truck No</span>
-                            <input value={truckNo} onChange={e => setTruckNo(e.target.value)} className='text-field' type={'text'} />
+                            <input value={truckNo} onChange={e => setTruckNo(e.target.value)} className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
                     <div style={{marginTop:'20px'}} className='single-form'>
                         <div className='input-d'>
                             <span style={{color:'green'}}>Quantity (Litres)</span>
-                            <input value={quantity} onChange={e => {updateTankWithLPO(e)}} className='text-field' type={'text'} />
+                            <input value={quantity} onChange={e => {updateTankWithLPO(e)}} className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
-                    <div style={{marginTop:'30px'}} className='double-form'>
+                    <div style={{marginTop:'40px'}} className='double-form'>
                         <div className='input-d'>
                             <Button 
                                 variant="contained" 
@@ -434,7 +435,7 @@ const LPOComponent = (props) => {
                     <input onChange={pickFromGallery} ref={gallery} style={{visibility:'hidden'}} type={'file'} />
                 </div>
 
-                <div className='right-supply'>
+                <div className='lpo-right'>
                     <div className="table-head">
                         <div className="col">S/N</div>
                         <div className="col">Account</div>

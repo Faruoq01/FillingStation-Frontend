@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import { passRecordSales } from "../../store/actions/dailySales";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import "../../styles/lpoNew.scss";
 
 const SupplyComponent = () => {
 
@@ -170,14 +171,14 @@ const SupplyComponent = () => {
     }
 
     return(
-        <div className='inner-body'>
-            <div className='left-supply'>
+        <div className='lpo-body'>
+            <div className='lpo-left'>
 
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Waybill No</span>
                         <div style={{width: '95%', position:'relative'}}>
-                            <div onClick={()=>setMenus(!menus)} className='text-field2'>
+                            <div onClick={()=>setMenus(!menus)} className='lpo-inputs2'>
                                 <span>{waybillNo}</span>
                                 <KeyboardArrowDownIcon />
                             </div>
@@ -198,28 +199,28 @@ const SupplyComponent = () => {
                         </div>
                     </div>
 
-                    <div className='input-d'>
+                    <div style={{marginTop:'20px'}} className='input-d'>
                         <span style={{color:'green'}}>Transporter</span>
-                        <input disabled value={transporter} onChange={e => setTransporter(e.target.value)} className='text-field' type={'text'} />
+                        <input disabled value={transporter} onChange={e => setTransporter(e.target.value)} className='lpo-inputs' type={'text'} />
                     </div>
                 </div>
 
                 <div style={{marginTop:'20px'}} className='single-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Truck No</span>
-                        <input disabled value={truckNo} onChange={e => setTruckNo(e.target.value)} className='text-field' type={'text'} />
+                        <input disabled value={truckNo} onChange={e => setTruckNo(e.target.value)} className='lpo-inputs' type={'text'} />
                     </div>
                 </div>
 
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Product Supply</span>
-                        <input disabled value={productSupply} onChange={e => setProductSupply(e.target.value)} className='text-field' type={'text'} />
+                        <input disabled value={productSupply} onChange={e => setProductSupply(e.target.value)} className='lpo-inputs' type={'text'} />
                     </div>
 
                     <div className='input-d'>
                         <span style={{color:'green'}}>Quantity Loaded</span>
-                        <input disabled value={quantityLoaded} onChange={e => {updatedTankSupply(e)}} className='text-field' type={'text'} />
+                        <input disabled value={quantityLoaded} onChange={e => {updatedTankSupply(e)}} className='lpo-inputs' type={'text'} />
                     </div>
                 </div>
 
@@ -256,12 +257,12 @@ const SupplyComponent = () => {
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Shortage</span>
-                        <input value={shortage} disabled className='text-field' type={'text'} />
+                        <input value={shortage} disabled className='lpo-inputs' type={'text'} />
                     </div>
 
                     <div className='input-d'>
                         <span style={{color:'green'}}>Overage</span>
-                        <input value={overage} disabled className='text-field' type={'text'} />
+                        <input value={overage} disabled className='lpo-inputs' type={'text'} />
                     </div>
                 </div>
 
@@ -283,7 +284,7 @@ const SupplyComponent = () => {
                 </div>
             </div>
 
-            <div className='right-supply'>
+            <div className='lpo-right'>
                 <div className="table-head">
                     <div className="col">S/N</div>
                     <div className="col">Transporter</div>

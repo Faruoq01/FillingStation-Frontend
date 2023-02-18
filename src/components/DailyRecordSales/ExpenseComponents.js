@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useRef } from "react";
 import ReactCamera from "../Modals/ReactCamera";
 import { updatePayload } from "../../store/actions/records";
+import "../../styles/lpoNew.scss";
 
 const ExpenseComponents = (props) => {
 
@@ -103,8 +104,8 @@ const ExpenseComponents = (props) => {
         <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
 
-            <div className='inner-body'>
-                <div className='left-supply'>
+            <div className='lpo-body'>
+                <div className='lpo-left'>
 
                     <div style={checkIt}>
                         <input
@@ -118,25 +119,25 @@ const ExpenseComponents = (props) => {
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Expense Name</span>
-                            <input style={{width:'98%'}} value={expenseName} onChange={e => setExpenseName(e.target.value)} className='text-field' type={'text'} />
+                            <input style={{width:'98%'}} value={expenseName} onChange={e => setExpenseName(e.target.value)} className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Description</span>
-                            <textarea value={description} onChange={e => setDescription(e.target.value)} style={{width:'98%', height:'100px'}} className='text-field' type={'text'}> </textarea>
+                            <textarea value={description} onChange={e => setDescription(e.target.value)} style={{width:'98%', height:'100px'}} className='lpo-inputs' type={'text'}> </textarea>
                         </div>
                     </div>
 
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Expense Amount</span>
-                            <input style={{width:'98%'}} value={expenseAmount} onChange={e => setExpenseAmount(e.target.value)} className='text-field' type={'text'} />
+                            <input style={{width:'98%'}} value={expenseAmount} onChange={e => setExpenseAmount(e.target.value)} className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
-                    <div style={{marginTop:'30px'}} className='double-form'>
+                    <div style={{marginTop:'40px'}} className='double-form'>
                         <div className='input-d'>
                             <Button 
                                 variant="contained" 
@@ -187,6 +188,7 @@ const ExpenseComponents = (props) => {
                             background: '#427BBE',
                             borderRadius: '3px',
                             fontSize:'11px',
+                            marginBottom:'20px',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
@@ -199,7 +201,7 @@ const ExpenseComponents = (props) => {
                     </div>
                 </div>
 
-                <div className='right-supply'>
+                <div className='lpo-right'>
                     <div className="table-head">
                         <div className="col">S/N</div>
                         <div className="col">Expense Name</div>

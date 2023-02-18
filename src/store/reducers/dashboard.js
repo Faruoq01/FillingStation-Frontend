@@ -32,6 +32,7 @@ const initialState = {
         },
         totalExpenses: 0,
         incoming: [],
+        station: [],
         payments: {
             totalPayments: 0,
             totalPosPayments: 0,
@@ -116,6 +117,7 @@ const dashboardReducer = (state = initialState, action) => {
                     },
                     totalExpenses: 0,
                     incoming: [],
+                    station: [],
                     payments: {
                         totalPayments: 0,
                         totalPosPayments: 0,

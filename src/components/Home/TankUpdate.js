@@ -61,13 +61,13 @@ const TankUpdate = () => {
                 dispatch(getAllStations(data.station));
                 dispatch(adminOutlet(null));
             }).then((data)=>{
-                const payload = {
+                const payload2 = {
                     skip: skip * limit,
                     limit: limit,
                     outletID: "None", 
                     organisationID: resolveUserID().id
                 }
-                OutletService.getAllOutletTanks(payload).then(data => {
+                OutletService.getAllOutletTanks(payload2).then(data => {
                     setTotal(data.count);
                     dispatch(getAllOutletTanks(data.stations));
                 })
@@ -77,13 +77,13 @@ const TankUpdate = () => {
                 dispatch(adminOutlet(data.station));
                 return data.station;
             }).then((data)=>{
-                const payload = {
+                const payload2 = {
                     skip: skip * limit,
                     limit: limit,
                     outletID: "None", 
                     organisationID: resolveUserID().id
                 }
-                OutletService.getAllOutletTanks(payload).then(data => {
+                OutletService.getAllOutletTanks(payload2).then(data => {
                     setTotal(data.count);
                     dispatch(getAllOutletTanks(data.stations));
                 })

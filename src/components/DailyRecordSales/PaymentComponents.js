@@ -10,6 +10,7 @@ import hr8 from '../../assets/hr8.png';
 import swal from 'sweetalert';
 import config from '../../constants';
 import { updatePayload } from "../../store/actions/records";
+import "../../styles/lpoNew.scss";
 
 const PaymentsComponents = (props) => {
 
@@ -112,8 +113,8 @@ const PaymentsComponents = (props) => {
         <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
 
-            <div className='inner-body'>
-                <div className='left-supply'>
+            <div className='lpo-body'>
+                <div className='lpo-left'>
                     <div className="butts">
                         <Button 
                             variant="contained" 
@@ -136,12 +137,12 @@ const PaymentsComponents = (props) => {
                         <div style={{marginTop:'20px'}} className='double-form'>
                             <div className='input-d'>
                                 <span>Bank Name</span>
-                                <input onChange={e => setBankName(e.target.value)} className='text-field' type={'text'} />
+                                <input onChange={e => setBankName(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
 
                             <div className='input-d'>
                                 <span>Teller ID</span>
-                                <input onChange={e => setTellerID(e.target.value)} className='text-field' type={'text'} />
+                                <input onChange={e => setTellerID(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
                         </div>
                     }
@@ -150,12 +151,12 @@ const PaymentsComponents = (props) => {
                         <div style={{marginTop:'20px'}} className='double-form'>
                             <div className='input-d'>
                                 <span>Pos Name</span>
-                                <input onChange={e => setPosName(e.target.value)} className='text-field' type={'text'} />
+                                <input onChange={e => setPosName(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
 
                             <div className='input-d'>
                                 <span>Terminal ID</span>
-                                <input onChange={e => setTerminalID(e.target.value)} className='text-field' type={'text'} />
+                                <input onChange={e => setTerminalID(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
                         </div>
                     }
@@ -163,18 +164,18 @@ const PaymentsComponents = (props) => {
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Amount Paid</span>
-                            <input value={amountPaid} onChange={e => setAmountPaid(e.target.value)} className='text-field' type={'text'} />
+                            <input value={amountPaid} onChange={e => setAmountPaid(e.target.value)} className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Payment Date</span>
-                            <input value={paymentDate} onChange={e => setPaymentDate(e.target.value)} className='text-field' type={'date'} />
+                            <input value={paymentDate} onChange={e => setPaymentDate(e.target.value)} className='lpo-inputs' type={'date'} />
                         </div>
                     </div>
 
-                    <div style={{marginTop:'30px'}} className='double-form'>
+                    <div style={{marginTop:'40px'}} className='double-form'>
                         <div className='input-d'>
                             <Button 
                                 variant="contained" 
@@ -225,6 +226,7 @@ const PaymentsComponents = (props) => {
                             background: '#427BBE',
                             borderRadius: '3px',
                             fontSize:'11px',
+                            marginBottom:'20px',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
@@ -238,7 +240,7 @@ const PaymentsComponents = (props) => {
 
                 </div>
 
-                <div className='right-supply'>
+                <div className='lpo-right'>
                     <div className="table-head">
                         <div className="col">S/N</div>
                         <div className="col">Bank/POS</div>

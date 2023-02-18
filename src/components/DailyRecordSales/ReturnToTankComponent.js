@@ -270,12 +270,12 @@ const ReturnToTank = (props) => {
                 </div>
             </div>
             
-            <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>
+            <div style={{marginTop:'10px', marginBottom:'10px', fontWeight:'400'}}>Select Pump used for the day</div>
             <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
                     selectedPumps?.length === 0?
                     <div style={{...box, width:'170px'}}>
-                        <div style={{marginRight:'10px'}}>No pump Created</div>
+                        <div style={{marginRight:'10px', fontWeight:'500'}}>No pump Created</div>
                         <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                     </div>:
                     productType === "PMS"?
@@ -340,7 +340,7 @@ const ReturnToTank = (props) => {
             <div style={{width:'100%', marginTop:'20px', justifyContent:'center'}} className='pumping'>
                 {
                     selectedPumps.length === 0?
-                    <div>Please click to select a pump</div>:
+                    <div style={cap}>Please click to select a pump</div>:
                     productType === "PMS"?
                     pms.map((item, index) => {
                         return(
@@ -404,6 +404,12 @@ const ReturnToTank = (props) => {
             </div>
         </div>
     )
+}
+
+const cap = {
+    fontSize:'14px',
+    marginBottom:'20px',
+    fontWeight:'500'
 }
 
 const rad = {

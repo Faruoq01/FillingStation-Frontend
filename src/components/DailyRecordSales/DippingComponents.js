@@ -179,11 +179,11 @@ const DippingComponents = (props) => {
                 </div>
             </div>
             
-            <div style={returnColor(productType, pro)} className='pmscont'>
+            <div style={returnColor(productType, pro)}>
                 <span style={{marginLeft:'15px'}}>{productType}</span>
             </div>
 
-            <div className='pumping'>
+            <div style={{width:'100%',}} className='pumping'>
                 {
                     tankList.length === 0?
                     <div style={created}>No PMS tank created</div>:
@@ -233,14 +233,15 @@ const DippingComponents = (props) => {
 }
 
 const pro = {
-    width:'96%',
+    width:'98%',
     height: "35px",
     borderRadius:'20px',
     display:'flex',
     alignItems:'center',
     justifyContent:'flex-start',
     fontWeight:'bold',
-    marginTop:'20px'
+    marginTop:'20px',
+    marginLeft:'1%',
 }
 
 const rad = {
@@ -250,9 +251,13 @@ const rad = {
 }
 
 const created = {
-    fontSize:'12px',
+    width:'100%',
+    fontSize:'14px',
     marginLeft:'10px',
     marginTop:'20px',
+    marginBottom: '20px',
+    fontWeight:'bold',
+    textAlign:'center',
 }
 
 const imps = {

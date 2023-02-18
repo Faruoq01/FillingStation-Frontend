@@ -22,6 +22,7 @@ import { addDashboard, dashboardRecordMore, dashEmployees, utils } from '../../s
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
+import ProgressBar from "@ramonak/react-progress-bar";
 
 const mobile = window.matchMedia('(max-width: 600px)');
 
@@ -101,6 +102,7 @@ const Dashboard = (props) => {
     const [defaultState, setDefault] = useState(0);
     const [load, setLoad] = useState(false);
     const [product, setProduct] = useState('PMS');
+    const [productState, setProductState] = useState(0);
     const [value, setValue] = React.useState([new Date(), new Date()]);
 
     const resolveUserID = () => {
@@ -119,6 +121,7 @@ const Dashboard = (props) => {
         const stationSales = new Map();
         const stationDetails = new Map();
         const salesDetails = new Map();
+        const totalBeforeSales = new Map();
 
         if(stations){
             for(let station of stations){
@@ -149,24 +152,78 @@ const Dashboard = (props) => {
                 }
     
                 salesDetails.set(station._id, summary);
+
+                //////////////////////////////////////////////////////
+                const pmsBeforeSales = oneData.filter(data => data.productType === "PMS").reduce((accum, current) => {
+                    return Number(accum) + Number(current.beforeSales);
+                }, 0);
+
+                const agoBeforeSales = oneData.filter(data => data.productType === "AGO").reduce((accum, current) => {
+                    return Number(accum) + Number(current.beforeSales);
+                }, 0);
+
+                const dpkBeforeSales = oneData.filter(data => data.productType === "DPK").reduce((accum, current) => {
+                    return Number(accum) + Number(current.beforeSales);
+                }, 0);
+
+                const summary2 = {
+                    pmsBeforeSales: pmsBeforeSales,
+                    agoBeforeSales: agoBeforeSales,
+                    dpkBeforeSales: dpkBeforeSales
+                }
+
+                totalBeforeSales.set(station._id, summary2);
             }
     
             const totalSales = Array.from(salesDetails.entries());
-            const sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-                return Number(sales1.pms) - Number(sales2.pms);
-            });
+
+            let sortedSales = [];
+            if(product === "PMS"){
+                sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
+                    return Number(sales1.pms) - Number(sales2.pms);
+                });
+
+            }else if(product === "AGO"){
+                sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
+                    return Number(sales1.ago) - Number(sales2.ago);
+                });
+
+            }else if(product === "DPK"){
+                sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
+                    return Number(sales1.dpk) - Number(sales2.dpk);
+                });
+                
+            }
+
+            if(totalSales.length === 0){
+                return {
+                    first: {
+                        station: {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+                        sales: {pms: 0, ago: 0, dpk: 0},
+                        beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
+                    },
+        
+                    second: {
+                        station: {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+                        sales: {pms: 0, ago: 0, dpk: 0},
+                        beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
+                    }
+                }
+            }
             // eslint-disable-next-line no-unused-vars
             const [first, second, ...tops] = sortedSales.reverse();
     
             return {
                 first: {
-                    station: stationDetails.get(first[0])? stationDetails.get(first[0]): {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-                    sales: first[1]? first[1]: {pms: 0, ago: 0, dpk: 0}
+                    station: stationDetails.get(first[0]),
+                    sales: first[1],
+                    beforeSales: totalBeforeSales.get(first[0])
                 },
     
                 second: {
-                    station: stationDetails.get(second[0])? stationDetails.get(second[0]): {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-                    sales: second[1]? second[1] : {pms: 0, ago: 0, dpk: 0}
+                    station: stationDetails.get(second[0]),
+                    sales: second[1],
+                    beforeSales: totalBeforeSales.get(second[0])
                 }
             }
         }
@@ -461,14 +518,14 @@ const Dashboard = (props) => {
         }, 0);
 
         const netToBank = ((pmsTotalSales - PMSTotalLpoSales) + (agoTotalSales - AGOTotalLpoSales) + (dpkTotalSales - DPKTotalLpoSales)) - totalExpenses;
-        console.log(pmsTotalSales, "pms sales")
-        console.log(PMSTotalLpoSales, "pms lpo")
+        // console.log(pmsTotalSales, "pms sales")
+        // console.log(PMSTotalLpoSales, "pms lpo")
 
-        console.log(agoTotalSales, "pms sales")
-        console.log(AGOTotalLpoSales, "pms lpo")
+        // console.log(agoTotalSales, "pms sales")
+        // console.log(AGOTotalLpoSales, "pms lpo")
 
-        console.log(dpkTotalSales, "pms sales")
-        console.log(DPKTotalLpoSales, "pms lpo")
+        // console.log(dpkTotalSales, "pms sales")
+        // console.log(DPKTotalLpoSales, "pms lpo")
         const details = {
             sales:{
                 totalAmount: pmsTotalSales + agoTotalSales + dpkTotalSales,
@@ -520,6 +577,20 @@ const Dashboard = (props) => {
             setLoad(false);
         });
         setValue(date);
+    }
+
+    const getProgress = (sales, before) => {
+        if(before === 0){
+            return 0
+        }else{
+            return sales/before * 100
+        }
+    }
+
+    const updateTopStations = (data, index) => {
+        setProduct(data);
+        setProductState(index);
+        getTopStations();
     }
 
     return(
@@ -706,13 +777,13 @@ const Dashboard = (props) => {
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.netToBank)}</div>
                                                 <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPayments}</div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPayments)}</div>
                                                 <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.outstanding)}</div>
                                             </div>
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPosPayments}</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPosPayments)}</div>
                                                 <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">
@@ -750,8 +821,26 @@ const Dashboard = (props) => {
                             </div>
                         </div>
 
-                        <div className='station'>
-                            <div style={{ color: user.isDark === '0'? '#000': '#fff', fontSize:'15px'}} className='bank'>Station</div>
+                        <div style={{marginTop:'30px'}} className='station'>
+                            <div style={{ 
+                                color: user.isDark === '0'? '#000': '#fff', 
+                                fontSize:'15px', 
+                                display:'flex', 
+                                flexDirection:'row', 
+                                justifyContent:'space-between'
+                            }} className='bank'>
+                                <span>Station</span>
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={productState}
+                                    sx={{...selectStyle2, width:'100px', background:'#06805B', color:'#fff', fontSize:'12px'}}
+                                >
+                                    <MenuItem onClick={()=>{updateTopStations('PMS', 0)}} style={menu} value={0}>PMS</MenuItem>
+                                    <MenuItem onClick={()=>{updateTopStations('AGO', 1)}} style={menu} value={1}>AGO</MenuItem>
+                                    <MenuItem onClick={()=>{updateTopStations('DPK', 2)}} style={menu} value={2}>DPK</MenuItem>
+                                </Select>
+                            </div>
                             <div className='station-container'>
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={300} />:
@@ -762,31 +851,37 @@ const Dashboard = (props) => {
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>PMS</div>
-                                                        <progress className='prog' value="70" max="100"> 70% </progress>
+                                                        <div style={{width:'100%'}}>
+                                                            <ProgressBar bgColor={"#399A19"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.first?.sales?.pms, getTopStations()?.first?.beforeSales?.pmsBeforeSales)} />
+                                                        </div>
                                                     </div>
                                                     <div className='slideQty'>{approx(getTopStations()?.first?.sales?.pms)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>AGO</div>
-                                                        <progress className='prog' value="50" max="100"> 50% </progress>
+                                                        <div style={{width:'100%'}}>
+                                                            <ProgressBar bgColor={"#FFA010"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.first?.sales?.ago, getTopStations()?.first?.beforeSales?.agoBeforeSales)} />
+                                                        </div>
                                                     </div>
                                                     <div className='slideQty'>{approx(getTopStations()?.first?.sales?.ago)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>DPK</div>
-                                                        <progress className='prog' value="32" max="100"> 32% </progress>
+                                                        <div style={{width:'100%'}}>
+                                                            <ProgressBar bgColor={"#35393E"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.first?.sales?.dpk, getTopStations()?.first?.beforeSales?.dpkBeforeSales)} />
+                                                        </div>
                                                     </div>
                                                     <div className='slideQty'>{approx(getTopStations()?.first?.sales?.dpk)} Ltr</div>
                                                 </div>
                                                 <div className='butom'>
                                                     <div className='pump-cont'>
-                                                        <div>No of Pump</div>
+                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
                                                         <div className='amount'>{getTopStations()?.first?.station?.noOfPumps}</div>
                                                     </div>
                                                     <div style={{marginLeft:'20px'}} className='pump-cont'>
-                                                        <div>No of Pump</div>
+                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
                                                         <div className='amount'>{getTopStations()?.first?.station?.noOfTanks}</div>
                                                     </div>
                                                 </div>
@@ -799,31 +894,37 @@ const Dashboard = (props) => {
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>PMS</div>
-                                                        <progress className='prog' value="70" max="100"> 70% </progress>
+                                                        <div style={{width:'100%'}}>
+                                                            <ProgressBar bgColor={"#399A19"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.second?.sales?.pms, getTopStations()?.second?.beforeSales?.pmsBeforeSales)} />
+                                                        </div>
                                                     </div>
                                                     <div className='slideQty'>{approx(getTopStations()?.second?.sales?.pms)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>AGO</div>
-                                                        <progress className='prog' value="50" max="100"> 50% </progress>
+                                                        <div style={{width:'100%'}}>
+                                                            <ProgressBar bgColor={"#FFA010"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.second?.sales?.ago, getTopStations()?.second?.beforeSales?.agoBeforeSales)} />
+                                                        </div>
                                                     </div>
                                                     <div className='slideQty'>{approx(getTopStations()?.second?.sales?.ago)} Ltr</div>
                                                 </div>
                                                 <div className='station-slider'>
                                                     <div className='slideName'>
                                                         <div className='pms'>DPK</div>
-                                                        <progress className='prog' value="32" max="100"> 32% </progress>
+                                                        <div style={{width:'100%'}}>
+                                                            <ProgressBar bgColor={"#35393E"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.second?.sales?.dpk, getTopStations()?.second?.beforeSales?.dpkBeforeSales)} />
+                                                        </div>
                                                     </div>
                                                     <div className='slideQty'>{approx(getTopStations()?.second?.sales?.dpk)} Ltr</div>
                                                 </div>
                                                 <div className='butom'>
                                                     <div className='pump-cont'>
-                                                        <div>No of Pump</div>
+                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
                                                         <div className='amount'>{getTopStations()?.second?.station?.noOfPumps}</div>
                                                     </div>
                                                     <div style={{marginLeft:'20px'}} className='pump-cont'>
-                                                        <div>No of Pump</div>
+                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
                                                         <div className='amount'>{getTopStations()?.second?.station?.noOfTanks}</div>
                                                     </div>
                                                 </div>

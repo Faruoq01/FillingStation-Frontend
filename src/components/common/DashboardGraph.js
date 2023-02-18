@@ -15,6 +15,7 @@ import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
+import { isSafari } from "react-device-detect";
 
 ChartJS.register(
     CategoryScale,
@@ -793,45 +794,62 @@ const DashboardGraph = (props) => {
                             <Button onClick={()=>{switchGraphTab("month")}} sx={currentSelection === 1? activeButton: inActive}  variant="contained"> Month </Button>
                             <Button onClick={()=>{switchGraphTab("year")}} sx={currentSelection === 2? activeButton: inActive}  variant="contained"> Year </Button>
                         </div>
-                        <div 
-                            style={{
-                                height:'auto', 
-                                position:'relative',
-                                display:'flex',
-                                flexDirection:'row',
-                                alignItems:'center',
-                                justifyContent:'flex-end',
-                            }}>
-                            <input 
-                                onChange={updateDate} 
-                                ref={dateHandle} 
-                                style={{visibility:'hidden', marginRight:'20px'}} 
-                                type="date"
-                            />
-                            <Button 
-                                variant="contained" 
-                                sx={{
-                                    width:'100px',
+                        {!isSafari?
+                            <div 
+                                style={{
+                                    height:'auto', 
+                                    position:'relative',
+                                    display:'flex',
+                                    flexDirection:'row',
+                                    alignItems:'center',
+                                    justifyContent:'flex-end',
+                                }}>
+                                <input 
+                                    onChange={updateDate} 
+                                    ref={dateHandle} 
+                                    style={{visibility:'hidden', marginRight:'20px'}} 
+                                    type="date"
+                                />
+                                <Button 
+                                    variant="contained" 
+                                    sx={{
+                                        width:'100px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'11px',
+                                        marginLeft:'10px',
+                                        borderRadius:'0px',
+                                        textTransform:'capitalize',
+                                        position:'absolute',
+                                        zIndex:'20',
+                                        display: 'flex',
+                                        flexDirection:'row',
+                                        alignItems: 'center',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                    }}
+                                    onClick={changeSalesDate}
+                                >
+                                    <div>{currentDate}</div>
+                                </Button>
+                            </div>:
+
+                            <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                                <input onChange={updateDate} ref={dateHandle} style={{
+                                    width:'170px',
                                     height:'30px',
                                     background:'#06805B',
-                                    fontSize:'11px',
-                                    marginLeft:'10px',
+                                    fontSize:'12px',
                                     borderRadius:'0px',
                                     textTransform:'capitalize',
-                                    position:'absolute',
-                                    zIndex:'20',
-                                    display: 'flex',
+                                    display:'flex',
                                     flexDirection:'row',
-                                    alignItems: 'center',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                }}
-                                onClick={changeSalesDate}
-                            >
-                                <div>{currentDate}</div>
-                            </Button>
-                        </div>
+                                    alignItems:'center',
+                                    color:'#fff'
+                                }} type="date" />
+                            </div>
+                        }
                     </div>
                     <div className='type'>
                         <div className='single-type'>
