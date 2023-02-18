@@ -125,68 +125,76 @@ const AGODailySales = (props) => {
             rate: rate,
             rt: rt,
             amount: amount
-        }
+        } 
 
         return totals;
     }
 
     return(
-        <div style={{width: props.rep === false? '100%': '96%', overflowX: mobile.matches && 'scroll'}}>
-            <div style={sales}>
-                <div style={top}>
-                    <div style={tex}>Total Amount Of Sales (AGO)</div>
-                    <div></div>
-                </div>
+        <div style={{width: props.rep === false? '100%': '96%'}}>
 
-                <div style={mainSales}>
-                    <div style={inner}>
-                        <div style={tableHeads}>
-                            <div style={col}>Pump Name</div>
-                            <div style={col}>Opening</div>
-                            <div style={col}>Closing</div>
-                            <div style={col}>Difference</div>
-                            <div style={col}>LPO</div>
-                            <div style={col}>Rate</div>
-                            <div style={col}>R/T</div>
-                            <div style={{...col, marginRight:'0px'}}>Amount</div>
-                        </div>
-
-                        {
-                            getMasterRows().length === 0?
-                            <div style={dats}> No Data </div>:
-                            getMasterRows().map((data, index) => {
-                                return(
-                                    <div key={index} style={tableHeads2}>
-                                        <div style={cols}>{data.pumpName}</div>
-                                        <div style={cols}>{data.openingMeter}</div>
-                                        <div style={cols}>{data.closingMeter}</div>
-                                        <div style={cols}>{data.difference}</div>
-                                        <div style={cols}>{data.lpoLitre}</div>
-                                        <div style={cols}>{data.PMSRate}</div>
-                                        <div style={cols}>{data.rtLitre}</div>
-                                        <div style={{...cols, marginRight:'0px'}}>
-                                            {data.amount}
-                                        </div>
-                                    </div>
-                                )
-                            })
-                        }
-
-                        {getMasterRows().length === 0 ||
-                            <div style={tableHeads2}>
-                                <div style={{...cols, background: "transparent"}}></div>
-                                <div style={{...cols, background: "transparent"}}></div>
-                                <div style={cols}>Total</div>
-                                <div style={cols}>{getTotalSums().difference}</div>
-                                <div style={cols}>{getTotalSums().lpo}</div>
-                                <div style={cols}></div>
-                                <div style={cols}>{getTotalSums().rt}</div>
-                                <div style={{...cols, marginRight:'0px'}}>{getTotalSums().amount}</div>
-                            </div>
-                        }
+            {!mobile.matches?
+                <div style={sales}>
+                    <div style={top}>
+                        <div style={tex}>Total Amount Of Sales (AGO)</div>
+                        <div></div>
                     </div>
+
+                    <div style={mainSales}>
+                        <div style={inner}>
+                            <div style={tableHeads}>
+                                <div style={col}>Pump Name</div>
+                                <div style={col}>Opening</div>
+                                <div style={col}>Closing</div>
+                                <div style={col}>Difference</div>
+                                <div style={col}>LPO</div>
+                                <div style={col}>Rate</div>
+                                <div style={col}>R/T</div>
+                                <div style={{...col, marginRight:'0px'}}>Amount</div>
+                            </div>
+
+                            {
+                                getMasterRows().length === 0?
+                                <div style={dats}> No Data </div>:
+                                getMasterRows().map((data, index) => {
+                                    return(
+                                        <div key={index} style={tableHeads2}>
+                                            <div style={cols}>{data.pumpName}</div>
+                                            <div style={cols}>{data.openingMeter}</div>
+                                            <div style={cols}>{data.closingMeter}</div>
+                                            <div style={cols}>{data.difference}</div>
+                                            <div style={cols}>{data.lpoLitre}</div>
+                                            <div style={cols}>{data.PMSRate}</div>
+                                            <div style={cols}>{data.rtLitre}</div>
+                                            <div style={{...cols, marginRight:'0px'}}>
+                                                {data.amount}
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+
+                            {getMasterRows().length === 0 ||
+                                <div style={tableHeads2}>
+                                    <div style={{...cols, background: "transparent"}}></div>
+                                    <div style={{...cols, background: "transparent"}}></div>
+                                    <div style={cols}>Total</div>
+                                    <div style={cols}>{getTotalSums().difference}</div>
+                                    <div style={cols}>{getTotalSums().lpo}</div>
+                                    <div style={cols}></div>
+                                    <div style={cols}>{getTotalSums().rt}</div>
+                                    <div style={{...cols, marginRight:'0px'}}>{getTotalSums().amount}</div>
+                                </div>
+                            }
+                        </div>
+                    </div> 
+                        
+                </div>: 
+                
+                <div style={{marginTop:'60px'}}>
+                    
                 </div>
-            </div>
+            }
         </div>
     )
 }

@@ -73,14 +73,13 @@ const DippingComponents = (props) => {
         }
     }
 
-    const setTotalizer = (e, item) => {
+    const setTotalizer = (e, item, index) => {
 
         if(item.productType === "PMS"){
             let clonedPMS = {...item};
             clonedPMS = {...clonedPMS, dippingValue: e.target.value};
             const newPMSList = [...pms];
-            const pmsID = newPMSList.findIndex(data => data._id === item._id);
-            newPMSList[pmsID] = clonedPMS;
+            newPMSList[index] = clonedPMS;
             setPMS(newPMSList);
 
             const tankFromPayload = {...records};
@@ -99,8 +98,7 @@ const DippingComponents = (props) => {
             let clonedAGO = {...item};
             clonedAGO = {...clonedAGO, dippingValue: e.target.value};
             const newAGOList = [...ago]
-            const agoID = newAGOList.findIndex(data => data._id === item._id);
-            newAGOList[agoID] = clonedAGO;
+            newAGOList[index] = clonedAGO;
             setAGO(newAGOList);
 
             const tankFromPayload = {...records};
@@ -115,13 +113,12 @@ const DippingComponents = (props) => {
 
             }
 
-        }else{
+        }else if(item.productType === "DPK"){
             let clonedDPK = {...item};
             clonedDPK = {...clonedDPK, dippingValue: e.target.value};
             const newDPKList = [...dpk]
-            const agoID = newDPKList.findIndex(data => data._id === item._id);
-            newDPKList[agoID] = clonedDPK;
-            setAGO(newDPKList);
+            newDPKList[index] = clonedDPK;
+            setDPK(newDPKList);
 
             const tankFromPayload = {...records};
             const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
@@ -196,7 +193,7 @@ const DippingComponents = (props) => {
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
-                                <input value={item.dippingValue} onChange={e => setTotalizer(e, item)} style={imps} type="text" />
+                                <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />
                             </div>
                         )
                     }):
@@ -209,7 +206,7 @@ const DippingComponents = (props) => {
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
-                                <input value={item.dippingValue} onChange={e => setTotalizer(e, item)} style={imps} type="text" />
+                                <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />
                             </div>
                         )
                     }):
@@ -222,7 +219,7 @@ const DippingComponents = (props) => {
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
-                                <input value={item.dippingValue} onChange={e => setTotalizer(e, item)} style={imps} type="text" />
+                                <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />
                             </div>
                         )
                     }): null

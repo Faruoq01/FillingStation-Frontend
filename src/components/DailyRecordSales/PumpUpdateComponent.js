@@ -5,8 +5,6 @@ import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { desselectedListPumps, selectedListPumps, updateRecords, updateSelectedPumps } from "../../store/actions/records";
-import OutletService from "../../services/outletService";
-import { getAllPumps } from "../../store/actions/outlet";
 
 const mediaMatch = window.matchMedia('(max-width: 500px)');
 
@@ -192,17 +190,6 @@ const PumpUpdateComponent = (props) => {
         }
     }
 
-    const refreshPumps = (data) => {
-        const payload = {
-            outletID: data?.outletID, 
-            organisationID: data?.organisationID
-        }
-
-        OutletService.getAllStationPumps(payload).then(data => {
-            dispatch(getAllPumps(data));
-        });
-    }
-
     const setTotalizer = (e, pump, index) => {
         
         if(selectedTanks.length !== 0){
@@ -218,20 +205,20 @@ const PumpUpdateComponent = (props) => {
                 console.log(connectedTank[0].currentLevel, "current tank")
 
                 if(oneStationData === null){
-                    refreshPumps(pump)
+                    updateTotalizer("0", "0", index, pump);
                     swal("Warning!", "Please select a station", "info");
         
                 }else if(pump.identity === null){
-                    refreshPumps(pump)
+                    updateTotalizer("0", "0", index, pump);
                     swal("Warning!", "Please select a pump", "info");
         
                 }else if(selectedPumps.length === 0){
-                    refreshPumps(pump)
+                    updateTotalizer("0", "0", index, pump);
                     swal("Warning!", "Please select a pump", "info");
         
                 }else{
                     if(totalizerDiff > quantity ){
-                        refreshPumps(pump)
+                        updateTotalizer("0", "0", index, pump);
                         swal("Warning!", "Reading exceeded tank level", "info");
         
                     }else{
@@ -239,12 +226,11 @@ const PumpUpdateComponent = (props) => {
                     }
                 }
             }else{
-                refreshPumps(pump)
+                updateTotalizer("0", "0", index, pump);
                 swal("Warning!", "Please select a pump", "info");
             }
 
         }else{
-            refreshPumps(pump)
             swal("Warning!", "Please select a pump", "info");
         }
     }
@@ -380,6 +366,7 @@ const PumpUpdateComponent = (props) => {
                                         style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                         value={item.newTotalizer}
+                                        placeholder={"Enter closing meter"}
                                     />
                                 </div>
                             </div>
@@ -402,6 +389,7 @@ const PumpUpdateComponent = (props) => {
                                         value={item.newTotalizer}
                                         style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
+                                        placeholder={"Enter closing meter"}
                                     />
                                 </div>
                             </div>
@@ -424,6 +412,7 @@ const PumpUpdateComponent = (props) => {
                                         value={item.newTotalizer}
                                         style={{...imps, width: '94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
+                                        placeholder={"Enter closing meter"}
                                     />
                                 </div>
                             </div>
