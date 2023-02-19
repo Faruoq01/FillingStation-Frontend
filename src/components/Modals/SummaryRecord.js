@@ -95,11 +95,10 @@ const SummaryRecord = (props) => {
                 const payload = {
                     id: item._id,
                     previousLevel: item.previousLevel,
-                    currentLevel: item.afterSales
+                    currentLevel: Number(item.RTlitre) > 0? Number(item.RTlitre) + Number(item.afterSales): Number(item.afterSales),
                 };
 
-                let res = await OutletService.updateTank(payload);
-                console.log(res, "updates");
+                await OutletService.updateTank(payload);
             });
             
             dispatch(changeStation());
@@ -239,14 +238,6 @@ const SummaryRecord = (props) => {
                                                 </div>
                                                 <div style={line}>
                                                     <span style={{marginLeft:'10px'}}>Tank Capacity: {data.tankCapacity} ltrs</span>
-                                                    <span style={{marginRight:'10px'}}></span>
-                                                </div>
-                                                <div style={line}>
-                                                    <span style={{marginLeft:'10px'}}>Current Level: {data.currentLevel} ltrs</span>
-                                                    <span style={{marginRight:'10px'}}></span>
-                                                </div>
-                                                <div style={line}>
-                                                    <span style={{marginLeft:'10px'}}>Total sales: {data.sales} ltrs</span>
                                                     <span style={{marginRight:'10px'}}></span>
                                                 </div>
                                                 <div style={line}>
