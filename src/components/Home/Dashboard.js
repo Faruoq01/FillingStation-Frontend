@@ -593,6 +593,34 @@ const Dashboard = (props) => {
         getTopStations();
     }
 
+    const approx2 = (data) => {
+        const changeToString = String(data);
+
+        const findIndex = changeToString.indexOf(".");
+        if(findIndex === -1){
+            return changeToString;
+        }
+
+        const splitDataByDecimal = changeToString.split('.');
+        const splitFractions = splitDataByDecimal[1].split('');
+        if(splitFractions.length <= 2){
+            return changeToString;
+        }
+        
+        let fractionBuilder = splitFractions[0];
+        if(Number(splitFractions[2] > 5)){
+            const tenths = Number(splitFractions[1]) + 1;
+            fractionBuilder = fractionBuilder.concat("", tenths);
+
+        }else{
+            fractionBuilder = fractionBuilder.concat(splitFractions[1]);
+        }
+
+        const approxNumber = splitDataByDecimal[0].concat(".", fractionBuilder);
+
+        return approxNumber;
+    }
+
     return(
         <>
             { props.activeRoute.split('/').length === 2 &&
@@ -775,15 +803,15 @@ const Dashboard = (props) => {
                                     <div className='inner-content'>
                                         <div className='conts'>
                                             <div className='row-count'>
-                                                <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.netToBank)}</div>
+                                                <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.netToBank)}</div>
                                                 <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPayments)}</div>
-                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.outstanding)}</div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.totalPayments)}</div>
+                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.outstanding)}</div>
                                             </div>
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx(dashboardRecords.payments.totalPosPayments)}</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.totalPosPayments)}</div>
                                                 <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import '../../styles/payments.scss';
 const CreateFillingStation = (props) => {
 
     const dispatch = useDispatch();
+    const saveButton = useRef();
     const open = useSelector(state => state.outletReducer.openModal);
     const user = useSelector(state => state.authReducer.user);
 
@@ -51,6 +52,7 @@ const CreateFillingStation = (props) => {
         if(dpkPrice === "") return swal("Warning!", "DPK Price field cannot be empty", "info");
         if(alias === "") return swal("Warning!", "Alias field cannot be empty", "info");
         setLoadingSpinner(true);
+        saveButton.current.disabled = true;
 
         const data = {
             outletName: outletName,
@@ -69,7 +71,7 @@ const CreateFillingStation = (props) => {
             organisation: user._id
         }
 
-        await dispatch(createFillingStation(data));
+        await dispatch(createFillingStation(data, saveButton));
         await dispatch(closeModal(0));
         setLoadingSpinner(false);
         await props.getStations();
@@ -322,7 +324,7 @@ const CreateFillingStation = (props) => {
                         </div>
 
                         <div style={{height:'30px'}} className='butt'>
-                            <Button sx={{
+                            <Button ref={saveButton} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',

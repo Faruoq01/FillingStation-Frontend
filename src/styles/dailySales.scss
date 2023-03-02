@@ -594,3 +594,20 @@
         }
     }
 }
+
+.canvases{
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .fuel-container{
+        position: absolute;
+        z-index: 5;
+        overflow: hidden;
+    }
+
+    .fuel{
+        position: absolute;
+        z-index: 10;
+    }
+}

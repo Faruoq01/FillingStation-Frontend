@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 const TankComponent = (props) => {
 
     const canvas = useRef();
+    const fuel = useRef();
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
 
     useEffect(()=>{
@@ -59,33 +60,25 @@ const TankComponent = (props) => {
         }
 
         ctx.fillStyle= "#35393E";
-        var z = 1;
-        function myLoop(){
-            setTimeout(function(){
-                ctx.fillRect(70*dpi, (300 - z)*dpi , 230*dpi, current*dpi);
-                z++;
-                if(z <= current){
-                    myLoop();
-                }
-            }, 5)
-        }
-        if(current > 0){
-            myLoop();
-        }
+
+        ctx.fillStyle= "#FFA010";
+        fuel.current.style.marginLeft = `70px`;
+        fuel.current.style.marginTop = `${300 - current}px`;
+        fuel.current.style.width = `79px`;
+        fuel.current.style.height = `${current}px`;
+        fuel.current.style.background = "#35393E";
     }
 
     return(
-        <div style={canvases}>
-            <Tooltip title={`${cummulativeTotals.totalDPK} Litres`} followCursor>
-                <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
-            </Tooltip>
+        <div className='canvases'>
+            <div className='fuel-container'>
+                <Tooltip title={`${cummulativeTotals.totalDPK} Litres`} followCursor>
+                    <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
+                </Tooltip>
+            </div>
+            <div ref={fuel} className='fuel'></div>
         </div>
     )
-}
-
-const canvases = {
-    width: '100%',
-    height:'100%',
 }
 
 export default TankComponent;

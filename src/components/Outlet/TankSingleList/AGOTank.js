@@ -4,6 +4,7 @@ import Tooltip from '@mui/material/Tooltip';
 const TankComponent = (props) => {
 
     const canvas = useRef();
+    const fuel = useRef();
 
     useEffect(()=>{
         createTankCanvas(props.data.totalAGO, props.data.AGOTankCapacity, props.data.AGODeadStock);
@@ -57,33 +58,23 @@ const TankComponent = (props) => {
         }
 
         ctx.fillStyle= "#FFA010";
-        var z = 1;
-        function myLoop(){
-            setTimeout(function(){
-                ctx.fillRect(70*dpi, (300 - z)*dpi , 230*dpi, current*dpi);
-                z++;
-                if(z <= current){
-                    myLoop();
-                }
-            }, 5)
-        }
-        if(current > 0){
-            myLoop();
-        }
+        fuel.current.style.marginLeft = `70px`;
+        fuel.current.style.marginTop = `${300 - current}px`;
+        fuel.current.style.width = `79px`;
+        fuel.current.style.height = `${current}px`;
+        fuel.current.style.background = "#FFA010";
     }
 
     return(
-        <div style={canvases}>
-            <Tooltip title={`${props.data.totalAGO} Litres`} followCursor>
-                <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
-            </Tooltip>
+        <div style={{marginLeft: props.margin}} className='canvases'>
+            <div className='fuel-container'>
+                <Tooltip title={`${props.data.totalAGO} Litres`} followCursor>
+                    <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
+                </Tooltip>
+            </div>
+            <div ref={fuel} className='fuel'></div>
         </div>
     )
-}
-
-const canvases = {
-    width: '100%',
-    height:'100%',
 }
 
 export default TankComponent;
