@@ -13,6 +13,8 @@ import AGODailySales from './AGODailySales';
 import DPKDailySales from './DPKDailySales';
 import PMSDailySales from './PMSDailySales';
 import { isSafari } from "react-device-detect";
+import delImg from '../../assets/delImg.png';
+import editImg from '../../assets/editImg.png';
 
 const months = {
     '01' : 'Jan',
@@ -319,7 +321,8 @@ const LPODailySales = (props) => {
                         <div className='col'>Truck No</div>
                         <div className='col'>Litre (Qty)</div>
                         <div className='col'>Rate</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
+                        <div className='col'>Amount</div>
+                        <div style={{marginRight:'0px'}} className='col'>Action</div>
                     </div>
 
                     {
@@ -336,9 +339,13 @@ const LPODailySales = (props) => {
                                     <div className='col'>{
                                         approx(data.productType === "PMS"? data.PMSRate: data.productType === "AGO"? data.AGORate: data.DPKRate)
                                     }</div>
-                                    <div style={{marginRight:'0px'}} className='col'>{
+                                    <div className='col'>{
                                         approx(getLpoTotal(data))
                                     }</div>
+                                    <div style={{marginRight:'0px'}} className='col'>
+                                        <img style={{width:'20px', height:'25px'}} src={editImg} alt="icon" />
+                                        <img style={{width:'20px', height:'25px'}} src={delImg} alt="icon" />
+                                    </div>
                                 </div>
                             )
                         })

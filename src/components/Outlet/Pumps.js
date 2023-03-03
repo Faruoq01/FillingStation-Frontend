@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import AddPump from '../Modals/AddPumpModal2';
 import EditPump from '../Modals/EditPump';
+import { ThreeDots } from 'react-loader-spinner';
 
 const Pump = (props) => {
 
@@ -30,14 +31,18 @@ const Pump = (props) => {
 
     const [openEditPump, setOpenEditPump] = useState(false);
     const [currentPump, setCurrentPump] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const getAllStationPumps = useCallback(() => {
+        setLoading(true);
         const payload = {
             organisationID: oneStation?.organisation,
             outletID: oneStation?._id
         }
         OutletService.getAllStationPumps(payload).then(data => {
             dispatch(getAllPumps(data));
+        }).then(()=>{
+            setLoading(false);
         });
 
         OutletService.getAllOutletTanks(payload).then(data => {
@@ -251,6 +256,19 @@ const Pump = (props) => {
         return(
             <div className='space'>
                 {
+                    loading?
+                    <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
                     pumpList.length === 0?
                     <div style={place}>No records of pumps</div>:
                     pumpList.map((item, index) => {

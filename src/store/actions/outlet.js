@@ -36,10 +36,11 @@ export const getAllStations = (params) => dispatch => {
     dispatch({ type: OUTLET_DATA, payload: params});
 }
 
-export const createTanks = (params) => dispatch => {
+export const createTanks = (params, setWaiting) => dispatch => {
     return OutletService.registerTanks(params)
     .then(data => {
         dispatch({type: NEW_TANK, payload: data});
+        setWaiting(false);
     })
     .catch(err => {
             

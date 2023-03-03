@@ -37,7 +37,8 @@ const EditTank = (props) => {
         setCurrentStock(props.data.currentLevel);
         setDeadStockLevel(props.data.deadStockLevel);
         setCalibrationDate(props.data.calibrationDate);
-    },[props.data.calibrationDate, props.data.currentLevel, props.data.deadStockLevel, props.data.tankCapacity, props.data.tankHeight, props.data.tankName])
+        setProductType(props.data.productType);
+    },[props.data.calibrationDate, props.data.currentLevel, props.data.deadStockLevel, props.data.productType, props.data.tankCapacity, props.data.tankHeight, props.data.tankName])
 
     const handleAddPump = async() => {
 
@@ -94,7 +95,7 @@ const EditTank = (props) => {
             <div className='modalContainer2'>
                 <div className='inner'>
                     <div className='head'>
-                        <div className='head-text'>Add Tank</div>
+                        <div className='head-text'>Edit Tank</div>
                         <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                     </div>
 
@@ -131,8 +132,11 @@ const EditTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 value={tankName}
                                 onChange={e => setTankName(e.target.value)}
@@ -147,8 +151,11 @@ const EditTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 value={tankHeight}
                                 onChange={e => setTankHeight(e.target.value)}
@@ -163,8 +170,11 @@ const EditTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 value={tankCapacity}
                                 onChange={e => setTankCapacity(e.target.value)}
@@ -179,8 +189,11 @@ const EditTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 value={currentStock}
                                 onChange={e => setCurrentStock(e.target.value)}
@@ -195,8 +208,11 @@ const EditTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 value={deadStockLevel}
                                 onChange={e => setDeadStockLevel(e.target.value)}
@@ -252,13 +268,14 @@ const cont = {
 }
 
 const date = {
-    width:'96%',
+    width:'95%',
     height:'35px',
-    background: 'rgba(229, 240, 237, 0.6)',
-    border: '0.938659px solid #606060',
-    borderRadius: '5px',
+    borderRadius: '0px',
     paddingLeft: '2%',
-    paddingRight:'2%'
+    paddingRight:'2%',
+    outline: "none",
+    border:'1px solid #777777',
+    background:'#EEF2F1', 
 }
 
 export default EditTank;

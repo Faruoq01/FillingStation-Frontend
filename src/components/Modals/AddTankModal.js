@@ -30,6 +30,7 @@ const AddTank = (props) => {
     const [deadStockLevel, setDeadStockLevel] = useState('');
     const [calibrationDate, setCalibrationDate] = useState('');
     const [currentStock, setCurrentStock] = useState('');
+    const [waiting, setWaiting] = useState(false);
 
     const handleAddPump = async() => {
 
@@ -41,6 +42,7 @@ const AddTank = (props) => {
         if(currentStock === "") return swal("Warning!", "Current stock field cannot be empty", "info");
         if(oneStation === null) return swal("Warning!", "Please create a station", "info");
         dispatch(setSpinner());
+        setWaiting(true);
 
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -64,7 +66,7 @@ const AddTank = (props) => {
             currentLevel: currentStock,
         } 
 
-        await dispatch(createTanks(data));
+        await dispatch(createTanks(data, setWaiting));
         await dispatch(removeSpinner());
         await props.refresh();
         setTimeout(()=>{
@@ -121,8 +123,11 @@ const AddTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 onChange={e => setTankName(e.target.value)}
                             />
@@ -136,8 +141,11 @@ const AddTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 onChange={e => setTankHeight(e.target.value)}
                             />
@@ -151,8 +159,11 @@ const AddTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 onChange={e => setTankCapacity(e.target.value)}
                             />
@@ -166,8 +177,11 @@ const AddTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
@@ -181,8 +195,11 @@ const AddTank = (props) => {
                                     height: '35px', 
                                     marginTop:'5px', 
                                     background:'#EEF2F1', 
-                                    border:'1px solid #777777',
                                     fontSize:'12px',
+                                    borderRadius:'0px',
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        border:'1px solid #777777',
+                                    },
                                 }} placeholder="" 
                                 onChange={e => setDeadStockLevel(e.target.value)}
                             />
@@ -195,7 +212,7 @@ const AddTank = (props) => {
                     </div>
 
                     <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                        <Button sx={{
+                        <Button disabled={waiting} sx={{
                             width:'100px', 
                             height:'30px',  
                             background: '#427BBE',
@@ -237,13 +254,14 @@ const cont = {
 }
 
 const date = {
-    width:'96%',
+    width:'95%',
     height:'35px',
-    background: 'rgba(229, 240, 237, 0.6)',
-    border: '0.938659px solid #606060',
-    borderRadius: '5px',
+    background:'#EEF2F1', 
     paddingLeft: '2%',
-    paddingRight:'2%'
+    paddingRight:'2%',
+    borderRadius:'0px',
+    border: '1px solid #777777',
+    outline: "none"
 }
 
 export default AddTank;

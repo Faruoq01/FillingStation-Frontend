@@ -17,13 +17,14 @@ const AddPump = (props) => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
-    const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
     const oneTank = useSelector(state => state.outletReducer.oneTank);
 
     const [defaultState, setDefaultState] = useState(0);
     const [productType, setProduct] = useState('');
     const [pumpName, setPumpName] = useState('');
     const [totalizer, setTotalizer] = useState('');
+    const [waiting, setWaiting] = useState(false);
+    const [loadingSpinner, setLoadingSpinner] = useState(false);
 
     const handleClose = () => dispatch(closeModal(0));
 
@@ -33,6 +34,8 @@ const AddPump = (props) => {
         if(defaultState === "") return swal("Warning!", "Tank name field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
         if(totalizer === "") return swal("Warning!", "Totalizer field cannot be empty", "info");
+        setWaiting(true);
+        setLoadingSpinner(true);
 
         const payload = {
             pumpName: pumpName,
@@ -46,14 +49,22 @@ const AddPump = (props) => {
 
         OutletService.registerPumps(payload).then(data => {
             if(data.status === "exist"){
+                setWaiting(false);
+                setLoadingSpinner(false);
+                handleClose();
                 swal("Warning!", data.message, "info");
 
             }else{
+                setWaiting(false);
+                setLoadingSpinner(false);
+                handleClose();
                 swal("Success!", "Pump created successfully!", "success");
             }
         }).then(()=>{
             props.refresh();
             handleClose();
+            setWaiting(false);
+            setLoadingSpinner(false);
             setTimeout(()=>{
                 props.outRefresh();
             }, 2000);
@@ -83,19 +94,19 @@ const AddPump = (props) => {
                     <div style={{marginTop:'15px'}} className='inputs'>
                         <div className='head-text2'>Choose product type</div>
                         <div className='radio'>
-                            {(props.tabs === 1 || props.tabs === 0) &&
+                            {((props.tabs === 1 || props.tabs === 0) && productType === 'PMS') &&
                                 <div className='rad-item'>
                                     <Radio checked={productType === 'PMS'? true: false} />
                                     <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
                                 </div>
                             }
-                            {(props.tabs === 2 || props.tabs === 0) &&
+                            {((props.tabs === 2 || props.tabs === 0) && productType === 'AGO') &&
                                 <div className='rad-item'>
                                     <Radio checked={productType === 'AGO'? true: false} />
                                     <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
                                 </div>
                             }
-                            {(props.tabs === 3 || props.tabs === 0) &&
+                            {((props.tabs === 3 || props.tabs === 0) && productType === 'DPK') &&
                                 <div className='rad-item'>
                                     <Radio checked={productType === 'DPK'? true: false} />
                                     <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
@@ -112,8 +123,11 @@ const AddPump = (props) => {
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius:'0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }} placeholder="" 
                             onChange={e => setPumpName(e.target.value)}
                         />
@@ -130,8 +144,11 @@ const AddPump = (props) => {
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius:'0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }}
                         >
                             <MenuItem style={menu} value={oneTank?.tankName}>{oneTank?.productType} {oneTank?.tankName}</MenuItem>
@@ -146,15 +163,18 @@ const AddPump = (props) => {
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius:'0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }} placeholder="" 
                             onChange={e => setTotalizer(e.target.value)}
                         />
                     </div>
 
-                    <div className='butt'>
-                        <Button sx={{
+                    <div style={{height:'30px'}} className='butt'>
+                        <Button disabled={waiting} sx={{
                             width:'100px', 
                             height:'30px',  
                             background: '#427BBE',

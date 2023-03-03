@@ -14,6 +14,7 @@ import OutletService from '../../services/outletService';
 import swal from 'sweetalert';
 import AddPump from '../Modals/AddPumpModal';
 import EditTank from '../Modals/EditTank';
+import { ThreeDots } from 'react-loader-spinner';
 
 const Tank = (props) => {
 
@@ -30,18 +31,22 @@ const Tank = (props) => {
     const [show, setShow] = useState("");
     const [openEditTank, setOpenEditTank] = useState(false);
     const [currentTank, setCurrentTank] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const handleAddTanks = () => {
         dispatch(openModal(2));
     }
 
     const getAllStationTanks = useCallback(() => {
+        setLoading(true);
         const payload = {
             organisationID: oneStation?.organisation,
             outletID: oneStation?._id
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
+        }).then(()=>{
+            setLoading(false);
         });
     }, [oneStation?._id, oneStation?.organisation, dispatch]);
 
@@ -139,7 +144,7 @@ const Tank = (props) => {
                     <div className='top'>
                         <div className='left'>
                             <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
-                            <div>{props.data.tankName} ({props.data.productType}) </div>
+                            <div style={{fontWeight:'500'}}>{props.data.tankName} ({props.data.productType}) </div>
                         </div>
                         <div className='right'>
                             <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
@@ -148,7 +153,7 @@ const Tank = (props) => {
                     </div>
 
                     <div className='out'>
-                        <div style={{width:'40%', textAlign:'left'}}>Dead Stock Level(Litres)</div>
+                        <div style={{width:'40%', textAlign:'left', fontWeight:'400'}}>Dead Stock Level(Litres)</div>
                         <OutlinedInput 
                             placeholder="" 
                             sx={{
@@ -163,7 +168,7 @@ const Tank = (props) => {
                     </div>
 
                     <div className='out'>
-                        <div style={{width:'40%', textAlign:'left'}}>Tank Capacity (Litres)</div>
+                        <div style={{width:'40%', textAlign:'left', fontWeight:'400'}}>Tank Capacity (Litres)</div>
                         <OutlinedInput 
                             placeholder="" 
                             sx={{
@@ -178,7 +183,7 @@ const Tank = (props) => {
                     </div>
 
                     <div className='out'>
-                        <div style={{width:'40%', textAlign:'left'}}>Tank ID</div>
+                        <div style={{width:'40%', textAlign:'left', fontWeight:'400'}}>Tank ID</div>
                         <OutlinedInput 
                             placeholder="" 
                             sx={{
@@ -193,7 +198,7 @@ const Tank = (props) => {
                     </div>
 
                     <div className='out'>
-                        <div style={{width:'40%', textAlign:'left'}}>Current Stock Level (Litres)</div>
+                        <div style={{width:'40%', textAlign:'left', fontWeight:'400'}}>Current Stock Level (Litres)</div>
                         <OutlinedInput 
                             placeholder="" 
                             sx={{
@@ -208,7 +213,7 @@ const Tank = (props) => {
                     </div>
 
                     <div className='out'>
-                        <div style={{width:'40%', textAlign:'left'}}>Calibration Date</div>
+                        <div style={{width:'40%', textAlign:'left', fontWeight:'400'}}>Calibration Date</div>
                         <OutlinedInput 
                             placeholder="" 
                             sx={{
@@ -245,6 +250,7 @@ const Tank = (props) => {
                             fontSize:'10px',
                             color:'#fff',
                             marginLeft:'10px',
+                            position:'relative',
                             '&:hover': {
                                 backgroundColor: '#ff6347 '
                             }
@@ -275,6 +281,19 @@ const Tank = (props) => {
         return(
             <div className='space'>
                 {
+                    loading?
+                    <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
                     tankList.length === 0?
                     <div style={place}>No records of tanks</div>:
                     tankList.map((item, index) => {
