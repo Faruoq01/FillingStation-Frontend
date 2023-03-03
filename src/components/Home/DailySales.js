@@ -368,7 +368,7 @@ const DailySales = (props) => {
             });
         }else{
 
-            OutletService.getOneOutletStation({outletID: resolveUserID().id}).then(data => {
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
                 return data.station;
             }).then(async(data)=>{

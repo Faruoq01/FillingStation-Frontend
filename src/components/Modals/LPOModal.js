@@ -24,6 +24,7 @@ const LPOModal = (props) => {
     const [AGORate, setAGORate] = useState('');
     const [DPKRate, setDPKRate] = useState('');
     const [contactPhone, setContactPhone] = useState('');
+    const [loader, setLoader] = useState(false);
 
     const handleClose = () => props.close(false);
 
@@ -39,6 +40,7 @@ const LPOModal = (props) => {
         if(AGORate === "") return swal("Warning!", "AGO rate field cannot be empty", "info");
         if(DPKRate === "") return swal("Warning!", "DPK rate field cannot be empty", "info");
         if(contactPhone === "") return swal("Warning!", "Contact phone field cannot be empty", "info");
+        setLoader(true);
 
         if(isNaN(Number(PMS))) return swal("Warning!", "PMS limit field is not a number", "info");
         if(isNaN(Number(AGO))) return swal("Warning!", "AGO limit field is not a number", "info");
@@ -69,6 +71,7 @@ const LPOModal = (props) => {
             swal("Success", "LPO created successfully!", "success");
         }).then(()=>{
             setLoading(false);
+            setLoader(false);
             props.refresh();
             handleClose();
         })
@@ -287,7 +290,7 @@ const LPOModal = (props) => {
                        </div>
 
                         <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                            <Button sx={{
+                            <Button disabled={loader} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',

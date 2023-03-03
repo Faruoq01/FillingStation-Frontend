@@ -89,7 +89,7 @@ const LPO = (props) => {
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: "None", 
+                    outletID: user.outletID, 
                     organisationID: resolveUserID().id
                 }
     

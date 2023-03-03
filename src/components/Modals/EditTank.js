@@ -20,6 +20,7 @@ const EditTank = (props) => {
     const dispatch = useDispatch();
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
+    const [loader, setLoader] = useState(false);
 
     const handleClose = () => dispatch(props.close(false));
     const [tankName, setTankName] = useState('');
@@ -50,6 +51,7 @@ const EditTank = (props) => {
         if(currentStock === "") return swal("Warning!", "Current stock field cannot be empty", "info");
         if(oneStation === null) return swal("Warning!", "Please create a station", "info");
         dispatch(setSpinner());
+        setLoader(true);
 
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -79,6 +81,7 @@ const EditTank = (props) => {
             props.refresh();
             swal("Success", data.message, "success");
         }).then(()=>{
+            setLoader(false);
             props.outRefresh();
             handleClose();
         });
@@ -226,7 +229,7 @@ const EditTank = (props) => {
                     </div>
 
                     <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                        <Button sx={{
+                        <Button disabled={loader} sx={{
                             width:'100px', 
                             height:'30px',  
                             background: '#427BBE',

@@ -343,8 +343,8 @@ const LPODailySales = (props) => {
                                         approx(getLpoTotal(data))
                                     }</div>
                                     <div style={{marginRight:'0px'}} className='col'>
-                                        <img style={{width:'20px', height:'25px'}} src={editImg} alt="icon" />
-                                        <img style={{width:'20px', height:'25px'}} src={delImg} alt="icon" />
+                                        <img style={{width:'15px', height:'15px', marginRight:'10px'}} src={editImg} alt="icon" />
+                                        <img style={{width:'15px', height:'15px'}} src={delImg} alt="icon" />
                                     </div>
                                 </div>
                             )
@@ -392,7 +392,8 @@ const ExpensesDailySales = (props) => {
                     <div className='table-heads'>
                         <div className='col'>S/N</div>
                         <div className='col'>Expense Name</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
+                        <div className='col'>Amount</div>
+                        <div style={{marginRight:'0px'}} className='col'>Action</div>
                     </div>
 
                     {
@@ -403,7 +404,11 @@ const ExpensesDailySales = (props) => {
                                 <div key={index} className='table-heads2'>
                                     <div className='col'>{index+1}</div>
                                     <div className='col'>{data.expenseName}</div>
-                                    <div style={{marginRight:'0px'}} className='col'>{data.expenseAmount}</div>
+                                    <div className='col'>{data.expenseAmount}</div>
+                                    <div style={{marginRight:'0px'}} className='col'>
+                                        <img style={{width:'15px', height:'15px', marginRight:'10px'}} src={editImg} alt="icon" />
+                                        <img style={{width:'15px', height:'15px'}} src={delImg} alt="icon" />
+                                    </div>
                                 </div>
                             )
                         })
@@ -942,7 +947,7 @@ const ComprehensiveReport = (props) => {
                             </div>
                         </div>
 
-                        <PMSDailySales rep={false} />
+                        <PMSDailySales type={"report"} rep={false} />
                         <AGODailySales rep={false} />
                         <DPKDailySales rep={false} />
                         <LPODailySales data={lpoRecords} />

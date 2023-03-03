@@ -39,6 +39,7 @@ const ManagerModal = (props) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [defaultState, setDefault] = useState(0);
     const [roleState, setRoleState] = useState(0);
+    const [loader, setLoader] = useState(false);
 
     const handleClose = () => {
         props.close(false)
@@ -71,6 +72,7 @@ const ManagerModal = (props) => {
         if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
 
         setLoading(true);
+        setLoader(true);
         const payload = {
             staffName: staffName,
             sex: sex,
@@ -98,6 +100,7 @@ const ManagerModal = (props) => {
             }
         }).then(()=>{
             setLoading(false);
+            setLoader(false);
             props.refresh();
 
             setStaffName("");
@@ -265,7 +268,7 @@ const ManagerModal = (props) => {
                                     {
                                         allOutlets.map((item, index) => {
                                             return(
-                                                <MenuItem key={index} onClick={()=>{changeMenu(index + 1, item)}} style={menu} value={index + 1}>{item.outletName}</MenuItem>
+                                                <MenuItem key={index} onClick={()=>{changeMenu(index + 1, item)}} style={menu} value={index + 1}>{item.outletName+", "+item.alias}</MenuItem>
                                             )
                                         })
                                     }
@@ -501,7 +504,7 @@ const ManagerModal = (props) => {
                        </div>
 
                         <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                            <Button sx={{
+                            <Button disabled={loader} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',
@@ -544,7 +547,7 @@ const inner = {
 
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 export default ManagerModal;
