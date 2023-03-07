@@ -70,7 +70,6 @@ const HomeScreen = () => {
     const online = useSelector(data => data.authReducer.connection);
     const dispatch = useDispatch();
     const history = useHistory();
-    console.log(online, "connection")
 
     useEffect(()=>{
         if(!online){
@@ -198,7 +197,7 @@ const HomeScreen = () => {
 
     const getStationDetails = () => {
         if(oneStationData === null){
-            return "( All Stations )"
+            return ""
         }else if(name === "Admin Department"){
             return null;
         }else if(typeof oneStationData?.outletName !== "undefined"){

@@ -9,9 +9,9 @@ import OutletService from '../../services/outletService';
 import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import '../../styles/report.scss';
 import ComprehensiveReports from '../Reports/ConprehensiveReports';
-import AGODailySales from './AGODailySales';
-import DPKDailySales from './DPKDailySales';
-import PMSDailySales from './PMSDailySales';
+import AGODailySales from './Report/AGODailySales';
+import DPKDailySales from './Report/DPKDailySales';
+import PMSDailySales from './Report/PMSDailySales';
 import { isSafari } from "react-device-detect";
 import delImg from '../../assets/delImg.png';
 import editImg from '../../assets/editImg.png';
@@ -367,6 +367,7 @@ const LPODailySales = (props) => {
                                 getTotal()
                             }
                         </div>
+                        <div style={{background: "transparent"}} className='col'></div>
                     </div>
                 </div>
             </div>

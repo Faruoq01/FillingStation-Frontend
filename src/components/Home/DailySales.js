@@ -873,7 +873,7 @@ const DailySales = (props) => {
                                                 NGN {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0"}
                                             </div>
                                             <div className='item-count'>
-                                                {ApproximateDecimal((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0")}
+                                                {ApproximateDecimal((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(payments.payments) - (Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses)) : "0")}
                                             </div>
                                         </div>
                                         <div className='row-count'>

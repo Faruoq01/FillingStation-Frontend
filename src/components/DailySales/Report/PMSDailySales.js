@@ -1,6 +1,8 @@
 import React from 'react';
-import '../../styles/dailySales.scss';
+import '../../../styles/dailySales.scss';
 import { useSelector } from 'react-redux';
+import editImg from '../../../assets/editImg.png';
+import delImg from '../../../assets/delImg.png';
 
 const mobile = window.matchMedia('(max-width: 950px)');
 
@@ -146,7 +148,8 @@ const PMSDailySales = (props) => {
                             <div style={col}>Closing</div>
                             <div style={col}>Difference</div>
                             <div style={col}>Rate</div>
-                            <div style={{...col, marginRight:'0px'}}>Amount</div>
+                            <div style={col}>Amount</div>
+                            <div style={{...col, marginRight:'0px'}}>Action</div>
                         </div>
 
                         {
@@ -160,8 +163,12 @@ const PMSDailySales = (props) => {
                                         <div style={cols}>{data.closingMeter}</div>
                                         <div style={cols}>{Number(data.closingMeter) - Number(data.openingMeter)}</div>
                                         <div style={cols}>{data.PMSSellingPrice}</div>
+                                        <div style={cols}>
+                                            {data.PMSSellingPrice*(Number(data.closingMeter) - Number(data.openingMeter))}
+                                        </div>
                                         <div style={{...cols, marginRight:'0px'}}>
-                                            {data.amount}
+                                            <img style={{width:'15px', height:'15px', marginRight:'10px'}} src={editImg} alt="icon" />
+                                            <img style={{width:'15px', height:'15px'}} src={delImg} alt="icon" />
                                         </div>
                                     </div>
                                 )
@@ -175,9 +182,8 @@ const PMSDailySales = (props) => {
                                 <div style={cols}>Total</div>
                                 <div style={cols}>{getTotalSums().difference}</div>
                                 <div style={cols}>{getTotalSums().lpo}</div>
-                                <div style={cols}></div>
-                                <div style={cols}>{getTotalSums().rt}</div>
-                                <div style={{...cols, marginRight:'0px'}}>{getTotalSums().amount}</div>
+                                <div style={cols}>{getTotalSums().amount}</div>
+                                <div style={{...cols, background: "transparent"}}></div>
                             </div>
                         }
                     </div>

@@ -23,6 +23,7 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
 import ProgressBar from "@ramonak/react-progress-bar";
+import SalesDisplay from '../Modals/SalesDisplay';
 
 const mobile = window.matchMedia('(max-width: 600px)');
 
@@ -104,6 +105,7 @@ const Dashboard = (props) => {
     const [product, setProduct] = useState('PMS');
     const [productState, setProductState] = useState(0);
     const [value, setValue] = React.useState([new Date(), new Date()]);
+    const [prices, setPrices] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -529,7 +531,13 @@ const Dashboard = (props) => {
         const details = {
             sales:{
                 totalAmount: pmsTotalSales + agoTotalSales + dpkTotalSales,
-                totalVolume: pmsTotalLitre + agoTotalLitre + dpkTotalLitre
+                totalVolume: pmsTotalLitre + agoTotalLitre + dpkTotalLitre,
+                pmsSales: pmsTotalSales,
+                agoSales: agoTotalSales,
+                dpkSales: dpkTotalSales,
+                pmsVolume: pmsTotalLitre,
+                agoVolume: agoTotalLitre,
+                dpkVolume: dpkTotalLitre
             },
 
             supply:{
@@ -542,8 +550,8 @@ const Dashboard = (props) => {
             payments: {
                 totalPayments: totalPayments,
                 totalPosPayments: totalPosPayments,
-                netToBank: netToBank - totalExpenses,
-                outstanding: netToBank - totalPayments - totalPosPayments
+                netToBank: netToBank,
+                outstanding: totalPayments + totalPosPayments - netToBank
             },
             station: data?.station,
             salesList: data?.sales
@@ -621,9 +629,18 @@ const Dashboard = (props) => {
         return approxNumber;
     }
 
+    const openSalesDisplay = () => {
+        setPrices(true);
+    }
+
+    const closeModal = () => {
+        setPrices(false);
+    }
+
     return(
         <>
-            { props.activeRoute.split('/').length === 2 &&
+            <SalesDisplay open={prices} close={closeModal} dash = {dashboardRecords.sales} />
+            { props.activeRoute.split('/').length === 2 &&  
                 <div className='dashboardContainer'>
                     <div className='left-dash'>
                         <div style={{width:'auto'}} className='selectItem'>
@@ -666,7 +683,7 @@ const Dashboard = (props) => {
                             <div data-aos="flip-left" className='first-image'>
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
-                                    <div className='inner-first-image'>
+                                    <div onClick={openSalesDisplay} className='inner-first-image'>
                                         <div className='top-first-image'>
                                             <div className='top-icon'>
                                                 <img className='img' src={me2} alt="icon" />
