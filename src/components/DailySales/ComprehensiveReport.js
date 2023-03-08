@@ -712,7 +712,7 @@ const ComprehensiveReport = (props) => {
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [currentDate, setCurrentDate] = useState();
-    const [dateValue, setDateValue] = useState(new Date());
+    const [dateValue, setDateValue] = useState("");
 
     const printReport = () => {
         setPrints(true);
@@ -839,9 +839,29 @@ const ComprehensiveReport = (props) => {
         })
     }
 
+    const reloadDailySales = () => {
+
+        props.getDailySales(oneStationData, false, dateValue);
+
+        const payload = {
+            organisationID: oneStationData?.organisation,
+            outletID: oneStationData?._id,
+            date: dateValue,
+            onLoad: false
+        }
+
+        DailySalesService.getYesterdayRecords(payload).then(data => {
+            setForwardBalance(data);
+        }) 
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            setTanks(data.stations);
+        })
+    }
+
     return(
         <div className='reportContainer'>
-            { prints && <ComprehensiveReports 
+            {   prints && <ComprehensiveReports 
                     data={tanks} 
                     supply={forwardBalance.supply} 
                     sales={forwardBalance?.sales} 
@@ -948,9 +968,9 @@ const ComprehensiveReport = (props) => {
                             </div>
                         </div>
 
-                        <PMSDailySales type={"report"} rep={false} />
-                        <AGODailySales rep={false} />
-                        <DPKDailySales rep={false} />
+                        <PMSDailySales refresh={reloadDailySales} type={"report"} rep={false} />
+                        <AGODailySales refresh={reloadDailySales} rep={false} />
+                        <DPKDailySales refresh={reloadDailySales} rep={false} />
                         <LPODailySales data={lpoRecords} />
                         <ExpensesDailySales data = {paymentRecords.expenses} />
 

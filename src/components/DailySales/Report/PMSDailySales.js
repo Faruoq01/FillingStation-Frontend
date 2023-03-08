@@ -1,14 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../../../styles/dailySales.scss';
 import { useSelector } from 'react-redux';
 import editImg from '../../../assets/editImg.png';
 import delImg from '../../../assets/delImg.png';
+import Sales from '../../Modals/DailySales/sales';
+import swal from 'sweetalert';
+import DailySalesService from '../../../services/DailySales';
 
 const mobile = window.matchMedia('(max-width: 950px)');
 
 const PMSDailySales = (props) => {
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
+    const [openSales, setOpenSales] = useState(false);
+    const [details, setDetails] = useState([]);
 
     const getMasterRows = () => {
         const newRows = [];
@@ -132,8 +137,33 @@ const PMSDailySales = (props) => {
         return totals;
     }
 
+    const editRecord = (data) => {
+        setOpenSales(true);
+        setDetails(data);
+    }
+
+    const deleteRecord = (data) => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to delete this record?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                DailySalesService.deleteSales({id: data._id}).then(data => {
+                    props.refresh();
+                }).then(()=>{
+                    swal("Success", "Record deleted successfully!", "success");
+                });
+            }
+        });
+    }
+
     return(
         <div style={{width: props.rep === false? '100%': '96%', overflowX: mobile.matches && 'scroll'}}>
+            <Sales refresh={props.refresh} open={openSales} close={setOpenSales} data={details} />
             <div style={sales}>
                 <div style={top}>
                     <div style={tex}>Total Amount Of Sales (PMS)</div>
@@ -167,8 +197,8 @@ const PMSDailySales = (props) => {
                                             {data.PMSSellingPrice*(Number(data.closingMeter) - Number(data.openingMeter))}
                                         </div>
                                         <div style={{...cols, marginRight:'0px'}}>
-                                            <img style={{width:'15px', height:'15px', marginRight:'10px'}} src={editImg} alt="icon" />
-                                            <img style={{width:'15px', height:'15px'}} src={delImg} alt="icon" />
+                                            <img onClick={()=>{editRecord(data)}} style={{width:'15px', height:'15px', marginRight:'10px'}} src={editImg} alt="icon" />
+                                            <img onClick={()=>{deleteRecord(data)}} style={{width:'15px', height:'15px'}} src={delImg} alt="icon" />
                                         </div>
                                     </div>
                                 )

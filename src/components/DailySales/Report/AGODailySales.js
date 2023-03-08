@@ -1,14 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../../../styles/dailySales.scss';
 import { useSelector } from 'react-redux';
 import editImg from '../../../assets/editImg.png';
 import delImg from '../../../assets/delImg.png';
+import DailySalesService from '../../../services/DailySales';
+import swal from 'sweetalert';
+import Sales from '../../Modals/DailySales/sales';
 
 const mobile = window.matchMedia('(max-width: 950px)');
 
 const AGODailySales = (props) => {
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
+    const [openSales, setOpenSales] = useState(false);
+    const [details, setDetails] = useState([]);
 
     const getMasterRows = () => {
         const newRows = [];
@@ -132,8 +137,33 @@ const AGODailySales = (props) => {
         return totals;
     }
 
+    const editAGORecord = (data) => {
+        setOpenSales(true);
+        setDetails(data);
+    }
+
+    const deleteAGORecord = (data) => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to delete this record?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                DailySalesService.deleteSales({id: data._id}).then(data => {
+                    props.refresh();
+                }).then(()=>{
+                    swal("Success", "Record deleted successfully!", "success");
+                });
+            }
+        });
+    }
+
     return(
         <div style={{width: props.rep === false? '100%': '96%', overflowX: mobile.matches && 'scroll'}}>
+            <Sales refresh={props.refresh} open={openSales} close={setOpenSales} data={details} />
             <div style={sales}>
                 <div style={top}>
                     <div style={tex}>Total Amount Of Sales (AGO)</div>
@@ -167,8 +197,8 @@ const AGODailySales = (props) => {
                                             {data.AGOSellingPrice*(Number(data.closingMeter) - Number(data.openingMeter))}
                                         </div>
                                         <div style={{...cols, marginRight:'0px'}}>
-                                            <img style={{width:'15px', height:'15px', marginRight:'10px'}} src={editImg} alt="icon" />
-                                            <img style={{width:'15px', height:'15px'}} src={delImg} alt="icon" />
+                                            <img onClick={()=>{editAGORecord(data)}} style={{width:'15px', height:'15px', marginRight:'10px'}} src={editImg} alt="icon" />
+                                            <img onClick={()=>{deleteAGORecord(data)}} style={{width:'15px', height:'15px'}} src={delImg} alt="icon" />
                                         </div>
                                     </div>
                                 )

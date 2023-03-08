@@ -13,6 +13,28 @@ const DailySalesService = {
         });
     },
 
+    updateSales: (data) => {
+        return APIs.post('/daily-sales/update', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    deleteSales: (data) => {
+        return APIs.post('/daily-sales/delete', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
     getDailySalesDataAndAnalyze: (data) => {
         return APIs.post('/daily-sales/getDailySalesDataAndAnalyze', data)
         .then(({data}) => {
