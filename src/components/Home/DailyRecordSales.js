@@ -34,10 +34,8 @@ import Backdrop from '@mui/material/Backdrop';
 import { BallTriangle } from 'react-loader-spinner';
 import { useState } from 'react';
 import { useRef } from 'react';
-import calendar from '../../assets/calendar.png';
 import SummaryRecord from '../Modals/SummaryRecord';
 import { changeDate, changeStation } from '../../store/actions/records';
-import { isSafari } from "react-device-detect";
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -370,10 +368,6 @@ const DailyRecordSales = () => {
         dispatch(adminOutlet(item));
     }
 
-    const dateHandleInputDate = () => {
-        dateHandle.current.showPicker();
-    }
-
     const updateDate = (e) => {
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
@@ -435,47 +429,21 @@ const DailyRecordSales = () => {
                     }
                 </div>
                 <div>
-                    {!isSafari?
-                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                            <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
-                            <Button 
-                                variant="contained" 
-                                sx={{
-                                    width: mediaMatch? '140px': '170px',
-                                    height:'30px',
-                                    background:'#06805B',
-                                    fontSize:'12px',
-                                    borderRadius:'0px',
-                                    textTransform:'capitalize',
-                                    display:'flex',
-                                    flexDirection:'row',
-                                    alignItems:'center',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                }}
-                                onClick={dateHandleInputDate}
-                            >
-                                <div style={{marginRight:'10px'}}>{currentDate}</div>
-                                <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
-                            </Button>
-                        </div>:
-
-                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                            <input onChange={updateDate} ref={dateHandle} style={{
-                                width: mediaMatch? '140px': '170px',
-                                height:'30px',
-                                background:'#06805B',
-                                fontSize:'12px',
-                                borderRadius:'0px',
-                                textTransform:'capitalize',
-                                display:'flex',
-                                flexDirection:'row',
-                                alignItems:'center',
-                                color:'#fff'
-                            }} type="date" />
-                        </div>
-                    }
+                    <div style={sales}>
+                        <input onChange={updateDate} ref={dateHandle} style={{
+                            width: mediaMatch? '140px': '170px',
+                            height:'30px',
+                            background:'#054834',
+                            fontSize:'12px',
+                            borderRadius:'5px',
+                            textTransform:'capitalize',
+                            display:'flex',
+                            flexDirection:'row',
+                            alignItems:'center',
+                            color:'#fff'
+                        }} type="date" />
+                        <div style={cover}>{currentDate}</div>
+                    </div>
                 </div>
             </div>
             
@@ -653,6 +621,29 @@ const text = {
     marginTop: '30px',
     marginLeft:'4%',
     fontWeight:'bold',
+}
+
+const sales = {
+    width:'100%', 
+    display:'flex', 
+    flexDirection:'row', 
+    justifyContent:'flex-end',
+    position: 'relative',
+    alignItems:'flex-start',
+}
+
+const cover = {
+    position: 'absolute',
+    width:'100px',
+    height: '20px',
+    background:'#054834',
+    fontSize:'12px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop:'7px',
+    left: '0px',
+    color:'#fff'
 }
 
 export default DailyRecordSales;
