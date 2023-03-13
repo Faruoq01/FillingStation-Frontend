@@ -10,6 +10,7 @@ import OutletService from '../../services/outletService';
 import { adminOutlet, getAllOutletTanks, getAllStations, searchTanks } from '../../store/actions/outlet';
 import PrintTankUpdate from '../Reports/PrintTankUpdate';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -29,6 +30,7 @@ const TankUpdate = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -52,6 +54,7 @@ const TankUpdate = () => {
     }
 
     const getTankData = useCallback(() => {
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -68,6 +71,7 @@ const TankUpdate = () => {
                     organisationID: resolveUserID().id
                 }
                 OutletService.getAllOutletTanks(payload2).then(data => {
+                    setLoading(false)
                     setTotal(data.count);
                     dispatch(getAllOutletTanks(data.stations));
                 })
@@ -84,6 +88,7 @@ const TankUpdate = () => {
                     organisationID: resolveUserID().id
                 }
                 OutletService.getAllOutletTanks(payload2).then(data => {
+                    setLoading(false)
                     setTotal(data.count);
                     dispatch(getAllOutletTanks(data.stations));
                 })
@@ -97,6 +102,7 @@ const TankUpdate = () => {
     },[getTankData]);
 
     const refresh = () => {
+        setLoading(true)
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -106,10 +112,13 @@ const TankUpdate = () => {
         OutletService.getAllOutletTanks(payload).then(data => {
             setTotal(data.count);
             dispatch(getAllOutletTanks(data.stations));
-        })
+        }).then(()=>{
+            setLoading(false)
+        });
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true)
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -120,6 +129,8 @@ const TankUpdate = () => {
         OutletService.getAllOutletTanks(payload).then(data => {
             setTotal(data.count);
             dispatch(getAllOutletTanks(data.stations));
+        }).then(()=>{
+            setLoading(false)
         });
     }
 
@@ -287,6 +298,7 @@ const TankUpdate = () => {
 
                 {
                     mobile.matches?
+                    !loading?
                     tankList.length === 0?
                     <div style={place}>No data</div>:
                     tankList.map((item, index) => {
@@ -328,7 +340,18 @@ const TankUpdate = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -344,6 +367,7 @@ const TankUpdate = () => {
 
                         <div className='row-container'>
                             {
+                                !loading?
                                 tankList.length === 0?
                                 <div style={place}>No tank updates</div>:
                                 tankList.map((data, index) => {
@@ -359,7 +383,18 @@ const TankUpdate = () => {
                                             <div className='column'>{data.currentLevel}</div>
                                         </div>
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             }
                         </div>
                     </div>
@@ -403,6 +438,13 @@ const place = {
 
 const menu = {
     fontSize:'13px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default TankUpdate;

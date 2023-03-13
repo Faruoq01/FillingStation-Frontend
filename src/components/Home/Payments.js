@@ -11,6 +11,7 @@ import { OutlinedInput } from '@mui/material';
 import RecordPaymentService from '../../services/recordPayment';
 import { allBankPayment, allPosPayment, searchBankPayment, searchPosPayment } from '../../store/actions/recordPayment';
 import config from '../../constants';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 1150px)');
@@ -21,7 +22,6 @@ const Payments = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const bank = useSelector(state => state.recordPaymentReducer.bank);
     const pos = useSelector(state => state.recordPaymentReducer.pos);
-    console.log(pos, "done done")
     const dispatch = useDispatch();
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
@@ -32,6 +32,7 @@ const Payments = (props) => {
     const [limit, setLimit] = useState(15);
     const [total1, setTotal1] = useState(0);
     const [setPrints] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -46,7 +47,7 @@ const Payments = (props) => {
     }
 
     const getAllLPOData = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -63,6 +64,7 @@ const Payments = (props) => {
                 }
     
                 RecordPaymentService.getBankPayments(payload).then((data) => {
+                    setLoading(false);
                     setTotal1(data.bank.count);
                     dispatch(allBankPayment(data.bank.bank));
                 })
@@ -83,6 +85,7 @@ const Payments = (props) => {
                 }
     
                 RecordPaymentService.getBankPayments(payload).then((data) => {
+                    setLoading(false);
                     setTotal1(data.bank.count);
                     dispatch(allBankPayment(data.bank.bank));
                 })
@@ -109,6 +112,7 @@ const Payments = (props) => {
     }
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -117,6 +121,7 @@ const Payments = (props) => {
         }
 
         RecordPaymentService.getBankPayments(payload).then((data) => {
+            setLoading(false);
             setTotal1(data.bank.count);
             dispatch(allBankPayment(data.bank.bank));
         })
@@ -127,6 +132,7 @@ const Payments = (props) => {
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(false);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -138,6 +144,7 @@ const Payments = (props) => {
         }
 
         RecordPaymentService.getBankPayments(payload).then((data) => {
+            setLoading(false);
             setTotal1(data.bank.count);
             dispatch(allBankPayment(data.bank.bank));
         })
@@ -345,6 +352,7 @@ const Payments = (props) => {
 
                         <div className='row-container'>
                             {
+                                !loading?
                                 bank.length === 0?
                                 <div style={place}>No Bank Payment Data </div>:
                                 bank.map((data, index) => {
@@ -362,7 +370,18 @@ const Payments = (props) => {
                                             </div>
                                         </div>
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             } 
                         </div>
                         </div>
@@ -382,6 +401,7 @@ const Payments = (props) => {
 
                             <div className='row-container'>
                                 {
+                                    !loading?
                                     pos.length === 0?
                                     <div style={place}>No POS Payment Data </div>:
                                     pos.map((data, index) => {
@@ -399,7 +419,18 @@ const Payments = (props) => {
                                                 </div>
                                             </div> 
                                         )
-                                    })
+                                    }):<div style={load}>
+                                        <ThreeDots 
+                                            height="60" 
+                                            width="50" 
+                                            radius="9"
+                                            color="#076146" 
+                                            ariaLabel="three-dots-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClassName=""
+                                            visible={true}
+                                        />
+                                    </div>
                                 } 
                             </div>
                         </div>
@@ -444,6 +475,13 @@ const place = {
 
 const menu = {
     fontSize:'14px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Payments;

@@ -15,6 +15,7 @@ import { storeStaffUsers } from '../../store/actions/staffUsers';
 import ClockOutModal from '../Modals/AttendanceClockOut';
 import PrintAttendanceRecords from '../Reports/Attendance';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -35,6 +36,7 @@ const Attendance = () => {
     const [limit, setLimit] = useState(15);
     const [entries, setEntries] = useState(10);
     const [prints, setPrints] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -71,7 +73,7 @@ const Attendance = () => {
     }
 
     const getAllAtendanceData = useCallback((getDataRange) => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -91,6 +93,7 @@ const Attendance = () => {
                     organisationID: resolveUserID().id,
                 }
                 AdminUserService.allStaffUserRecords(payload).then(data => {
+                    setLoading(false);
                     dispatch(storeStaffUsers(data.staff.staff));
                 }).then(()=>{
                     AtendanceService.allAttendanceRecords(payload).then(data => {
@@ -113,6 +116,7 @@ const Attendance = () => {
                     organisationID: resolveUserID().id,
                 }
                 AdminUserService.allStaffUserRecords(payload).then(data => {
+                    setLoading(false);
                     dispatch(storeStaffUsers(data.staff.staff));
                 }).then(()=>{
                     AtendanceService.allAttendanceRecords(payload).then(data => {
@@ -140,6 +144,7 @@ const Attendance = () => {
     },[getAllAtendanceData]);
 
     const refresh = () => {
+        setLoading(true);
         const range  =  getTodayAndTomorrow();
         const payload = {
             skip: skip * limit,
@@ -153,6 +158,7 @@ const Attendance = () => {
             dispatch(storeStaffUsers(data.staff.staff));
         }).then(()=>{
             AtendanceService.allAttendanceRecords(payload).then(data => {
+                setLoading(false);
                 setTotal(data.attendance.count)
                 dispatch(createAttendance(data.attendance.attendance));
             });
@@ -160,6 +166,7 @@ const Attendance = () => {
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         const range  =  getTodayAndTomorrow();
         dispatch(adminOutlet(item));
@@ -184,6 +191,7 @@ const Attendance = () => {
             dispatch(storeStaffUsers(data.staff.staff));
         }).then(()=>{
             AtendanceService.allAttendanceRecords(payload).then(data => {
+                setLoading(false);
                 setTotal(data.attendance.count)
                 dispatch(createAttendance(data.attendance.attendance));
             });
@@ -390,6 +398,7 @@ const Attendance = () => {
 
                 {
                     mobile.matches?
+                    !loading?
                     attendanceData.length === 0?
                     <div style={place}>No data</div>:
                     attendanceData.map((item, index) => {
@@ -453,7 +462,18 @@ const Attendance = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -467,6 +487,7 @@ const Attendance = () => {
                         </div>
 
                         {
+                            !loading?
                             attendanceData.length === 0?
                             <div style={place}>No data</div>:
                             attendanceData.map((item, index) => {
@@ -505,7 +526,18 @@ const Attendance = () => {
                                         </div>
                                     </div>
                                 )
-                            })
+                            }):<div style={load}>
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            </div>
                         }
 
                     </div>
@@ -551,6 +583,13 @@ const place = {
     fontSize:'12px',
     marginTop:'20px',
     color:'green'
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Attendance;

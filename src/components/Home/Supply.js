@@ -17,6 +17,7 @@ import CreateSupply from '../Supply/CreateSupply';
 import swal from "sweetalert";
 import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -36,6 +37,7 @@ const Supply = (props) => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -59,6 +61,7 @@ const Supply = (props) => {
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
+            setLoading(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 dispatch(adminOutlet(null));
@@ -71,6 +74,7 @@ const Supply = (props) => {
                 }
     
                 SupplyService.getAllSupply(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.count);
                     dispatch(createSupply(data.supply));
                 });
@@ -95,6 +99,7 @@ const Supply = (props) => {
                 }
     
                 SupplyService.getAllSupply(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.count);
                     dispatch(createSupply(data.supply));
                 });
@@ -117,6 +122,7 @@ const Supply = (props) => {
     },[getAllSupplyData])
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -127,6 +133,8 @@ const Supply = (props) => {
         SupplyService.getAllSupply(payload).then((data) => {
             setTotal(data.count);
             dispatch(createSupply(data.supply));
+        }).then(()=>{
+            setLoading(false);
         });
 
         const income = {
@@ -145,6 +153,7 @@ const Supply = (props) => {
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -158,6 +167,8 @@ const Supply = (props) => {
         SupplyService.getAllSupply(payload).then((data) => {
             setTotal(data.count);
             dispatch(createSupply(data.supply));
+        }).then(()=>{
+            setLoading(false);
         });
 
         const income = {
@@ -342,6 +353,7 @@ const Supply = (props) => {
 
                 {
                     mobile.matches?
+                    !loading?
                     supply.length === 0?
                     <div style={place}>No data</div>:
                     supply.map((item, index) => {
@@ -394,7 +406,18 @@ const Supply = (props) => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -412,6 +435,7 @@ const Supply = (props) => {
 
                         <div className='row-container'>
                             {
+                                !loading?
                                 supply.length === 0?
                                 <div style={place}>No supply data</div>:
                                 supply.map((data, index) => {
@@ -429,7 +453,18 @@ const Supply = (props) => {
                                             <div className='column'>{data.overage}</div>
                                         </div>
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             }
                             
                         </div>
@@ -486,6 +521,13 @@ const place = {
 
 const menu = {
     fontSize:'12px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Supply;

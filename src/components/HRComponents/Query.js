@@ -16,6 +16,7 @@ import QueryReport from '../Reports/QueryReport';
 import ViewQuery from '../Modals/ViewQuery';
 import swal from 'sweetalert';
 import UpdateQuery from '../Modals/UpdateQuery';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -38,6 +39,7 @@ const Query = () => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -61,7 +63,7 @@ const Query = () => {
     }
 
     const getAllQueryData = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -78,6 +80,7 @@ const Query = () => {
                     organisationID: resolveUserID().id
                 }
                 QueryService.allQueryRecords(payload).then(data => {
+                    setLoading(false);
                     setTotal(data.query.count);
                     dispatch(createQuery(data.query.query));
                 });
@@ -93,6 +96,7 @@ const Query = () => {
                     organisationID: resolveUserID().id
                 }
                 QueryService.allQueryRecords(payload).then(data => {
+                    setLoading(false);
                     setTotal(data.query.count);
                     dispatch(createQuery(data.query.query));
                 });
@@ -106,6 +110,7 @@ const Query = () => {
     },[getAllQueryData]);
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -115,10 +120,13 @@ const Query = () => {
         QueryService.allQueryRecords(payload).then(data => {
             setTotal(data.query.count);
             dispatch(createQuery(data.query.query));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
         
@@ -130,7 +138,9 @@ const Query = () => {
         }
         QueryService.allQueryRecords(payload).then(data => {
             dispatch(createQuery(data.query.query));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const searchTable = (value) => {
@@ -328,6 +338,7 @@ const Query = () => {
 
                 {
                     mobile.matches?
+                    !loading?
                     queryData.length === 0?
                     <div style={place}>No data</div>:
                     queryData.map((item, index) => {
@@ -372,7 +383,18 @@ const Query = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -385,6 +407,7 @@ const Query = () => {
                         </div>
 
                         {
+                            !loading?
                             queryData.length === 0?
                             <div style={place}>No data</div>:
                             queryData.map((item, index) => {
@@ -419,7 +442,18 @@ const Query = () => {
                                         </div>
                                     </div>
                                 )
-                            })
+                            }):<div style={load}>
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            </div>
                         }
                     </div>
                 }
@@ -462,6 +496,13 @@ const place = {
     fontSize:'12px',
     marginTop:'20px',
     color:'green'
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Query;

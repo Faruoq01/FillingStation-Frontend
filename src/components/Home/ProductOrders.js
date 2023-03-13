@@ -14,6 +14,7 @@ import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import ProductReport from '../Reports/ProductReport';
 import IncomingList from '../Modals/IncomingList';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -33,6 +34,7 @@ const ProductOrders = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
+    const [loadingData, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -56,7 +58,7 @@ const ProductOrders = () => {
     }
 
     const getAllProductData = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -73,6 +75,7 @@ const ProductOrders = () => {
                 }
     
                 ProductService.getAllProductOrder(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.product.count);
                     dispatch(createProductOrder(data.product.product));
                 });
@@ -88,6 +91,7 @@ const ProductOrders = () => {
                 }
     
                 ProductService.getAllProductOrder(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.product.count);
                     dispatch(createProductOrder(data.product.product));
                 });
@@ -102,6 +106,7 @@ const ProductOrders = () => {
     },[getAllProductData])
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -112,10 +117,13 @@ const ProductOrders = () => {
         ProductService.getAllProductOrder(payload).then((data) => {
             setTotal(data.product.count);
             dispatch(createProductOrder(data.product.product));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -129,7 +137,9 @@ const ProductOrders = () => {
         ProductService.getAllProductOrder(payload).then((data) => {
             setTotal(data.product.count);
             dispatch(createProductOrder(data.product.product));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const searchTable = (value) => {
@@ -304,6 +314,7 @@ const ProductOrders = () => {
 
                 {
                     mobile.matches?
+                    !loadingData?
                     productOrder.length === 0?
                     <div style={place}>No data</div>:
                     productOrder.map((item, index) => {
@@ -345,7 +356,18 @@ const ProductOrders = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -361,6 +383,7 @@ const ProductOrders = () => {
 
                         <div className='row-container'>
                             {
+                                !loadingData?
                                 productOrder.length === 0?
                                 <div style={place}>No product data</div>:
                                 productOrder.map((data, index) => {
@@ -376,7 +399,18 @@ const ProductOrders = () => {
                                             <div className='column'>{data.currentBalance}</div>
                                         </div> 
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             }
                         </div>
                     </div>
@@ -420,6 +454,13 @@ const place = {
 
 const menu = {
     fontSize:'12px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default ProductOrders;

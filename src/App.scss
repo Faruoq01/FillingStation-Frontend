@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+// input{
+//   color-scheme: dark;
+// }
+
+::-webkit-calendar-picker-indicator{
+  filter: invert(1);
+}

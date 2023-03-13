@@ -15,6 +15,7 @@ import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import UpdateSalary from '../Modals/UpdateSalary';
 import swal from 'sweetalert';
 import SalaryReports from '../Reports/SalaryReport';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -35,6 +36,7 @@ const Salary = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
     const [ prints, setPrints] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -58,7 +60,7 @@ const Salary = () => {
     }
 
     const getAllSalaryData = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -75,6 +77,7 @@ const Salary = () => {
                     organisationID: resolveUserID().id
                 }
                 SalaryService.allSalaryRecords(payload).then(data => {
+                    setLoading(false);
                     setTotal(data.salary.count);
                     dispatch(createSalary(data.salary.salary));
                 });
@@ -91,6 +94,7 @@ const Salary = () => {
                     organisationID: resolveUserID().id
                 }
                 SalaryService.allSalaryRecords(payload).then(data => {
+                    setLoading(false);
                     setTotal(data.salary.count);
                     dispatch(createSalary(data.salary.salary));
                 });
@@ -105,6 +109,7 @@ const Salary = () => {
     },[getAllSalaryData]);
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -114,10 +119,13 @@ const Salary = () => {
         SalaryService.allSalaryRecords(payload).then(data => {
             setTotal(data.salary.count);
             dispatch(createSalary(data.salary.salary));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -130,7 +138,9 @@ const Salary = () => {
         SalaryService.allSalaryRecords(payload).then(data => {
             setTotal(data.salary.count);
             dispatch(createSalary(data.salary.salary));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const searchTable = (value) => {
@@ -324,6 +334,7 @@ const Salary = () => {
 
                 {
                     mobile.matches?
+                    !loading?
                     salaryData.length === 0?
                     <div style={place}>No data</div>:
                     salaryData.map((item, index) => {
@@ -357,7 +368,18 @@ const Salary = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -370,6 +392,7 @@ const Salary = () => {
 
                         <div className='row-container'>
                             {
+                                !loading?
                                 salaryData.length === 0?
                                 <div style={place}>No data</div>:
                                 salaryData.map((item, index) => {
@@ -387,7 +410,18 @@ const Salary = () => {
                                             </div>
                                         </div>
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             }
                         </div>
                     </div>
@@ -432,6 +466,13 @@ const place = {
     fontSize:'13px',
     marginTop:'20px',
     color:'green'
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Salary;

@@ -14,6 +14,7 @@ import ViewPayment from '../Modals/ViewPayment';
 import RegulatoryReports from '../Reports/RegulatoryReports';
 import config from '../../constants';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -34,6 +35,7 @@ const Regulatory = () => {
     const [prints, setPrints] = useState(false);
     const [openPayment, setOpenPayment] = useState(false);
     const [description, setDescription] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -57,7 +59,7 @@ const Regulatory = () => {
     }
 
     const getTankData = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -74,6 +76,7 @@ const Regulatory = () => {
                     organisationID: resolveUserID().id
                 }
                 PaymentService.getAllPayment(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.count);
                     dispatch(createPayment(data.pay));
                 });
@@ -90,6 +93,7 @@ const Regulatory = () => {
                     organisationID: resolveUserID().id
                 }
                 PaymentService.getAllPayment(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.count);
                     dispatch(createPayment(data.pay));
                 });
@@ -104,6 +108,7 @@ const Regulatory = () => {
     },[getTankData]);
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -113,10 +118,13 @@ const Regulatory = () => {
         PaymentService.getAllPayment(payload).then((data) => {
             setTotal(data.count);
             dispatch(createPayment(data.pay));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
         
@@ -129,7 +137,9 @@ const Regulatory = () => {
         PaymentService.getAllPayment(payload).then((data) => {
             setTotal(data.count);
             dispatch(createPayment(data.pay));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const searchTable = (value) => {
@@ -302,6 +312,7 @@ const Regulatory = () => {
 
                 {
                     mobile.matches?
+                    !loading?
                     payment.length === 0?
                     <div style={place}>No data</div>:
                     payment.map((item, index) => {
@@ -358,7 +369,18 @@ const Regulatory = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -373,6 +395,7 @@ const Regulatory = () => {
 
                         <div className='row-container'>
                             {
+                                !loading?
                                 payment.length === 0?
                                 <div style={place}>No payment data</div>:
                                 payment.map((item, index) => {
@@ -405,7 +428,18 @@ const Regulatory = () => {
                                             </div>
                                         </div> 
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             }
                         </div>
                     </div>
@@ -449,6 +483,13 @@ const place = {
 
 const menu = {
     fontSize:'12px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Regulatory;

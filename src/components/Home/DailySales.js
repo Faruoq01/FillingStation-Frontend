@@ -3,7 +3,6 @@ import '../../styles/dailySales.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import me5 from '../../assets/me5.png';
-import calendar from '../../assets/calendar.png';
 import slideMenu from '../../assets/slideMenu.png';
 import Button from '@mui/material/Button';
 import PMSTank from '../Outlet/PMSTank';
@@ -23,7 +22,8 @@ import DailySalesService from '../../services/DailySales';
 import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
-import { isSafari } from "react-device-detect";
+
+const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const months = {
     '01' : 'Jan',
@@ -499,10 +499,6 @@ const DailySales = (props) => {
         history.push('/home/outlets/list');
     }
 
-    const dateHandleInputDate = () => {
-        dateHandle.current.showPicker();
-    }
-
     const updateDate = (e) => {
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
@@ -695,47 +691,28 @@ const DailySales = (props) => {
                     </div>
 
                     <div className='daily-right'>
-                        {!isSafari?
-                            <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                                <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
-                                <Button 
-                                    variant="contained" 
-                                    sx={{
-                                        width:'170px',
+                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                            <div>
+                                <div style={sales}>
+                                    <input onChange={updateDate} ref={dateHandle} style={{
+                                        width: mediaMatch? '140px': '170px',
                                         height:'30px',
-                                        background:'#06805B',
+                                        background:'#054834',
                                         fontSize:'12px',
                                         borderRadius:'0px',
                                         textTransform:'capitalize',
                                         display:'flex',
                                         flexDirection:'row',
                                         alignItems:'center',
-                                        '&:hover': {
-                                            backgroundColor: '#06805B'
-                                        }
-                                    }}
-                                    onClick={dateHandleInputDate}
-                                >
-                                    <div style={{marginRight:'10px'}}>{currentDate}</div>
-                                    <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
-                                </Button>
-                            </div>: 
-
-                            <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                                <input onChange={updateDate} ref={dateHandle} style={{
-                                    width:'170px',
-                                    height:'30px',
-                                    background:'#06805B',
-                                    fontSize:'12px',
-                                    borderRadius:'0px',
-                                    textTransform:'capitalize',
-                                    display:'flex',
-                                    flexDirection:'row',
-                                    alignItems:'center',
-                                    color:'#fff'
-                                }} type="date" />
+                                        color:'#fff',
+                                        outline:'none',
+                                        border:'none',
+                                        paddingRight:'10px'
+                                    }} type="date" />
+                                    <div style={cover}>{currentDate}</div>
+                                </div>
                             </div>
-                        }
+                        </div>
 
                         <div style={{marginTop:'10px'}} className='expen'>
                             <div style={{background:'#108CFF'}} className='child'>
@@ -1037,6 +1014,29 @@ const selectStyle2 = {
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
     },
+}
+
+const sales = {
+    width:'100%', 
+    display:'flex', 
+    flexDirection:'row', 
+    justifyContent:'flex-end',
+    position: 'relative',
+    alignItems:'flex-start',
+}
+
+const cover = {
+    position: 'absolute',
+    width:'100px',
+    height: '20px',
+    background:'#054834',
+    fontSize:'12px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop:'5px',
+    left: '0px',
+    color:'#fff'
 }
 
 export default DailySales;

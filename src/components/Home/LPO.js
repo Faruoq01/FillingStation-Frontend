@@ -18,6 +18,7 @@ import { Route, Switch } from 'react-router-dom';
 import ListLPO from '../LPO/ListLPO';
 import LPOReport from '../Reports/LpoReport';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -38,6 +39,7 @@ const LPO = (props) => {
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
     const [priceModal, setPriceModal] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -61,6 +63,7 @@ const LPO = (props) => {
     }
 
     const getAllLPOData = useCallback(() => {
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -78,6 +81,7 @@ const LPO = (props) => {
                 }
     
                 LPOService.getAllLPO(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.lpo.count);
                     dispatch(createLPO(data.lpo.lpo));
                 })
@@ -94,6 +98,7 @@ const LPO = (props) => {
                 }
     
                 LPOService.getAllLPO(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.lpo.count);
                     dispatch(createLPO(data.lpo.lpo));
                 })
@@ -115,6 +120,7 @@ const LPO = (props) => {
     }
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -125,10 +131,13 @@ const LPO = (props) => {
         LPOService.getAllLPO(payload).then((data) => {
             setTotal(data.lpo.count);
             dispatch(createLPO(data.lpo.lpo));
+        }).then(()=>{
+            setLoading(false);
         })
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -142,6 +151,8 @@ const LPO = (props) => {
         LPOService.getAllLPO(payload).then((data) => {
             setTotal(data.lpo.count);
             dispatch(createLPO(data.lpo.lpo));
+        }).then(()=>{
+            setLoading(false);
         })
     }
 
@@ -357,6 +368,7 @@ const LPO = (props) => {
 
                         {!activeButton?
                             (mobile.matches)?
+                            !loading?
                             lpos.length === 0?
                             <div style={place}>No data</div>:
                             lpos.map((item, index) => {
@@ -400,7 +412,18 @@ const LPO = (props) => {
                                         </div>
                                     </div>
                                 )
-                            }):
+                            }):<div style={load}>
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            </div>:
                             <div style={{marginTop:'10px'}} className='table-container'>
                                 <div className='table-head'>
                                     <div className='column'>S/N</div>
@@ -416,6 +439,7 @@ const LPO = (props) => {
 
                                 <div className='row-container'>
                                     {
+                                        !loading?
                                         lpos.length === 0?
                                         <div style={place}>No LPO Data </div>:
                                         lpos.map((data, index) => {
@@ -444,12 +468,24 @@ const LPO = (props) => {
                                                     </div>
                                                 </div> 
                                             )
-                                        })
+                                        }): <div style={load}>
+                                            <ThreeDots 
+                                                height="60" 
+                                                width="50" 
+                                                radius="9"
+                                                color="#076146" 
+                                                ariaLabel="three-dots-loading"
+                                                wrapperStyle={{}}
+                                                wrapperClassName=""
+                                                visible={true}
+                                            />
+                                        </div>
                                     } 
                                 </div>
                             </div>:
 
                             (mobile.matches)?
+                            !loading?
                             lpos.length === 0?
                             <div style={place}>No data</div>:
                             lpos.map((item, index) => {
@@ -492,7 +528,18 @@ const LPO = (props) => {
                                         </div>
                                     </div>
                                 )
-                            }):
+                            }):<div style={load}>
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            </div>:
                             <div style={{marginTop:'10px'}} className='table-container'>
                                 <div className='table-head'>
                                     <div className='column'>S/N</div>
@@ -507,6 +554,7 @@ const LPO = (props) => {
 
                                 <div className='row-container'>
                                     {
+                                        !loading?
                                         lpos.length === 0?
                                         <div style={place}>No LPO Data </div>:
                                         lpos.map((data, index) => {
@@ -522,7 +570,18 @@ const LPO = (props) => {
                                                     <div className='column'>{data.paymentStructure}</div>
                                                 </div> 
                                             )
-                                        })
+                                        }): <div style={load}>
+                                            <ThreeDots 
+                                                height="60" 
+                                                width="50" 
+                                                radius="9"
+                                                color="#076146" 
+                                                ariaLabel="three-dots-loading"
+                                                wrapperStyle={{}}
+                                                wrapperClassName=""
+                                                visible={true}
+                                            />
+                                        </div>
                                     } 
                                 </div>
                             </div>
@@ -575,6 +634,13 @@ const place = {
 
 const menu = {
     fontSize:'12px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default LPO;

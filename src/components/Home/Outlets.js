@@ -30,6 +30,7 @@ import activeGrid from '../../assets/activeGrid.png';
 import inactiveGrid from '../../assets/inactiveGrid.png';
 import ListAllTanks from '../Outlet/TankList';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mobile = window.matchMedia('(max-width: 600px)');
 
@@ -42,6 +43,7 @@ const Outlets = (props) => {
     const [prints, setPrints] = useState(false);
     const tablePrints = useRef();
     const [switchTabs, setSwitchTabs] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleOpenModal = (value) => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -72,12 +74,15 @@ const Outlets = (props) => {
     }
 
     const getAllStationData = useCallback(() => {
+        setLoading(true);
         const payload = {
             organisation: user.userType === "superAdmin"? user._id : user.organisationID
         }
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }, [user.organisationID, user.userType, user._id, dispatch]);
 
     useEffect(()=>{
@@ -291,6 +296,7 @@ const Outlets = (props) => {
         
                         {!switchTabs?
                             mobile.matches?
+                            !loading?
                             allOutlets.length === 0?
                             <div style={place}>No data</div>:
                             allOutlets.map((item, index) => {
@@ -335,7 +341,18 @@ const Outlets = (props) => {
                                         </div>
                                     </div>
                                 )
-                            }):
+                            }):<div style={load}>
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            </div>:
                             <div ref={tablePrints} className="table-container">
                                 <div className='table-head'>
                                     <div className='column'>S/N</div>
@@ -350,6 +367,7 @@ const Outlets = (props) => {
                                 </div>
             
                                 {
+                                    !loading?
                                     allOutlets.length === 0?
                                     <div style={place}>No data</div>:
                                     allOutlets.map((item, index) => {
@@ -374,7 +392,18 @@ const Outlets = (props) => {
                                                 </div>
                                             </div>
                                         )
-                                    })
+                                    }): <div style={load}>
+                                        <ThreeDots 
+                                            height="60" 
+                                            width="50" 
+                                            radius="9"
+                                            color="#076146" 
+                                            ariaLabel="three-dots-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClassName=""
+                                            visible={true}
+                                        />
+                                    </div>
                                 }
                             </div>:
 
@@ -455,6 +484,13 @@ const place = {
 const menu = {
     fontSize: '12px',
     fontFamily:'Poppins'
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Outlets;

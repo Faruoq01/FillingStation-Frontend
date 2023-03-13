@@ -12,9 +12,10 @@ import ComprehensiveReports from '../Reports/ConprehensiveReports';
 import AGODailySales from './Report/AGODailySales';
 import DPKDailySales from './Report/DPKDailySales';
 import PMSDailySales from './Report/PMSDailySales';
-import { isSafari } from "react-device-detect";
 import delImg from '../../assets/delImg.png';
 import editImg from '../../assets/editImg.png';
+
+const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const months = {
     '01' : 'Jan',
@@ -809,10 +810,6 @@ const ComprehensiveReport = (props) => {
         setCurrentDate(date2);
     }
 
-    const changeSalesDate = () => {
-        dateInput.current.showPicker();
-    }
-
     const changeDailySales = (e) => {
         setDateValue(e.target.value);
         const date = e.target.value.split('-');
@@ -901,59 +898,47 @@ const ComprehensiveReport = (props) => {
                         </Select>
                     }
                 </div>
-                <div style={{position: 'relative'}}>
-                    <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{visibility:'hidden'}} type="date" />
-                    {!isSafari?
+
+                <div style={{width:'230px', display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                    <div>
+                        <div style={sales}>
+                            <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{
+                                width: mediaMatch? '140px': '170px',
+                                height:'30px',
+                                background:'#054834',
+                                fontSize:'12px',
+                                borderRadius:'0px',
+                                textTransform:'capitalize',
+                                display:'flex',
+                                flexDirection:'row',
+                                alignItems:'center',
+                                color:'#fff',
+                                outline:'none',
+                                border:'none',
+                                paddingRight:'10px'
+                            }} type="date" />
+                            <div style={cover}>{currentDate}</div>
+                        </div>
+                    </div>
+                    <div>
                         <Button 
                             variant="contained" 
                             sx={{
-                                width:'100px',
+                                width:'60px',
                                 height:'30px',
-                                background:'#06805B',
+                                background:'#F36A4C',
                                 fontSize:'11px',
                                 borderRadius:'0px',
                                 textTransform:'capitalize',
-                                position:'absolute',
-                                zIndex:'20',
-                                right:'75px',
                                 '&:hover': {
-                                    backgroundColor: '#06805B'
+                                    backgroundColor: '#F36A4C'
                                 }
                             }}
-                            onClick={changeSalesDate}
+                            onClick={printReport}
                         >
-                            <div>{currentDate}</div>
-                        </Button>:
-
-                        <input value={dateValue} onChange={e => {changeDailySales(e)}} ref={dateInput} style={{
-                            width:'100px',
-                            height:'30px',
-                            background:'#06805B',
-                            fontSize:'11px',
-                            borderRadius:'0px',
-                            textTransform:'capitalize',
-                            position:'absolute',
-                            zIndex:'20',
-                            right:'75px',
-                        }} type="date" />
-                    }
-                    <Button 
-                        variant="contained" 
-                        sx={{
-                            width:'60px',
-                            height:'30px',
-                            background:'#F36A4C',
-                            fontSize:'11px',
-                            borderRadius:'0px',
-                            textTransform:'capitalize',
-                            '&:hover': {
-                                backgroundColor: '#F36A4C'
-                            }
-                        }}
-                        onClick={printReport}
-                    >
-                        Print
-                    </Button>
+                            Print
+                        </Button>
+                    </div>
                 </div>
             </div>
 
@@ -1026,6 +1011,29 @@ const selectStyle2 = {
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
     },
+}
+
+const sales = {
+    width:'100%', 
+    display:'flex', 
+    flexDirection:'row', 
+    justifyContent:'flex-end',
+    position: 'relative',
+    alignItems:'flex-start',
+}
+
+const cover = {
+    position: 'absolute',
+    width:'100px',
+    height: '20px',
+    background:'#054834',
+    fontSize:'12px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop:'5px',
+    left: '0px',
+    color:'#fff'
 }
 
 export default ComprehensiveReport;

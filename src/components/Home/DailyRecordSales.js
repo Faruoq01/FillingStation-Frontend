@@ -435,12 +435,15 @@ const DailyRecordSales = () => {
                             height:'30px',
                             background:'#054834',
                             fontSize:'12px',
-                            borderRadius:'5px',
+                            borderRadius:'0px',
                             textTransform:'capitalize',
                             display:'flex',
                             flexDirection:'row',
                             alignItems:'center',
-                            color:'#fff'
+                            color:'#fff',
+                            outline:'none',
+                            border:'none',
+                            paddingRight:'10px'
                         }} type="date" />
                         <div style={cover}>{currentDate}</div>
                     </div>
@@ -641,7 +644,7 @@ const cover = {
     display:'flex',
     justifyContent:'center',
     alignItems:'center',
-    marginTop:'7px',
+    marginTop:'5px',
     left: '0px',
     color:'#fff'
 }

@@ -13,6 +13,7 @@ import OutletService from '../../services/outletService';
 import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import IncomingReport from '../Reports/IncomingReport';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -30,6 +31,7 @@ const IncomingOrder = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -55,7 +57,7 @@ const IncomingOrder = () => {
     }
 
     const getAllIncomingOrder = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -73,6 +75,7 @@ const IncomingOrder = () => {
                 }
     
                 IncomingService.getAllIncoming(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.incoming.count);
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
@@ -89,6 +92,7 @@ const IncomingOrder = () => {
                 }
     
                 IncomingService.getAllIncoming(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.incoming.count);
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
@@ -103,6 +107,7 @@ const IncomingOrder = () => {
     },[getAllIncomingOrder])
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -113,10 +118,13 @@ const IncomingOrder = () => {
         IncomingService.getAllIncoming(payload).then((data) => {
             setTotal(data.incoming.count);
             dispatch(createIncomingOrder(data.incoming.incoming));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -130,7 +138,9 @@ const IncomingOrder = () => {
         IncomingService.getAllIncoming(payload).then((data) => {
             setTotal(data.incoming.count);
             dispatch(createIncomingOrder(data.incoming.incoming));
-        });
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     const searchTable = (value) => {
@@ -300,6 +310,7 @@ const IncomingOrder = () => {
 
                 {
                     mobile.matches?
+                    !loading?
                     incomingOrder.length === 0?
                     <div style={place}>No data</div>:
                     incomingOrder.map((item, index) => {
@@ -341,7 +352,18 @@ const IncomingOrder = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -359,6 +381,7 @@ const IncomingOrder = () => {
                         <div className='row-container'>
 
                             {
+                                !loading?
                                 incomingOrder.length === 0?
                                 <div style={place}>No Incoming Data</div>:
                                 incomingOrder.map((data, index) => {
@@ -375,7 +398,18 @@ const IncomingOrder = () => {
                                             <div className='column'>{data.deliveryStatus}</div>
                                         </div>
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             }
                         </div>
                     </div>
@@ -419,6 +453,13 @@ const place = {
 
 const menu = {
     fontSize:'12px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default IncomingOrder;

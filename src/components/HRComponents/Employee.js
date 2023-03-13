@@ -16,6 +16,7 @@ import { searchStaffs, storeStaffUsers } from '../../store/actions/staffUsers';
 import PrintStaffRecords from '../Reports/StaffRecord';
 import ManagerModal from '../Modals/ManagerModal';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -33,6 +34,7 @@ const Employee = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
     const [roles, setRoles] = useState(['All Users', 'Admin', 'Accountant', 'Manager', 'Staff']);
+    const [loading, setLoading] = useState(false);
 
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
@@ -68,7 +70,7 @@ const Employee = () => {
     }
 
     const getAllEmployeeData = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -86,6 +88,7 @@ const Employee = () => {
                     organisationID: resolveUserID().id
                 }
                 AdminUserService.filterRecords(payload).then(data => {
+                    setLoading(false);
                     setTotal(data.staff.count);
                     setCroles(data.staff.roles);
 
@@ -108,6 +111,7 @@ const Employee = () => {
                     organisationID: resolveUserID().id
                 }
                 AdminUserService.filterRecords(payload).then(data => {
+                    setLoading(false);
                     setTotal(data.staff.count);
                     setCroles(data.staff.roles);
 
@@ -127,6 +131,7 @@ const Employee = () => {
     },[getAllEmployeeData]);
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             filter: roles[filter],
             skip: skip * limit,
@@ -142,10 +147,13 @@ const Employee = () => {
             const extensions = [...new Set(data.staff.roles.map(data => data.role))];
             setRoles(cloneRoles.concat(extensions));
             dispatch(storeStaffUsers(data.staff.staff));
+        }).then(()=>{
+            setLoading(false);
         });
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -159,6 +167,8 @@ const Employee = () => {
         AdminUserService.filterRecords(payload).then(data => {
             setTotal(data.staff.count);
             dispatch(storeStaffUsers(data.staff.staff));
+        }).then(()=>{
+            setLoading(false);
         });
     }
 
@@ -350,6 +360,7 @@ const Employee = () => {
 
                 {
                     mobile.matches?
+                    !loading?
                     staffUsers.length === 0?
                     <div style={place}>No data</div>:
                     staffUsers.map((item, index) => {
@@ -403,7 +414,18 @@ const Employee = () => {
                                 </div>
                             </div>
                         )
-                    }):
+                    }):<div style={load}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </div>:
 
                     <div className='table-container'>
                         <div className='table-head'>
@@ -420,6 +442,7 @@ const Employee = () => {
 
                         <div className='row-container'>
                             {
+                                !loading?
                                 staffUsers.length === 0?
                                 <div style={place}>No data </div>:
                                 staffUsers.map((item, index) => {
@@ -442,7 +465,18 @@ const Employee = () => {
                                             </div>
                                         </div>
                                     )
-                                })
+                                }):<div style={load}>
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                </div>
                             }
                         </div>
                     </div>
@@ -487,6 +521,13 @@ const place = {
     fontSize:'10px',
     marginTop:'20px',
     color:'green'
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Employee;

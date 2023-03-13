@@ -12,6 +12,7 @@ import ExpenseService from '../../services/expense';
 import { allExpenses, searchExpenses } from '../../store/actions/expense';
 import config from '../../constants';
 import ExpenseReport from '../Reports/ExpenseReport';
+import { ThreeDots } from 'react-loader-spinner';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 1150px)');
@@ -30,6 +31,7 @@ const Expenses = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -44,7 +46,7 @@ const Expenses = () => {
     }
 
     const getAllProductData = useCallback(() => {
-
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
@@ -61,6 +63,7 @@ const Expenses = () => {
                 }
     
                 ExpenseService.getAllExpenses(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.expense.count);
                     dispatch(allExpenses(data.expense.expense));
                 });
@@ -78,6 +81,7 @@ const Expenses = () => {
                 }
     
                 ExpenseService.getAllExpenses(payload).then((data) => {
+                    setLoading(false);
                     setTotal(data.expense.count);
                     dispatch(allExpenses(data.expense.expense));
                 });
@@ -92,6 +96,7 @@ const Expenses = () => {
     },[getAllProductData])
 
     const refresh = () => {
+        setLoading(true);
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -102,10 +107,13 @@ const Expenses = () => {
         ExpenseService.getAllExpenses(payload).then((data) => {
             setTotal(data.expense.count);
             dispatch(allExpenses(data.expense.expense));
+        }).then(()=>{
+            setLoading(false);
         });
     }
 
     const changeMenu = (index, item ) => {
+        setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -119,6 +127,8 @@ const Expenses = () => {
         ExpenseService.getAllExpenses(payload).then((data) => {
             setTotal(data.expense.count);
             dispatch(allExpenses(data.expense.expense));
+        }).then(()=>{
+            setLoading(false);
         });
     }
 
@@ -283,6 +293,7 @@ const Expenses = () => {
 
                     <div className='row-container'>
                         {
+                            !loading?
                             expense.length === 0?
                             <div style={place}>No product data</div>:
                             expense.map((data, index) => {
@@ -301,7 +312,18 @@ const Expenses = () => {
                                         </div>
                                     </div> 
                                 )
-                            })
+                            }):<div style={load}>
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            </div>
                         }
                     </div>
                 </div>
@@ -344,6 +366,13 @@ const place = {
 
 const menu = {
     fontSize:'14px',
+}
+
+const load = {
+    width: '100%',
+    height:'30px',
+    display:'flex',
+    justifyContent:'center',
 }
 
 export default Expenses;
