@@ -300,7 +300,6 @@ const DailySales = (props) => {
     }
 
     const getAndAnalyzeDailySales = async(data, onLoad, selectedDate) => {
-        setLoads(true);
         const salesPayload = {
             organisationID: resolveUserID().id,
             outletID: data === null? "None": data?._id,
@@ -341,7 +340,7 @@ const DailySales = (props) => {
     }
 
     const getAllProductData = useCallback(() => {
-
+        setLoads(true);
         const payload = {
             organisation: resolveUserID().id
         }

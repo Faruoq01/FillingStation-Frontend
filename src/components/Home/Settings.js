@@ -435,38 +435,40 @@ const Settings = (props) => {
                 </div>
                 <div className='rightSettings'>
                     <div className='inner'>
-                        <div style={contain}>
-                            <div className='second-select'>
-                                {(user.userType === "superAdmin" || user.userType === "admin") &&
-                                    <Select
-                                        labelId="demo-select-small"
-                                        id="demo-select-small"
-                                        value={defaultState}
-                                        sx={selectStyle2}
-                                    >
-                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                                        {
-                                            allOutlets.map((item, index) => {
-                                                return(
-                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
-                                                )
-                                            })  
-                                        }
-                                    </Select>
-                                }
-                                {user.userType === "staff" &&
-                                    <Select
-                                        labelId="demo-select-small"
-                                        id="demo-select-small"
-                                        value={0}
-                                        sx={selectStyle2}
-                                        disabled
-                                    >
-                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
-                                    </Select>
-                                }
+                        {nav === 1 ||
+                            <div style={contain}>
+                                <div className='second-select'>
+                                    {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                        <Select
+                                            labelId="demo-select-small"
+                                            id="demo-select-small"
+                                            value={defaultState}
+                                            sx={selectStyle2}
+                                        >
+                                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                            {
+                                                allOutlets.map((item, index) => {
+                                                    return(
+                                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
+                                                    )
+                                                })  
+                                            }
+                                        </Select>
+                                    }
+                                    {user.userType === "staff" &&
+                                        <Select
+                                            labelId="demo-select-small"
+                                            id="demo-select-small"
+                                            value={0}
+                                            sx={selectStyle2}
+                                            disabled
+                                        >
+                                            <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                        </Select>
+                                    }
+                                </div>
                             </div>
-                        </div>
+                        }
                         { nav === 0 && <OutletInfo refresh={getStationData} />}
                         { nav === 1 && <Permissions />}
                         { nav === 2 && <Appearances />}

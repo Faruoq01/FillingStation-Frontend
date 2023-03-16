@@ -1,0 +1,120 @@
+.tank_label{
+    width: 100%;
+    height: auto;
+
+    .other_label{
+        width: 100%;
+        height: auto;
+        background: #fff;
+        margin-top: 5px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .other_inner{
+            width: 94%;
+            height: auto;
+            margin-top: 3%;
+            margin-bottom: 3%;
+            background-image: url("../assets/smaller.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    }
+}
+
+.fuel_card{
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 5px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.inner_fuel_card{
+    width: 94%;
+    height: auto;
+    background: #fff;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    background-image: url("../assets/big.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.fuel_card_header{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .fuel_title{
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .fuel_delete{
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        width: 80px;
+        height: 30px;
+        background: tomato;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        color:#fff
+    }
+}
+
+.fuel_card_items{
+    width: 100%;
+    height: 40px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .fuel_card_items_left{
+        width: 50%;
+        height: 100%;
+
+        .volum{
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .vol_label{
+            font-size: 11px;
+            font-weight: 600;
+            color: #737373;
+        }
+    }
+
+    .fuel_card_items_right{
+        width: 50%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .volum{
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .vol_label{
+            font-size: 11px;
+            font-weight: 600;
+            color: #737373;
+        }
+    }
+}
