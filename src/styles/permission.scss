@@ -1,0 +1,106 @@
+.permissions_container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.header_perm_text{
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 30px;
+    color: #000000;
+}
+
+.perm_filters{
+    width: 100%;
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+
+    .all_stations{
+        width: 180px;
+        margin-right: 15px;
+    }
+
+    .perm_search{
+        width: 180px;
+    }
+}
+
+.perm_users{
+    width: 100%;
+    height: 100%;
+    margin-top: 10px;
+    overflow: hidden;
+
+    .user_header{
+        width: 100%;
+        height: 35px;
+        background: #054834;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        .perm_cell{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+    }
+
+    .row_cell_perm{
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+
+        .user_rows{
+            width: 100%;
+            height: 40px;
+            background: #fff;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-top: 5px;
+    
+            .perm_cell2{
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #000;
+            }
+        }
+    }
+
+    /* width */
+    .row_cell_perm::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    /* Track */
+    .row_cell_perm::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    .row_cell_perm::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    .row_cell_perm::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+}

@@ -1,0 +1,117 @@
+.perm_list_container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    .perm_list{
+        width: 100%;
+        height: 100%;
+        margin-top: 20px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    
+        .perm_list_items{
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 10px;
+        
+            .perm_list_title{
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+
+                .perm_list_num{
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 12px;
+                    background: #454343;
+                    color: #fff;
+                    border-radius: 20px;
+                    margin-right: 10px;
+                }
+
+                .perm_list_name{
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+            }
+
+            .perm_list_content{
+                width: 100%;
+                height: auto;
+                margin-top: 10px;
+                display: grid;
+                column-gap: 10px;
+                row-gap: 10px;
+                grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+                flex-wrap: wrap;
+
+                .content_cell{
+                    height: auto;
+
+                    .cell_final{
+                        width: 100%;
+                        height: auto;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+
+                        .perm_name_list{
+                            width: 70%;
+                            text-align: left;
+                            font-size: 13px;
+                            font-family: 'Poppins';
+                            font-weight: 400;
+                        }
+
+                        .perm_check{
+                            width: 20%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* width */
+    .perm_list::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    /* Track */
+    .perm_list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    .perm_list::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    .perm_list::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+}
+
+.header_text_perm{
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 30px;
+    color: #000000;
+}
+
+
+

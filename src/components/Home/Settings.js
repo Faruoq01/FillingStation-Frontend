@@ -16,6 +16,7 @@ import OutletInfo from '../Settings/OutletInfo';
 import Appearances from '../Settings/Appearance';
 import Logo from '../Settings/Logo';
 import Permissions from '../Settings/Permission';
+import PermissionList from '../Settings/PermissionList';
 
 const Password = () => {
     const user = useSelector(state => state.authReducer.user);
@@ -435,7 +436,7 @@ const Settings = (props) => {
                 </div>
                 <div className='rightSettings'>
                     <div className='inner'>
-                        {nav === 1 ||
+                        {(nav === 1 || nav === 7) ||
                             <div style={contain}>
                                 <div className='second-select'>
                                     {(user.userType === "superAdmin" || user.userType === "admin") &&
@@ -470,12 +471,13 @@ const Settings = (props) => {
                             </div>
                         }
                         { nav === 0 && <OutletInfo refresh={getStationData} />}
-                        { nav === 1 && <Permissions />}
+                        { nav === 1 && <Permissions nav={setNav} />}
                         { nav === 2 && <Appearances />}
                         { nav === 3 && <Logo />}
                         { nav === 4 && <Password />}
                         { nav === 5 && <Email />}
                         { nav === 6 && <DeleteOutlet refresh={getStationData} />}
+                        { nav === 7 && <PermissionList nav={setNav} />}
                     </div>
                 </div>
             </div>
