@@ -528,7 +528,8 @@ const DailySales = (props) => {
             fractionBuilder = fractionBuilder.concat(splitFractions[1]);
         }
 
-        const approxNumber = splitDataByDecimal[0].concat(".", fractionBuilder);
+        const approxWithComma = splitDataByDecimal[0].match(/.{1,3}/g).join(',');
+        const approxNumber = approxWithComma.concat(".", fractionBuilder);
 
         return approxNumber;
     }

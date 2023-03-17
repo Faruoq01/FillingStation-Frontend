@@ -67,14 +67,45 @@ const TankComponent = (props) => {
         fuel.current.style.background = "#399A19";
     }
 
+    const ApproximateDecimal = (data) => {
+        const changeToString = String(data);
+
+        const findIndex = changeToString.indexOf(".");
+        if(findIndex === -1){
+            return changeToString;
+        }
+
+        const splitDataByDecimal = changeToString.split('.');
+        const splitFractions = splitDataByDecimal[1].split('');
+        if(splitFractions.length <= 2){
+            return changeToString;
+        }
+        
+        let fractionBuilder = splitFractions[0];
+        if(Number(splitFractions[2] > 5)){
+            const tenths = Number(splitFractions[1]) + 1;
+            fractionBuilder = fractionBuilder.concat("", tenths);
+
+        }else{
+            fractionBuilder = fractionBuilder.concat(splitFractions[1]);
+        }
+
+        const approxWithComma = splitDataByDecimal[0].match(/.{1,3}/g).join(',');
+        const approxNumber = approxWithComma.concat(".", fractionBuilder);
+
+        return approxNumber;
+    }
+
     return(
         <div className='canvases'>
-            <div className='fuel-container'>
-                <Tooltip title={`${cummulativeTotals.totalPMS} Litres`} followCursor>
-                    <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
-                </Tooltip>
-            </div>
-            <div ref={fuel} className='fuel'></div>
+            <Tooltip title={`${ApproximateDecimal(cummulativeTotals.totalPMS)} Litres`} followCursor>
+                <div>
+                    <div className='fuel-container'>
+                        <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
+                    </div>
+                    <div ref={fuel} className='fuel'></div>
+                </div>
+            </Tooltip>
         </div>
     )
 }
