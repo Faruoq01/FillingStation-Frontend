@@ -22,6 +22,7 @@ import DailySalesService from '../../services/DailySales';
 import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
+import { isSafari } from 'react-device-detect';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -709,7 +710,7 @@ const DailySales = (props) => {
                                         border:'none',
                                         paddingRight:'10px'
                                     }} type="date" />
-                                    <div style={cover}>{currentDate}</div>
+                                    {isSafari || <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>}
                                 </div>
                             </div>
                         </div>
