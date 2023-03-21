@@ -36,6 +36,7 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import SummaryRecord from '../Modals/SummaryRecord';
 import { changeDate, changeStation } from '../../store/actions/records';
+import { isSafari } from 'react-device-detect';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -445,7 +446,7 @@ const DailyRecordSales = () => {
                             border:'none',
                             paddingRight:'10px'
                         }} type="date" />
-                        <div style={cover}>{currentDate}</div>
+                        {isSafari || <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>}
                     </div>
                 </div>
             </div>
