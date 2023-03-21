@@ -2,6 +2,8 @@ import {
     DASHBOARD,
     DASHBOARD_RECORDS,
     DASHBOARD_EMPLOYEES,
+    CHANGE_STATUS,
+    CHANGE_ALL_STATUS,
     SEARCH_DASH, 
     UTILS,
     LOGOUT
@@ -66,10 +68,38 @@ const dashboardReducer = (state = initialState, action) => {
         }
 
         case DASHBOARD_EMPLOYEES:{
+
+            const addSelection = payload.map(item => {
+                return {... item, selected: "0"};
+            });
+
             return{
                 ...state,
-                employees: payload,
+                employees: addSelection,
                 searchData: payload,
+            }
+        }
+
+        case CHANGE_STATUS: {
+            const newList = [...state.employees];
+            const findID = newList.findIndex(data => data._id === payload._id);
+            newList[findID] = payload;
+
+            return {
+                ...state,
+                employees: newList
+            }
+        }
+
+        case CHANGE_ALL_STATUS: {
+            const newList = [...state.employees];
+            const updated = newList.map(data => {
+                return {...data, selected: payload? "1": "0"}
+            });
+            
+            return{
+                ...state,
+                employees: updated
             }
         }
 

@@ -56,6 +56,28 @@ const DashboardService = {
             throw err
         })
     },
+
+    updateUserStatus: (data) => {
+        return APIs.post('/dashboard/user-status', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
+
+    updateUserPermission: (data) => {
+        return APIs.post('/dashboard/user-permission', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default DashboardService;

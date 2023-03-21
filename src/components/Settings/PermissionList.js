@@ -2,6 +2,10 @@ import "../../styles/permList.scss";
 import { styled } from '@mui/material/styles';
 import { Switch } from "@mui/material";
 import data from "./permissionsHelper";
+import perm from "./perm_struct";
+import { useSelector } from "react-redux";
+import swal from 'sweetalert';
+import DashboardService from "../../services/dashboard";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
     padding: 8,
@@ -36,13 +40,118 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-const ListCards = (props) => {
+const ListCards = ({item, section, data}) => {
+    const employees = useSelector(state => state.dashboardReducer.employees);
+    const selectedUsers = employees.filter(data => data.selected === "1");
+
+    const changePermission = (e) => {
+        if(selectedUsers.length === 0) return swal("Warning!", "Please select at least one user to update permission!", "info");
+
+        let updatePerm = [];
+        let keyData = section.toLowerCase().split(' ').join(",").replace(",", "");
+
+        switch(keyData){
+            case "dashboard":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.dashboard[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "dailysales":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.dailySales[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "mystations":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.myStation[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "recordsales":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.recordSales[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "analysis":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.analysis[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "corporatesales":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.corporateSales[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "productorders":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.productOrder[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "incomingorders":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.incomingOrder[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            default:{
+                updatePerm = [...selectedUsers].map(data => {
+                    return {
+                        ...data, 
+                        permission: {
+                            ...data.permission,
+                        }
+                    }
+                });
+            }
+        }
+
+        // const payload = {
+        //     permissions: updatePerm
+        // }
+
+        // DashboardService.updateUserPermission(payload).then(data => {
+        //     console.log(data, "ddddd")
+        // })
+
+        console.log(updatePerm, "perm")
+    }
+
     return(
         <li className="content_cell">
             <div className="cell_final">
-                <div className="perm_name_list">{props.data}</div>
+                <div className="perm_name_list">{data}</div>
                 <div className="perm_check">
-                    <Android12Switch defaultChecked />
+                    <Android12Switch onChange={(e) => changePermission(e)} defaultChecked />
                 </div>
             </div>
         </li>
@@ -63,7 +172,7 @@ const PermissionListItems = (props) => {
                 {
                     keys?.map((item, index) => {
                         return(
-                            <ListCards key={index} data={props.data.permissions[item]} />
+                            <ListCards key={index} item={item} section={props.data.name} data={props.data.permissions[item]} />
                         )
                     })
                 }

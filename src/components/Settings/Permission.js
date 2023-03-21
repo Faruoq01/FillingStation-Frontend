@@ -8,6 +8,9 @@ import { adminOutlet, getAllStations } from "../../store/actions/outlet";
 import "../../styles/permission.scss";
 import { styled } from '@mui/material/styles';
 import perm from "../../assets/perm.png";
+import DashboardService from "../../services/dashboard";
+import { changeAllEmployeeStatus, changeEmployeeStatus, dashEmployees } from "../../store/actions/dashboard";
+import { ThreeDots } from "react-loader-spinner";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
     padding: 8,
@@ -44,29 +47,69 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
 
 const UserRow = (props) => {
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+    const dispatch = useDispatch();
+    const [loads, setLoad] = useState(false);
 
     const goToList = () => {
         props.nav(7);
     }
 
+    const changeSelected = (e, data) => {
+        const newItem = {...data, selected: e.target.checked? "1": "0"};
+        dispatch(changeEmployeeStatus(newItem));
+    }
+
+    const changeUserStatus = (e, data) => {
+        setLoad(true);
+
+        const payload = {
+            id: data._id,
+            email: data.email,
+            status: e.target.checked? "1": "0"
+        }
+
+        DashboardService.updateUserStatus(payload).then(data => {
+            if(data.code === 200){
+                const newItem = {...data, status: e.target.checked? "1": "0"};
+                dispatch(changeEmployeeStatus(newItem));
+            }
+        }).then(()=>{
+            const newItem = {...data, status: e.target.checked? "1": "0"};
+            dispatch(changeEmployeeStatus(newItem));
+            setLoad(false);
+        });
+    }
+
     return(
         <div className="user_rows">
             <div style={{justifyContent:'space-between'}} className="perm_cell2">
-                <Checkbox sx={{
+                <Checkbox checked={props.data.selected === "1"? true: false} sx={{
                     color:'#232759',
                     marginLeft:'20px',
                     '&.Mui-checked': {
                         color: '#1368D8',
                     },
-                }} {...label} defaultChecked />
-                <div style={{marginRight:'30px'}}>01</div>
+                }} {...label} onChange={e => changeSelected(e, props.data)} />
+                <div style={{marginRight:'30px'}}>{props.index + 1}</div>
             </div>
             <div className="perm_cell2"><Avatar sx={{width:'25px', height:'25px'}} /></div>
-            <div className="perm_cell2">Aminu Faruk</div>
-            <div style={{color:'#1368D8'}} className="perm_cell2">Enabled</div>
+            <div style={{display:'flex', flexDirection:'row', justifyContent:'flex-start'}} className="perm_cell2">{props.data.staffName}</div>
+            <div style={{color:'#1368D8'}} className="perm_cell2">{props.data.status === "1"? 'Enabled': 'Disabled'}</div>
             <div className="perm_cell2">
                 <div style={{marginRight:'10px'}}>
-                    <Android12Switch defaultChecked />
+                    {loads?
+                        <ThreeDots 
+                            height="40" 
+                            width="30" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />:
+                        <Android12Switch onChange={e => changeUserStatus(e, props.data)} checked={props.data.status === "1"? true: false} />
+                    }
                 </div>
                 <img onClick={goToList} style={{width:'25px', height:'25px'}} src={perm} alt="icon" />
             </div>
@@ -80,7 +123,9 @@ const Permissions = (props) => {
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const employees = useSelector(state => state.dashboardReducer.employees);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+    const [loading, setLoading] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -91,8 +136,14 @@ const Permissions = (props) => {
     }
 
     const getAllLPOData = useCallback(() => {
+        setLoading(true);
         const payload = {
             organisation: resolveUserID().id
+        }
+
+        const payload2 = {
+            id: resolveUserID().id, 
+            outletID: "None"
         }
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -100,9 +151,21 @@ const Permissions = (props) => {
                 dispatch(getAllStations(data.station));
                 dispatch(adminOutlet(null));
             });
+
+            DashboardService.allAttendanceRecords(payload2).then(data =>{
+                dispatch(dashEmployees(data.employees));
+            }).then(()=>{
+                setLoading(false);
+            });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
+            });
+
+            DashboardService.allAttendanceRecords(payload2).then(data =>{
+                dispatch(dashEmployees(data.employees));
+            }).then(()=>{
+                setLoading(false);
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,6 +178,10 @@ const Permissions = (props) => {
     const changeMenu = (index, item ) => {
         setDefault(index);
         dispatch(adminOutlet(item));
+    }
+
+    const selectAllUsers = (e) => {
+        dispatch(changeAllEmployeeStatus(e.target.checked));
     }
 
     return(
@@ -179,7 +246,7 @@ const Permissions = (props) => {
                             '&.Mui-checked': {
                                 color: '#fff',
                             },
-                        }} {...label} defaultChecked />
+                        }} {...label} onChange={e => selectAllUsers(e)} />
                         <div style={{marginRight:'30px'}}>S/N</div>
                     </div>
                     <div className="perm_cell">Image</div>
@@ -189,21 +256,28 @@ const Permissions = (props) => {
                 </div>
 
                 <div className="row_cell_perm">
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
-                    <UserRow nav={props.nav} />
+                    {
+                        loading?
+                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                            <ThreeDots 
+                                height="60" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{}}
+                                wrapperClassName=""
+                                visible={true}
+                            />
+                        </div>:
+                        employees.length === 0? 
+                        <div>No data</div>:
+                        employees.map((item, index) => {
+                            return(
+                                <UserRow key={index} index={index} data={item} nav={props.nav} />
+                            )
+                        })
+                    }
                 </div>
             </div>
         </div>

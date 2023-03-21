@@ -133,7 +133,7 @@ const data = [
         permissions: {
             '0': "Selecting a single station",
             '1': "Selecting a all stations",
-            '3': "Print tank update record",
+            '2': "Print tank update record",
         }
     },
 

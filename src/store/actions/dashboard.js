@@ -2,6 +2,8 @@ import {
     DASHBOARD,
     DASHBOARD_RECORDS,
     DASHBOARD_EMPLOYEES,
+    CHANGE_STATUS,
+    CHANGE_ALL_STATUS,
     SEARCH_DASH,
     UTILS
 } from '../types';
@@ -16,6 +18,14 @@ export const dashboardRecordMore = (params) => dispatch => {
 
 export const dashEmployees = (params) => dispatch => {
     dispatch({ type: DASHBOARD_EMPLOYEES, payload: params});
+}
+
+export const changeEmployeeStatus = (params) => dispatch => {
+    dispatch({ type: CHANGE_STATUS, payload: params});
+}
+
+export const changeAllEmployeeStatus = (params) => dispatch => {
+    dispatch({ type: CHANGE_ALL_STATUS, payload: params});
 }
 
 export const searchdashStaffs = (params) => dispatch => {

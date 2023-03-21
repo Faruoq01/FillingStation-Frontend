@@ -76,6 +76,8 @@ export const CONNECTION_ERROR = "CONNECTION_ERROR";
 export const BAR_DATA = "BAR_DATA";
 export const SUMMARY_RECORD_SALES = "SUMMARY_RECORD_SALES";
 export const DESELECTED_PUMPS = "DESELECTED_PUMPS";
+export const CHANGE_STATUS = "CHANGE_STATUS";
+export const CHANGE_ALL_STATUS = "CHANGE_ALL_STATUS";
 
 /////////////////////////////////////////////////////////////////////////
 

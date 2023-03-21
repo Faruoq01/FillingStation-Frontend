@@ -290,7 +290,7 @@ const Dashboard = (props) => {
                     outletID: "None"
                 }
 
-                Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {console.log(data)
+                Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {
                     // attendance records
                     dispatch(dashEmployees(data[0].employees));
                     collectAndAnalyseData(data[0]);
