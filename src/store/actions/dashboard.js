@@ -2,6 +2,7 @@ import {
     DASHBOARD,
     DASHBOARD_RECORDS,
     DASHBOARD_EMPLOYEES,
+    STORE_SINGLE_USER,
     CHANGE_STATUS,
     CHANGE_ALL_STATUS,
     SEARCH_DASH,
@@ -26,6 +27,10 @@ export const changeEmployeeStatus = (params) => dispatch => {
 
 export const changeAllEmployeeStatus = (params) => dispatch => {
     dispatch({ type: CHANGE_ALL_STATUS, payload: params});
+}
+
+export const storeSingleUser = (params) => dispatch => {
+    dispatch({ type: STORE_SINGLE_USER, payload: params});
 }
 
 export const searchdashStaffs = (params) => dispatch => {

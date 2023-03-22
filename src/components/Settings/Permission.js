@@ -9,7 +9,7 @@ import "../../styles/permission.scss";
 import { styled } from '@mui/material/styles';
 import perm from "../../assets/perm.png";
 import DashboardService from "../../services/dashboard";
-import { changeAllEmployeeStatus, changeEmployeeStatus, dashEmployees } from "../../store/actions/dashboard";
+import { changeAllEmployeeStatus, changeEmployeeStatus, dashEmployees, storeSingleUser } from "../../store/actions/dashboard";
 import { ThreeDots } from "react-loader-spinner";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -50,7 +50,8 @@ const UserRow = (props) => {
     const dispatch = useDispatch();
     const [loads, setLoad] = useState(false);
 
-    const goToList = () => {
+    const goToList = (data) => {
+        dispatch(storeSingleUser(data));
         props.nav(7);
     }
 
@@ -111,7 +112,7 @@ const UserRow = (props) => {
                         <Android12Switch onChange={e => changeUserStatus(e, props.data)} checked={props.data.status === "1"? true: false} />
                     }
                 </div>
-                <img onClick={goToList} style={{width:'25px', height:'25px'}} src={perm} alt="icon" />
+                <img onClick={()=>{goToList(props.data)}} style={{width:'25px', height:'25px'}} src={perm} alt="icon" />
             </div>
         </div>
     )

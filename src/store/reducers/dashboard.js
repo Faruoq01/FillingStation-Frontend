@@ -4,6 +4,7 @@ import {
     DASHBOARD_EMPLOYEES,
     CHANGE_STATUS,
     CHANGE_ALL_STATUS,
+    STORE_SINGLE_USER,
     SEARCH_DASH, 
     UTILS,
     LOGOUT
@@ -44,7 +45,8 @@ const initialState = {
 
     employees:[],
     searchData: [],
-    utils:{}
+    utils:{},
+    singleUser:{}
 }
 
 const dashboardReducer = (state = initialState, action) => {
@@ -70,13 +72,20 @@ const dashboardReducer = (state = initialState, action) => {
         case DASHBOARD_EMPLOYEES:{
 
             const addSelection = payload.map(item => {
-                return {... item, selected: "0"};
+                return {...item, selected: "0"};
             });
 
             return{
                 ...state,
                 employees: addSelection,
                 searchData: payload,
+            }
+        }
+
+        case STORE_SINGLE_USER: {
+            return {
+                ...state,
+                singleUser: payload
             }
         }
 

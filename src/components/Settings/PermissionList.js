@@ -1,11 +1,12 @@
 import "../../styles/permList.scss";
 import { styled } from '@mui/material/styles';
-import { Switch } from "@mui/material";
+import { Button, Switch } from "@mui/material";
 import data from "./permissionsHelper";
-import perm from "./perm_struct";
-import { useSelector } from "react-redux";
+import {useSelector } from "react-redux";
 import swal from 'sweetalert';
 import DashboardService from "../../services/dashboard";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
     padding: 8,
@@ -40,9 +41,17 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-const ListCards = ({item, section, data}) => {
+const ListCards = ({item, section, data, users}) => {
     const employees = useSelector(state => state.dashboardReducer.employees);
+    const singleUser = useSelector(state => state.dashboardReducer.singleUser);
     const selectedUsers = employees.filter(data => data.selected === "1");
+    const [updatedUser, setUpdatedUser] = useState(null);
+    console.log(updatedUser, "nnnnnnsr")
+
+    useEffect(()=>{
+        setUpdatedUser(singleUser);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const changePermission = (e) => {
         if(selectedUsers.length === 0) return swal("Warning!", "Please select at least one user to update permission!", "info");
@@ -123,27 +132,56 @@ const ListCards = ({item, section, data}) => {
                 break;
             }
 
-            default:{
+            case "supply":{
                 updatePerm = [...selectedUsers].map(data => {
-                    return {
-                        ...data, 
-                        permission: {
-                            ...data.permission,
-                        }
-                    }
+                    const copy = {...data};
+                    copy.permission.supply[item] = e.target.checked;
+                    return copy
                 });
+                break;
             }
+
+            case "regulatorypayment":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.regPay[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "tankupdate":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.tankUpdate[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "humanresources":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.hr[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "settings":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.settings[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            default:{}
         }
-
-        // const payload = {
-        //     permissions: updatePerm
-        // }
-
-        // DashboardService.updateUserPermission(payload).then(data => {
-        //     console.log(data, "ddddd")
-        // })
-
-        console.log(updatePerm, "perm")
+        users(updatePerm);
+        const latestUser = updatePerm.filter(data => data._id === singleUser._id);
+        setUpdatedUser(latestUser[0].permission);
     }
 
     return(
@@ -172,7 +210,7 @@ const PermissionListItems = (props) => {
                 {
                     keys?.map((item, index) => {
                         return(
-                            <ListCards key={index} item={item} section={props.data.name} data={props.data.permissions[item]} />
+                            <ListCards key={index} item={item} section={props.data.name} data={props.data.permissions[item]} users={props.users} />
                         )
                     })
                 }
@@ -182,21 +220,49 @@ const PermissionListItems = (props) => {
 }
 
 const PermissionList = (props) => {
+    const [allUsers, setAllUsers] = useState([]);
+
     const goBack = () => {
         props.nav(1);
     }
 
+    const submit = () => {
+        const payload = {
+            permissions: allUsers
+        }
+
+        DashboardService.updateUserPermission(payload).then(data => {
+            swal("Success", "Records updated successfully!", "success");
+        });
+    }
+
     return(
         <div className="perm_list_container">
-            <div onClick={goBack} className="header_text_perm">
-                <span style={{fontSize:'20px'}}>&#8592;</span> Allow/Disallow Permission
+            <div className="header_text_perm">
+                <div onClick={goBack}>
+                    <span style={{fontSize:'20px'}}>&#8592;</span> Allow/Disallow Permission
+                </div>
+                <Button sx={{
+                    width:'100px', 
+                    height:'30px',  
+                    background: '#427BBE',
+                    borderRadius: '3px',
+                    fontSize:'10px',
+                    marginTop:'10px',
+                    '&:hover': {
+                        backgroundColor: '#427BBE'
+                    }
+                    }} 
+                    onClick={submit}
+                    variant="contained"> Submit
+                </Button>
             </div>
 
             <div className="perm_list">
                 {
                     data.map((item, index) => {
                         return(
-                            <PermissionListItems key={index} data={item} index={index} />
+                            <PermissionListItems key={index} data={item} index={index} users={setAllUsers} />
                         )
                     })
                 }
