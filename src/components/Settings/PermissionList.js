@@ -46,10 +46,72 @@ const ListCards = ({item, section, data, users}) => {
     const singleUser = useSelector(state => state.dashboardReducer.singleUser);
     const selectedUsers = employees.filter(data => data.selected === "1");
     const [updatedUser, setUpdatedUser] = useState(null);
-    console.log(updatedUser, "nnnnnnsr")
+    // console.log(updatedUser, "nnnnnnsr")
+
+    const getPerm = () => {
+        if(updatedUser !== null){
+            let keyData = section.toLowerCase().split(' ').join(",").replace(",", "");
+
+            switch(keyData){
+                case "dashboard":{
+                    return updatedUser.dashboard[item];
+                }
+
+                case "dailysales":{
+                    return updatedUser.dailySales[item];
+                }
+
+                case "mystations":{
+                    return updatedUser.myStation[item];
+                }
+
+                case "recordsales":{
+                    return updatedUser.recordSales[item];
+                }
+
+                case "analysis":{
+                    return updatedUser.analysis[item];
+                }
+
+                case "corporatesales":{
+                    return updatedUser.corporateSales[item];
+                }
+
+                case "productorders":{
+                    return updatedUser.productOrder[item];
+                }
+
+                case "incomingorders":{
+                    return updatedUser.incomingOrder[item];
+                }
+
+                case "supply":{
+                    return updatedUser.supply[item];
+                }
+
+                case "regulatorypayment":{
+                    return updatedUser.regPay[item];
+                }
+
+                case "tankupdate":{
+                    return updatedUser.tankUpdate[item];
+                }
+
+                case "humanresources":{
+                    return updatedUser.hr[item];
+                }
+
+                case "settings":{
+                    return updatedUser.settings[item];
+                }
+
+                default:{}
+            }
+        }
+    }
 
     useEffect(()=>{
-        setUpdatedUser(singleUser);
+        setUpdatedUser(singleUser?.permission);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -181,7 +243,7 @@ const ListCards = ({item, section, data, users}) => {
         }
         users(updatePerm);
         const latestUser = updatePerm.filter(data => data._id === singleUser._id);
-        setUpdatedUser(latestUser[0].permission);
+        setUpdatedUser(latestUser[0]?.permission);
     }
 
     return(
@@ -189,7 +251,7 @@ const ListCards = ({item, section, data, users}) => {
             <div className="cell_final">
                 <div className="perm_name_list">{data}</div>
                 <div className="perm_check">
-                    <Android12Switch onChange={(e) => changePermission(e)} defaultChecked />
+                    <Android12Switch onChange={(e) => changePermission(e)} checked = {typeof getPerm() === "undefined"? false: getPerm()}/>
                 </div>
             </div>
         </li>
