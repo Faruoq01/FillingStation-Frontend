@@ -24,39 +24,54 @@ import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
 import ProgressBar from "@ramonak/react-progress-bar";
 import SalesDisplay from '../Modals/SalesDisplay';
+import swal from 'sweetalert';
 
 const mobile = window.matchMedia('(max-width: 600px)');
 
 const DashboardImage = (props) => {
-
+    const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const history = useHistory();
     const dispatch = useDispatch();
+
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dashboard[e];
+    }
 
     const goToNextScreen = () => {
         switch(props.screen){
             case "employee":{
+                if(!getPerm('3')) return swal("Warning!", "Permission denied", "info");
+                if(!getPerm('4' && oneStationData === null)) return swal("Warning!", "Permission denied", "info");
                 history.push("/home/dashEmp");
                 break;
             }
 
             case "activeTank":{
+                if(!getPerm('6')) return swal("Warning!", "Permission denied", "info");
                 dispatch(utils({state: "activeTank", station: props?.station}));
                 history.push("/home/tank-list");
                 break;
             }
 
             case "inactiveTank":{
+                if(!getPerm('6')) return swal("Warning!", "Permission denied", "info");
                 dispatch(utils({state: "inActiveTank", station: props?.station}));
                 history.push("/home/tank-list");
                 break;
             }
             case "activePump":{
+                if(!getPerm('6')) return swal("Warning!", "Permission denied", "info");
                 dispatch(utils({state: "activePump", station: props?.station}));
                 history.push("/home/pump-list");
                 break;
             }
 
             case "inactivePump":{
+                if(!getPerm('6')) return swal("Warning!", "Permission denied", "info");
                 dispatch(utils({state: "inActivePump", station: props?.station}));
                 history.push("/home/pump-list");
                 break;
@@ -113,6 +128,13 @@ const Dashboard = (props) => {
         }else{
             return {id: user.organisationID}
         }
+    }
+
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dashboard[e];
     }
 
     const getTopStations = () => {
@@ -267,79 +289,49 @@ const Dashboard = (props) => {
             return data;
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            setLoad(true);
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
+        setLoad(true);
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('1')){
+                if(!getPerm('2')) setDefault(1);
                 dispatch(adminOutlet(null));
-                return data.station[0];
-            }).then(data => {
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then(data => {
 
-                const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-                const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+            const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+            const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
-                const payload = {
-                    organisation: resolveUserID().id,
-                    outletID: "None",
-                    startDate: formatOne,
-                    endDate: formatTwo
-                }
+            const payload = {
+                organisation: resolveUserID().id,
+                outletID: data,
+                startDate: formatOne,
+                endDate: formatTwo
+            }
 
-                const payload2 = {
-                    id: resolveUserID().id, 
-                    outletID: "None"
-                }
+            const payload2 = {
+                id: resolveUserID().id, 
+                outletID: data
+            }
 
-                Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {
-                    // attendance records
-                    dispatch(dashEmployees(data[0].employees));
-                    collectAndAnalyseData(data[0]);
+            Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {
+                // attendance records
+                dispatch(dashEmployees(data[0].employees));
+                collectAndAnalyseData(data[0]);
 
-                    // sales record
-                    const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
-                    dispatch(dashboardRecordMore(evaluatedDashboard));
-                });
-
-            }).then(()=>{
-                setLoad(false);
+                // sales record
+                const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
+                dispatch(dashboardRecordMore(evaluatedDashboard));
             });
 
-        }else{
-            setLoad(true);
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then(data => {
-
-                const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-                const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-
-                const payload = {
-                    organisation: data?.organisation,
-                    outletID: data?._id,
-                    startDate: formatOne,
-                    endDate: formatTwo
-                }
-
-                const payload2 = {
-                    id: data.organisation, 
-                    outletID: data._id
-                }
-
-                Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {
-                    // attendance records
-                    dispatch(dashEmployees(data[0].employees));
-                    collectAndAnalyseData(data[0]);
-
-                    // sales record
-                    const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
-                    dispatch(dashboardRecordMore(evaluatedDashboard));
-                });
-
-            }).then(()=>{
-                setLoad(false);
-            });
-        }
+        }).then(()=>{
+            setLoad(false);
+        });
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user._id, user.userType, user.outletID, dispatch]);
@@ -363,6 +355,7 @@ const Dashboard = (props) => {
     }
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('2') && item === null) return swal("Warning!", "Permission denied", "info");
         setDefault(index);
         dispatch(adminOutlet(item));
         setLoad(true);
@@ -395,7 +388,18 @@ const Dashboard = (props) => {
     }
 
     const goToExpenses = () => {
+        if(!getPerm('8')) return swal("Warning!", "Permission denied", "info");
         history.push("/home/analysis/expenses");
+    }
+
+    const goToSupplyPage = () => {
+        if(!getPerm('7')) return swal("Warning!", "Permission denied", "info");
+        history.push("/home/supply");
+    }
+
+    const goToIncoming = () => {
+        if(!getPerm('9')) return swal("Warning!", "Permission denied", "info");
+        history.push("/home/inc-orders");
     }
 
     const collectAndEvaluateDashboard = (data) => { 
@@ -630,6 +634,7 @@ const Dashboard = (props) => {
     }
 
     const openSalesDisplay = () => {
+        if(!getPerm('5')) return swal("Warning!", "Permission denied", "info");
         setPrices(true);
     }
 
@@ -645,10 +650,10 @@ const Dashboard = (props) => {
                     <div className='left-dash'>
                         <div style={{width:'auto'}} className='selectItem'>
                             <div style={{marginRight:'10px'}} className='first-select'>
-                                <DateRangePicker onChange={onChangeRange} value={value} />
+                                <DateRangePicker disabled={!getPerm('0')} onChange={onChangeRange} value={value} />
                             </div>
                             <div style={{width: mobile.matches? '230px': "150px"}} className='second-select'>
-                                {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                {getPerm('1') &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -665,7 +670,7 @@ const Dashboard = (props) => {
                                         }
                                     </Select>
                                 }
-                                {user.userType === "staff" &&
+                                {getPerm('1') ||
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -673,7 +678,7 @@ const Dashboard = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{user.userType === "staff" ?oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>
@@ -761,6 +766,7 @@ const Dashboard = (props) => {
                                                 backgroundColor: '#06805B'
                                             }
                                         }}
+                                        onClick={goToSupplyPage}
                                     >
                                         View in details
                                     </Button>
@@ -876,6 +882,7 @@ const Dashboard = (props) => {
                             }} className='bank'>
                                 <span>Station</span>
                                 <Select
+                                    disabled = {!getPerm('10')}
                                     labelId="demo-select-small"
                                     id="demo-select-small"
                                     value={productState}
@@ -997,6 +1004,7 @@ const Dashboard = (props) => {
                                             backgroundColor: '#06805B'
                                         }
                                     }}
+                                    onClick={goToIncoming}
                                 >
                                     View in details
                                 </Button>
