@@ -34,17 +34,15 @@ const data = [
     {
         name: "My Stations",
         permissions: {
-            '0': "Selecting a single station",
-            '1': "Selecting a all stations",
-            '2': "Creating stations",
-            '3': "Viewing tanks",
-            '4': "Creating tanks",
-            '5': "Creating pumps",
-            '6': "Viewing pumps",
-            '7': "Editing tanks",
-            '8': "Deleting tanks",
-            '9': "Editing pumps",
-            '10': "Deleting pumps",
+            '0': "Creating stations",
+            '1': "Viewing tanks",
+            '2': "Creating tanks",
+            '3': "Creating pumps",
+            '4': "Viewing pumps",
+            '5': "Editing tanks",
+            '6': "Deleting tanks",
+            '7': "Editing pumps",
+            '8': "Deleting pumps",
         }
     },
 

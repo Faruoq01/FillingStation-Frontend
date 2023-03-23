@@ -23,6 +23,7 @@ import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulat
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
 import { isSafari } from 'react-device-detect';
+import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -71,6 +72,14 @@ const DailySales = (props) => {
             return {id: user.organisationID}
         }
     }
+
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
 
     const getMasterRows = ({sales, lpo, rtVolumes}) => {
 
@@ -346,48 +355,33 @@ const DailySales = (props) => {
             organisation: resolveUserID().id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('0')){
+                if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
-                return data.station[0];
-            }).then(async(data)=>{
-                getAndAnalyzeDailySales(null, true, "");
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then(async(data)=>{
+            getAndAnalyzeDailySales(null, true, "");
 
-                const payload = {
-                    organisationID: resolveUserID().id,
-                    outletID: oneStationData === null? "None": oneStationData?._id,
-                }
+            const payload = {
+                organisationID: resolveUserID().id,
+                outletID: data,
+            }
 
-                DailySalesService.getAllMonthlyReports(payload).then(data => { 
-                    const payments = data.expense.payment.concat(data.expense.posPayment);
-                    const expense = data.expense.expense;
-        
-                    dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
-                });
+            DailySalesService.getAllMonthlyReports(payload).then(data => { 
+                const payments = data.expense.payment.concat(data.expense.posPayment);
+                const expense = data.expense.expense;
+    
+                dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
             });
-        }else{
-
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then(async(data)=>{
-                getAndAnalyzeDailySales(null, true, "");
-
-                const payload = {
-                    organisationID: resolveUserID().id,
-                    outletID: oneStationData === null? "None": oneStationData?._id,
-                }
-
-                DailySalesService.getAllMonthlyReports(payload).then(data => { 
-                    const payments = data.expense.payment.concat(data.expense.posPayment);
-                    const expense = data.expense.expense;
-        
-                    dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
-                });
-                
-            });
-        }
+        });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -459,6 +453,7 @@ const DailySales = (props) => {
     }, [getProductTanks]);
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setDefault(index);
         dispatch(adminOutlet(item));
         setLoads(true);
@@ -483,6 +478,8 @@ const DailySales = (props) => {
     }
 
     const openDailySales = (data) => {
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
+
         if(data === "pms"){
             props.history.push('/home/daily-sales/pms');
         }else if(data === "ago"){
@@ -495,11 +492,13 @@ const DailySales = (props) => {
     }
 
     const goToTanks = (product) => {
+        if(!getPerm('3')) return swal("Warning!", "Permission denied", "info");
         dispatch(tankListType(product));
         history.push('/home/outlets/list');
     }
 
     const updateDate = (e) => {
+        if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
         setCurrentDate(format);
@@ -535,6 +534,21 @@ const DailySales = (props) => {
         return approxNumber;
     }
 
+    const goToSupply = () => {
+        if(!getPerm('5')) return swal("Warning!", "Permission denied", "info");
+        history.push("/home/supply")
+    }
+
+    const goToLPO = () => {
+        if(!getPerm('7')) return swal("Warning!", "Permission denied", "info");
+        history.push("/home/record-sales/lpo");
+    }
+
+    const goToInc = () => {
+        if(!getPerm('8')) return swal("Warning!", "Permission denied", "info");
+        history.push("/home/inc-orders");
+    }
+
     return(
         <>
             { props.activeRoute.split('/').length === 3 &&
@@ -542,7 +556,7 @@ const DailySales = (props) => {
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
                             <div>
-                                {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                {getPerm('0') &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -559,7 +573,7 @@ const DailySales = (props) => {
                                         }
                                     </Select>
                                 }
-                                {user.userType === "staff" &&
+                                {getPerm('0') ||
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -757,7 +771,7 @@ const DailySales = (props) => {
                                             backgroundColor: '#06805B'
                                         }
                                     }}
-                                    onClick={()=>{history.push("/home/supply")}}
+                                    onClick={goToSupply}
                                 >
                                     View in details
                                 </Button>
@@ -885,7 +899,7 @@ const DailySales = (props) => {
                                             backgroundColor: '#06805B'
                                         }
                                     }}
-                                    onClick={()=>{history.push("/home/record-sales/lpo")}}
+                                    onClick={goToLPO}
                                 >
                                     View in details
                                 </Button>
@@ -927,7 +941,7 @@ const DailySales = (props) => {
                                             backgroundColor: '#06805B'
                                         }
                                     }}
-                                    onClick={()=>{history.push("/home/inc-orders")}}
+                                    onClick={goToInc}
                                 >
                                     View in details
                                 </Button>

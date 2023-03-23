@@ -32,6 +32,14 @@ const Pump = (props) => {
     const [openEditPump, setOpenEditPump] = useState(false);
     const [currentPump, setCurrentPump] = useState({});
     const [loading, setLoading] = useState(false);
+    const user = useSelector(state => state.authReducer.user);
+
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.myStation[e];
+    }
 
     const getAllStationPumps = useCallback(() => {
         setLoading(true);
@@ -93,6 +101,7 @@ const Pump = (props) => {
     }
 
     const deletePump = (data) => {
+        if(!getPerm('8')) return swal("Warning!", "Permission denied", "info");
         swal({
             title: "Alert!",
             text: `Are you sure you want to delete ${data.tankName}?`,
@@ -114,6 +123,7 @@ const Pump = (props) => {
     }
 
     const createPump = () => {
+        if(!getPerm('3')) return swal("Warning!", "Permission denied", "info");
         if(tankList.length === 0){
             swal("Alert!", "No thank has been created yet", "info");
         }else{
@@ -122,6 +132,7 @@ const Pump = (props) => {
     }
 
     const editPumpModal = (data) => {
+        if(!getPerm('7')) return swal("Warning!", "Permission denied", "info");
         setCurrentPump(data);
         setOpenEditPump(true);
     }

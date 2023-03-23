@@ -36,8 +36,6 @@ const data = {
         '6': true,
         '7': true,
         '8': true,
-        '9': true,
-        '10': true,
     },
 
     recordSales: {

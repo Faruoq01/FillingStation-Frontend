@@ -45,12 +45,16 @@ const Outlets = (props) => {
     const [switchTabs, setSwitchTabs] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleOpenModal = (value) => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            dispatch(openModal(value))
-        }else{
-            swal("Warning!", "You do not have a permission", "info");
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
         }
+        return user.permission?.myStation[e];
+    }
+
+    const handleOpenModal = (value) => {
+        if(!getPerm('0')) return swal("Warning!", "Permission denied", "info");
+        dispatch(openModal(value))
     }
 
     const goToSales = (item) => {
@@ -59,11 +63,13 @@ const Outlets = (props) => {
     }
 
     const goToTanks = (item) => {
+        if(!getPerm('1')) return swal("Warning!", "Permission denied", "info");
         dispatch(adminOutlet(item));
         props.history.push('/home/outlets/tanks');
     }
 
     const goToPumps = (item) => {
+        if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
         dispatch(adminOutlet(item));
         props.history.push('/home/outlets/pumps');
     }
@@ -224,7 +230,6 @@ const Outlets = (props) => {
                             </div>
                             <div style={{width:'190px'}} className='butt'>
                                 <Button 
-                                    disabled={user.userType === "staff"}
                                     sx={{
                                         width:'100%', 
                                         height:'30px',  

@@ -32,8 +32,17 @@ const Tank = (props) => {
     const [openEditTank, setOpenEditTank] = useState(false);
     const [currentTank, setCurrentTank] = useState({});
     const [loading, setLoading] = useState(false);
+    const user = useSelector(state => state.authReducer.user);
+
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.myStation[e];
+    }
 
     const handleAddTanks = () => {
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
         dispatch(openModal(2));
     }
 
@@ -123,9 +132,12 @@ const Tank = (props) => {
 
     const handleMenuItem = (e, data) => {
         if(e === "delete"){
+            if(!getPerm('6')) return swal("Warning!", "Permission denied", "info");
             deleteTanks(data);
             setShow("");
+
         }else{
+            if(!getPerm('5')) return swal("Warning!", "Permission denied", "info");
             setCurrentTank(data);
             setOpenEditTank(true);
             setShow("");
@@ -133,6 +145,7 @@ const Tank = (props) => {
     }
 
     const addNewPump = (data) => {
+        if(!getPerm('3')) return swal("Warning!", "Permission denied", "info");
         dispatch(getOneTank(data));
         dispatch(openModal(3));
     }
