@@ -1,9 +1,131 @@
 import "../../styles/comprehensive.scss";
+import pump from '../../assets/comp/pump.png';
+import expenses from '../../assets/comp/expenses.png';
+import lpo from '../../assets/comp/lpo.png';
+import cal from '../../assets/comp/cal.png';
+import tank from '../../assets/comp/tank.png';
+import InitialBalance from "../Comprehensive/BalanceBF";
+import { useState } from "react";
+import ProductBalance from "../Comprehensive/ProductBalance";
+import LPOReport from "../Comprehensive/LPOReport";
+import Expenses from "../Comprehensive/Expenses";
+import BalanceCF from "../Comprehensive/BalanceCF";
+import Dipping from "../Comprehensive/Dipping";
 
 const ComprehensiveReport = () => {
+
+    const [collapsible, setCollapsible] = useState(0);
+
     return(
         <div className="comprehensive_container">
-            
+            <div className="reportings">
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(0)} className="back_icon">
+                                <img style={{width:'16px', height:'16px'}} src={pump} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Initial Balance</div>
+                    </div>
+
+                    <div className="first_mid_layer">
+                        {collapsible === 0 && <InitialBalance />}
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(1)} className="back_icon">
+                                <img style={{width:'16px', height:'16px'}} src={pump} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Product Dispensed</div>
+                    </div>
+
+                    <div className="first_mid_layer">
+                        {collapsible === 1 && <ProductBalance type ={"PMS"} />}
+                        {collapsible === 1 && <ProductBalance type ={"AGO"} />}
+                        {collapsible === 1 && <ProductBalance type ={"DPK"} />}
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(2)} className="back_icon">
+                                <img style={{width:'20px', height:'16px'}} src={lpo} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">LPO</div>
+                    </div>
+
+                    <div className="first_mid_layer">
+                        {collapsible === 2 && <LPOReport />}
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(3)} className="back_icon">
+                                <img style={{width:'20px', height:'15px'}} src={expenses} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Expenses</div>
+                    </div>
+
+                    <div className="first_mid_layer">
+                        {collapsible === 3 && <Expenses />}
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(4)} className="back_icon">
+                                <img style={{width:'13px', height:'17px'}} src={cal} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Payments & Net to bank</div>
+                    </div>
+
+                    <div className="first_mid_layer">
+
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(5)} className="back_icon">
+                                <img style={{width:'16px', height:'16px'}} src={pump} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Product Balance Carried Forward</div>
+                    </div>
+
+                    <div className="first_mid_layer">
+                        {collapsible === 5 && <BalanceCF />}
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(6)} className="back_icon">
+                                <img style={{width:'20px', height:'16px'}} src={tank} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Dipping</div>
+                    </div>
+
+                    <div style={{borderLeft:'none'}} className="first_mid_layer">
+                        {collapsible === 6 && <Dipping />}
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
