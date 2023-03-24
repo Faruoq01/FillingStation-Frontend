@@ -51,16 +51,20 @@ const Employee = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.hr[e];
+    }
+
     const openModal = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            if(oneStationData === null){
-                swal("Warning!", "Please select a station first", "info");
-            }else{
-                setOpen(true);
-            }
-            
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
+
+        if(oneStationData === null){
+            swal("Warning!", "Please select a station first", "info");
         }else{
-            swal("Warning!", "You do not have a permission", "info");
+            setOpen(true);
         }
     }
 
@@ -75,53 +79,37 @@ const Employee = () => {
             organisation: resolveUserID().id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('0')){
+                if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
-            }).then((data)=>{
-                const payload = {
-                    filter: roles[filter],
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID().id
-                }
-                AdminUserService.filterRecords(payload).then(data => {
-                    setLoading(false);
-                    setTotal(data.staff.count);
-                    setCroles(data.staff.roles);
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then((data)=>{
+            const payload = {
+                filter: roles[filter],
+                skip: skip * limit,
+                limit: limit,
+                outletID: data, 
+                organisationID: resolveUserID().id
+            }
+            AdminUserService.filterRecords(payload).then(data => {
+                setLoading(false);
+                setTotal(data.staff.count);
+                setCroles(data.staff.roles);
 
-                    const cloneRoles = ['All Users', 'Admin', 'Accountant', 'Manager', 'Staff'];
-                    const extensions = [...new Set(data.staff.roles.map(data => data.role))];
-                    setRoles(cloneRoles.concat(extensions));
-                    dispatch(storeStaffUsers(data.staff.staff));
-                });
+                const cloneRoles = ['All Users', 'Admin', 'Accountant', 'Manager', 'Staff'];
+                const extensions = [...new Set(data.staff.roles.map(data => data.role))];
+                setRoles(cloneRoles.concat(extensions));
+                dispatch(storeStaffUsers(data.staff.staff));
             });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then((data)=>{
-                const payload = {
-                    filter: roles[filter],
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID().id
-                }
-                AdminUserService.filterRecords(payload).then(data => {
-                    setLoading(false);
-                    setTotal(data.staff.count);
-                    setCroles(data.staff.roles);
-
-                    const cloneRoles = ['All Users', 'Admin', 'Accountant', 'Manager', 'Staff'];
-                    const extensions = [...new Set(data.staff.roles.map(data => data.role))];
-                    setRoles(cloneRoles.concat(extensions));
-                    dispatch(storeStaffUsers(data.staff.staff));
-                });
-            });
-        }
+        });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -153,6 +141,7 @@ const Employee = () => {
     }
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
@@ -173,6 +162,7 @@ const Employee = () => {
     }
 
     const printReport = () => {
+        if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
         setPrints(true);
     }
 
@@ -201,6 +191,7 @@ const Employee = () => {
     }
 
     const filterMenu = (data, index) => {
+        if(!getPerm('3')) return swal("Warning!", "Permission denied", "info");
         setFilter(index);
 
         const payload = {
@@ -241,7 +232,7 @@ const Employee = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {(user.userType === "superAdmin" || user.userType === "admin") &&
+                            {getPerm('0') &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -258,7 +249,7 @@ const Employee = () => {
                                     }
                                 </Select>
                             }
-                            {user.userType === "staff" &&
+                            {getPerm('0')||
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -266,7 +257,7 @@ const Employee = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

@@ -678,7 +678,7 @@ const Dashboard = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{user.userType === "staff" ?oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{!getPerm('1')?oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>

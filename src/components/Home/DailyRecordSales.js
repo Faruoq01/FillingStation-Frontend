@@ -37,6 +37,7 @@ import { useRef } from 'react';
 import SummaryRecord from '../Modals/SummaryRecord';
 import { changeDate, changeStation } from '../../store/actions/records';
 import { isSafari } from 'react-device-detect';
+import swal from 'sweetalert';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -213,81 +214,59 @@ const DailyRecordSales = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.recordSales[e];
+    }
+
     const getAllInitialRecords = React.useCallback((list) => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
+        const payload = {
+            organisation: resolveUserID().id
+        }
+
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('0')){
+                if(!getPerm('1')) setDefault(1);
+                dispatch(adminOutlet(null));
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then((data)=>{
             const payload = {
-                organisation: resolveUserID().id
+                outletID: data, 
+                organisationID: resolveUserID().id
+            }
+
+            const payload2 = {
+                outletID: data,
+                organisationID: resolveUserID().id,
             }
     
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
-                dispatch(adminOutlet(null));
-                return data.station[0];
-            }).then((data)=>{
-                const payload = {
-                    outletID: "None", 
-                    organisationID: resolveUserID().id
-                }
-
-                const payload2 = {
-                    outletID: oneStationData?._id,
-                    organisationID: resolveUserID().id,
-                }
-        
-                IncomingService.getAllIncoming3(payload).then((data) => {
-                    dispatch(createIncomingOrder(data.incoming.incoming));
-                });
-
-                dispatch(getAllPumps([]));
-
-                OutletService.getAllOutletTanks(payload2).then(data => {
-                    const outletTanks = data.stations.map(data => {
-                        const newData = {...data, label: data.tankName, value: data._id};
-                        return newData;
-                    });
-                    dispatch(getAllOutletTanks(outletTanks));
-                });
-
-                LPOService.getAllLPO(payload).then((data) => {
-                    dispatch(createLPO(data.lpo.lpo));
-                });
+            IncomingService.getAllIncoming3(payload).then((data) => {
+                dispatch(createIncomingOrder(data.incoming.incoming));
             });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then((data)=>{
-                const payload = {
-                    outletID: data?._id, 
-                    organisationID: data?.organisation
-                }
 
-                const payload2 = {
-                    outletID: oneStationData?._id,
-                    organisationID: resolveUserID().id,
-                }
-        
-                IncomingService.getAllIncoming3(payload).then((data) => {
-                    dispatch(createIncomingOrder(data.incoming.incoming));
-                });
+            dispatch(getAllPumps([]));
 
-                OutletService.getAllStationPumps(payload).then(data => {
-                    dispatch(getAllPumps(data));
+            OutletService.getAllOutletTanks(payload2).then(data => {
+                const outletTanks = data.stations.map(data => {
+                    const newData = {...data, label: data.tankName, value: data._id};
+                    return newData;
                 });
-
-                OutletService.getAllOutletTanks(payload2).then(data => {
-                    const outletTanks = data.stations.map(data => {
-                        const newData = {...data, label: data.tankName, value: data._id};
-                        return newData;
-                    });
-                    dispatch(getAllOutletTanks(outletTanks));
-                });
-
-                LPOService.getAllLPO(payload).then((data) => {
-                    dispatch(createLPO(data.lpo.lpo));
-                });
+                dispatch(getAllOutletTanks(outletTanks));
             });
-        }
+
+            LPOService.getAllLPO(payload).then((data) => {
+                dispatch(createLPO(data.lpo.lpo));
+            });
+        });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, user.outletID, user.userType]);
 
@@ -308,6 +287,11 @@ const DailyRecordSales = () => {
         let newList = {...linkedData}
 
         if(newList.head.next !== null){
+            if(!getPerm('3') && (newList.page === 1)) return swal("Warning!", "Permission denied", "info");
+            if(!getPerm('4') && (newList.page === 2)) return swal("Warning!", "Permission denied", "info");
+            if(!getPerm('5') && (newList.page === 3)) return swal("Warning!", "Permission denied", "info");
+            if(!getPerm('6') && (newList.page === 4)) return swal("Warning!", "Permission denied", "info");
+            if(!getPerm('7') && (newList.page === 5)) return swal("Warning!", "Permission denied", "info");
             const clonePage = [...pages];
             clonePage[newList.page] = newList.page;
             setPages(clonePage);
@@ -334,10 +318,14 @@ const DailyRecordSales = () => {
     }
 
     const finishAndSubmit = () => {
+        let newList = {...linkedData}
+
+        if(!getPerm('8') && (newList.page === 6)) return swal("Warning!", "Permission denied", "info");
         setOpenSummary(true);
     }
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setDefault(index);
         dispatch(changeStation());
 
@@ -370,6 +358,7 @@ const DailyRecordSales = () => {
     }
 
     const updateDate = (e) => {
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
         setCurrentDate(format);
@@ -400,7 +389,7 @@ const DailyRecordSales = () => {
             </Backdrop>
             <div style={{width:'90%', marginTop:'20px', display:'flex', justifyContent:'space-between'}}>
                 <div>
-                    {(user.userType === "superAdmin" || user.userType === "admin") &&
+                    {getPerm('0') &&
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
@@ -417,7 +406,7 @@ const DailyRecordSales = () => {
                             }
                         </Select>
                     }
-                    {user.userType === "staff" &&
+                    {getPerm('0') ||
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
@@ -425,7 +414,7 @@ const DailyRecordSales = () => {
                             sx={selectStyle2}
                             disabled
                         >
-                            <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                            <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                         </Select>
                     }
                 </div>

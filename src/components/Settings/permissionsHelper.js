@@ -4,7 +4,7 @@ const data = [
         permissions: {
             '0': "Selecting a date range.",
             '1': "selecting a single station",
-            '2': "selecting a all stations",
+            '2': "selecting all stations",
             '3': "viewing organisational staffs on a single station",
             '4': "viewing organisational staffs on all stations",
             '5': "viewing total sales",
@@ -20,7 +20,7 @@ const data = [
         name: "Daily Sales",
         permissions: {
             '0': "selecting a single station",
-            '1': "selecting a all stations",
+            '1': "selecting all stations",
             '2': "viewing comprehensive reports",
             '3': "changing daily sales date",
             '4': "viewing task list",
@@ -50,7 +50,7 @@ const data = [
         name: "Record Sales",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Selecting date",
             '3': "Saving pump update",
             '4': "Saving return to tank",
@@ -65,7 +65,7 @@ const data = [
         name: "Analysis",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Changing cost price",
             '3': "Changing selling price",
             '4': "Viewing expenses",
@@ -78,7 +78,7 @@ const data = [
         name: "Corporate Sales",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Creating new LPO",
             '3': "Viewing lpo list",
             '4': "Editing LPO rates",
@@ -90,7 +90,7 @@ const data = [
         name: "Product Orders",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Creating new product order",
             '3': "Print product order record",
         }
@@ -100,7 +100,7 @@ const data = [
         name: "Incoming Orders",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Creating new incoming order",
             '3': "Print incoming order record",
         }
@@ -110,7 +110,7 @@ const data = [
         name: "Supply",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Creating new supply",
             '3': "Print supply record",
         }
@@ -120,7 +120,7 @@ const data = [
         name: "Regulatory payment",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Registering a payment",
             '3': "Print payment record",
         }
@@ -130,7 +130,7 @@ const data = [
         name: "Tank Update",
         permissions: {
             '0': "Selecting a single station",
-            '1': "Selecting a all stations",
+            '1': "Selecting all stations",
             '2': "Print tank update record",
         }
     },
@@ -139,20 +139,20 @@ const data = [
         name: "Human Resources",
         permissions: {
             '0': "Selecting a single station for employess",
-            '1': "Selecting a all stations for employees",
+            '1': "Selecting all stations for employees",
             '3': "Create new employees",
             '4': "view all employees based on user types",
             '5': "Print employee list",
             '6': "Selecting a single station for salary",
-            '7': "Selecting a all stations for salary",
+            '7': "Selecting all stations for salary",
             '8': "Create new salary",
             '9': "print report on salary",
             '10': "Selecting a single station for query",
-            '11': "Selecting a all stations for query",
+            '11': "Selecting all stations for query",
             '12': "Create new query",
             '13': "print report on query",
             '14': "Selecting a single station for attendance",
-            '15': "Selecting a all stations for attendance",
+            '15': "Selecting all stations for attendance",
             '16': "Post new attendance",
             '17': "print report on attendance",
         }
@@ -161,13 +161,15 @@ const data = [
     {
         name: "Settings",
         permissions: {
-            '0': "Update my station",
-            '1': "Change permission enabled for a user",
-            '3': "Change appearance",
-            '4': "Change logo",
-            '5': "Change password",
-            '6': "Change email",
-            '7': "Delete my station",
+            '0': "Selecting a single station",
+            '1': "Selecting all stations",
+            '2': "Update my station",
+            '3': "Change permission enabled for a user",
+            '4': "Change appearance",
+            '5': "Change logo",
+            '6': "Change password",
+            '7': "Change email",
+            '8': "Delete my station",
         }
     }
 ]

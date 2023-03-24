@@ -320,7 +320,6 @@ const Settings = (props) => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const logouts = () => {
         swal({
@@ -338,35 +337,52 @@ const Settings = (props) => {
         });
     }
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.settings[e];
+    }
+
     const getStationData = useCallback(() => {
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                dispatch(adminOutlet(data.station[0]));
-                return data.station[0];
-            });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                return data.station;
-            });
-        }
-    }, [user._id, user.userType, user.outletID, dispatch]);
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            dispatch(adminOutlet(null));
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user._id, user.outletID, dispatch]);
 
     useEffect(()=>{
         getStationData();
     },[getStationData]);
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setDefault(index);
         dispatch(adminOutlet(item));
+    }
+
+    const navigateAround  = (data) => {
+        if(nav === 0 && !getPerm('2')) return swal("Warning!", "Permission denied", "info");
+        if(nav === 1 && !getPerm('3')) return swal("Warning!", "Permission denied", "info");
+        if(nav === 2 && !getPerm('4')) return swal("Warning!", "Permission denied", "info");
+        if(nav === 3 && !getPerm('5')) return swal("Warning!", "Permission denied", "info");
+        if(nav === 4 && !getPerm('6')) return swal("Warning!", "Permission denied", "info");
+        if(nav === 5 && !getPerm('7')) return swal("Warning!", "Permission denied", "info");
+        if(nav === 6 && !getPerm('8')) return swal("Warning!", "Permission denied", "info");
+        setNav(data);
     }
     
     return(
@@ -387,44 +403,44 @@ const Settings = (props) => {
                     }}
                 >
                     <MenuItem value={1}>Action</MenuItem>
-                    <MenuItem onClick={()=>{setNav(0)}} value={0}>Outlet Information</MenuItem>
-                    <MenuItem onClick={()=>{setNav(1)}} value={1}>Permission</MenuItem>
-                    <MenuItem onClick={()=>{setNav(2)}} value={2}>Appearances</MenuItem>
-                    <MenuItem onClick={()=>{setNav(3)}} value={3}>Logo (Branding)</MenuItem>
-                    <MenuItem onClick={()=>{setNav(4)}} value={4}>Change Password</MenuItem>
-                    <MenuItem onClick={()=>{setNav(5)}} value={5}>Change Email</MenuItem>
-                    <MenuItem onClick={()=>{setNav(6)}} value={6}>Delete Outlet</MenuItem>
+                    <MenuItem onClick={()=>{navigateAround(0)}} value={0}>Outlet Information</MenuItem>
+                    <MenuItem onClick={()=>{navigateAround(1)}} value={1}>Permission</MenuItem>
+                    <MenuItem onClick={()=>{navigateAround(2)}} value={2}>Appearances</MenuItem>
+                    <MenuItem onClick={()=>{navigateAround(3)}} value={3}>Logo (Branding)</MenuItem>
+                    <MenuItem onClick={()=>{navigateAround(4)}} value={4}>Change Password</MenuItem>
+                    <MenuItem onClick={()=>{navigateAround(5)}} value={5}>Change Email</MenuItem>
+                    <MenuItem onClick={()=>{navigateAround(6)}} value={6}>Delete Outlet</MenuItem>
                     <MenuItem onClick={logouts} value={7}>Logout</MenuItem>
                 </Select>
             </div>
             <div className='inner-container'>
                 <div className='leftSettings'>
                     <div className='linspace'>
-                        <div onClick={()=>{setNav(0)}} className='accord'>
+                        <div onClick={()=>{navigateAround(0)}} className='accord'>
                             <div style={nav === 0? active: inActive}>Outlet Information</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
-                        <div onClick={()=>{setNav(1)}} className='accord'>
+                        <div onClick={()=>{navigateAround(1)}} className='accord'>
                             <div style={nav === 1? active: inActive}>Permission</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
-                        <div onClick={()=>{setNav(2)}} className='accord'>
+                        <div onClick={()=>{navigateAround(2)}} className='accord'>
                             <div style={nav === 2? active: inActive} className='text'>Appearances</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
-                        <div onClick={()=>{setNav(3)}} className='accord'>
+                        <div onClick={()=>{navigateAround(3)}} className='accord'>
                             <div style={nav === 3? active: inActive} className='text'>Logo ( Branding )</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
-                        <div onClick={()=>{setNav(4)}} className='accord'>
+                        <div onClick={()=>{navigateAround(4)}} className='accord'>
                             <div style={nav === 4? active: inActive} className='text'>Change Password</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
-                        <div onClick={()=>{setNav(5)}} className='accord'>
+                        <div onClick={()=>{navigateAround(5)}} className='accord'>
                             <div style={nav === 5? active: inActive} className='text'>Change Email</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
-                        <div onClick={()=>{setNav(6)}} className='accord'>
+                        <div onClick={()=>{navigateAround(6)}} className='accord'>
                             <div style={nav === 6? active: inActive} className='text'>Delete Outlets</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
@@ -439,7 +455,7 @@ const Settings = (props) => {
                         {(nav === 1 || nav === 7) ||
                             <div style={contain}>
                                 <div className='second-select'>
-                                    {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                    {
                                         <Select
                                             labelId="demo-select-small"
                                             id="demo-select-small"
@@ -454,17 +470,6 @@ const Settings = (props) => {
                                                     )
                                                 })  
                                             }
-                                        </Select>
-                                    }
-                                    {user.userType === "staff" &&
-                                        <Select
-                                            labelId="demo-select-small"
-                                            id="demo-select-small"
-                                            value={0}
-                                            sx={selectStyle2}
-                                            disabled
-                                        >
-                                            <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                         </Select>
                                     }
                                 </div>

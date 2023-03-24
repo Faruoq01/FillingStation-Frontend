@@ -47,7 +47,16 @@ const Supply = (props) => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.supply[e];
+    }
+
     const openPaymentModal = () => {
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
+        
         if(oneStationData === null){
             return swal("Warning!", "Please select a station to proceed", "info");
         }
@@ -60,59 +69,41 @@ const Supply = (props) => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            setLoading(true);
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
+        setLoading(true);
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('0')){
+                if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
-            }).then(()=>{
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: 'None', 
-                    organisationID: resolveUserID().id,
-                }
-    
-                SupplyService.getAllSupply(payload).then((data) => {
-                    setLoading(false);
-                    setTotal(data.count);
-                    dispatch(createSupply(data.supply));
-                });
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data, 
+                organisationID: resolveUserID().id,
+            }
 
-                const payload2 = {
-                    organisationID: resolveUserID().id,
-                    outletID: "None"
-                }
-                OutletService.getAllOutletTanks(payload2).then(data => {
-                    dispatch(getAllOutletTanks(data.stations));
-                });
+            SupplyService.getAllSupply(payload).then((data) => {
+                setLoading(false);
+                setTotal(data.count);
+                dispatch(createSupply(data.supply));
             });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-            }).then((data)=>{
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID().id,
-                }
-    
-                SupplyService.getAllSupply(payload).then((data) => {
-                    setLoading(false);
-                    setTotal(data.count);
-                    dispatch(createSupply(data.supply));
-                });
 
-                const payload2 = {
-                    organisationID: resolveUserID().id,
-                    outletID: "None"
-                }
-                OutletService.getAllOutletTanks(payload2).then(data => {
-                    dispatch(getAllOutletTanks(data.stations));
-                });
+            const payload2 = {
+                organisationID: resolveUserID().id,
+                outletID: data
+            }
+            OutletService.getAllOutletTanks(payload2).then(data => {
+                dispatch(getAllOutletTanks(data.stations));
             });
-        }
+        });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -153,6 +144,7 @@ const Supply = (props) => {
     }
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
@@ -191,6 +183,7 @@ const Supply = (props) => {
     }
 
     const printReport = () => {
+        if(!getPerm('3')) return swal("Warning!", "Permission denied", "info");
         setPrints(true);
     }
 
@@ -240,7 +233,7 @@ const Supply = (props) => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {(user.userType === "superAdmin" || user.userType === "admin") &&
+                            {getPerm('0') &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -257,7 +250,7 @@ const Supply = (props) => {
                                     }
                                 </Select>
                             }
-                            {user.userType === "staff" &&
+                            {getPerm('0') ||
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -265,7 +258,7 @@ const Supply = (props) => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

@@ -41,18 +41,22 @@ const IncomingOrder = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.incomingOrder[e];
+    }
+
     const [open, setOpen] = useState(false);
 
     const openCreateModal = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            if(oneStationData === null){
-                swal("Warning!", "Please select a station first", "info");
-            }else{
-                setOpen(true);
-            }
-            
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
+
+        if(oneStationData === null){
+            swal("Warning!", "Please select a station first", "info");
         }else{
-            swal("Warning!", "You do not have a permission", "info");
+            setOpen(true);
         }
     }
 
@@ -62,42 +66,32 @@ const IncomingOrder = () => {
             organisation: resolveUserID().id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('0')){
+                if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
-            }).then((data)=>{
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID().id
-                }
-    
-                IncomingService.getAllIncoming(payload).then((data) => {
-                    setLoading(false);
-                    setTotal(data.incoming.count);
-                    dispatch(createIncomingOrder(data.incoming.incoming));
-                });
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data, 
+                organisationID: resolveUserID().id
+            }
+
+            IncomingService.getAllIncoming(payload).then((data) => {
+                setLoading(false);
+                setTotal(data.incoming.count);
+                dispatch(createIncomingOrder(data.incoming.incoming));
             });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-            }).then((data)=>{
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID().id
-                }
-    
-                IncomingService.getAllIncoming(payload).then((data) => {
-                    setLoading(false);
-                    setTotal(data.incoming.count);
-                    dispatch(createIncomingOrder(data.incoming.incoming));
-                });
-            });
-        }
+        });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -124,6 +118,7 @@ const IncomingOrder = () => {
     }
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setLoading(true);
         setDefault(index);
         dispatch(adminOutlet(item));
@@ -148,6 +143,7 @@ const IncomingOrder = () => {
     }
 
     const printReport = () => {
+        if(!getPerm('3')) return swal("Warning!", "Permission denied", "info");
         setPrints(true);
     }
 
@@ -195,7 +191,7 @@ const IncomingOrder = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {(user.userType === "superAdmin" || user.userType === "admin") &&
+                            {getPerm('0') &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -212,7 +208,7 @@ const IncomingOrder = () => {
                                     }
                                 </Select>
                             }
-                            {user.userType === "staff" &&
+                            {getPerm('0') ||
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -220,7 +216,7 @@ const IncomingOrder = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

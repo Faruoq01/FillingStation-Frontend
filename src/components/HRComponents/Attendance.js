@@ -46,16 +46,20 @@ const Attendance = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.hr[e];
+    }
+
     const openModal = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            if(oneStationData === null){
-                swal("Warning!", "Please select a station first", "info");
-            }else{
-                setOpen(true);
-            }
-            
+        if(!getPerm('15')) return swal("Warning!", "Permission denied", "info");
+
+        if(oneStationData === null){
+            swal("Warning!", "Please select a station first", "info");
         }else{
-            swal("Warning!", "You do not have a permission", "info");
+            setOpen(true);
         }
     }
 
@@ -78,54 +82,37 @@ const Attendance = () => {
             organisation: resolveUserID().id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('13')){
+                if(!getPerm('14')) setDefault(1);
                 dispatch(adminOutlet(null));
-            }).then((data)=>{
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    today: getDataRange.today,
-                    tomorrow: getDataRange.tomorrow,
-                    outletID: "None",
-                    organisationID: resolveUserID().id,
-                }
-                AdminUserService.allStaffUserRecords(payload).then(data => {
-                    setLoading(false);
-                    dispatch(storeStaffUsers(data.staff.staff));
-                }).then(()=>{
-                    AtendanceService.allAttendanceRecords(payload).then(data => {
-                        setTotal(data.attendance.count)
-                        dispatch(createAttendance(data.attendance.attendance));
-                    });
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                today: getDataRange.today,
+                tomorrow: getDataRange.tomorrow,
+                outletID: data,
+                organisationID: resolveUserID().id,
+            }
+            AdminUserService.allStaffUserRecords(payload).then(data => {
+                setLoading(false);
+                dispatch(storeStaffUsers(data.staff.staff));
+            }).then(()=>{
+                AtendanceService.allAttendanceRecords(payload).then(data => {
+                    setTotal(data.attendance.count)
+                    dispatch(createAttendance(data.attendance.attendance));
                 });
-            })
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then((data)=>{
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    today: getDataRange.today,
-                    tomorrow: getDataRange.tomorrow,
-                    outletID: "None",
-                    organisationID: resolveUserID().id,
-                }
-                AdminUserService.allStaffUserRecords(payload).then(data => {
-                    setLoading(false);
-                    dispatch(storeStaffUsers(data.staff.staff));
-                }).then(()=>{
-                    AtendanceService.allAttendanceRecords(payload).then(data => {
-                        setTotal(data.attendance.count)
-                        dispatch(createAttendance(data.attendance.attendance));
-                    });
-                });
-            })
-        }
+            });
+        })
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -166,6 +153,8 @@ const Attendance = () => {
     }
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('14') && item === null) return swal("Warning!", "Permission denied", "info");
+
         setLoading(true);
         setDefault(index);
         const range  =  getTodayAndTomorrow();
@@ -255,6 +244,7 @@ const Attendance = () => {
     }
 
     const printReport = () => {
+        if(!getPerm('16')) return swal("Warning!", "Permission denied", "info");
         setPrints(true);
     }
 
@@ -283,7 +273,7 @@ const Attendance = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {(user.userType === "superAdmin" || user.userType === "admin") &&
+                            {getPerm('13') &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -300,7 +290,7 @@ const Attendance = () => {
                                     }
                                 </Select>
                             }
-                            {user.userType === "staff" &&
+                            {getPerm('13') ||
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -308,7 +298,7 @@ const Attendance = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{!getPerm('13')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

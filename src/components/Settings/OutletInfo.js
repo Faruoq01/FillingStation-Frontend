@@ -7,6 +7,7 @@ import OutletService from "../../services/outletService";
 
 const OutletInfo = (props) => {
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
+    const user = useSelector(state => state.authReducer.user);
     const [id, setID] = useState('');
     const [outletName, setOutletName] = useState('');
     const [noOfPump, setNoOfPump] = useState('');
@@ -37,7 +38,15 @@ const OutletInfo = (props) => {
         oneStation?._id
     ]);
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.settings[e];
+    }
+
     const updateOutlet = () => {
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
         if(outletName === "") return swal("Warning!", "Outlet name field cannot be empty", "info");
         if(noOfPump === "") return swal("Warning!", "No of pump name field cannot be empty", "info");
         if(noOfTank === "") return swal("Warning!", "No of tank name field cannot be empty", "info");

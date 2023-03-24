@@ -19,6 +19,7 @@ import Expenses from './Expenses';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import AnalysisService from '../../services/analysis';
 import { setAnalysisData } from '../../store/actions/analysis';
+import swal from 'sweetalert';
 
 const Analysis = (props) => {
 
@@ -27,6 +28,7 @@ const Analysis = (props) => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const analysisData = useSelector(state => state.analysisReducer.analysisData);
+    const moment = require('moment-timezone');
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -44,42 +46,41 @@ const Analysis = (props) => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.analysis[e];
+    }
+
     const getAllOutletData = useCallback(() => {
         const payload = {
             organisation: resolveUserID().id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if(getPerm('0')){
+                if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
-            }).then(data => {
-                const payload = {
-                    organisationID: resolveUserID().id,
-                    outletID: "None",
-                    onLoad: true,
-                }
+                return "None";
+            }else{
+                const allStations = data.station;
+                const findID = allStations.findIndex(data => data._id === user.outletID);
+                dispatch(adminOutlet(allStations[findID]));
+                return user.outletID;
+            }
+        }).then(data => {
+            const payload = {
+                organisationID: resolveUserID().id,
+                outletID: data,
+                onLoad: true,
+            }
 
-                AnalysisService.allRecords(payload).then(data => {
-                    dispatch(setAnalysisData(data.analysisData));
-                });
+            AnalysisService.allRecords(payload).then(data => {
+                dispatch(setAnalysisData(data.analysisData));
             });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-            }).then(data => {
-                const payload = {
-                    organisationID: resolveUserID().id,
-                    outletID:"None",
-                    onLoad: true,
-                }
-
-                AnalysisService.allRecords(payload).then(data => {
-                    dispatch(setAnalysisData(data.analysisData));
-                });
-            });
-        }
-
+        });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -88,6 +89,7 @@ const Analysis = (props) => {
     },[getAllOutletData])
 
     const changeMenu = (index, item ) => {
+        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setDefault(index);
         dispatch(adminOutlet(item));
 
@@ -125,40 +127,29 @@ const Analysis = (props) => {
     }
 
     const openCostPrice = (type) => {
+
         if(type === "cost" || type === "selling"){
+            if(!getPerm('2') || !getPerm('3')) return swal("Warning!", "Permission denied", "info");
+
             setOpen(true);
             setType(type);
         }else if(type === "payments"){
+            if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
+
             history.push("/home/analysis/payments");
         }else if(type === "expenses"){
-             history.push("/home/analysis/expenses");
+            if(!getPerm('5')) return swal("Warning!", "Permission denied", "info");
+
+            history.push("/home/analysis/expenses");
         }
     }
 
     const getDateFromRange = (data) => {
-        let rangeOne = new Date(data[0]).toLocaleDateString().split("/");
-        rangeOne = rangeOne.map(data => {
-            let res = "0";
-            if(data.length === 1){
-                res = res.concat(data);
-            }else{
-                res = data;
-            }
-            return res;
-        });
-        const formatOne = rangeOne[2]+"-"+rangeOne[0]+"-"+rangeOne[1];
+        if(!getPerm('6')) return swal("Warning!", "Permission denied", "info");
 
-        let rangeTwo = new Date(data[1]).toLocaleDateString().split("/");
-        rangeTwo = rangeTwo.map(data => {
-            let res = "0";
-            if(data.length === 1){
-                res = res.concat(data);
-            }else{
-                res = data;
-            }
-            return res;
-        });
-        const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
+        const formatOne = moment(new Date(data[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const formatTwo = moment(new Date(data[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+
     
         const payload = {
             organisationID: resolveUserID().id,
@@ -276,7 +267,7 @@ const Analysis = (props) => {
                     <div style={{marginBottom:'0px'}} className='search'>
                         <div className='input-cont'>
                             <div className='second-select'>
-                                {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                {getPerm('0') &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -293,7 +284,7 @@ const Analysis = (props) => {
                                         }
                                     </Select>
                                 }
-                                {user.userType === "staff" &&
+                                {getPerm('0') ||
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -301,7 +292,7 @@ const Analysis = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>
