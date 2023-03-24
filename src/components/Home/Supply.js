@@ -66,7 +66,7 @@ const Supply = (props) => {
     const getAllSupplyData = useCallback(() => {
 
         const payload = {
-            organisation: user._id
+            organisation: resolveUserID().id
         }
 
         setLoading(true);

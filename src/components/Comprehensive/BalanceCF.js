@@ -19,21 +19,25 @@ const BalanceCF = () => {
     }
 
     return(
-        <div className="initial_balance_container">
-            <div className="product_balance_header">
-                <div className="cells">S/N</div>
-                <div className="cells">Product Type</div>
-                <div className="cells">Quantity</div>
-                <div className="cells">Confirmed By</div>
-                <div className="cells">Action</div>
+        <div style={{width:'100%'}}>
+            <div className="initial_balance_container">
+                <div className="product_balance_header">
+                    <div className="cells">S/N</div>
+                    <div className="cells">Product Type</div>
+                    <div className="cells">Quantity</div>
+                    <div className="cells">Confirmed By</div>
+                    <div className="cells">Action</div>
+                </div>
+
+                <ExpensesRow />
+                <ExpensesRow />
+                <ExpensesRow />
+                <ExpensesRow />
+                <ExpensesRow />
+                <ExpensesRow />
             </div>
 
-            <ExpensesRow />
-            <ExpensesRow />
-            <ExpensesRow />
-            <ExpensesRow />
-            <ExpensesRow />
-            <ExpensesRow />
+            <div className="initial_balance_container_mobile"></div>
         </div>
     )
 }

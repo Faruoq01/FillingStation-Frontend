@@ -195,3 +195,120 @@
         }
     }
 }
+
+.initial_balance_container_mobile{
+    display: none;
+}
+
+@media (max-width: 1150px){
+    .comprehensive_container{
+        margin-top: 80px;
+    }
+}
+
+@media (max-width: 907px){
+    .comprehensive_container{
+        width: 100%;
+    }
+
+    .initial_balance_container{
+        display: none;
+    }
+
+    .initial_balance_container_mobile{
+        width: 90%;
+        height: auto;
+        margin-left: 10px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+
+        .mobile_header{
+            width: 100%;
+            height: 35px;
+            background: #525252;
+            margin-right: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            color: #fff;
+            font-size: 12px;
+            font-family: 'Poppins';
+            font-weight: 500;
+        }
+
+        .balance_mobile_detail{
+            width: 100%;
+            height: auto;
+            background: #f7f7f7;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            color: #F4F4F4;
+            font-size: 12px;
+            font-family: 'Poppins';
+            font-weight: 500;
+            margin-top: 5px;
+
+            .col_1{
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                color: #000;
+
+                .mobile_big{
+                    font-size: 14px;
+                    font-weight: 600;
+                    font-family: 'Poppins';
+                    line-height: 30px;
+                }
+
+                .mobile_sm{
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-family: 'Poppins';
+                    line-height: 20px;
+                    color: #07956A;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                }
+            }
+
+            .sups{
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: row;
+                overflow-x: scroll;
+
+                .slide{
+                    width: auto;
+                    height: auto;
+                    display: flex;
+                    flex-direction: row;
+
+                    .supply_card{
+                        width: 250px;
+                        height: auto;
+                        background: #F4F4F4;
+                        margin-right: 15px;
+                        border-radius: 5px;
+                        overflow: hidden;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        padding-bottom: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
