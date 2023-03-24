@@ -2,10 +2,12 @@ import AuthService from '../../services/authService';
 import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA, CONNECTION_ERROR } from '../types';
 
 export const login = (params, history) => dispatch => {
+    
     return AuthService.login(params)
     .then(data => {
+        const auth = data.user.userType === "admin" || data.user.userType === "superAdmin" || data.user.userType === "staff";
         dispatch({ type: LOGIN, payload: data });
-        if(data.user.userType === "admin" || data.user.userType === "superAdmin" || data.user.userType === "staff") history.push('/home');
+        if(auth && data.user.status === "1" ) history.push('/home');
     })
     .catch(err => {
             
