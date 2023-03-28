@@ -7,6 +7,7 @@ export const login = (params, history) => dispatch => {
     .then(data => {
         const auth = data.user.userType === "admin" || data.user.userType === "superAdmin" || data.user.userType === "staff";
         dispatch({ type: LOGIN, payload: data });
+        if(!("status" in data.user) && data.user.userType === "superAdmin" ) history.push('/home');
         if(auth && data.user.status === "1" ) history.push('/home');
     })
     .catch(err => {
