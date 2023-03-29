@@ -1,14 +1,18 @@
 import edit from '../../assets/comp/edit.png';
 import del from '../../assets/comp/delete.png';
+import { useSelector } from 'react-redux';
 
 const BalanceCF = () => {
 
-    const ExpensesRow = () => {
+    const {balances} = useSelector(state => state.dailySalesReducer.bulkReports);
+
+    const BalanceCF = ({data, type, sn}) => {
+
         return(
             <div style={{marginTop:'5px'}} className="product_balance_header">
-                <div style={ins} className="cells">1</div>
-                <div style={ins} className="cells">PMS </div>
-                <div style={ins} className="cells">2000000</div>
+                <div style={ins} className="cells">{sn}</div>
+                <div style={ins} className="cells">{type} </div>
+                <div style={ins} className="cells">{data === null? "0": data.balanceCF}</div>
                 <div style={ins} className="cells">Said</div>
                 <div style={ins} className="cells">
                     <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -29,12 +33,9 @@ const BalanceCF = () => {
                     <div className="cells">Action</div>
                 </div>
 
-                <ExpensesRow />
-                <ExpensesRow />
-                <ExpensesRow />
-                <ExpensesRow />
-                <ExpensesRow />
-                <ExpensesRow />
+                <BalanceCF data={balances.pms} type={'PMS'} sn={'1'} />
+                <BalanceCF data={balances.ago} type={'AGO'} sn={'2'} />
+                <BalanceCF data={balances.dpk} type={'DPK'} sn={'3'} />
             </div>
 
             <div className="initial_balance_container_mobile"></div>

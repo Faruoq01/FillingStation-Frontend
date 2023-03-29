@@ -4,8 +4,16 @@ import { useSelector } from 'react-redux';
 
 const InitialBalance = () => {
 
-    const {balances, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const {balances, supply, sales} = useSelector(state => state.dailySalesReducer.bulkReports);
     // console.log(balances, "hhhhhhhhh")
+
+    const getSales = (type) => {
+        const totalSales = sales.filter(data => data.productType === type).reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        return totalSales;
+    }
 
     const getInit = (props) => {
 
@@ -38,7 +46,7 @@ const InitialBalance = () => {
             <div style={{marginTop:'5px'}} className="header_balance_container">
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": props.data.balanceCF}</div>
+                    <div className="b_child">{props.data === null? "0": Number(props.data.balanceCF) + Number(getSales(props.type))}</div>
                 </div>
                 <div style={ins} className="initial_supply">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
@@ -48,7 +56,7 @@ const InitialBalance = () => {
                 </div>
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": (Number(props.data.balanceCF) + Number(getInit(props).quantity))}</div>
+                    <div className="b_child">{props.data === null? "0": (Number(props.data.balanceCF) + Number(getInit(props).quantity) + Number(getSales(props.type)))}</div>
                 </div>
                 <div style={ins} className="initial_action">
                     <div className="b_child">
