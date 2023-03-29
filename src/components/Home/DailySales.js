@@ -317,7 +317,7 @@ const DailySales = (props) => {
             selectedDate: selectedDate
         }
 
-        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {console.log(data, "kkkkkkk")
 
             const salesDataRecord = {
                 sales: data.dailyRecords.sales,
@@ -478,6 +478,7 @@ const DailySales = (props) => {
     }
 
     const openDailySales = (data) => {
+        if(oneStationData === null) return swal("Warning!", "Please select a station", "info");
         if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
 
         if(data === "pms"){

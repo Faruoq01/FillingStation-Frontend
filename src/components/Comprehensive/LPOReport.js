@@ -1,18 +1,33 @@
 import edit from '../../assets/comp/edit.png';
 import del from '../../assets/comp/delete.png';
+import { useSelector } from 'react-redux';
 
 const LPOReport = () => {
 
-    const LPORows = () => {
+    const {lpo} = useSelector(state => state.dailySalesReducer.bulkReports);
+
+    const rate = (row, type) => {
+        if(type === "PMS") return row.PMSRate;
+        if(type === "AGO") return row.AGORate;
+        if(type === "DPK") return row.DPKRate;
+    }
+
+    const amount = (row, type) => {
+        if(type === "PMS") return row.PMSRate*row.lpoLitre;
+        if(type === "AGO") return row.AGORate*row.lpoLitre;
+        if(type === "DPK") return row.DPKRate*row.lpoLitre;
+    }
+
+    const LPORows = (props) => {
         return(
             <div style={{marginTop:'5px'}} className="product_balance_header">
-                <div style={ins} className="cells">1</div>
-                <div style={{...ins, width:'150%'}} className="cells">Aminu Faruk </div>
-                <div style={ins} className="cells">PMS</div>
-                <div style={ins} className="cells">XXXXX</div>
-                <div style={ins} className="cells">20000</div>
-                <div style={ins} className="cells">185</div>
-                <div style={ins} className="cells">2000000</div>
+                <div style={ins} className="cells">{props.index + 1}</div>
+                <div style={{...ins, width:'150%'}} className="cells">{props.data.accountName}</div>
+                <div style={ins} className="cells">{props.data.productType}</div>
+                <div style={ins} className="cells">{props.data.truckNo}</div>
+                <div style={ins} className="cells">{props.data.lpoLitre}</div>
+                <div style={ins} className="cells">{rate(props.data, props.data.productType)}</div>
+                <div style={ins} className="cells">{amount(props.data, props.data.productType)}</div>
                 <div style={ins} className="cells">
                     <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
                     <img style={{width:'20px', height:'20px'}} src={del} alt="icon" />
@@ -34,12 +49,15 @@ const LPOReport = () => {
                 <div className="cells">Action</div>
             </div>
 
-            <LPORows />
-            <LPORows />
-            <LPORows />
-            <LPORows />
-            <LPORows />
-            <LPORows />
+            {
+                lpo?.length === 0?
+                <div>No records</div>:
+                lpo.map((item, index) => {
+                    return(
+                        <LPORows key={index} data={item} index={index} />
+                    )
+                })
+            }
         </div>
     )
 }
