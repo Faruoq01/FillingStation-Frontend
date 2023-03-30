@@ -1,10 +1,25 @@
 import edit from '../../assets/comp/edit.png';
 import del from '../../assets/comp/delete.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import swal from 'sweetalert';
+import DailySalesService from '../../services/DailySales';
+import { bulkReports } from '../../store/actions/dailySales';
 
 const ReturnToTank = () => { 
 
     const {rtVolumes} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const dispatch = useDispatch();
+    const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
+    const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
 
     const rate = (data) => {
         if(data.productType === "PMS") return data.PMSPrice;
@@ -19,6 +34,39 @@ const ReturnToTank = () => {
     }
 
     const RTRows = ({data}) => {
+
+        const deleteRecord = (data) => {
+            swal({
+                title: "Alert!",
+                text: "Are you sure you want to delete this record?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    DailySalesService.deleteSales({id: data._id, type:'rt'}).then(data => {
+                        getAndAnalyzeDailySales();
+                    }).then(()=>{
+                        swal("Success", "Record deleted successfully", "success");
+                    });
+                }
+            });
+        }
+    
+        const getAndAnalyzeDailySales = () => {
+            const salesPayload = {
+                organisationID: resolveUserID().id,
+                outletID: oneStationData._id,
+                onLoad: false,
+                selectedDate: currentDate
+            }
+    
+            DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+                dispatch(bulkReports(data.dailyRecords));
+            });
+        }
+
         return(
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{data.pumpName}</div>
@@ -29,7 +77,7 @@ const ReturnToTank = () => {
                 <div style={ins} className="cells">{amount(data, data.productType)}</div>
                 <div style={ins} className="cells">
                     <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                    <img style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                    <img onClick={()=>{deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
                 </div>
             </div>
         )

@@ -13,7 +13,8 @@ import {
     AGO_BBF,
     DPK_BBF,
     BAR_DATA,
-    SUMMARY_RECORD_SALES
+    SUMMARY_RECORD_SALES,
+    CURRENT_DATE
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -75,5 +76,10 @@ export const storemonthlyBarData = (params) => dispatch => {
 export const summaryRecordSales = (params) => dispatch => {
     dispatch({type: SUMMARY_RECORD_SALES, payload: params});
 }
+
+export const currentDateValue = (params) => dispatch => {
+    dispatch({type: CURRENT_DATE, payload: params});
+}
+
 
 

@@ -14,7 +14,8 @@ import {
     DPK_BBF,
     LOGOUT,
     BAR_DATA,
-    SUMMARY_RECORD_SALES
+    SUMMARY_RECORD_SALES,
+    CURRENT_DATE
 } from '../types'
 
 const initialState = {
@@ -47,6 +48,7 @@ const initialState = {
     dpkBBF: {},
     barData: {},
     summary: {},
+    currentDate: "",
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -157,6 +159,13 @@ const dailySalesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 summary: payload
+            }
+        }
+
+        case CURRENT_DATE: {
+            return{
+                ...state,
+                currentDate: payload
             }
         }
 

@@ -19,7 +19,7 @@ import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
-import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
+import { bulkReports, currentDateValue, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
 import { isSafari } from 'react-device-detect';
@@ -503,6 +503,7 @@ const DailySales = (props) => {
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
         setCurrentDate(format);
+        dispatch(currentDateValue(e.target.value));
         getAndAnalyzeDailySales(oneStationData, false, e.target.value);
     }
 

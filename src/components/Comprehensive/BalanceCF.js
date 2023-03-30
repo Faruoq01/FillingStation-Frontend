@@ -1,5 +1,3 @@
-import edit from '../../assets/comp/edit.png';
-import del from '../../assets/comp/delete.png';
 import { useSelector } from 'react-redux';
 
 const BalanceCF = () => {
@@ -14,23 +12,18 @@ const BalanceCF = () => {
                 <div style={ins} className="cells">{type} </div>
                 <div style={ins} className="cells">{data === null? "0": data.balanceCF}</div>
                 <div style={ins} className="cells">Said</div>
-                <div style={ins} className="cells">
-                    <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                    <img style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                </div>
             </div>
         )
     }
 
     return(
         <div style={{width:'100%'}}>
-            <div className="initial_balance_container">
+            <div style={{maxWidth: '700px'}} className="initial_balance_container">
                 <div className="product_balance_header">
                     <div className="cells">S/N</div>
                     <div className="cells">Product Type</div>
                     <div className="cells">Quantity</div>
                     <div className="cells">Confirmed By</div>
-                    <div className="cells">Action</div>
                 </div>
 
                 <BalanceCF data={balances?.pms} type={'PMS'} sn={'1'} />

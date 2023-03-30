@@ -1,5 +1,3 @@
-import edit from '../../assets/comp/edit.png';
-import del from '../../assets/comp/delete.png';
 import { useSelector } from 'react-redux';
 
 const InitialBalance = () => {
@@ -58,12 +56,6 @@ const InitialBalance = () => {
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
                     <div className="b_child">{props.data === null? "0": (Number(props.data.balanceCF) + Number(getInit(props).quantity) + Number(getSales(props.type)))}</div>
                 </div>
-                <div style={ins} className="initial_action">
-                    <div className="b_child">
-                        <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                        <img style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                    </div>
-                </div>
             </div>
         )
     }
@@ -107,7 +99,6 @@ const InitialBalance = () => {
                     <div className="B_forward">Balance B/Forward</div>
                     <div className="initial_supply">&nbsp; &nbsp; Supply</div>
                     <div className="B_forward">Available Balance</div>
-                    <div className="initial_action">Action</div>
                 </div>
 
                 <div style={{marginTop:'5px'}} className="header_balance_container">
@@ -124,9 +115,6 @@ const InitialBalance = () => {
                     <div style={ins} className="B_forward">
                         <div style={{marginRight:'5px'}} className="b_child">Product Type</div>
                         <div className="b_child">Litre Qty</div>
-                    </div>
-                    <div style={ins} className="initial_action">
-                        <div className="b_child">Edit/del</div>
                     </div>
                 </div>
 

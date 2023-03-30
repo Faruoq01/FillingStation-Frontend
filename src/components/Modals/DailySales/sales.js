@@ -8,14 +8,28 @@ import swal from 'sweetalert';
 import '../../../styles/lpo.scss';
 import { useEffect } from 'react';
 import DailySalesService from '../../../services/DailySales';
+import { useDispatch, useSelector } from 'react-redux';
+import { bulkReports } from '../../../store/actions/dailySales';
 
 const Sales = (props) => {
+    const user = useSelector(state => state.authReducer.user);
+    const dispatch = useDispatch();
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
     const [loading, setLoading] = useState(false);
     const [pumpName, setPumpName] = useState("");
     const [producType, setProductType] = useState('');
     const [openingMeter, setOpeneningMeter] = useState('');
     const [closingMeter, setClosingMeter] = useState('');
     const [rate, setRate] = useState('');
+
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
 
     const handleClose = () => props.close(false);
 
@@ -49,8 +63,22 @@ const Sales = (props) => {
             setLoading(false);
             handleClose();
         }).then(()=>{
-            props.refresh()
+            getAndAnalyzeDailySales();
+        }).then(()=>{
             swal("Success", "Record updated successfully", "success");
+        });
+    }
+
+    const getAndAnalyzeDailySales = () => {
+        const salesPayload = {
+            organisationID: resolveUserID().id,
+            outletID: oneStationData._id,
+            onLoad: false,
+            selectedDate: currentDate
+        }
+
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+            dispatch(bulkReports(data.dailyRecords));
         });
     }
 
@@ -178,7 +206,7 @@ const Sales = (props) => {
                        </div>
 
                         <div style={{marginTop:'10px', height:"30px"}} className='butt'>
-                            <Button sx={{
+                            <Button disabled={loading} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',
