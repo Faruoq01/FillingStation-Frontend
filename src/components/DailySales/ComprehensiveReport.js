@@ -16,6 +16,7 @@ import Dipping from "../Comprehensive/Dipping";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ReturnToTank from "../Comprehensive/ReturnToTank";
+import PaymentDetails from "../Comprehensive/PaymentDetails";
 
 const ComprehensiveReport = () => {
 
@@ -121,7 +122,7 @@ const ComprehensiveReport = () => {
                     </div>
 
                     <div className="first_mid_layer">
-
+                        {collapsible === 5 && <PaymentDetails />}
                     </div>
                 </div>
 

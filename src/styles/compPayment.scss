@@ -1,0 +1,118 @@
+.payment_details{
+    width: 95%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.details_containser{
+    width: 95%;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.details_left{
+    width: 60%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.details_right{
+    width: 40%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.details_table{
+    width: 95%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.detail_table_header{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.detail_table_row{
+    width: 19.5%;
+    height: 35px;
+    background: #525252;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.detail_table_row2{
+    width: 19.5%;
+    height: 35px;
+    background: #EDEDEDB2;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.details_title{
+    font-size: 14px;
+    font-weight: 600;
+    color: #054834;
+    margin-bottom: 10px;
+}
+
+.summary_details{
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.detail_cell{
+    width: 49.5%;
+    height: 35px;
+    background: #525252;
+    color: #fff;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 1250px){
+    .details_containser{
+        flex-direction: column;
+    }
+
+    .details_left{
+        width: 100%;
+    }
+
+    .details_right{
+        max-width: 500px;
+        width: 100%;
+        margin-top: 30px;
+    }
+}
