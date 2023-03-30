@@ -33,9 +33,9 @@ const BalanceCF = () => {
                     <div className="cells">Action</div>
                 </div>
 
-                <BalanceCF data={balances.pms} type={'PMS'} sn={'1'} />
-                <BalanceCF data={balances.ago} type={'AGO'} sn={'2'} />
-                <BalanceCF data={balances.dpk} type={'DPK'} sn={'3'} />
+                <BalanceCF data={balances?.pms} type={'PMS'} sn={'1'} />
+                <BalanceCF data={balances?.ago} type={'AGO'} sn={'2'} />
+                <BalanceCF data={balances?.dpk} type={'DPK'} sn={'3'} />
             </div>
 
             <div className="initial_balance_container_mobile"></div>

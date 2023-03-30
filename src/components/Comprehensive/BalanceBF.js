@@ -130,9 +130,9 @@ const InitialBalance = () => {
                     </div>
                 </div>
 
-                <InitialRows data = {balances.pms} type = {'PMS'} />
-                <InitialRows data = {balances.ago} type = {'AGO'} />
-                <InitialRows data = {balances.dpk} type = {'DPK'} />
+                <InitialRows data = {balances?.pms} type = {'PMS'} />
+                <InitialRows data = {balances?.ago} type = {'AGO'} />
+                <InitialRows data = {balances?.dpk} type = {'DPK'} />
             </div>
 
             <div className="initial_balance_container_mobile">
@@ -142,15 +142,15 @@ const InitialBalance = () => {
                 </div>
                 <div className='balance_mobile_detail'>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances.pms === null? "0": balances.pms.balanceCF}</div>
+                        <div className='mobile_big'>{balances?.pms === null? "0": balances?.pms?.balanceCF}</div>
                         <div className='mobile_sm'>PMS</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances.ago === null? "0": balances.ago.balanceCF}</div>
+                        <div className='mobile_big'>{balances?.ago === null? "0": balances?.ago?.balanceCF}</div>
                         <div className='mobile_sm'>AGO</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances.dpk === null? "0": balances.dpk.balanceCF}</div>
+                        <div className='mobile_big'>{balances?.dpk === null? "0": balances?.dpk?.balanceCF}</div>
                         <div className='mobile_sm'>DPK</div>
                     </div>
                 </div>
@@ -176,15 +176,15 @@ const InitialBalance = () => {
                 </div>
                 <div className='balance_mobile_detail'>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances.pms === null? "0": (Number(balances.pms.balanceCF) + Number(getInit({data: balances.pms, type: "PMS"}).quantity))}</div>
+                        <div className='mobile_big'>{balances?.pms === null? "0": (Number(balances?.pms?.balanceCF) + Number(getInit({data: balances?.pms, type: "PMS"}).quantity))}</div>
                         <div className='mobile_sm'>PMS</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances.ago === null? "0": (Number(balances.ago.balanceCF) + Number(getInit({data: balances.ago, type: "AGO"}).quantity))}</div>
+                        <div className='mobile_big'>{balances?.ago === null? "0": (Number(balances?.ago?.balanceCF) + Number(getInit({data: balances?.ago, type: "AGO"}).quantity))}</div>
                         <div className='mobile_sm'>AGO</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances.dpk === null? "0": (Number(balances.dpk.balanceCF) + Number(getInit({data: balances.ago, type: "DPK"}).quantity))}</div>
+                        <div className='mobile_big'>{balances?.dpk === null? "0": (Number(balances?.dpk?.balanceCF) + Number(getInit({data: balances?.ago, type: "DPK"}).quantity))}</div>
                         <div className='mobile_sm'>DPK</div>
                     </div>
                 </div>

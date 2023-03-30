@@ -29,7 +29,17 @@ const initialState = {
         posPayment: [],
         expenses: []
     },
-    bulkReports: {},
+    bulkReports: {
+        balances: {
+            pms: null,
+            ago: null,
+            dpk: null
+        },
+        supply: [],
+        sales: [],
+        expenses: [],
+        dipping: []
+    },
     linkedData: { page: 1 },
     balanceBF: {},
     pmsBBF: {},
