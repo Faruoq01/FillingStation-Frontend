@@ -27,6 +27,13 @@ const LPOReport = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
     const rate = (row, type) => {
         if(type === "PMS") return row.PMSRate;
         if(type === "AGO") return row.AGORate;
@@ -87,10 +94,12 @@ const LPOReport = () => {
                 <div style={ins} className="cells">{props.data.lpoLitre}</div>
                 <div style={ins} className="cells">{rate(props.data, props.data.productType)}</div>
                 <div style={ins} className="cells">{amount(props.data, props.data.productType)}</div>
-                <div style={ins} className="cells">
-                    <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                    <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                </div>
+                {getPerm('14') &&
+                    <div style={ins} className="cells">
+                        <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                        <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                    </div>
+                }
             </div>
         )
     }
@@ -106,7 +115,7 @@ const LPOReport = () => {
                 <div className="cells">Quantity</div>
                 <div className="cells">Rate</div>
                 <div className="cells">Amount</div>
-                <div className="cells">Action</div>
+                {getPerm('14') && <div className="cells">Action</div>}
             </div>
 
             {

@@ -26,6 +26,13 @@ const ReturnToTank = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
     const rate = (data) => {
         if(data.productType === "PMS") return data.PMSPrice;
         if(data.productType === "AGO") return data.AGOPrice;
@@ -85,10 +92,12 @@ const ReturnToTank = () => {
                 <div style={ins} className="cells">{data.rtLitre}</div>
                 <div style={ins} className="cells">{rate(data)}</div>
                 <div style={ins} className="cells">{amount(data, data.productType)}</div>
-                <div style={ins} className="cells">
-                    <img onClick={()=>{updateRecord(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                    <img onClick={()=>{deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                </div>
+                {getPerm('13') &&
+                    <div style={ins} className="cells">
+                        <img onClick={()=>{updateRecord(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                        <img onClick={()=>{deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                    </div>
+                }
             </div>
         )
     }
@@ -103,7 +112,7 @@ const ReturnToTank = () => {
                 <div className="cells">Quantity</div>
                 <div className="cells">Rate</div>
                 <div className="cells">Amount</div>
-                <div className="cells">Action</div>
+                {getPerm('13') && <div className="cells">Action</div>}
             </div>
 
             {

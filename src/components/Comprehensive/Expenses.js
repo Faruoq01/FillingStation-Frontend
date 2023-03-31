@@ -27,6 +27,13 @@ const Expenses = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
     const ExpensesRow = (props) => {
 
         const updateRecord = (data) => {
@@ -71,10 +78,12 @@ const Expenses = () => {
                 <div style={ins} className="cells">{props.index + 1}</div>
                 <div style={ins} className="cells">{props.data.expenseName}</div>
                 <div style={ins} className="cells">{props.data.expenseAmount}</div>
-                <div style={ins} className="cells">
-                    <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                    <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                </div>
+                {getPerm('15') &&
+                    <div style={ins} className="cells">
+                        <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                        <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                    </div>
+                }
             </div>
         )
     }
@@ -86,7 +95,7 @@ const Expenses = () => {
                 <div className="cells">S/N</div>
                 <div className="cells">Expense Name</div>
                 <div className="cells">Amount</div>
-                <div className="cells">Action</div>
+                {getPerm('15') && <div className="cells">Action</div>}
             </div>
 
             {

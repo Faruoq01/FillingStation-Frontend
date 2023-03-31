@@ -27,6 +27,13 @@ const ProductBalance = (props) => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
     const rate = (row, type) => {
         if(type === "PMS") return row.PMSSellingPrice;
         if(type === "AGO") return row.AGOSellingPrice;
@@ -88,10 +95,12 @@ const ProductBalance = (props) => {
                 <div style={ins} className="cells">{Number(data.closingMeter) - Number(data.openingMeter)}</div>
                 <div style={ins} className="cells">{rate(data, props.type)}</div>
                 <div style={ins} className="cells">{amount(data, props.type)}</div>
-                <div style={ins} className="cells">
-                    <img onClick={()=>{openEditModal(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                    <img onClick={() => { deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                </div>
+                {getPerm("12") &&
+                    <div style={ins} className="cells">
+                        <img onClick={()=>{openEditModal(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                        <img onClick={() => { deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                    </div>
+                }
             </div>
         )
     }
@@ -106,7 +115,7 @@ const ProductBalance = (props) => {
                 <div className="cells">Differences</div>
                 <div className="cells">Rate</div>
                 <div className="cells">Amount</div>
-                <div className="cells">Action</div>
+                {getPerm("12") && <div className="cells">Action</div>}
             </div>
 
             {

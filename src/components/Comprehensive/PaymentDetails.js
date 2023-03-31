@@ -28,6 +28,14 @@ const PaymentDetails = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
+
     const getPayments = () => {
 
         const totalExpenses = expenses.reduce((accum, current) => {
@@ -157,7 +165,7 @@ const PaymentDetails = () => {
                             <div className="detail_table_row">Bank Name</div>
                             <div className="detail_table_row">Teller No</div>
                             <div className="detail_table_row">Amount</div>
-                            <div className="detail_table_row">Action</div>
+                            {getPerm('16') && <div className="detail_table_row">Action</div>}
                         </div>
 
                         {
@@ -170,10 +178,12 @@ const PaymentDetails = () => {
                                         <div className="detail_table_row2">{item.bankName}</div>
                                         <div className="detail_table_row2">{item.tellerNumber}</div>
                                         <div className="detail_table_row2">{item.amountPaid}</div>
-                                        <div style={ins} className="detail_table_row2">
-                                            <img onClick={()=>{updateRecord(item, "bank")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                                            <img onClick={()=>{deleteRecord(item, "bank")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                                        </div>
+                                        {getPerm('16') &&
+                                            <div style={ins} className="detail_table_row2">
+                                                <img onClick={()=>{updateRecord(item, "bank")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                                <img onClick={()=>{deleteRecord(item, "bank")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                                            </div>
+                                        }
                                     </div>
                                 )
                             })
@@ -187,7 +197,7 @@ const PaymentDetails = () => {
                             <div className="detail_table_row">Bank Name</div>
                             <div className="detail_table_row">Terminal ID</div>
                             <div className="detail_table_row">Amount</div>
-                            <div className="detail_table_row">Action</div>
+                            {getPerm('16') && <div className="detail_table_row">Action</div>}
                         </div>
 
                         {
@@ -200,10 +210,12 @@ const PaymentDetails = () => {
                                         <div className="detail_table_row2">{item.posName}</div>
                                         <div className="detail_table_row2">{item.terminalID}</div>
                                         <div className="detail_table_row2">{item.amountPaid}</div>
-                                        <div style={ins} className="detail_table_row2">
-                                            <img onClick={()=>{updateRecord(item, "pos")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                                            <img onClick={()=>{deleteRecord(item, "pos")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                                        </div>
+                                        {getPerm('16') &&
+                                            <div style={ins} className="detail_table_row2">
+                                                <img onClick={()=>{updateRecord(item, "pos")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                                <img onClick={()=>{deleteRecord(item, "pos")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                                            </div>
+                                        }
                                     </div>
                                 )
                             })

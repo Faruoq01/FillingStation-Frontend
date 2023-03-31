@@ -27,6 +27,13 @@ const Dipping = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
     const DippingRow = (props) => {
 
         const updateRecord = (data) => {
@@ -73,10 +80,12 @@ const Dipping = () => {
                 <div style={ins} className="cells">{props.data.productType}</div>
                 <div style={ins} className="cells">{props.data.currentLevel}</div>
                 <div style={ins} className="cells">{props.data.dipping}</div>
-                <div style={ins} className="cells">
-                    <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                    <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                </div>
+                {getPerm('17') &&
+                    <div style={ins} className="cells">
+                        <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                        <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                    </div>
+                }
             </div>
         )
     }
@@ -90,7 +99,7 @@ const Dipping = () => {
                 <div className="cells">Product</div>
                 <div className="cells">Current Level</div>
                 <div className="cells">Dipping</div>
-                <div className="cells">Action</div>
+                {getPerm('17') && <div className="cells">Action</div>}
             </div>
 
             {
