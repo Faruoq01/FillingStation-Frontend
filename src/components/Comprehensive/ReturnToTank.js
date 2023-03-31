@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import swal from 'sweetalert';
 import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
+import { useState } from 'react';
+import UpdateReturnToTank from '../Modals/DailySales/returnToTank';
 
 const ReturnToTank = () => { 
 
@@ -12,6 +14,9 @@ const ReturnToTank = () => {
     const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
     const user = useSelector(state => state.authReducer.user);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+
+    const [openEdit, setOpenEdit] = useState(false);
+    const [oneRecord, setOneRecord] = useState({});
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -34,6 +39,11 @@ const ReturnToTank = () => {
     }
 
     const RTRows = ({data}) => {
+
+        const updateRecord = (data) => {
+            setOpenEdit(true);
+            setOneRecord(data);
+        }
 
         const deleteRecord = (data) => {
             swal({
@@ -58,7 +68,7 @@ const ReturnToTank = () => {
             const salesPayload = {
                 organisationID: resolveUserID().id,
                 outletID: oneStationData._id,
-                onLoad: false,
+                onLoad: currentDate === ""? true: false,
                 selectedDate: currentDate
             }
     
@@ -76,7 +86,7 @@ const ReturnToTank = () => {
                 <div style={ins} className="cells">{rate(data)}</div>
                 <div style={ins} className="cells">{amount(data, data.productType)}</div>
                 <div style={ins} className="cells">
-                    <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                    <img onClick={()=>{updateRecord(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
                     <img onClick={()=>{deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
                 </div>
             </div>
@@ -85,6 +95,7 @@ const ReturnToTank = () => {
 
     return(
         <div className="initial_balance_container">
+            {openEdit && <UpdateReturnToTank data={oneRecord} open={openEdit} close={setOpenEdit} />}
             <div className="product_balance_header">
                 <div className="cells">Pump Name</div>
                 <div className="cells">Tank Name</div>

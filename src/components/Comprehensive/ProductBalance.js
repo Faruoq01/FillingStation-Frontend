@@ -71,7 +71,7 @@ const ProductBalance = (props) => {
             const salesPayload = {
                 organisationID: resolveUserID().id,
                 outletID: oneStationData._id,
-                onLoad: false,
+                onLoad: currentDate === ""? true: false,
                 selectedDate: currentDate
             }
     

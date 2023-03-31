@@ -11,16 +11,16 @@ import DailySalesService from '../../../services/DailySales';
 import { useDispatch, useSelector } from 'react-redux';
 import { bulkReports } from '../../../store/actions/dailySales';
 
-const Sales = (props) => {
+const UpdateLPO = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
     const [loading, setLoading] = useState(false);
-    const [pumpName, setPumpName] = useState("");
+    const [accountName, setAccountName] = useState("");
     const [producType, setProductType] = useState('');
-    const [openingMeter, setOpeneningMeter] = useState('');
-    const [closingMeter, setClosingMeter] = useState('');
+    const [truckNo, setTruckNo] = useState('');
+    const [quantity, setQuantity] = useState('');
     const [rate, setRate] = useState('');
 
     const resolveUserID = () => {
@@ -34,30 +34,26 @@ const Sales = (props) => {
     const handleClose = () => props.close(false);
 
     useEffect(()=>{
-        setPumpName(props.data.pumpName);
+        setAccountName(props.data.accountName);
         setProductType(props.data.productType);
-        setOpeneningMeter(props.data.openingMeter);
-        setClosingMeter(props.data.closingMeter);
-        setRate(props.data.producType === "PMS"? props.data.PMSSellingPrice: props.data.producType === "AGO"? props.data.AGOSellingPrice: props.data.DPKSellingPrice );
-    }, [props, props.data.AGOSellingPrice, props.data.DPKSellingPrice, props.data.PMSSellingPrice, props.data.closingMeter, props.data.openingMeter, props.data.producType, props.data.productType, props.data.pumpName])
+        setTruckNo(props.data.truckNo);
+        setQuantity(props.data.lpoLitre);
+        setRate(props.data.producType === "PMS"? props.data.PMSRate: props.data.producType === "AGO"? props.data.AGORate: props.data.DPKRate );
+    }, [props.data.AGORate, props.data.DPKRate, props.data.PMSRate, props.data.accountName, props.data.lpoLitre, props.data.producType, props.data.productType, props.data.truckNo])
 
     const submit = () => {
-        if(pumpName === "") return swal("Warning!", "Pump name cannot be empty", "info");
+        if(accountName === "") return swal("Warning!", "Account name cannot be empty", "info");
         if(producType === "") return swal("Warning!", "Product type cannot be empty", "info");
-        if(openingMeter === "") return swal("Warning!", "Opening meter cannot be empty", "info");
-        if(closingMeter === "") return swal("Warning!", "Closing meter cannot be empty", "info");
+        if(truckNo === "") return swal("Warning!", "Truck no cannot be empty", "info");
+        if(quantity === "") return swal("Warning!", "Opening meter cannot be empty", "info");
         if(rate === "") return swal("Warning!", "Rate cannot be empty", "info");
-        if(Number(closingMeter) < Number(openingMeter)) return swal("Warning!", "Closing meter cannot be less than opening meter!", "info");
         setLoading(true);
 
         const payload = {
-            type: "sales",
+            type: "lpo",
             id: props.data._id,
-            sales: Number(closingMeter) - Number(openingMeter),
-            closingMeter: closingMeter,
-            PMSSellingPrice: props?.data?.PMSSellingPrice,
-            AGOSellingPrice: props?.data?.AGOSellingPrice,
-            DPKSellingPrice: props?.data?.DPKSellingPrice,
+            lpoLitre: quantity,
+            truckNo: truckNo,
         }
 
         DailySalesService.updateSales(payload).then(data => {
@@ -94,7 +90,7 @@ const Sales = (props) => {
                 <div data-aos="zoom-out-up" style={{height:'auto'}} className='modalContainer2'>
                     <div style={{height:'auto', margin:'20px'}} className='inner'>
                         <div className='head'>
-                            <div className='head-text'>Edit Daily Sales</div>
+                            <div className='head-text'>Edit LPO Sales</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
@@ -103,7 +99,7 @@ const Sales = (props) => {
                        <div style={{marginTop:'15px'}} className='inputs'>
 
                             <div style={{marginTop:'10px'}} className='inputs'>
-                                <div className='head-text2'>Pump Name</div>
+                                <div className='head-text2'>Account Name</div>
                                 <OutlinedInput 
                                     disabled
                                     sx={{
@@ -118,13 +114,13 @@ const Sales = (props) => {
                                         },
                                     }} placeholder="" 
                                     type="text"
-                                    value={pumpName}
-                                    onChange={e => setPumpName(e.target.value)}
+                                    value={accountName}
+                                    onChange={e => setAccountName(e.target.value)}
                                 />
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>ProductType</div>
+                                <div className='head-text2'>Product</div>
                                 <OutlinedInput 
                                     disabled
                                     sx={{
@@ -145,9 +141,8 @@ const Sales = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>Opening Meter</div>
+                                <div className='head-text2'>Truck No</div>
                                 <OutlinedInput 
-                                    disabled
                                     sx={{
                                         width:'100%',
                                         height: '35px', 
@@ -160,13 +155,13 @@ const Sales = (props) => {
                                         },
                                     }} placeholder="" 
                                     type="text"
-                                    value={openingMeter}
-                                    onChange={e => setOpeneningMeter(e.target.value)}
+                                    value={truckNo}
+                                    onChange={e => setTruckNo(e.target.value)}
                                 />
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>Closing Meter</div>
+                                <div className='head-text2'>Quantity</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -180,8 +175,8 @@ const Sales = (props) => {
                                         },
                                     }} placeholder="" 
                                     type="text"
-                                    value={closingMeter}
-                                    onChange={e => setClosingMeter(e.target.value)}
+                                    value={quantity}
+                                    onChange={e => setQuantity(e.target.value)}
                                 />
                             </div>
 
@@ -247,4 +242,4 @@ const inner = {
     height:'380px',
 }
 
-export default Sales;
+export default UpdateLPO;

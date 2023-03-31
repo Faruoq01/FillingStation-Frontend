@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from 'sweetalert';
 import DailySalesService from "../../services/DailySales";
 import { bulkReports } from "../../store/actions/dailySales";
+import { useState } from "react";
+import UpdatePayments from "../Modals/DailySales/payments";
 
 const PaymentDetails = () => {
 
@@ -14,6 +16,9 @@ const PaymentDetails = () => {
     const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
     const user = useSelector(state => state.authReducer.user);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+
+    const [openEdit, setOpenEdit] = useState(false);
+    const [oneRecord, setOneRecord] = useState({});
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -103,6 +108,11 @@ const PaymentDetails = () => {
         return payment;
     }
 
+    const updateRecord = (data, bank) => {
+        setOpenEdit(true);
+        setOneRecord({data: data, bank: bank});
+    }
+
     const deleteRecord = (data, type) => {
         swal({
             title: "Alert!",
@@ -126,7 +136,7 @@ const PaymentDetails = () => {
         const salesPayload = {
             organisationID: resolveUserID().id,
             outletID: oneStationData._id,
-            onLoad: false,
+            onLoad: currentDate === ""? true: false,
             selectedDate: currentDate
         }
 
@@ -137,6 +147,7 @@ const PaymentDetails = () => {
 
     return(
         <div className="payment_details">
+            {openEdit && <UpdatePayments data={oneRecord} open={openEdit} close={setOpenEdit} />}
             <div className="details_containser">
                 <div className="details_left">
                     <div className="details_table">
@@ -160,7 +171,7 @@ const PaymentDetails = () => {
                                         <div className="detail_table_row2">{item.tellerNumber}</div>
                                         <div className="detail_table_row2">{item.amountPaid}</div>
                                         <div style={ins} className="detail_table_row2">
-                                            <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                            <img onClick={()=>{updateRecord(item, "bank")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
                                             <img onClick={()=>{deleteRecord(item, "bank")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
                                         </div>
                                     </div>
@@ -190,7 +201,7 @@ const PaymentDetails = () => {
                                         <div className="detail_table_row2">{item.terminalID}</div>
                                         <div className="detail_table_row2">{item.amountPaid}</div>
                                         <div style={ins} className="detail_table_row2">
-                                            <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                            <img onClick={()=>{updateRecord(item, "pos")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
                                             <img onClick={()=>{deleteRecord(item, "pos")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
                                         </div>
                                     </div>

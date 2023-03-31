@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
 import swal from 'sweetalert';
+import { useState } from 'react';
+import UpdateLPO from '../Modals/DailySales/lpo';
 
 const LPOReport = () => {
 
@@ -13,6 +15,9 @@ const LPOReport = () => {
     const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
     const user = useSelector(state => state.authReducer.user);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+
+    const [openEdit, setOpenEdit] = useState(false);
+    const [oneRecord, setOneRecord] = useState({});
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -35,6 +40,11 @@ const LPOReport = () => {
     }
 
     const LPORows = (props) => {
+
+        const updateRecord = (data) => {
+            setOpenEdit(true);
+            setOneRecord(data);
+        }
 
         const deleteRecord = (data) => {
             swal({
@@ -59,7 +69,7 @@ const LPOReport = () => {
             const salesPayload = {
                 organisationID: resolveUserID().id,
                 outletID: oneStationData._id,
-                onLoad: false,
+                onLoad: currentDate === ""? true: false,
                 selectedDate: currentDate
             }
     
@@ -78,7 +88,7 @@ const LPOReport = () => {
                 <div style={ins} className="cells">{rate(props.data, props.data.productType)}</div>
                 <div style={ins} className="cells">{amount(props.data, props.data.productType)}</div>
                 <div style={ins} className="cells">
-                    <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                    <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
                     <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
                 </div>
             </div>
@@ -87,6 +97,7 @@ const LPOReport = () => {
 
     return(
         <div className="initial_balance_container">
+            {openEdit && <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />}
             <div className="product_balance_header">
                 <div className="cells">S/N</div>
                 <div style={{width:'150%'}} className="cells">Account Name</div>

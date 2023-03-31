@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import swal from 'sweetalert';
 import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
+import { useState } from 'react';
+import UpdateExpenses from '../Modals/DailySales/expenses';
 
 const Expenses = () => {
 
@@ -14,6 +16,9 @@ const Expenses = () => {
     const user = useSelector(state => state.authReducer.user);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
+    const [openEdit, setOpenEdit] = useState(false);
+    const [oneRecord, setOneRecord] = useState({});
+
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
             return {id: user._id}
@@ -23,6 +28,11 @@ const Expenses = () => {
     }
 
     const ExpensesRow = (props) => {
+
+        const updateRecord = (data) => {
+            setOpenEdit(true);
+            setOneRecord(data);
+        }
 
         const deleteRecord = (data) => {
             swal({
@@ -47,7 +57,7 @@ const Expenses = () => {
             const salesPayload = {
                 organisationID: resolveUserID().id,
                 outletID: oneStationData._id,
-                onLoad: false,
+                onLoad: currentDate === ""? true: false,
                 selectedDate: currentDate
             }
     
@@ -62,7 +72,7 @@ const Expenses = () => {
                 <div style={ins} className="cells">{props.data.expenseName}</div>
                 <div style={ins} className="cells">{props.data.expenseAmount}</div>
                 <div style={ins} className="cells">
-                    <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                    <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
                     <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
                 </div>
             </div>
@@ -71,6 +81,7 @@ const Expenses = () => {
 
     return(
         <div style={{maxWidth: '700px'}} className="initial_balance_container">
+            {openEdit && <UpdateExpenses data={oneRecord} open={openEdit} close={setOpenEdit} />}
             <div className="product_balance_header">
                 <div className="cells">S/N</div>
                 <div className="cells">Expense Name</div>
