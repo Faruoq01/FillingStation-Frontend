@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const InitialBalance = () => {
 
@@ -50,7 +51,8 @@ const InitialBalance = () => {
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
                     <div style={{marginRight:'5px'}} className="b_child">{getInit(props).quantity}</div>
                     <div style={{marginRight:'5px'}} className="b_child">{getInit(props).shortage}</div>
-                    <div className="b_child">{getInit(props).overage}</div>
+                    <div style={{marginRight:'5px'}} className="b_child">{getInit(props).overage}</div>
+                    <div className="b_child"><Link>View</Link></div>
                 </div>
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
@@ -110,7 +112,8 @@ const InitialBalance = () => {
                         <div style={{marginRight:'5px'}} className="b_child">Type</div>
                         <div style={{marginRight:'5px'}} className="b_child">Quantity</div>
                         <div style={{marginRight:'5px'}} className="b_child">Shortage</div>
-                        <div className="b_child">Overage</div>
+                        <div style={{marginRight:'5px'}} className="b_child">Overage</div>
+                        <div className="b_child">Details</div>
                     </div>
                     <div style={ins} className="B_forward">
                         <div style={{marginRight:'5px'}} className="b_child">Product Type</div>
