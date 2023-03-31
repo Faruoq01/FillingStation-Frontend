@@ -28,6 +28,15 @@ const data = [
             '6': "viewing daily payments",
             '7': "viewing daily lpo sales",
             '8': "viewing daily incoming order",
+            '9': "Allow users to print report on comprehensive report page",
+            '10': "Allow users to view reports from other dates",
+            '11': "Users to view and update supply",
+            '12': "users to update pump sales",
+            '13': "users to update return to tank",
+            '14': "users to update LPO",
+            '15': "users to update expenses",
+            '16': "users to update payments",
+            '17': "users to update dipping"
         }
     },
 

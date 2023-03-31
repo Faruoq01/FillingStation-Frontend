@@ -72,6 +72,15 @@
     }
 }
 
+.comp_result{
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .initial_balance_container{
     width: 93%;
     height: auto;
