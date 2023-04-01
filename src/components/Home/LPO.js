@@ -14,11 +14,12 @@ import { OutlinedInput } from '@mui/material';
 import edit2 from '../../assets/edit2.png';
 import eyes from '../../assets/eyes.png';
 import LPORateModal from '../Modals/SetLPORate';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import ListLPO from '../LPO/ListLPO';
 import LPOReport from '../Reports/LpoReport';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
+import CompanyLPO from '../LPO/company';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -29,6 +30,7 @@ const LPO = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const dispatch = useDispatch();
+    const history = useHistory();
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
@@ -191,6 +193,10 @@ const LPO = (props) => {
         if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
         dispatch(singleLPORecord(data));
         setPriceModal(true);
+    }
+
+    const openLPOCompany = () => {
+        history.push('/home/lpo/company');
     }
 
     return(
@@ -549,6 +555,7 @@ const LPO = (props) => {
                                     <div className='column'>AGO Limit</div>
                                     <div className='column'>DPK Limit</div>
                                     <div className='column'>Payment Structure</div>
+                                    <div className='column'>Actions</div>
                                 </div>
 
                                 <div className='row-container'>
@@ -567,6 +574,10 @@ const LPO = (props) => {
                                                     <div className='column'>{data.AGO}</div>
                                                     <div className='column'>{data.DPK}</div>
                                                     <div className='column'>{data.paymentStructure}</div>
+                                                    <div className='column'>
+                                                        <img onClick={()=>{openLPOCompany(data)}} style={{width:'28px', height:'28px'}} src={eyes} alt="icon" />
+                                                        <img style={{width:'28px', height:'28px', marginLeft:'10px'}} src={edit2} alt="icon" />
+                                                    </div>
                                                 </div> 
                                             )
                                         }): <div style={load}>
@@ -602,6 +613,9 @@ const LPO = (props) => {
                     <Switch>
                         <Route path='/home/lpo/list'>
                             <ListLPO/>
+                        </Route>
+                        <Route path='/home/lpo/company'>
+                            <CompanyLPO/>
                         </Route>
                     </Switch>
                 }

@@ -100,6 +100,7 @@ const HomeScreen = () => {
                 '/home/lpo': 'Corporate Sales',
                 '/home/dashEmp': '← Employee List',
                 '/home/lpo/list': 'LPO',
+                '/home/lpo/company': 'Corporate Company',
                 '/home/product-orders': 'Product Orders',
                 '/home/inc-orders': 'Incoming Orders',
                 '/home/supply': 'Supply',
