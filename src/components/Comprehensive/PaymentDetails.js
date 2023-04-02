@@ -8,6 +8,35 @@ import { bulkReports } from "../../store/actions/dailySales";
 import { useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 
+const SupplyCard = (props) => {
+    return(
+        <div className='supply_card'>
+
+            <div style={rows}>
+                <div>
+                    <div style={title}>138KW-ABJ</div>
+                    <div style={label}>Truck No</div>
+                </div>
+                <div>
+                <div style={title}>13,028.03</div>
+                    <div style={label}>Litre Qty</div>
+                </div>
+            </div>
+
+            <div style={rows}>
+                <div>
+                    <div style={title}>**********</div>
+                    <div style={label}>Shortage</div>
+                </div>
+                <div>
+                <div style={title}>13,028.03</div>
+                    <div style={label}>Litre Qty</div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const PaymentDetails = () => {
 
     const {payments, pospayment, sales, lpo, rtVolumes, expenses} = useSelector(state => state.dailySalesReducer.bulkReports);
@@ -154,94 +183,129 @@ const PaymentDetails = () => {
     }
 
     return(
-        <div className="payment_details">
-            {openEdit && <UpdatePayments data={oneRecord} open={openEdit} close={setOpenEdit} />}
-            <div className="details_containser">
-                <div className="details_left">
-                    <div className="details_table">
-                        <div className="details_title">Bank Payments</div>
-                        <div className="detail_table_header">
-                            <div className="detail_table_row">S/N</div>
-                            <div className="detail_table_row">Bank Name</div>
-                            <div className="detail_table_row">Teller No</div>
-                            <div className="detail_table_row">Amount</div>
-                            {getPerm('16') && <div className="detail_table_row">Action</div>}
+        <div style={{width:'100%'}}>
+
+<div className="initial_balance_container_mobile">
+                {/* Supply records */}
+                <div className='mobile_header'>
+                    &nbsp;&nbsp;&nbsp; Bank Payments
+                </div>
+                <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
+                    <div className='sups'>
+                        <div className='slide'>
+                            <SupplyCard />
+                            <SupplyCard />
+                            <SupplyCard />
                         </div>
-
-                        {
-                            payments.length === 0?
-                            <div>No record</div>:
-                            payments.map((item, index) => {
-                                return(
-                                    <div key={index} className="detail_table_header">
-                                        <div className="detail_table_row2">{index + 1}</div>
-                                        <div className="detail_table_row2">{item.bankName}</div>
-                                        <div className="detail_table_row2">{item.tellerNumber}</div>
-                                        <div className="detail_table_row2">{item.amountPaid}</div>
-                                        {getPerm('16') &&
-                                            <div style={ins} className="detail_table_row2">
-                                                <img onClick={()=>{updateRecord(item, "bank")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                                                <img onClick={()=>{deleteRecord(item, "bank")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                                            </div>
-                                        }
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-
-                    <div style={{marginTop:'30px'}} className="details_table">
-                        <div className="details_title">POS Payments</div>
-                        <div className="detail_table_header">
-                            <div className="detail_table_row">S/N</div>
-                            <div className="detail_table_row">Bank Name</div>
-                            <div className="detail_table_row">Terminal ID</div>
-                            <div className="detail_table_row">Amount</div>
-                            {getPerm('16') && <div className="detail_table_row">Action</div>}
-                        </div>
-
-                        {
-                            pospayment.length === 0?
-                            <div>No records</div>:
-                            pospayment.map((item, index) => {
-                                return(
-                                    <div key={index} className="detail_table_header">
-                                        <div className="detail_table_row2">{index + 1}</div>
-                                        <div className="detail_table_row2">{item.posName}</div>
-                                        <div className="detail_table_row2">{item.terminalID}</div>
-                                        <div className="detail_table_row2">{item.amountPaid}</div>
-                                        {getPerm('16') &&
-                                            <div style={ins} className="detail_table_row2">
-                                                <img onClick={()=>{updateRecord(item, "pos")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                                                <img onClick={()=>{deleteRecord(item, "pos")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
-                                            </div>
-                                        }
-                                    </div>
-                                )
-                            })
-                        }
                     </div>
                 </div>
+            </div>
 
-                <div className="details_right">
-                    <div className="summary_details">
-                        <div className="detail_cell">Total Sales</div>
-                        <div style={vals} className="detail_cell">{getPayments().totalSales}</div>
+            <div className="initial_balance_container_mobile">
+                {/* Supply records */}
+                <div className='mobile_header'>
+                    &nbsp;&nbsp;&nbsp; POS Payments
+                </div>
+                <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
+                    <div className='sups'>
+                        <div className='slide'>
+                            <SupplyCard />
+                            <SupplyCard />
+                            <SupplyCard />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="payment_details">
+                {openEdit && <UpdatePayments data={oneRecord} open={openEdit} close={setOpenEdit} />}
+                <div className="details_containser">
+                    <div className="details_left">
+                        <div className="details_table">
+                            <div className="details_title">Bank Payments</div>
+                            <div className="detail_table_header">
+                                <div className="detail_table_row">S/N</div>
+                                <div className="detail_table_row">Bank Name</div>
+                                <div className="detail_table_row">Teller No</div>
+                                <div className="detail_table_row">Amount</div>
+                                {getPerm('16') && <div className="detail_table_row">Action</div>}
+                            </div>
+
+                            {
+                                payments.length === 0?
+                                <div>No record</div>:
+                                payments.map((item, index) => {
+                                    return(
+                                        <div key={index} className="detail_table_header">
+                                            <div className="detail_table_row2">{index + 1}</div>
+                                            <div className="detail_table_row2">{item.bankName}</div>
+                                            <div className="detail_table_row2">{item.tellerNumber}</div>
+                                            <div className="detail_table_row2">{item.amountPaid}</div>
+                                            {getPerm('16') &&
+                                                <div style={ins} className="detail_table_row2">
+                                                    <img onClick={()=>{updateRecord(item, "bank")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                                    <img onClick={()=>{deleteRecord(item, "bank")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                                                </div>
+                                            }
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+
+                        <div style={{marginTop:'30px'}} className="details_table">
+                            <div className="details_title">POS Payments</div>
+                            <div className="detail_table_header">
+                                <div className="detail_table_row">S/N</div>
+                                <div className="detail_table_row">Bank Name</div>
+                                <div className="detail_table_row">Terminal ID</div>
+                                <div className="detail_table_row">Amount</div>
+                                {getPerm('16') && <div className="detail_table_row">Action</div>}
+                            </div>
+
+                            {
+                                pospayment.length === 0?
+                                <div>No records</div>:
+                                pospayment.map((item, index) => {
+                                    return(
+                                        <div key={index} className="detail_table_header">
+                                            <div className="detail_table_row2">{index + 1}</div>
+                                            <div className="detail_table_row2">{item.posName}</div>
+                                            <div className="detail_table_row2">{item.terminalID}</div>
+                                            <div className="detail_table_row2">{item.amountPaid}</div>
+                                            {getPerm('16') &&
+                                                <div style={ins} className="detail_table_row2">
+                                                    <img onClick={()=>{updateRecord(item, "pos")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                                    <img onClick={()=>{deleteRecord(item, "pos")}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                                                </div>
+                                            }
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
 
-                    <div className="summary_details">
-                        <div className="detail_cell">Sales Amount (no LPO)</div>
-                        <div style={vals} className="detail_cell">{getPayments().salesAmount}</div>
-                    </div>
+                    <div className="details_right">
+                        <div className="summary_details">
+                            <div className="detail_cell">Total Sales</div>
+                            <div style={vals} className="detail_cell">{getPayments().totalSales}</div>
+                        </div>
 
-                    <div className="summary_details">
-                        <div className="detail_cell">Net to bank</div>
-                        <div style={vals} className="detail_cell">{getPayments().netToBank}</div>
-                    </div>
+                        <div className="summary_details">
+                            <div className="detail_cell">Sales Amount (no LPO)</div>
+                            <div style={vals} className="detail_cell">{getPayments().salesAmount}</div>
+                        </div>
 
-                    <div className="summary_details">
-                        <div className="detail_cell">Outstanding</div>
-                        <div style={vals} className="detail_cell">{getPayments().outstanding}</div>
+                        <div className="summary_details">
+                            <div className="detail_cell">Net to bank</div>
+                            <div style={vals} className="detail_cell">{getPayments().netToBank}</div>
+                        </div>
+
+                        <div className="summary_details">
+                            <div className="detail_cell">Outstanding</div>
+                            <div style={vals} className="detail_cell">{getPayments().outstanding}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -260,5 +324,30 @@ const ins = {
     color:'#000',
     fontWeight:'600'
 }
+
+const rows = {
+    width:'90%',
+    height:'auto',
+    marginTop:'20px',
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between'
+}
+
+const title = {
+    fontSize:'14px',
+    fontWeight:'500',
+    fontFamily:'Poppins',
+    lineHeight:'30px',
+    color:'#515151'
+}
+
+const label = {
+    fontSize:'12px',
+    fontWeight:'500',
+    fontFamily:'Poppins',
+    color:'#07956A'
+}
+
 
 export default PaymentDetails;

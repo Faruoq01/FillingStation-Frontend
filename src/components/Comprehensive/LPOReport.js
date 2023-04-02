@@ -7,6 +7,35 @@ import swal from 'sweetalert';
 import { useState } from 'react';
 import UpdateLPO from '../Modals/DailySales/lpo';
 
+const SupplyCard = (props) => {
+    return(
+        <div className='supply_card'>
+
+            <div style={rows}>
+                <div>
+                    <div style={title}>138KW-ABJ</div>
+                    <div style={label}>Truck No</div>
+                </div>
+                <div>
+                <div style={title}>13,028.03</div>
+                    <div style={label}>Litre Qty</div>
+                </div>
+            </div>
+
+            <div style={rows}>
+                <div>
+                    <div style={title}>**********</div>
+                    <div style={label}>Shortage</div>
+                </div>
+                <div>
+                <div style={title}>13,028.03</div>
+                    <div style={label}>Litre Qty</div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const LPOReport = () => {
 
     const {lpo} = useSelector(state => state.dailySalesReducer.bulkReports);
@@ -105,28 +134,46 @@ const LPOReport = () => {
     }
 
     return(
-        <div className="initial_balance_container">
-            {openEdit && <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />}
-            <div className="product_balance_header">
-                <div className="cells">S/N</div>
-                <div style={{width:'150%'}} className="cells">Account Name</div>
-                <div className="cells">Product</div>
-                <div className="cells">Truck No</div>
-                <div className="cells">Quantity</div>
-                <div className="cells">Rate</div>
-                <div className="cells">Amount</div>
-                {getPerm('14') && <div className="cells">Action</div>}
+        <div style={{width:'100%'}}>
+            <div className="initial_balance_container">
+                {openEdit && <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />}
+                <div className="product_balance_header">
+                    <div className="cells">S/N</div>
+                    <div style={{width:'150%'}} className="cells">Account Name</div>
+                    <div className="cells">Product</div>
+                    <div className="cells">Truck No</div>
+                    <div className="cells">Quantity</div>
+                    <div className="cells">Rate</div>
+                    <div className="cells">Amount</div>
+                    {getPerm('14') && <div className="cells">Action</div>}
+                </div>
+
+                {
+                    lpo?.length === 0?
+                    <div>No records</div>:
+                    lpo.map((item, index) => {
+                        return(
+                            <LPORows key={index} data={item} index={index} />
+                        )
+                    })
+                }
             </div>
 
-            {
-                lpo?.length === 0?
-                <div>No records</div>:
-                lpo.map((item, index) => {
-                    return(
-                        <LPORows key={index} data={item} index={index} />
-                    )
-                })
-            }
+            <div className="initial_balance_container_mobile">
+                {/* Supply records */}
+                <div className='mobile_header'>
+                    &nbsp;&nbsp;&nbsp; LPO
+                </div>
+                <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
+                    <div className='sups'>
+                        <div className='slide'>
+                            <SupplyCard />
+                            <SupplyCard />
+                            <SupplyCard />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
@@ -135,6 +182,30 @@ const ins = {
     background: '#EDEDEDB2',
     color:'#000',
     fontWeight:'600'
+}
+
+const rows = {
+    width:'90%',
+    height:'auto',
+    marginTop:'20px',
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between'
+}
+
+const title = {
+    fontSize:'14px',
+    fontWeight:'500',
+    fontFamily:'Poppins',
+    lineHeight:'30px',
+    color:'#515151'
+}
+
+const label = {
+    fontSize:'12px',
+    fontWeight:'500',
+    fontFamily:'Poppins',
+    color:'#07956A'
 }
 
 export default LPOReport;
