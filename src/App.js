@@ -8,6 +8,7 @@ import "aos/dist/aos.css";
 import { useEffect } from 'react';
 import Homepage from './components/LandingPage/Home';
 import Connection from './screens/Connection';
+import CustomerLPO from './screens/LPOCustomers';
 
 function App() {
 
@@ -59,6 +60,7 @@ function App() {
           <Route path='/home/hr/recruitment' component={HomeScreen} />
           <Route path='/home/hr/attendance' component={HomeScreen} />
           <Route path='/login' component={LoginScreen} />
+          <Route path='/lpo-customers' component={CustomerLPO} />
           <Route path='/connection' component={Connection} />
           <Route render = {() => <h1>404 page not found</h1>} />
         </Switch>

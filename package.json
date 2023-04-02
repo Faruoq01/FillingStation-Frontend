@@ -35,6 +35,7 @@
     "react-daterange-picker-responsive": "^1.0.9",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
+    "react-event-timeline": "^1.6.3",
     "react-form-stepper": "^2.0.3",
     "react-html5-camera-photo": "^1.5.10",
     "react-loader-spinner": "^5.3.4",

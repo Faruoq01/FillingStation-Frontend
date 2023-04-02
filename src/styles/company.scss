@@ -185,7 +185,7 @@
     justify-content: space-between;
 
     .company_left{
-        width: 66%;
+        width: 65%;
         height: auto;
         background: #FFFFFF;
         border: 1px solid #CFCFCF;
@@ -280,12 +280,93 @@
                 align-items: center;
             }
 
-            .top_view_content{
-                width: 100%;
-                height: 300px;
-                background: red;
-                margin-top: 20px;
+            .main_text{
+                font-size: 11px;
+                font-family: 'Poppins';
+                font-weight: 300;
             }
+
+            .times_event{
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+                margin-top: 10px;
+
+                .times_event_cat{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    .ttxt{
+                        font-size: 11px;
+                        color: #0046BC;
+                        margin-left: 10px;
+                        font-family: 'Poppins';
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1250px){
+    .company_lpo{
+
+        .company_left{
+            width: 64%;
+        }
+    }
+}
+
+@media (max-width: 1150px){
+    .company_lpo{
+        width: 100%;
+        flex-direction: column;
+
+        .company_left{
+            width: 100%;
+        }
+
+        .company_right{
+            width: 100%;
+            margin: 0px;
+            margin-top: 20px;
+        }
+    }
+}
+
+@media (max-width: 830px){
+    .topCards{
+        flex-direction: column;
+        align-items: flex-start;
+
+        .CardContainer{
+            width: 50%;
+            margin-right: 0px;
+            margin-top: 10px;
+        }
+
+        .CardContainer2{
+            width: 50%;
+            margin-right: 0px;
+            margin-top: 10px;
+        }
+    }
+}
+
+@media (max-width: 600px){
+    .topCards{
+        align-items: center;
+
+        .CardContainer{
+            width: 100%;
+        }
+
+        .CardContainer2{
+            width: 100%;
         }
     }
 }

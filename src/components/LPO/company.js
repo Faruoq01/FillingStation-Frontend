@@ -1,11 +1,21 @@
 import "../../styles/company.scss";
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Button } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import SortIcon from '@mui/icons-material/Sort';
 import pump from '../../assets/comp/pump.png';
 import hand from '../../assets/comp/hand.png';
+import {Timeline, TimelineEvent} from 'react-event-timeline';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { useHistory } from "react-router-dom";
 
 const SalesCard = (props) => {
+    const history = useHistory();
+
+    const goToCustomers = () => {
+        history.push('/lpo-customers');
+    }
+
     return(
         <div className="CardContainer">
             <div className="inner_card_container">
@@ -21,7 +31,7 @@ const SalesCard = (props) => {
                     </div>
                 </div>
                 <div>
-                    <Button startIcon={<SortIcon />} sx={buts}>View Details</Button>
+                    <Button onClick={goToCustomers} startIcon={<SortIcon />} sx={buts}>View Details</Button>
                 </div>
             </div>
         </div>
@@ -136,14 +146,127 @@ const CompanyLPO = () => {
                             <Button sx={{...buts, width:'80px', background:'#EDFFFA'}}>See All</Button>
                         </div>
 
-                        <div className="top_view_content">
+                        <Timeline>
+                            <TimelineEvent
+                                icon={
+                                    <Avatar sx={icon}>
+                                        <Avatar sx={{width:'30px', height:'30px', bgcolor:'#057EF0', fontSize:'12px'}}>UF</Avatar>
+                                    </Avatar>
+                                }
+                            >
+                                <div style={outer}>
+                                    <div className="main_text">
+                                        I received the payment for $543. Should be shipping the item within a couple of hours.
+                                    </div>
+                                    <div className="times_event">
+                                        <div className="times_event_cat">
+                                            <CalendarTodayIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">April 28, 2022</div>
+                                        </div>
 
-                        </div>
+                                        <div style={{marginLeft:'15px'}} className="times_event_cat">
+                                            <AccessTimeIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">2:15am</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </TimelineEvent>
+                            
+                            <TimelineEvent
+                                icon={
+                                    <Avatar sx={{...icon, bgcolor:'#FFD3D6'}}>
+                                        <Avatar sx={{width:'30px', height:'30px', bgcolor:'#F00513', fontSize:'12px'}}>UF</Avatar>
+                                    </Avatar>
+                                }
+                            >
+                                <div style={outer}>
+                                    <div className="main_text">
+                                        I received the payment for $543. Should be shipping the item within a couple of hours.
+                                    </div>
+                                    <div className="times_event">
+                                        <div className="times_event_cat">
+                                            <CalendarTodayIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">April 28, 2022</div>
+                                        </div>
+
+                                        <div style={{marginLeft:'15px'}} className="times_event_cat">
+                                            <AccessTimeIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">2:15am</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </TimelineEvent>
+
+                            <TimelineEvent
+                                icon={
+                                    <Avatar sx={icon}>
+                                        <Avatar sx={{width:'30px', height:'30px', bgcolor:'#057EF0', fontSize:'12px'}}>UF</Avatar>
+                                    </Avatar>
+                                }
+                            >
+                                <div style={outer}>
+                                    <div className="main_text">
+                                        I received the payment for $543. Should be shipping the item within a couple of hours.
+                                    </div>
+                                    <div className="times_event">
+                                        <div className="times_event_cat">
+                                            <CalendarTodayIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">April 28, 2022</div>
+                                        </div>
+
+                                        <div style={{marginLeft:'15px'}} className="times_event_cat">
+                                            <AccessTimeIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">2:15am</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </TimelineEvent>
+
+                            <TimelineEvent
+                                icon={
+                                    <Avatar sx={{...icon, bgcolor:'#BFE5C6'}}>
+                                        <Avatar sx={{width:'30px', height:'30px', bgcolor:'#066348', fontSize:'12px'}}>UF</Avatar>
+                                    </Avatar>
+                                }
+                            >
+                                <div style={outer}>
+                                    <div className="main_text">
+                                        I received the payment for $543. Should be shipping the item within a couple of hours.
+                                    </div>
+                                    <div className="times_event">
+                                        <div className="times_event_cat">
+                                            <CalendarTodayIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">April 28, 2022</div>
+                                        </div>
+
+                                        <div style={{marginLeft:'15px'}} className="times_event_cat">
+                                            <AccessTimeIcon sx={{width:'15px', height:'15px', color:'#0046BC'}} />
+                                            <div className="ttxt">2:15am</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </TimelineEvent>
+                        </Timeline>
                     </div>
                 </div>
             </div>
         </div>
     )
+}
+
+const outer = {
+    display:'flex',
+    flexDirection:'column',
+    alignItems:'flex-start'
+}
+
+const icon = {
+    width:'40px',
+    height:'40px',
+    background:'#AAD6FF',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center'
 }
 
 const buts = {
