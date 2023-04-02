@@ -129,7 +129,18 @@ const CompanyLPO = () => {
                     </div>
                 </div>
 
-                <div className="company_right">World</div>
+                <div className="company_right">
+                    <div className="top_views">
+                        <div className="top_view_controls">
+                            <div>Recent Activities log</div>
+                            <Button sx={{...buts, width:'80px', background:'#EDFFFA'}}>See All</Button>
+                        </div>
+
+                        <div className="top_view_content">
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
