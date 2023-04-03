@@ -1,34 +1,5 @@
 import { useSelector } from 'react-redux';
 
-const SupplyCard = (props) => {
-    return(
-        <div className='supply_card'>
-
-            <div style={rows}>
-                <div>
-                    <div style={title}>138KW-ABJ</div>
-                    <div style={label}>Truck No</div>
-                </div>
-                <div>
-                <div style={title}>13,028.03</div>
-                    <div style={label}>Litre Qty</div>
-                </div>
-            </div>
-
-            <div style={rows}>
-                <div>
-                    <div style={title}>**********</div>
-                    <div style={label}>Shortage</div>
-                </div>
-                <div>
-                <div style={title}>13,028.03</div>
-                    <div style={label}>Litre Qty</div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
 const BalanceCF = () => {
 
     const {balances} = useSelector(state => state.dailySalesReducer.bulkReports);
@@ -41,6 +12,37 @@ const BalanceCF = () => {
                 <div style={ins} className="cells">{type} </div>
                 <div style={ins} className="cells">{data === null? "0": data.balanceCF}</div>
                 <div style={ins} className="cells">Said</div>
+            </div>
+        )
+    }
+
+    const MobileBalanceCF = ({data, type, sn}) => {
+        return(
+            <div className='supply_card'>
+    
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{sn}</div>
+                        <div style={label}>S/N</div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{type}</div>
+                        <div style={label}>Product</div>
+                    </div>
+                </div>
+    
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{data === null? "0": data.balanceCF}</div>
+                        <div style={label}>Quantity</div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                        <div style={title}>Said</div>
+                        <div style={label}>Confirmed By</div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -68,9 +70,9 @@ const BalanceCF = () => {
                 <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
                     <div className='sups'>
                         <div className='slide'>
-                            <SupplyCard />
-                            <SupplyCard />
-                            <SupplyCard />
+                            <MobileBalanceCF data={balances?.pms} type={'PMS'} sn={'1'} />
+                            <MobileBalanceCF data={balances?.ago} type={'AGO'} sn={'2'} />
+                            <MobileBalanceCF data={balances?.dpk} type={'DPK'} sn={'3'} />
                         </div>
                     </div>
                 </div>
@@ -95,7 +97,7 @@ const rows = {
 }
 
 const title = {
-    fontSize:'14px',
+    fontSize:'12px',
     fontWeight:'500',
     fontFamily:'Poppins',
     lineHeight:'30px',
@@ -103,7 +105,7 @@ const title = {
 }
 
 const label = {
-    fontSize:'12px',
+    fontSize:'11px',
     fontWeight:'500',
     fontFamily:'Poppins',
     color:'#07956A'

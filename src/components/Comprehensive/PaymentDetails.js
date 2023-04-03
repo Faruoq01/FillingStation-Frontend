@@ -8,35 +8,6 @@ import { bulkReports } from "../../store/actions/dailySales";
 import { useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 
-const SupplyCard = (props) => {
-    return(
-        <div className='supply_card'>
-
-            <div style={rows}>
-                <div>
-                    <div style={title}>138KW-ABJ</div>
-                    <div style={label}>Truck No</div>
-                </div>
-                <div>
-                <div style={title}>13,028.03</div>
-                    <div style={label}>Litre Qty</div>
-                </div>
-            </div>
-
-            <div style={rows}>
-                <div>
-                    <div style={title}>**********</div>
-                    <div style={label}>Shortage</div>
-                </div>
-                <div>
-                <div style={title}>13,028.03</div>
-                    <div style={label}>Litre Qty</div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
 const PaymentDetails = () => {
 
     const {payments, pospayment, sales, lpo, rtVolumes, expenses} = useSelector(state => state.dailySalesReducer.bulkReports);
@@ -182,10 +153,54 @@ const PaymentDetails = () => {
         });
     }
 
+    const MobileBankPayment = ({data, type}) => {
+
+        const resolvePayment = () => {
+            if(type === 'bank') return {bank: data.bankName, teller: data.tellerNumber}
+            if(type === 'pos') return {bank: data.posName, teller: data.terminalID}
+        }
+
+        return(
+            <div className='supply_card'>
+    
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{resolvePayment().bank}</div>
+                        <div style={label}>{type === 'bank'? 'Bank Name': 'POS Name'}</div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{resolvePayment().teller}</div>
+                        <div style={label}>{type === 'bank'? 'Teller No': 'Terminal ID'}</div>
+                    </div>
+                </div>
+    
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{data.amountPaid}</div>
+                        <div style={label}>Amount</div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                        <div style={title}>
+                            {getPerm("16") &&
+                                <div className="cells">
+                                    <img onClick={()=>{updateRecord(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                    <img onClick={() => { deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                                </div>
+                            }
+                        </div>
+                        <div style={label}>Action</div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return(
         <div style={{width:'100%'}}>
 
-<div className="initial_balance_container_mobile">
+            <div className="initial_balance_container_mobile">
                 {/* Supply records */}
                 <div className='mobile_header'>
                     &nbsp;&nbsp;&nbsp; Bank Payments
@@ -193,9 +208,15 @@ const PaymentDetails = () => {
                 <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
                     <div className='sups'>
                         <div className='slide'>
-                            <SupplyCard />
-                            <SupplyCard />
-                            <SupplyCard />
+                            {
+                                payments.length === 0?
+                                <div>No record</div>:
+                                payments.map((item, index) => {
+                                    return(
+                                        <MobileBankPayment key={index} data={item} type={'bank'} />
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </div>
@@ -209,9 +230,15 @@ const PaymentDetails = () => {
                 <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
                     <div className='sups'>
                         <div className='slide'>
-                            <SupplyCard />
-                            <SupplyCard />
-                            <SupplyCard />
+                            {
+                                pospayment.length === 0?
+                                <div>No record</div>:
+                                pospayment.map((item, index) => {
+                                    return(
+                                        <MobileBankPayment key={index} data={item} type={'pos'} />
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </div>
@@ -335,7 +362,7 @@ const rows = {
 }
 
 const title = {
-    fontSize:'14px',
+    fontSize:'12px',
     fontWeight:'500',
     fontFamily:'Poppins',
     lineHeight:'30px',
@@ -343,7 +370,7 @@ const title = {
 }
 
 const label = {
-    fontSize:'12px',
+    fontSize:'11px',
     fontWeight:'500',
     fontFamily:'Poppins',
     color:'#07956A'

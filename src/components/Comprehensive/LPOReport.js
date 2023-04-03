@@ -7,35 +7,6 @@ import swal from 'sweetalert';
 import { useState } from 'react';
 import UpdateLPO from '../Modals/DailySales/lpo';
 
-const SupplyCard = (props) => {
-    return(
-        <div className='supply_card'>
-
-            <div style={rows}>
-                <div>
-                    <div style={title}>138KW-ABJ</div>
-                    <div style={label}>Truck No</div>
-                </div>
-                <div>
-                <div style={title}>13,028.03</div>
-                    <div style={label}>Litre Qty</div>
-                </div>
-            </div>
-
-            <div style={rows}>
-                <div>
-                    <div style={title}>**********</div>
-                    <div style={label}>Shortage</div>
-                </div>
-                <div>
-                <div style={title}>13,028.03</div>
-                    <div style={label}>Litre Qty</div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
 const LPOReport = () => {
 
     const {lpo} = useSelector(state => state.dailySalesReducer.bulkReports);
@@ -75,44 +46,44 @@ const LPOReport = () => {
         if(type === "DPK") return row.DPKRate*row.lpoLitre;
     }
 
-    const LPORows = (props) => {
+    const updateRecord = (data) => {
+        setOpenEdit(true);
+        setOneRecord(data);
+    }
 
-        const updateRecord = (data) => {
-            setOpenEdit(true);
-            setOneRecord(data);
-        }
-
-        const deleteRecord = (data) => {
-            swal({
-                title: "Alert!",
-                text: "Are you sure you want to delete this record?",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-            .then((willDelete) => {
-                if (willDelete) {
-                    DailySalesService.deleteSales({id: data._id, type:'lpo'}).then(data => {
-                        getAndAnalyzeDailySales();
-                    }).then(()=>{
-                        swal("Success", "Record deleted successfully", "success");
-                    });
-                }
-            });
-        }
-    
-        const getAndAnalyzeDailySales = () => {
-            const salesPayload = {
-                organisationID: resolveUserID().id,
-                outletID: oneStationData._id,
-                onLoad: currentDate === ""? true: false,
-                selectedDate: currentDate
+    const deleteRecord = (data) => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to delete this record?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                DailySalesService.deleteSales({id: data._id, type:'lpo'}).then(data => {
+                    getAndAnalyzeDailySales();
+                }).then(()=>{
+                    swal("Success", "Record deleted successfully", "success");
+                });
             }
-    
-            DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
-                dispatch(bulkReports(data.dailyRecords));
-            });
+        });
+    }
+
+    const getAndAnalyzeDailySales = () => {
+        const salesPayload = {
+            organisationID: resolveUserID().id,
+            outletID: oneStationData._id,
+            onLoad: currentDate === ""? true: false,
+            selectedDate: currentDate
         }
+
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+            dispatch(bulkReports(data.dailyRecords));
+        });
+    }
+
+    const LPORows = (props) => {
 
         return(
             <div style={{marginTop:'5px'}} className="product_balance_header">
@@ -132,6 +103,68 @@ const LPOReport = () => {
             </div>
         )
     }
+
+    const MobileLPORows = ({data}) => {
+        return(
+            <div className='supply_card'>
+    
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{data.accountName}</div>
+                        <div style={label}>Account Name</div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                    <div style={title}>{data.productType}</div>
+                        <div style={label}>Product Type</div>
+                    </div>
+                </div>
+    
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{data.truckNo}</div>
+                        <div style={label}>Truck No</div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{data.lpoLitre}</div>
+                        <div style={label}>Litre Qty</div>
+                    </div>
+                </div>
+
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{rate(data, data.productType)}</div>
+                        <div style={label}>Rate</div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                        <div style={title}>{amount(data, data.productType)}</div>
+                        <div style={label}>Amount</div>
+                    </div>
+                </div>
+
+                <div style={rows}>
+                    <div style={{width:'100%'}}>
+                        <div style={title}></div>
+                        <div style={label}></div>
+                    </div>
+
+                    <div style={{width:'100%'}}>
+                        <div style={title}>
+                            {getPerm("14") &&
+                                <div className="cells">
+                                    <img onClick={()=>{updateRecord(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                                    <img onClick={() => { deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                                </div>
+                            }
+                        </div>
+                        <div style={label}>Action</div>
+                    </div>
+                </div>
+            </div>
+        )
+    }    
 
     return(
         <div style={{width:'100%'}}>
@@ -167,9 +200,15 @@ const LPOReport = () => {
                 <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
                     <div className='sups'>
                         <div className='slide'>
-                            <SupplyCard />
-                            <SupplyCard />
-                            <SupplyCard />
+                            {
+                                lpo?.length === 0?
+                                <div>No records</div>:
+                                lpo.map((item, index) => {
+                                    return(
+                                        <MobileLPORows key={index} data={item} index={index} />
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </div>
@@ -194,7 +233,7 @@ const rows = {
 }
 
 const title = {
-    fontSize:'14px',
+    fontSize:'12px',
     fontWeight:'500',
     fontFamily:'Poppins',
     lineHeight:'30px',
@@ -202,7 +241,7 @@ const title = {
 }
 
 const label = {
-    fontSize:'12px',
+    fontSize:'11px',
     fontWeight:'500',
     fontFamily:'Poppins',
     color:'#07956A'

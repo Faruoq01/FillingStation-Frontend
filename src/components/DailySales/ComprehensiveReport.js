@@ -129,6 +129,7 @@ const ComprehensiveReport = () => {
                             background:'tomato',
                             fontSize:'12px',
                             marginLeft:'10px',
+                            marginRight: '20px',
                             borderRadius:"0px",
                             textTransform:'capitalize',
                             '&:hover': {

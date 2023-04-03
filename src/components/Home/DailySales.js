@@ -478,6 +478,7 @@ const DailySales = (props) => {
     }
 
     const openDailySales = (data) => {
+        if(load) return;
         if(oneStationData === null) return swal("Warning!", "Please select a station", "info");
         if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
 

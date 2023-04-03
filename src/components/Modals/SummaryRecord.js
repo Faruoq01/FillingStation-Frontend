@@ -206,9 +206,9 @@ const SummaryRecord = (props) => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const [stop, setStop] = useState(false);
-    console.log(records, "summary")
-    console.log(selectedPumps, "Pumps")
-    console.log(selectedTanks, "Tanks")
+    // console.log(records, "summary")
+    // console.log(selectedPumps, "Pumps")
+    // console.log(selectedTanks, "Tanks")
 
     const updateTankDetails = (product, tank) => {
         const onlyPMS = [...tankList].filter(data => data.productType === product);
@@ -503,49 +503,6 @@ const SummaryRecord = (props) => {
     )
 }
 
-const butt = {
-    width:'50px',
-    height:'25px',
-    marginRight:'10px',
-    marginTop:'10px',
-    background:'red',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center'
-}
-
-const line = {
-    width:'100%',
-    fontSize:'12px',
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-between',
-    height:'30px',
-    background:'#525252',
-    alignItems:'center',
-    color:'#fff',
-    fontWeight:'600'
-}
-
-const tankProps = {
-    width:'98%',
-    height:'auto',
-    borderRadius:'5px',
-    overflow:'hidden',
-    background:'#525252'
-}
-
-const tankContainer = {
-    width:'100%',
-    height:'auto',
-    display:'flex',
-    flexDirection:'column',
-    alignItems:'center',
-    paddingTop:'5px',
-    paddingBottom:'5px',
-    marginTop:'10px'
-}
-
 const add = {
     width:'100%',
     height:'auto',
@@ -573,29 +530,6 @@ const texts = {
     fontWeight:'bold'
 }
 
-const firstBox = {
-    width: '40%',
-    height:'30px',
-    display:'flex',
-    flexDirection:'row',
-    alignItems:'center',
-    background:'#d7d7d7',
-    fontSize:'12px',
-    color:'#000',
-    fontWeight:'700'
-}
-
-const secondBox = {
-    width: '60%',
-    height:'30px',
-    display:'flex',
-    flexDirection:'row',
-    alignItems:'center',
-    background:'#d7d7d7',
-    fontSize:'12px',
-    fontWeight:'bold'
-}
-
 const nums = {
     width: '20px',
     height: '20px',
@@ -618,15 +552,6 @@ const conts = {
     marginBottom:'5px',
     justifyContent:'flex-start',
     color:'#000'
-}
-
-const wide = {
-    width:'100%',
-    height:'30px',
-    display:'flex',
-    marginTop:'5px',
-    flexDirection:'row',
-    alignItems:'center'
 }
 
 const inner = {

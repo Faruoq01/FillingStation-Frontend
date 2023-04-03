@@ -71,23 +71,23 @@ const InitialBalance = () => {
 
                 <div style={rows}>
                     <div>
-                        <div style={title}>138KW-ABJ</div>
-                        <div style={label}>Truck No</div>
+                        <div style={title}>{getInit(props).quantity}</div>
+                        <div style={label}>Quantity</div>
                     </div>
                     <div>
-                    <div style={title}>13,028.03</div>
-                        <div style={label}>Litre Qty</div>
+                    <div style={title}>{getInit(props).shortage}</div>
+                        <div style={label}>Shortage</div>
                     </div>
                 </div>
 
                 <div style={rows}>
                     <div>
-                        <div style={title}>**********</div>
-                        <div style={label}>Shortage</div>
+                        <div style={title}>{getInit(props).shortage}</div>
+                        <div style={label}>Overage</div>
                     </div>
                     <div>
-                    <div style={title}>13,028.03</div>
-                        <div style={label}>Litre Qty</div>
+                    <div style={title}><Link>View</Link></div>
+                        <div style={label}></div>
                     </div>
                 </div>
             </div>
@@ -133,15 +133,15 @@ const InitialBalance = () => {
                 </div>
                 <div className='balance_mobile_detail'>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.pms === null? "0": balances?.pms?.balanceCF}</div>
+                        <div className='mobile_big'>{balances?.pms === null? "0": Number(balances?.pms?.balanceCF) + Number(getSales('PMS'))}</div>
                         <div className='mobile_sm'>PMS</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.ago === null? "0": balances?.ago?.balanceCF}</div>
+                        <div className='mobile_big'>{balances?.ago === null? "0": Number(balances?.ago?.balanceCF) + Number(getSales('AGO'))}</div>
                         <div className='mobile_sm'>AGO</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.dpk === null? "0": balances?.dpk?.balanceCF}</div>
+                        <div className='mobile_big'>{balances?.dpk === null? "0": Number(balances?.dpk?.balanceCF) + Number(getSales('DPK'))}</div>
                         <div className='mobile_sm'>DPK</div>
                     </div>
                 </div>
@@ -153,9 +153,9 @@ const InitialBalance = () => {
                 <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
                     <div className='sups'>
                         <div className='slide'>
-                            <SupplyCard color={"#06805B"} type={"PMS"} />
-                            <SupplyCard color={"#FFA010"} type={"AGO"} />
-                            <SupplyCard color={"#525252"} type={"DPK"} />
+                            <SupplyCard color={"#06805B"} type={"PMS"} data = {balances?.pms} />
+                            <SupplyCard color={"#FFA010"} type={"AGO"} data = {balances?.ago}  />
+                            <SupplyCard color={"#525252"} type={"DPK"} data = {balances?.dpk}  />
                         </div>
                     </div>
                 </div>
@@ -216,7 +216,7 @@ const rows = {
 }
 
 const title = {
-    fontSize:'14px',
+    fontSize:'12px',
     fontWeight:'500',
     fontFamily:'Poppins',
     lineHeight:'30px',
@@ -224,7 +224,7 @@ const title = {
 }
 
 const label = {
-    fontSize:'12px',
+    fontSize:'11px',
     fontWeight:'500',
     fontFamily:'Poppins',
     color:'#07956A'

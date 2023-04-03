@@ -81,7 +81,7 @@ const UpdateDipping = (props) => {
                 <div data-aos="zoom-out-up" style={{height:'auto'}} className='modalContainer2'>
                     <div style={{height:'auto', margin:'20px'}} className='inner'>
                         <div className='head'>
-                            <div className='head-text'>Edit Expenses</div>
+                            <div className='head-text'>Edit Dipping</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
@@ -90,7 +90,7 @@ const UpdateDipping = (props) => {
                        <div style={{marginTop:'15px'}} className='inputs'>
 
                             <div style={{marginTop:'10px'}} className='inputs'>
-                                <div className='head-text2'>Expense Name</div>
+                                <div className='head-text2'>Current Level</div>
                                 <OutlinedInput 
                                     disabled
                                     sx={{
@@ -111,7 +111,7 @@ const UpdateDipping = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>Expense Amount</div>
+                                <div className='head-text2'>Dipping Amount</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
