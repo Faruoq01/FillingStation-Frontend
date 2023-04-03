@@ -243,11 +243,6 @@ const DailyRecordSales = () => {
                 outletID: data, 
                 organisationID: resolveUserID().id
             }
-
-            const payload2 = {
-                outletID: data,
-                organisationID: resolveUserID().id,
-            }
     
             IncomingService.getAllIncoming3(payload).then((data) => {
                 dispatch(createIncomingOrder(data.incoming.incoming));
@@ -255,12 +250,16 @@ const DailyRecordSales = () => {
 
             dispatch(getAllPumps([]));
 
-            OutletService.getAllOutletTanks(payload2).then(data => {
+            OutletService.getAllOutletTanks(payload).then(data => {
                 const outletTanks = data.stations.map(data => {
                     const newData = {...data, label: data.tankName, value: data._id};
                     return newData;
                 });
                 dispatch(getAllOutletTanks(outletTanks));
+            });
+
+            OutletService.getAllStationPumps(payload).then(data => {
+                dispatch(getAllPumps(data));
             });
 
             LPOService.getAllLPO(payload).then((data) => {
