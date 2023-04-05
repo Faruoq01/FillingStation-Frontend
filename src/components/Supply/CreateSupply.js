@@ -189,11 +189,10 @@ const CreateSupply = (props) => {
     return(
         <div className='inner-body'>
             <div className='left-supply'>
-
-                <div style={{marginTop:'20px'}} className='double-form'>
+                <div className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Waybill No</span>
-                        <div style={{width: '95%', position:'relative'}}>
+                        <div style={{width: '100%', position:'relative'}}>
                             <div onClick={()=>setMenus(!menus)} className='text-field2'>
                                 <span style={{marginLeft:'10px'}}>{waybillNo}</span>
                                 <KeyboardArrowDownIcon />
@@ -221,14 +220,14 @@ const CreateSupply = (props) => {
                     </div>
                 </div>
 
-                <div style={{marginTop:'20px'}} className='single-form'>
+                <div className='single-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Truck No</span>
                         <input style={{width:'96%'}} disabled value={truckNo} onChange={e => setTruckNo(e.target.value)} className='text-field' type={'text'} />
                     </div>
                 </div>
 
-                <div style={{marginTop:'20px'}} className='double-form'>
+                <div className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Product Supply</span>
                         <input disabled value={productSupply} onChange={e => setProductSupply(e.target.value)} className='text-field' type={'text'} />
@@ -240,7 +239,7 @@ const CreateSupply = (props) => {
                     </div>
                 </div>
 
-                <div style={{marginTop:'20px'}} className='single-form'>
+                <div style={{width:'100%'}} className='single-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Date of supply</span>
                         <input style={{width:'96%'}} value={supplyDate} onChange={e => setSupplyDate(e.target.value)} className='text-field' type="date" />
@@ -249,7 +248,7 @@ const CreateSupply = (props) => {
 
 
                 <div className='single-form'>
-                    <div className='input-d'>
+                    <div style={{width:'98%'}} className='input-d'>
                         <span style={{color:'green'}}>Select tanks</span>
                         <MultiSelect
                             options={getFilteredTanks()}
@@ -278,7 +277,7 @@ const CreateSupply = (props) => {
                     }
                 </div>
 
-                <div style={{marginTop:'20px'}} className='double-form'>
+                <div className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Shortage</span>
                         <input value={shortage} disabled className='text-field' type={'text'} />

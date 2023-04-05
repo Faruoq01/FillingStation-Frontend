@@ -222,10 +222,10 @@ const Supply = (props) => {
                             value={10}
                             sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Action</MenuItem>
-                            <MenuItem onClick={openPaymentModal} value={20}>Add Payments</MenuItem>
-                            <MenuItem value={30}>History</MenuItem>
-                            <MenuItem onClick={printReport} value={40}>Print</MenuItem>
+                            <MenuItem style={menu} value={10}>Action</MenuItem>
+                            <MenuItem style={menu} onClick={openPaymentModal} value={20}>Add Supply</MenuItem>
+                            <MenuItem style={menu} value={30}>History</MenuItem>
+                            <MenuItem style={menu} onClick={printReport} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
