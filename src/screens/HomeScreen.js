@@ -264,6 +264,9 @@ const HomeScreen = () => {
                             >
                                 <MenuIcon />
                             </IconButton>
+                            <span style={roots}>
+                                {name}
+                            </span>
                             <div className='side-app-bar'>
                                 <IconButton
                                     size="large"
@@ -395,6 +398,14 @@ const HomeScreen = () => {
             </div>
         </div>
     )
+}
+
+const roots = {
+    width:'100%', 
+    fontSize:"14px", 
+    display:'flex', 
+    flexDirection:'row', 
+    justifyContent:'flex-start'
 }
 
 export default withRouter(HomeScreen);
