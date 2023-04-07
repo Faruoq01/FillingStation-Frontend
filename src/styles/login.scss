@@ -20,7 +20,7 @@
                 max-width: 400px;
                 height: 500px;
                 margin-top: 50px;
-                box-shadow: 0px 3.6904px 3.6904px rgba(0, 0, 0, 0.25);
+                box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.25);
                 border-radius: 8.30341px;
                 display: flex;
                 justify-content: center;
@@ -42,8 +42,8 @@
                         justify-content: flex-start;
 
                         .logo{
-                            width: 70px;
-                            height: 70px;
+                            width: 60px;
+                            height: 60px;
                         }
 
                         .writeups{
@@ -54,7 +54,7 @@
                             justify-content: center;
 
                             .wwttx{
-                                font-size: 25px;
+                                font-size: 20px;
                                 font-family: 'Poppins';
                                 font-weight: bolder;
                                 line-height: 25px;
@@ -62,7 +62,7 @@
                             }
 
                             .ww{
-                                font-size: 10px;
+                                font-size: 8px;
                                 font-family: 'Poppins';
                             }
                         }
