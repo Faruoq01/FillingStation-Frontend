@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
 import { 
     setSpinner, 
-    removeSpinner, 
 } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
@@ -18,7 +17,6 @@ import OutletService from '../../services/outletService';
 const EditTank = (props) => {
 
     const dispatch = useDispatch();
-    const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const [loader, setLoader] = useState(false);
 
@@ -53,12 +51,6 @@ const EditTank = (props) => {
         dispatch(setSpinner());
         setLoader(true);
 
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const yy = today.getFullYear();
-        const day = mm+'/'+dd+'/'+yy;
-
         const payload = {
             id: props.data._id,
             tankName: tankName,
@@ -67,22 +59,16 @@ const EditTank = (props) => {
             tankCapacity: tankCapacity,
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
-            organisationID: oneStation?.organisation,
-            outletID: oneStation?._id,
-            dateUpdated: day,
-            station: oneStation?.outletName,
-            previousLevel: props.data.currentLevel,
-            currentLevel: props.data.currentLevel,
-            activeState: props.data.activeState,
+            currentLevel: currentStock,
         }
 
         OutletService.updateTank(payload).then((data)=>{
-            dispatch(removeSpinner());
+            props.outRefresh();
             props.refresh();
-            swal("Success", data.message, "success");
+            swal("Success", "records updated successfully!", "success");
+    
         }).then(()=>{
             setLoader(false);
-            props.outRefresh();
             handleClose();
         });
     }
@@ -244,7 +230,7 @@ const EditTank = (props) => {
                             variant="contained"> Save
                         </Button>
 
-                        {loadingSpinner &&
+                        {loader &&
                             <ThreeDots 
                                 height="60" 
                                 width="50" 
