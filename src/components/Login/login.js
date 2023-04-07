@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/comp/360logo.svg';
 import Button from '@mui/material/Button';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
@@ -82,7 +82,13 @@ const Login = (props) => {
     return(
         <div className='login-form-container'>
             <div className='inner-form-container'>
-                <img className='logo' src={logo} alt="icon" />
+                <div className='logo-container'>
+                    <img className='logo' src={logo} alt="icon" />
+                    <div className='writeups'>
+                        <div className='wwttx'>360-Station</div>
+                        <div className='ww'>Digitized Fueling Managements</div>
+                    </div>
+                </div>
                 <div className='login-text'>Login</div>
                 <form className='main-form'>
                     <input 
