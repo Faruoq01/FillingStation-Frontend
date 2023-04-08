@@ -6,6 +6,7 @@ import { useState } from 'react';
 import swal from 'sweetalert';
 import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
+import ApproximateDecimal from '../common/approx';
 
 const ProductBalance = (props) => { 
 
@@ -90,11 +91,11 @@ const ProductBalance = (props) => {
         return(
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{data.pumpName}</div>
-                <div style={ins} className="cells">{data.openingMeter}</div>
-                <div style={ins} className="cells">{data.closingMeter}</div>
-                <div style={ins} className="cells">{Number(data.closingMeter) - Number(data.openingMeter)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(data.openingMeter)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(data.closingMeter)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(Number(data.closingMeter) - Number(data.openingMeter))}</div>
                 <div style={ins} className="cells">{rate(data, props.type)}</div>
-                <div style={ins} className="cells">{amount(data, props.type)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(amount(data, props.type))}</div>
                 {getPerm("12") &&
                     <div style={ins} className="cells">
                         <img onClick={()=>{openEditModal(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -116,14 +117,14 @@ const ProductBalance = (props) => {
                     </div>
 
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.openingMeter}</div>
+                        <div style={title}>{ApproximateDecimal(data.openingMeter)}</div>
                         <div style={label}>Opening Meter</div>
                     </div>
                 </div>
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.closingMeter}</div>
+                        <div style={title}>{ApproximateDecimal(data.closingMeter)}</div>
                         <div style={label}>Closing meter</div>
                     </div>
 
@@ -135,7 +136,7 @@ const ProductBalance = (props) => {
 
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{amount(data, props.type)}</div>
+                        <div style={title}>{ApproximateDecimal(amount(data, props.type))}</div>
                         <div style={label}>Amount</div>
                     </div>
 

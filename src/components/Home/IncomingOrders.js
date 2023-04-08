@@ -52,12 +52,7 @@ const IncomingOrder = () => {
 
     const openCreateModal = () => {
         if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
-
-        if(oneStationData === null){
-            swal("Warning!", "Please select a station first", "info");
-        }else{
-            setOpen(true);
-        }
+        setOpen(true);
     }
 
     const getAllIncomingOrder = useCallback(() => {

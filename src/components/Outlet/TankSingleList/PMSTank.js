@@ -1,5 +1,6 @@
 import React, {useRef, useEffect} from 'react';
 import Tooltip from '@mui/material/Tooltip';
+import ApproximateDecimal from '../../common/approx';
 
 const TankComponent = (props) => {
 
@@ -64,48 +65,6 @@ const TankComponent = (props) => {
         fuel.current.style.width = `79px`;
         fuel.current.style.height = `${current}px`;
         fuel.current.style.background = "#399A19";
-        // var z = 1;
-        // function myLoop(){
-        //     setTimeout(function(){
-        //         ctx.fillRect(70*dpi, (300 - z)*dpi , 230*dpi, current*dpi);
-        //         z++;
-        //         if(z <= current){
-        //             myLoop();
-        //         }
-        //     }, 5)
-        // }
-        // if(current > 0){
-        //     myLoop();
-        // }
-    }
-
-    const ApproximateDecimal = (data) => {
-        const changeToString = String(data);
-
-        const findIndex = changeToString.indexOf(".");
-        if(findIndex === -1){
-            return changeToString;
-        }
-
-        const splitDataByDecimal = changeToString.split('.');
-        const splitFractions = splitDataByDecimal[1].split('');
-        if(splitFractions.length <= 2){
-            return changeToString;
-        }
-        
-        let fractionBuilder = splitFractions[0];
-        if(Number(splitFractions[2] > 5)){
-            const tenths = Number(splitFractions[1]) + 1;
-            fractionBuilder = fractionBuilder.concat("", tenths);
-
-        }else{
-            fractionBuilder = fractionBuilder.concat(splitFractions[1]);
-        }
-
-        const approxWithComma = splitDataByDecimal[0].match(/.{1,3}/g).join(',');
-        const approxNumber = approxWithComma.concat(".", fractionBuilder);
-
-        return approxNumber;
     }
 
     return(

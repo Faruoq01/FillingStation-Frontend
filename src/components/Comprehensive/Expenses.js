@@ -6,6 +6,7 @@ import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
 import { useState } from 'react';
 import UpdateExpenses from '../Modals/DailySales/expenses';
+import ApproximateDecimal from '../common/approx';
 
 const Expenses = () => {
 
@@ -77,7 +78,7 @@ const Expenses = () => {
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{props.index + 1}</div>
                 <div style={ins} className="cells">{props.data.expenseName}</div>
-                <div style={ins} className="cells">{props.data.expenseAmount}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(props.data.expenseAmount)}</div>
                 {getPerm('15') &&
                     <div style={ins} className="cells">
                         <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -99,7 +100,7 @@ const Expenses = () => {
                     </div>
 
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.expenseAmount}</div>
+                        <div style={title}>{ApproximateDecimal(data.expenseAmount)}</div>
                         <div style={label}>Amount</div>
                     </div>
                 </div>

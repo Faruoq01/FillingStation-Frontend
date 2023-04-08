@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import DashboardGraph from '../common/DashboardGraph';
 import { passCummulative } from '../../store/actions/dailySales';
+import ApproximateDecimal from '../common/approx';
 
 const Sales = (props) => {
 
@@ -174,24 +175,24 @@ const Sales = (props) => {
                                         <PMSTank />
                                     </div>
                                     <div style={{marginTop:'10px', color:'#399A19'}} className='tank-head'>PMS</div>
-                                    <div className='level'>Level: {cummulativeTotals?.totalPMS} Litres</div>
-                                    <div className='capacity'>Capacity: {cummulativeTotals?.PMSTankCapacity} Litres</div>
+                                    <div className='level'>Level: {ApproximateDecimal(cummulativeTotals?.totalPMS)} Litres</div>
+                                    <div className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals?.PMSTankCapacity)} Litres</div>
                                 </div>
                                 <div className="tanks">
                                     <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
                                         <AGOTank />
                                     </div>
                                     <div style={{marginTop:'10px', color:'#FFA010'}} className='tank-head'>AGO</div>
-                                    <div className='level'>Level: {cummulativeTotals?.totalAGO} Litres</div>
-                                    <div className='capacity'>Capacity: {cummulativeTotals?.AGOTankCapacity} Litres</div>
+                                    <div className='level'>Level: {ApproximateDecimal(cummulativeTotals?.totalAGO)} Litres</div>
+                                    <div className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals?.AGOTankCapacity)} Litres</div>
                                 </div>
                                 <div className="tanks">
                                     <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
                                         <DPKTank />
                                     </div>
                                     <div style={{marginTop:'10px', color:'#35393E'}} className='tank-head'>DPK</div>
-                                        <div className='level'>Level: {cummulativeTotals?.totalDPK} Litres</div>
-                                        <div className='capacity'>Capacity: {cummulativeTotals?.DPKTankCapacity} Litres</div>
+                                        <div className='level'>Level: {ApproximateDecimal(cummulativeTotals?.totalDPK)} Litres</div>
+                                        <div className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals?.DPKTankCapacity)} Litres</div>
                                     </div>
                             </div>
                         </div>

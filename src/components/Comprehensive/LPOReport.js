@@ -6,6 +6,7 @@ import { bulkReports } from '../../store/actions/dailySales';
 import swal from 'sweetalert';
 import { useState } from 'react';
 import UpdateLPO from '../Modals/DailySales/lpo';
+import ApproximateDecimal from '../common/approx';
 
 const LPOReport = () => {
 
@@ -91,9 +92,9 @@ const LPOReport = () => {
                 <div style={{...ins, width:'150%'}} className="cells">{props.data.accountName}</div>
                 <div style={ins} className="cells">{props.data.productType}</div>
                 <div style={ins} className="cells">{props.data.truckNo}</div>
-                <div style={ins} className="cells">{props.data.lpoLitre}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(props.data.lpoLitre)}</div>
                 <div style={ins} className="cells">{rate(props.data, props.data.productType)}</div>
-                <div style={ins} className="cells">{amount(props.data, props.data.productType)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(amount(props.data, props.data.productType))}</div>
                 {getPerm('14') &&
                     <div style={ins} className="cells">
                         <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -127,7 +128,7 @@ const LPOReport = () => {
                     </div>
 
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.lpoLitre}</div>
+                        <div style={title}>{ApproximateDecimal(data.lpoLitre)}</div>
                         <div style={label}>Litre Qty</div>
                     </div>
                 </div>
@@ -139,7 +140,7 @@ const LPOReport = () => {
                     </div>
 
                     <div style={{width:'100%'}}>
-                        <div style={title}>{amount(data, data.productType)}</div>
+                        <div style={title}>{ApproximateDecimal(amount(data, data.productType))}</div>
                         <div style={label}>Amount</div>
                     </div>
                 </div>

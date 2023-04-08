@@ -24,6 +24,7 @@ import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
 import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
+import ApproximateDecimal from '../common/approx';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -47,7 +48,6 @@ const DailySales = (props) => {
     const toString = date.toDateString();
     const [month, day, year] = toString.split(' ');
     const date2 = `${day} ${month} ${year}`;
-    const approx = require('approximate-number');
 
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
@@ -508,35 +508,6 @@ const DailySales = (props) => {
         getAndAnalyzeDailySales(oneStationData, false, e.target.value);
     }
 
-    const ApproximateDecimal = (data) => {
-        const changeToString = String(data);
-
-        const findIndex = changeToString.indexOf(".");
-        if(findIndex === -1){
-            return changeToString;
-        }
-
-        const splitDataByDecimal = changeToString.split('.');
-        const splitFractions = splitDataByDecimal[1].split('');
-        if(splitFractions.length <= 2){
-            return changeToString;
-        }
-        
-        let fractionBuilder = splitFractions[0];
-        if(Number(splitFractions[2] > 5)){
-            const tenths = Number(splitFractions[1]) + 1;
-            fractionBuilder = fractionBuilder.concat("", tenths);
-
-        }else{
-            fractionBuilder = fractionBuilder.concat(splitFractions[1]);
-        }
-
-        const approxWithComma = splitDataByDecimal[0].match(/.{1,3}/g).join(',');
-        const approxNumber = approxWithComma.concat(".", fractionBuilder);
-
-        return approxNumber;
-    }
-
     const goToSupply = () => {
         if(!getPerm('5')) return swal("Warning!", "Permission denied", "info");
         history.push("/home/supply")
@@ -620,10 +591,10 @@ const DailySales = (props) => {
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                                 <div style={{ fontWeight:'bold', fontSize:'12px'}}>PMS</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0)
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0)
                                                 } ltr</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
-                                                    approx(dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0)
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -641,10 +612,10 @@ const DailySales = (props) => {
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                                 <div style={{fontWeight:'bold', fontSize:'12px'}}>AGO</div>
                                                 <div style={{fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0)
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0)
                                                 } ltr</div>
                                                 <div style={{fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total NGN {
-                                                    approx(dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0)
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -662,10 +633,10 @@ const DailySales = (props) => {
                                             <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                                 <div style={{ fontWeight:'bold', fontSize:'12px'}}>DPK</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                    approx(dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0)
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0)
                                                 } ltr</div>
                                                 <div style={{ fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>TotaL NGN {
-                                                    approx(dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0)
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0)
                                                 }</div>
                                             </div>
                                         </div>
@@ -790,7 +761,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0"}</div>
+                                            <div>{ApproximateDecimal(dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -804,7 +775,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0"}</div>
+                                            <div>{ApproximateDecimal(dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -818,7 +789,7 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='right'>
                                             <div>Litre Qty</div>
-                                            <div>{dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0"}</div>
+                                            <div>{ApproximateDecimal(dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0")}</div>
                                         </div>
                                     </>
                                 }
@@ -865,7 +836,7 @@ const DailySales = (props) => {
                                             </div>
                                             <div style={{color:'#0872D4'}}  className='item-count'>Teller</div>
                                             <div style={{color:'#0872D4'}} className='item-count'>
-                                                NGN {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0"}
+                                                NGN {ApproximateDecimal(payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0")}
                                             </div>
                                             <div className='item-count'>
                                                 {ApproximateDecimal((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(payments.payments) - (Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses)) : "0")}
@@ -969,7 +940,7 @@ const DailySales = (props) => {
                                             <div className='table-text'>{data.createdAt.split('T')[0]}</div>
                                             <div className='table-text'>{data.depotStation}</div>
                                             <div className='table-text'>{data.product}</div>
-                                            <div className='table-text'>{data.quantity}</div>
+                                            <div className='table-text'>{ApproximateDecimal(data.quantity)}</div>
                                         </div>
                                     )
                                 })

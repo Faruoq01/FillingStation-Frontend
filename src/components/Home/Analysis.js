@@ -20,6 +20,7 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import AnalysisService from '../../services/analysis';
 import { setAnalysisData } from '../../store/actions/analysis';
 import swal from 'sweetalert';
+import ApproximateDecimal from '../common/approx';
 
 const Analysis = (props) => {
 
@@ -308,7 +309,7 @@ const Analysis = (props) => {
                             <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${oneStationData? oneStationData?.PMSPrice: "0"}`} />
                             <DashboardImage type={"expenses"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={`NGN ${calculateExpenses()}`} />
                             <DashboardImage type={"payments"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={`NGN ${calculatePayment()}`} />
-                            <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${calculateTotalSales() - calculateTotalCost() - calculateExpenses()}`} />
+                            <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${ApproximateDecimal(calculateTotalSales() - calculateTotalCost() - calculateExpenses())}`} />
                         </div>
                     </div>
                 </div>

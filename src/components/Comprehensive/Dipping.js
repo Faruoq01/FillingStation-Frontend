@@ -6,6 +6,7 @@ import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
 import UpdateDipping from '../Modals/DailySales/Dipping';
 import { useState } from 'react';
+import ApproximateDecimal from '../common/approx';
 
 const Dipping = () => {
 
@@ -78,8 +79,9 @@ const Dipping = () => {
                 <div style={ins} className="cells">{props.index + 1}</div>
                 <div style={ins} className="cells">{props.data.tankName}</div>
                 <div style={ins} className="cells">{props.data.productType}</div>
-                <div style={ins} className="cells">{props.data.currentLevel}</div>
-                <div style={ins} className="cells">{props.data.dipping}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(props.data.currentLevel)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(props.data.dipping)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(Number(props.data.currentLevel) - Number(props.data.dipping))}</div>
                 {getPerm('17') &&
                     <div style={ins} className="cells">
                         <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -108,20 +110,20 @@ const Dipping = () => {
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.currentLevel}</div>
+                        <div style={title}>{ApproximateDecimal(data.currentLevel)}</div>
                         <div style={label}>Current Level</div>
                     </div>
 
                     <div style={{width:'100%'}}>
-                    <div style={title}>{data.dipping}</div>
+                    <div style={title}>{ApproximateDecimal(data.dipping)}</div>
                         <div style={label}>Dipping</div>
                     </div>
                 </div>
 
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}></div>
-                        <div style={label}></div>
+                        <div style={title}>{ApproximateDecimal(Number(data.currentLevel) - Number(data.dipping))}</div>
+                        <div style={label}>Difference</div>
                     </div>
 
                     <div style={{width:'100%'}}>
@@ -150,6 +152,7 @@ const Dipping = () => {
                     <div className="cells">Product</div>
                     <div className="cells">Current Level</div>
                     <div className="cells">Dipping</div>
+                    <div className="cells">Difference</div>
                     {getPerm('17') && <div className="cells">Action</div>}
                 </div>
 

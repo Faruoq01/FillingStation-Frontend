@@ -11,6 +11,7 @@ import { adminOutlet, getAllOutletTanks, getAllStations, searchTanks } from '../
 import PrintTankUpdate from '../Reports/PrintTankUpdate';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
+import ApproximateDecimal from '../common/approx';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -374,9 +375,9 @@ const TankUpdate = () => {
                                             <div className='column'>{data.tankName}</div>
                                             <div className='column'>{data.productType}</div>
                                             <div className='column'>{data.station}</div>
-                                            <div className='column'>{data.previousLevel}</div>
+                                            <div className='column'>{ApproximateDecimal(data.previousLevel)}</div>
                                             <div className='column'>{data.quantityAdded}</div>
-                                            <div className='column'>{data.currentLevel}</div>
+                                            <div className='column'>{ApproximateDecimal(data.currentLevel)}</div>
                                         </div>
                                     )
                                 }):<div style={load}>

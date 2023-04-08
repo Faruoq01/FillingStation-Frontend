@@ -6,6 +6,7 @@ import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
 import { useState } from 'react';
 import UpdateReturnToTank from '../Modals/DailySales/returnToTank';
+import ApproximateDecimal from '../common/approx';
 
 const ReturnToTank = () => { 
 
@@ -88,9 +89,9 @@ const ReturnToTank = () => {
                 <div style={ins} className="cells">{data.pumpName}</div>
                 <div style={ins} className="cells">{data.tankName}</div>
                 <div style={ins} className="cells">{data.productType}</div>
-                <div style={ins} className="cells">{data.rtLitre}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(data.rtLitre)}</div>
                 <div style={ins} className="cells">{rate(data)}</div>
-                <div style={ins} className="cells">{amount(data, data.productType)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(amount(data, data.productType))}</div>
                 {getPerm('13') &&
                     <div style={ins} className="cells">
                         <img onClick={()=>{updateRecord(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -124,7 +125,7 @@ const ReturnToTank = () => {
                     </div>
 
                     <div style={{width:'100%'}}>
-                    <div style={title}>{data.rtLitre}</div>
+                    <div style={title}>{ApproximateDecimal(data.rtLitre)}</div>
                         <div style={label}>Litre Qty</div>
                     </div>
                 </div>
@@ -136,7 +137,7 @@ const ReturnToTank = () => {
                     </div>
 
                     <div style={{width:'100%'}}>
-                        <div style={title}>{amount(data, data.productType)}</div>
+                        <div style={title}>{ApproximateDecimal(amount(data, data.productType))}</div>
                         <div style={label}>Amount</div>
                     </div>
                 </div>

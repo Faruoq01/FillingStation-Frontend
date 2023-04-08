@@ -7,6 +7,7 @@ import DailySalesService from "../../services/DailySales";
 import { bulkReports } from "../../store/actions/dailySales";
 import { useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
+import ApproximateDecimal from "../common/approx";
 
 const PaymentDetails = () => {
 
@@ -177,7 +178,7 @@ const PaymentDetails = () => {
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.amountPaid}</div>
+                        <div style={title}>{ApproximateDecimal(data.amountPaid)}</div>
                         <div style={label}>Amount</div>
                     </div>
 
@@ -267,7 +268,7 @@ const PaymentDetails = () => {
                                             <div className="detail_table_row2">{index + 1}</div>
                                             <div className="detail_table_row2">{item.bankName}</div>
                                             <div className="detail_table_row2">{item.tellerNumber}</div>
-                                            <div className="detail_table_row2">{item.amountPaid}</div>
+                                            <div className="detail_table_row2">{ApproximateDecimal(item.amountPaid)}</div>
                                             {getPerm('16') &&
                                                 <div style={ins} className="detail_table_row2">
                                                     <img onClick={()=>{updateRecord(item, "bank")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -299,7 +300,7 @@ const PaymentDetails = () => {
                                             <div className="detail_table_row2">{index + 1}</div>
                                             <div className="detail_table_row2">{item.posName}</div>
                                             <div className="detail_table_row2">{item.terminalID}</div>
-                                            <div className="detail_table_row2">{item.amountPaid}</div>
+                                            <div className="detail_table_row2">{ApproximateDecimal(item.amountPaid)}</div>
                                             {getPerm('16') &&
                                                 <div style={ins} className="detail_table_row2">
                                                     <img onClick={()=>{updateRecord(item, "pos")}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -316,22 +317,22 @@ const PaymentDetails = () => {
                     <div className="details_right">
                         <div className="summary_details">
                             <div className="detail_cell">Total Sales</div>
-                            <div style={vals} className="detail_cell">{getPayments().totalSales}</div>
+                            <div style={vals} className="detail_cell">{ApproximateDecimal(getPayments().totalSales)}</div>
                         </div>
 
                         <div className="summary_details">
                             <div className="detail_cell">Sales Amount (no LPO)</div>
-                            <div style={vals} className="detail_cell">{getPayments().salesAmount}</div>
+                            <div style={vals} className="detail_cell">{ApproximateDecimal(getPayments().salesAmount)}</div>
                         </div>
 
                         <div className="summary_details">
                             <div className="detail_cell">Net to bank</div>
-                            <div style={vals} className="detail_cell">{getPayments().netToBank}</div>
+                            <div style={vals} className="detail_cell">{ApproximateDecimal(getPayments().netToBank)}</div>
                         </div>
 
                         <div className="summary_details">
                             <div className="detail_cell">Outstanding</div>
-                            <div style={vals} className="detail_cell">{getPayments().outstanding}</div>
+                            <div style={vals} className="detail_cell">{ApproximateDecimal(getPayments().outstanding)}</div>
                         </div>
                     </div>
                 </div>

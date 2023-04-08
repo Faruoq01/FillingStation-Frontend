@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import ApproximateDecimal from '../common/approx';
 
 const BalanceCF = () => {
 
@@ -10,7 +11,7 @@ const BalanceCF = () => {
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{sn}</div>
                 <div style={ins} className="cells">{type} </div>
-                <div style={ins} className="cells">{data === null? "0": data.balanceCF}</div>
+                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal(data.balanceCF)}</div>
                 <div style={ins} className="cells">Said</div>
             </div>
         )
@@ -34,7 +35,7 @@ const BalanceCF = () => {
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data === null? "0": data.balanceCF}</div>
+                        <div style={title}>{data === null? "0": ApproximateDecimal(data.balanceCF)}</div>
                         <div style={label}>Quantity</div>
                     </div>
 

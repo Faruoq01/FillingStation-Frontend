@@ -25,6 +25,7 @@ import Skeleton from '@mui/material/Skeleton';
 import ProgressBar from "@ramonak/react-progress-bar";
 import SalesDisplay from '../Modals/SalesDisplay';
 import swal from 'sweetalert';
+import ApproximateDecimal from '../common/approx';
 
 const mobile = window.matchMedia('(max-width: 600px)');
 
@@ -605,34 +606,6 @@ const Dashboard = (props) => {
         getTopStations();
     }
 
-    const approx2 = (data) => {
-        const changeToString = String(data);
-
-        const findIndex = changeToString.indexOf(".");
-        if(findIndex === -1){
-            return changeToString;
-        }
-
-        const splitDataByDecimal = changeToString.split('.');
-        const splitFractions = splitDataByDecimal[1].split('');
-        if(splitFractions.length <= 2){
-            return changeToString;
-        }
-        
-        let fractionBuilder = splitFractions[0];
-        if(Number(splitFractions[2] > 5)){
-            const tenths = Number(splitFractions[1]) + 1;
-            fractionBuilder = fractionBuilder.concat("", tenths);
-
-        }else{
-            fractionBuilder = fractionBuilder.concat(splitFractions[1]);
-        }
-
-        const approxNumber = splitDataByDecimal[0].concat(".", fractionBuilder);
-
-        return approxNumber;
-    }
-
     const openSalesDisplay = () => {
         if(!getPerm('5')) return swal("Warning!", "Permission denied", "info");
         setPrices(true);
@@ -782,7 +755,7 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='right'>
                                                 <div>Litre Qty</div>
-                                                <div>{approx(dashboardRecords.supply.pmsSupply)} Litres</div>
+                                                <div>{ApproximateDecimal(dashboardRecords.supply.pmsSupply)} Litres</div>
                                             </div>
                                         </>
                                     }
@@ -796,7 +769,7 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='right'>
                                                 <div>Litre Qty</div>
-                                                <div>{approx(dashboardRecords.supply.agoSupply)} Litres</div>
+                                                <div>{ApproximateDecimal(dashboardRecords.supply.agoSupply)} Litres</div>
                                             </div>
                                         </>
                                     }
@@ -810,7 +783,7 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='right'>
                                                 <div>Litre Qty</div>
-                                                <div>{approx(dashboardRecords.supply.dpkSupply)} Litres</div>
+                                                <div>{ApproximateDecimal(dashboardRecords.supply.dpkSupply)} Litres</div>
                                             </div>
                                         </>
                                     }
@@ -826,15 +799,15 @@ const Dashboard = (props) => {
                                     <div className='inner-content'>
                                         <div className='conts'>
                                             <div className='row-count'>
-                                                <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.netToBank)}</div>
+                                                <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {ApproximateDecimal(dashboardRecords.payments.netToBank)}</div>
                                                 <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.totalPayments)}</div>
-                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.outstanding)}</div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {ApproximateDecimal(dashboardRecords.payments.totalPayments)}</div>
+                                                <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {ApproximateDecimal(dashboardRecords.payments.outstanding)}</div>
                                             </div>
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                                 <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {approx2(dashboardRecords.payments.totalPosPayments)}</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {ApproximateDecimal(dashboardRecords.payments.totalPosPayments)}</div>
                                                 <div style={{color:'red', fontSize:'12px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">
@@ -866,7 +839,7 @@ const Dashboard = (props) => {
                                         justifyContent:'flex-end',
                                         alignItems:'center',
                                         }} className='inner-content'>
-                                        <span style={{marginRight:'30px', fontSize:'12px', fontWeight:'900'}}>NGN {approx(dashboardRecords.totalExpenses)}</span>
+                                        <span style={{marginRight:'30px', fontSize:'12px', fontWeight:'900'}}>NGN {ApproximateDecimal(dashboardRecords.totalExpenses)}</span>
                                     </div>
                                 }
                             </div>
@@ -1029,7 +1002,7 @@ const Dashboard = (props) => {
                                             <div className='table-text'>{data.createdAt}</div>
                                             <div className='table-text'>{data.depotStation}</div>
                                             <div className='table-text'>{data.product}</div>
-                                            <div className='table-text'>{data.quantity}</div>
+                                            <div className='table-text'>{ApproximateDecimal(data.quantity)}</div>
                                         </div>
                                     )
                                 })

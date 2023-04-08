@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import ApproximateDecimal from '../common/approx';
 
 const InitialBalance = () => {
 
@@ -45,18 +46,18 @@ const InitialBalance = () => {
             <div style={{marginTop:'5px'}} className="header_balance_container">
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": Number(props.data.balanceCF) + Number(getSales(props.type))}</div>
+                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props.data.balanceCF) + Number(getSales(props.type)))}</div>
                 </div>
                 <div style={ins} className="initial_supply">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div style={{marginRight:'5px'}} className="b_child">{getInit(props).quantity}</div>
-                    <div style={{marginRight:'5px'}} className="b_child">{getInit(props).shortage}</div>
-                    <div style={{marginRight:'5px'}} className="b_child">{getInit(props).overage}</div>
+                    <div style={{marginRight:'5px'}} className="b_child">{ApproximateDecimal(getInit(props).quantity)}</div>
+                    <div style={{marginRight:'5px'}} className="b_child">{ApproximateDecimal(getInit(props).shortage)}</div>
+                    <div style={{marginRight:'5px'}} className="b_child">{ApproximateDecimal(getInit(props).overage)}</div>
                     <div className="b_child"><Link>View</Link></div>
                 </div>
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": (Number(props.data.balanceCF) + Number(getInit(props).quantity) + Number(getSales(props.type)))}</div>
+                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props.data.balanceCF) + Number(getInit(props).quantity) + Number(getSales(props.type)))}</div>
                 </div>
             </div>
         )
@@ -71,18 +72,18 @@ const InitialBalance = () => {
 
                 <div style={rows}>
                     <div>
-                        <div style={title}>{getInit(props).quantity}</div>
+                        <div style={title}>{ApproximateDecimal(getInit(props).quantity)}</div>
                         <div style={label}>Quantity</div>
                     </div>
                     <div>
-                    <div style={title}>{getInit(props).shortage}</div>
+                    <div style={title}>{ApproximateDecimal(getInit(props).shortage)}</div>
                         <div style={label}>Shortage</div>
                     </div>
                 </div>
 
                 <div style={rows}>
                     <div>
-                        <div style={title}>{getInit(props).shortage}</div>
+                        <div style={title}>{ApproximateDecimal(getInit(props).shortage)}</div>
                         <div style={label}>Overage</div>
                     </div>
                     <div>
@@ -133,15 +134,15 @@ const InitialBalance = () => {
                 </div>
                 <div className='balance_mobile_detail'>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.pms === null? "0": Number(balances?.pms?.balanceCF) + Number(getSales('PMS'))}</div>
+                        <div className='mobile_big'>{balances?.pms === null? "0": ApproximateDecimal(Number(balances?.pms?.balanceCF) + Number(getSales('PMS')))}</div>
                         <div className='mobile_sm'>PMS</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.ago === null? "0": Number(balances?.ago?.balanceCF) + Number(getSales('AGO'))}</div>
+                        <div className='mobile_big'>{balances?.ago === null? "0": ApproximateDecimal(Number(balances?.ago?.balanceCF) + Number(getSales('AGO')))}</div>
                         <div className='mobile_sm'>AGO</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.dpk === null? "0": Number(balances?.dpk?.balanceCF) + Number(getSales('DPK'))}</div>
+                        <div className='mobile_big'>{balances?.dpk === null? "0": ApproximateDecimal(Number(balances?.dpk?.balanceCF) + Number(getSales('DPK')))}</div>
                         <div className='mobile_sm'>DPK</div>
                     </div>
                 </div>
@@ -167,15 +168,15 @@ const InitialBalance = () => {
                 </div>
                 <div className='balance_mobile_detail'>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.pms === null? "0": (Number(balances?.pms?.balanceCF) + Number(getInit({data: balances?.pms, type: "PMS"}).quantity))}</div>
+                        <div className='mobile_big'>{balances?.pms === null? "0": ApproximateDecimal(Number(balances?.pms?.balanceCF) + Number(getInit({data: balances?.pms, type: "PMS"}).quantity))}</div>
                         <div className='mobile_sm'>PMS</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.ago === null? "0": (Number(balances?.ago?.balanceCF) + Number(getInit({data: balances?.ago, type: "AGO"}).quantity))}</div>
+                        <div className='mobile_big'>{balances?.ago === null? "0": ApproximateDecimal(Number(balances?.ago?.balanceCF) + Number(getInit({data: balances?.ago, type: "AGO"}).quantity))}</div>
                         <div className='mobile_sm'>AGO</div>
                     </div>
                     <div className='col_1'>
-                        <div className='mobile_big'>{balances?.dpk === null? "0": (Number(balances?.dpk?.balanceCF) + Number(getInit({data: balances?.ago, type: "DPK"}).quantity))}</div>
+                        <div className='mobile_big'>{balances?.dpk === null? "0": ApproximateDecimal(Number(balances?.dpk?.balanceCF) + Number(getInit({data: balances?.ago, type: "DPK"}).quantity))}</div>
                         <div className='mobile_sm'>DPK</div>
                     </div>
                 </div>
