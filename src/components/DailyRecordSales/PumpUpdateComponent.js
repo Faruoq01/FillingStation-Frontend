@@ -17,15 +17,15 @@ const PumpUpdateComponent = (props) => {
     const dispatch = useDispatch();
 
     //////////////////////////////////////////////////////////////
-    const records = useSelector(state => state.recordsReducer.load);
+    // const records = useSelector(state => state.recordsReducer.load);
     const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
     const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
     const PMS = useSelector(state => state.recordsReducer.PMS);
     const AGO = useSelector(state => state.recordsReducer.AGO);
     const DPK = useSelector(state => state.recordsReducer.DPK);
-    console.log(selectedPumps, "selected pumps")
-    console.log(selectedTanks, "selected tanks")
-    console.log(records, "records")
+    // console.log(selectedPumps, "selected pumps")
+    // console.log(selectedTanks, "selected tanks")
+    // console.log(records, "records")
 
     const getPMSPump = useCallback(() => {
         const newList = [...pumpList];
@@ -235,6 +235,16 @@ const PumpUpdateComponent = (props) => {
         }
     }
 
+    const displaySelectedPumps = (data, type) => {
+        if(selectedPumps.length === 0){
+            return data;
+
+        }else{
+            const productPump = selectedPumps.filter(data => data.productType === type);
+            return productPump;
+        }
+    }
+
     return(
         <div style={{flexDirection: 'column', alignItems:'center'}} className='inner-body'>
 
@@ -277,7 +287,7 @@ const PumpUpdateComponent = (props) => {
                 </div>
             </div>
             
-            <div style={{marginTop:'10px', marginBottom:'10px', fontWeight:'400'}}>Select Pump used for the day</div>
+            <div style={{marginTop:'10px', marginBottom:'10px', fontWeight:'400'}}>Select pump used for the day</div>
             <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
                     pumpList.length === 0?
@@ -350,7 +360,7 @@ const PumpUpdateComponent = (props) => {
                     pumpList.length === 0?
                     <div style={cap}>Please click to select a pump</div>:
                     productType === "PMS"?
-                    PMS?.map((item, index) => {
+                    displaySelectedPumps(PMS, 'PMS')?.map((item, index) => {
                         return(
                             <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
@@ -373,7 +383,7 @@ const PumpUpdateComponent = (props) => {
                         )
                     }):
                     productType === "AGO"?
-                    AGO?.map((item, index) => {
+                    displaySelectedPumps(AGO, 'AGO')?.map((item, index) => {
                         return(
                             <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
@@ -396,7 +406,7 @@ const PumpUpdateComponent = (props) => {
                         )
                     }):
                     productType === "DPK"?
-                    DPK?.map((item, index) => {
+                    displaySelectedPumps(DPK, 'DPK')?.map((item, index) => {
                         return(
                             <div style={{width: mediaMatch.matches? '100%': '270px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>

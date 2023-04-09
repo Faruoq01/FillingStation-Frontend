@@ -40,16 +40,16 @@ const PaymentDetails = () => {
     const getPayments = () => {
 
         const totalExpenses = expenses.reduce((accum, current) => {
-            return Number(accum) + Number(current.expenseAmount);
+            return Number(accum) + Number(current.expenseAmount.replace(/[^0-9.]/g, ''));
         }, 0);
 
         const totalBankPayment = payments.reduce((accum, current) => {
-            return Number(accum) + Number(current.amountPaid);
+            return Number(accum) + Number(current.amountPaid.replace(/[^0-9.]/g, ''));
         }, 0);
 
 
         const totalPOSPayment = pospayment.reduce((accum, current) => {
-            return Number(accum) + Number(current.amountPaid);
+            return Number(accum) + Number(current.amountPaid.replace(/[^0-9.]/g, ''));
         }, 0);
 
 

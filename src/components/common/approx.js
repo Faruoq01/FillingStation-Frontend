@@ -3,13 +3,16 @@ const ApproximateDecimal = (data) => {
 
     const findIndex = changeToString.indexOf(".");
     if(findIndex === -1){
-        return Number(changeToString).toLocaleString();;
+        const rem = changeToString.replace(/[^0-9.]/g, '')
+        return Number(rem).toLocaleString();
     }
 
     const splitDataByDecimal = changeToString.split('.');
     const splitFractions = splitDataByDecimal[1].split('');
     if(splitFractions.length <= 2){
-        return Number(changeToString).toLocaleString();
+        const left = splitDataByDecimal[0].replace(/[^0-9.]/g, '')
+        const format = Number(left).toLocaleString();
+        return format.concat(splitDataByDecimal[1]);
     }
     
     let fractionBuilder = splitFractions[0];
@@ -21,7 +24,8 @@ const ApproximateDecimal = (data) => {
         fractionBuilder = fractionBuilder.concat(splitFractions[1]);
     }
 
-    const approxWithComma = Number(splitDataByDecimal[0]).toLocaleString();
+    const left = splitDataByDecimal[0].replace(/[^0-9.]/g, '')
+    const approxWithComma = Number(left).toLocaleString();
     const approxNumber = approxWithComma.concat(".", fractionBuilder);
 
     return approxNumber;
