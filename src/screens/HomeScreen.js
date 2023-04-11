@@ -62,6 +62,7 @@ import config from '../constants';
 import DailyRecordSales from '../components/Home/DailyRecordSales';
 import DashboardEmployee from '../components/DashboardComponents/DashboardEmp';
 import { useHistory } from 'react-router-dom';
+import { socket } from '../services/socket';
 
 const HomeScreen = () => {
 
@@ -71,11 +72,49 @@ const HomeScreen = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const [isConnected, setIsConnected] = useState(socket.connected);
+
     useEffect(()=>{
         if(!online){
             history.push('/connection');
         }
     });
+
+    useEffect(() => {
+        // no-op if the socket is already connected
+        socket.connect();
+
+        return () => {
+            socket.emit('removeUser', user);
+            socket.disconnect();
+        };
+    }, []);
+
+    useEffect(()=>{
+        
+        function onConnect() {
+            setIsConnected(true);
+        }
+    
+        function onDisconnect() {
+            setIsConnected(false);
+        }
+    
+        socket.on('connect', onConnect);
+        socket.on('disconnect', onDisconnect);
+        socket.on('private', function(msg){
+            console.log(msg)
+        });
+
+        socket.emit('userDetails', user);
+    
+        return () => {
+            socket.off('userDetails', user);
+            socket.off('connect', onConnect);
+            socket.off('disconnect', onDisconnect);
+        };
+        
+    }, [user]);
 
     const routes = useMemo(()=>{
         return(
@@ -226,6 +265,7 @@ const HomeScreen = () => {
                     <SideItems marginT={"540px"} link={'/home/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                 </div>
             </div>
+
             <Drawer
                 open={isOpen}
                 onClose={toggleDrawer}
@@ -250,6 +290,7 @@ const HomeScreen = () => {
                     </div>
                 </div>
             </Drawer>
+
             <div style={{background: user.isDark === "0"? '#fff': '#404040'}} className='main-content'>
                 <div className='mobile-bar'>
                     <AppBar sx={{background:'#06805B', zIndex:'1'}} position="absolute">
