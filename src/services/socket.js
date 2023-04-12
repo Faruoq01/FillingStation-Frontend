@@ -1,6 +1,4 @@
 import { io } from 'socket.io-client';
+import config from '../constants';
 
-// "undefined" means the URL will be computed from the `window.location` object
-const URL = 'http://localhost:5000';
-
-export const socket = io(URL);
+export const socket = io(config.BASE_URL);
