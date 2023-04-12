@@ -63,16 +63,44 @@ import DailyRecordSales from '../components/Home/DailyRecordSales';
 import DashboardEmployee from '../components/DashboardComponents/DashboardEmp';
 import { useHistory } from 'react-router-dom';
 import { socket } from '../services/socket';
+import { useCallback } from 'react';
+import OutletService from '../services/outletService';
+import { adminOutlet, getAllStations } from '../store/actions/outlet';
 
 const HomeScreen = () => {
 
     const user = useSelector(state => state.authReducer.user);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const online = useSelector(data => data.authReducer.connection);
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const [isConnected, setIsConnected] = useState(socket.connected);
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
+    const getAllStationData = useCallback(() => {
+        const payload = {
+            organisation: resolveUserID().id
+        }
+
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+        });
+        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user._id, user.userType, user.outletID, dispatch]);
+
+    useEffect(()=>{
+        getAllStationData();
+    },[getAllStationData]);
+
+    // const [isConnected, setIsConnected] = useState(socket.connected);
 
     useEffect(()=>{
         if(!online){
@@ -85,37 +113,47 @@ const HomeScreen = () => {
         socket.connect();
 
         return () => {
-            socket.emit('removeUser', user);
             socket.disconnect();
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        
     }, []);
 
     useEffect(()=>{
         
         function onConnect() {
-            setIsConnected(true);
+            // setIsConnected(true);
         }
     
         function onDisconnect() {
-            setIsConnected(false);
+            // setIsConnected(false);
+        }
+
+        function updatePermission(data){
+            const findID = data.findIndex(item => item._id === user._id);
+            if(findID !== -1){
+                const userData = data[findID];
+                if(resolveUserID().id === userData.organisationID){
+                    dispatch(updateUser(userData));
+                    localStorage.setItem('user', JSON.stringify(userData));
+
+                    const outletID = allOutlets.findIndex(item => item._id === userData.outletID);
+                    if(outletID !== -1) dispatch(adminOutlet(allOutlets[outletID]));
+                }
+            }
         }
     
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
-        socket.on('private', function(msg){
-            console.log(msg)
-        });
-
-        socket.emit('userDetails', user);
+        socket.on('permission', updatePermission);
     
         return () => {
-            socket.off('userDetails', user);
             socket.off('connect', onConnect);
             socket.off('disconnect', onDisconnect);
+            socket.off('permission', updatePermission);
         };
         
-    }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, user]);
 
     const routes = useMemo(()=>{
         return(
