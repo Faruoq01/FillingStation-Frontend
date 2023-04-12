@@ -604,6 +604,20 @@ const DailySales = (props) => {
                                                 }</div>
                                             </div>
                                         </div>
+
+                                        {/* Mobile views below here */}
+                                        <div className='mobile-detail'>
+                                            <div className="top-icon">
+                                                <img style={{width:'25px', height:'25px'}} src={me5} alt="icon" />
+                                                <div className='top-head-text'>PMS Sales</div>
+                                            </div>
+                                            <div className='top-head-tx'>Litre {
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference): 0)
+                                                } ltr </div>
+                                            <div className='top-head-tx'>Total N {
+                                                ApproximateDecimal(dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0)
+                                            } </div>
+                                        </div>
                                     </div>
                                 }
                             </div>
@@ -624,6 +638,20 @@ const DailySales = (props) => {
                                                     ApproximateDecimal(dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0)
                                                 }</div>
                                             </div>
+                                        </div>
+
+                                        {/* Mobile views below here */}
+                                        <div className='mobile-detail'>
+                                            <div className="top-icon">
+                                                <img style={{width:'25px', height:'25px'}} src={me5} alt="icon" />
+                                                <div className='top-head-text'>AGO Sales</div>
+                                            </div>
+                                            <div className='top-head-tx'>Litre {
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference): 0)
+                                                } ltr </div>
+                                            <div className='top-head-tx'>Total N {
+                                                ApproximateDecimal(dailySales.hasOwnProperty("PMS")? dailySales.AGO.total.amount: 0)
+                                            } </div>
                                         </div>
                                     </div>
                                 }
@@ -646,6 +674,20 @@ const DailySales = (props) => {
                                                 }</div>
                                             </div>
                                         </div>
+
+                                        {/* Mobile views below here */}
+                                        <div className='mobile-detail'>
+                                            <div className="top-icon">
+                                                <img style={{width:'25px', height:'25px'}} src={me5} alt="icon" />
+                                                <div className='top-head-text'>DPK Sales</div>
+                                            </div>
+                                            <div className='top-head-tx'>Litre {
+                                                    ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference): 0)
+                                                } ltr </div>
+                                            <div className='top-head-tx'>Total N {
+                                                ApproximateDecimal(dailySales.hasOwnProperty("PMS")? dailySales.DPK.total.amount: 0)
+                                            } </div>
+                                        </div>
                                     </div>
                                 }
                             </div>
@@ -658,24 +700,24 @@ const DailySales = (props) => {
                                 <div className="tank-inner">
                                     <div className="tanks">
                                         <div className='tank-head'>PMS</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {ApproximateDecimal(cummulativeTotals.totalPMS)} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals.PMSTankCapacity)} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {ApproximateDecimal(cummulativeTotals.totalPMS)} Ltr</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals.PMSTankCapacity)} Ltr</div>
                                         <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                             <PMSTank/>
                                         </div>
                                     </div>
                                     <div className="tanks">
                                         <div className='tank-head'>AGO</div>
-                                            <div style={{fontWeight:'500'}} className='level'>Level: {ApproximateDecimal(cummulativeTotals.totalAGO)} Litres</div>
-                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals.AGOTankCapacity)} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='level'>Level: {ApproximateDecimal(cummulativeTotals.totalAGO)} Ltr</div>
+                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals.AGOTankCapacity)} Ltr</div>
                                             <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
                                                 <AGOTank/>
                                             </div>
                                         </div>
                                     <div className="tanks">
                                         <div className='tank-head'>DPK</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {ApproximateDecimal(cummulativeTotals.totalDPK)} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals.DPKTankCapacity)} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {ApproximateDecimal(cummulativeTotals.totalDPK)} Ltr</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {ApproximateDecimal(cummulativeTotals.DPKTankCapacity)} Ltr</div>
                                         <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
                                             <DPKTank/>
                                         </div>
@@ -715,7 +757,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Expenses</div>
-                                        <div>NGN {ApproximateDecimal(payments.hasOwnProperty("payments")? payments.expenses: "0")}</div>
+                                        <div>N {ApproximateDecimal(payments.hasOwnProperty("payments")? payments.expenses: "0")}</div>
                                     </div>
                                 }
                             </div>
@@ -724,7 +766,7 @@ const DailySales = (props) => {
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Payments</div>
-                                        <div>NGN {ApproximateDecimal(payments.hasOwnProperty("payments")? payments.payments: "0")}</div>
+                                        <div>N {ApproximateDecimal(payments.hasOwnProperty("payments")? payments.payments: "0")}</div>
                                     </div>
                                 }
                             </div>
