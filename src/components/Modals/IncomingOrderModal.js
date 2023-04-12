@@ -40,6 +40,7 @@ const IncomingOrderModal = (props) => {
     const [val, setVal] = useState(1);
     const [stationSelect, setStationSelect] = useState(false);
     const [selected, setSelected] = useState([]);
+    const [loadedQuantity, setLoadedQuantity] = useState("0");
 
     const handleClose = () => props.close(false);
 
@@ -56,7 +57,7 @@ const IncomingOrderModal = (props) => {
 
         const totalLoadedQuantity = selected.reduce((accum, current) => {
             return Number(accum) + Number(current.incomingQuantity);
-        }, 0)
+        }, 0);
 
         if(Number(totalLoadedQuantity) > Number(previousBalance)) return swal("Warning!", "Total quantity exceeds current balance", "info");
 
@@ -153,6 +154,12 @@ const IncomingOrderModal = (props) => {
         }else{
             cloneSelected[findID] = {...cloneSelected[findID], incomingQuantity: e.target.value}
             setSelected(cloneSelected);
+
+            const totalLoadedQuantity = cloneSelected.reduce((accum, current) => {
+                return Number(accum) + Number(current.incomingQuantity);
+            }, 0)
+    
+            setLoadedQuantity(totalLoadedQuantity);
         }
     }
 
@@ -334,7 +341,13 @@ const IncomingOrderModal = (props) => {
                             <div className='inputs'>
                                 <div className='head-text2'>Select discharge stations</div>
                                 <div onClick={()=>setStationSelect(!stationSelect)} style={drop} >
-                                    <span style={{marginLeft:'10px'}}>Select ({selected.length})</span>
+                                    <span style={{marginLeft:'10px'}}>
+                                        Select ({selected.length}) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loaded Quantity ( 
+                                            &nbsp;
+                                            <span style={{color:'green', fontWeight: "600"}}>{loadedQuantity}</span>
+                                            &nbsp;
+                                        )
+                                    </span>
                                     <KeyboardArrowDownIcon sx={{marginRight:'10px'}} />
                                 </div>
                                 {stationSelect &&

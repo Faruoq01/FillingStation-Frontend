@@ -64,6 +64,7 @@ const DailySales = (props) => {
     const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
+    const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -317,7 +318,7 @@ const DailySales = (props) => {
             selectedDate: selectedDate
         }
 
-        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {console.log(data, "kkkkkkk")
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
 
             const salesDataRecord = {
                 sales: data.dailyRecords.sales,
@@ -458,7 +459,7 @@ const DailySales = (props) => {
         dispatch(adminOutlet(item));
         setLoads(true);
 
-        getAndAnalyzeDailySales(item, true, "");
+        getAndAnalyzeDailySales(item, false, currentDate2);
 
         const payload = {
             organisationID: resolveUserID().id,
@@ -521,6 +522,11 @@ const DailySales = (props) => {
     const goToInc = () => {
         if(!getPerm('8')) return swal("Warning!", "Permission denied", "info");
         history.push("/home/inc-orders");
+    }
+
+    const goToPagesInd = (data) => {
+        if(data === 'exp') return history.push('/home/analysis/expenses');
+        if(data === 'pay') return history.push('/home/analysis/payments');
     }
 
     return(
@@ -704,7 +710,7 @@ const DailySales = (props) => {
                         </div>
 
                         <div style={{marginTop:'10px'}} className='expen'>
-                            <div style={{background:'#108CFF'}} className='child'>
+                            <div onClick={()=>{goToPagesInd('exp')}} style={{background:'#108CFF'}} className='child'>
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
@@ -713,7 +719,7 @@ const DailySales = (props) => {
                                     </div>
                                 }
                             </div>
-                            <div style={{background:'#06805B'}} className='child'>
+                            <div onClick={()=>{goToPagesInd('pay')}} style={{background:'#06805B'}} className='child'>
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
@@ -838,7 +844,7 @@ const DailySales = (props) => {
                                             <div style={{color:'#0872D4'}} className='item-count'>
                                                 NGN {ApproximateDecimal(payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0")}
                                             </div>
-                                            <div className='item-count'>
+                                            <div style={{color:'red'}} className='item-count'>
                                                 {ApproximateDecimal((dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(payments.payments) - (Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses)) : "0")}
                                             </div>
                                         </div>

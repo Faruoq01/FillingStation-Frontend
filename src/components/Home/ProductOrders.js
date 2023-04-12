@@ -9,8 +9,6 @@ import ProductService from '../../services/productService';
 import {createProductOrder, searchProduct} from '../../store/actions/productOrder';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import OutletService from '../../services/outletService';
-import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import ProductReport from '../Reports/ProductReport';
 import IncomingList from '../Modals/IncomingList';
 import swal from 'sweetalert';
@@ -27,8 +25,6 @@ const ProductOrders = () => {
     const user = useSelector(state => state.authReducer.user);
     const productOrder = useSelector(state => state.productOrderReducer.productOrder);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
-    const [defaultState, setDefault] = useState(0);
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -58,34 +54,17 @@ const ProductOrders = () => {
 
     const getAllProductData = useCallback(() => {
         setLoading(true);
+        
         const payload = {
-            organisation: resolveUserID().id
+            skip: skip * limit,
+            limit: limit,
+            organisationID: resolveUserID().id
         }
 
-        OutletService.getAllOutletStations(payload).then(data => {
-            dispatch(getAllStations(data.station));
-            if(getPerm('0')){
-                if(!getPerm('1')) setDefault(1);
-                dispatch(adminOutlet(null));
-                return "None";
-            }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
-                return user.outletID;
-            }
-        }).then((data)=>{
-            const payload = {
-                skip: skip * limit,
-                limit: limit,
-                organisationID: resolveUserID().id
-            }
-
-            ProductService.getAllProductOrder(payload).then((data) => {
-                setLoading(false);
-                setTotal(data.product.count);
-                dispatch(createProductOrder(data.product.product));
-            });
+        ProductService.getAllProductOrder(payload).then((data) => {
+            setLoading(false);
+            setTotal(data.product.count);
+            dispatch(createProductOrder(data.product.product));
         });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,27 +80,6 @@ const ProductOrders = () => {
             skip: skip * limit,
             limit: limit,
             outletID: oneStationData === null? "None": oneStationData?._id,
-            organisationID: resolveUserID().id
-        }
-
-        ProductService.getAllProductOrder(payload).then((data) => {
-            setTotal(data.product.count);
-            dispatch(createProductOrder(data.product.product));
-        }).then(()=>{
-            setLoading(false);
-        })
-    }
-
-    const changeMenu = (index, item ) => {
-        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
-        setLoading(true);
-        setDefault(index);
-        dispatch(adminOutlet(item));
-
-        const payload = {
-            skip: skip * limit,
-            limit: limit,
-            outletID: item === null? "None": item?._id,
             organisationID: resolveUserID().id
         }
 
@@ -190,36 +148,6 @@ const ProductOrders = () => {
 
                 <div className='search'>
                     <div className='input-cont'>
-                        <div className='second-select'>
-                            {getPerm('0') &&
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={defaultState}
-                                    sx={selectStyle2}
-                                >
-                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
-                                    {
-                                        allOutlets.map((item, index) => {
-                                            return(
-                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
-                                            )
-                                        })  
-                                    }
-                                </Select>
-                            }
-                            {getPerm('0') ||
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={0}
-                                    sx={selectStyle2}
-                                    disabled
-                                >
-                                    <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
-                                </Select>
-                            }
-                        </div>
                         <div className='second-select'>
                                 <OutlinedInput 
                                     sx={{

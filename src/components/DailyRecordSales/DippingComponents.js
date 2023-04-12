@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import me4 from '../../assets/me4.png';
 import { updatePayload } from "../../store/actions/records";
+import ApproximateDecimal from "../common/approx";
 
 const returnColor = (data, style) => {
     if(data === "PMS"){
@@ -187,10 +188,11 @@ const DippingComponents = (props) => {
                     productType === "PMS"?
                     pms.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start', height:'210px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', height:'230px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName+"( "+ item.productType +" )"}</div>
-                                <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Current stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
                                 <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />
@@ -200,10 +202,11 @@ const DippingComponents = (props) => {
                     productType === "AGO"?
                     ago.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start', height:'210px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', height:'230px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName+"( "+ item.productType +" )"}</div>
-                                <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Current stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
                                 <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />
@@ -213,10 +216,11 @@ const DippingComponents = (props) => {
                     productType === "DPK"?
                     dpk.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start', height:'210px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', height:'230px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName+"( "+ item.productType +" )"}</div>
-                                <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Current stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
                                 <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />

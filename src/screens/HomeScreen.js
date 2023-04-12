@@ -88,6 +88,7 @@ const HomeScreen = () => {
             socket.emit('removeUser', user);
             socket.disconnect();
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(()=>{

@@ -10,6 +10,7 @@ import OutletService from '../../services/outletService';
 import { useHistory } from 'react-router-dom';
 import '../../styles/summary.scss';
 import { useState } from 'react';
+import ApproximateDecimal from '../common/approx';
 
 const FuelCard = (props) => {
 
@@ -36,7 +37,7 @@ const FuelCard = (props) => {
     }
 
     return(
-        <div className="fuel_card">
+        <div style={{border:'1px solid #ccc'}} className="fuel_card">
             <div className='inner_fuel_card'>
                 <div className='fuel_card_header'>
                     <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType} ({props.data.tankName})</span>
@@ -49,14 +50,14 @@ const FuelCard = (props) => {
                         <div className='vol_label'>Tanks Capacity</div>
                     </div>
                     <div className='fuel_card_items_right'>
-                        <div className='volum'>{props.data.currentLevel} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.currentLevel)} ltrs</div>
                         <div className='vol_label'>Current Level</div>
                     </div>
                 </div>
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{props.data.totalSales}</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.totalSales)}</div>
                         <div className='vol_label'>Total Sales</div>
                     </div>
                     <div className='fuel_card_items_right'>
@@ -67,22 +68,22 @@ const FuelCard = (props) => {
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{props.data.beforeSales} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.beforeSales)} ltrs</div>
                         <div className='vol_label'>Level Before Sales</div>
                     </div>
                     <div className='fuel_card_items_right'>
-                        <div className='volum'>{props.data.afterSales} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.afterSales)} ltrs</div>
                         <div className='vol_label'>Level After Sales</div>
                     </div>
                 </div>
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{props.data.totalTankLevel} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.totalTankLevel)} ltrs</div>
                         <div className='vol_label'>Balance brought forward</div>
                     </div>
                     <div className='fuel_card_items_right'>
-                        <div className='volum'>{props.data.balanceCF} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.balanceCF)} ltrs</div>
                         <div className='vol_label'>Balance carried forward</div>
                     </div>
                 </div>
@@ -97,7 +98,7 @@ const FuelCard = (props) => {
                                     <div style={{marginLeft:'10px', fontSize:'14px'}} className='volum'>{item.pumpName}</div>
                                 </div>
                                 <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'flex-end'}} className='fuel_card_items_right'>
-                                    <div style={{marginRight:'10px', fontSize:'14px'}} className='volum'>{item.sales} ltrs</div>
+                                    <div style={{marginRight:'10px', fontSize:'14px'}} className='volum'>{ApproximateDecimal(item.sales)} ltrs</div>
                                 </div>
                             </div>
                         )
@@ -133,7 +134,7 @@ const ReturnToTank = (props) => {
     }
 
     return(
-        <div className="fuel_card">
+        <div style={{border:'1px solid #ccc'}} className="fuel_card">
             <div className='inner_fuel_card'>
                 <div className='fuel_card_header'>
                     <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType} ({props.data.tankName})</span>

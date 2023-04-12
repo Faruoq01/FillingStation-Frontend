@@ -40,6 +40,7 @@ const ManagerModal = (props) => {
     const [defaultState, setDefault] = useState(0);
     const [roleState, setRoleState] = useState(0);
     const [loader, setLoader] = useState(false);
+    const [salary, setSalary] = useState("");
 
     const handleClose = () => {
         props.close(false)
@@ -63,6 +64,7 @@ const ManagerModal = (props) => {
         if(state === "") return swal("Warning!", "State field cannot be empty", "info");
         if(accountNumber === "") return swal("Warning!", "Account No field cannot be empty", "info");
         if(bankName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
+        if(salary === "") return swal("Warning!", "Salary field cannot be empty", "info");
         if(dateEmployed === "") return swal("Warning!", "Date employed field cannot be empty", "info");
         if(dateOfBirth === "") return swal("Warning!", "Date of birth field cannot be empty", "info");
         if(roleData === "") return swal("Warning!", "Role field cannot be empty", "info");
@@ -82,6 +84,7 @@ const ManagerModal = (props) => {
             state: state,
             accountNumber: accountNumber,
             bankName: bankName,
+            salary: salary,
             dateEmployed: dateEmployed,
             dateOfBirth: dateOfBirth,
             role: roleData,
@@ -111,6 +114,7 @@ const ManagerModal = (props) => {
             setState("");
             setAccountNumber("");
             setBankName("");
+            setSalary("");
             setDateEmployed("");
             setDateOfBirth("");
             setRoleState(0);
@@ -350,6 +354,25 @@ const ManagerModal = (props) => {
                                     }} placeholder="" 
                                     type='text'
                                     onChange={e => setBankName(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Salary</div>
+                                <input 
+                                    style={{
+                                        width:'94%',
+                                        outline: 'none',
+                                        paddingLeft: '10px',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        border:'1px solid #777777',
+                                    }} placeholder="" 
+                                    type='text'
+                                    onChange={e => setSalary(e.target.value)}
                                 />
                             </div>
 
