@@ -293,7 +293,7 @@ const Dashboard = (props) => {
         setLoad(true);
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('1')){
+            if(getPerm('1') || user.userType === "superAdmin"){
                 if(!getPerm('2')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
@@ -314,6 +314,7 @@ const Dashboard = (props) => {
                 startDate: formatOne,
                 endDate: formatTwo
             }
+            console.log(payload, "ffdfgf")
 
             const payload2 = {
                 id: resolveUserID().id, 

@@ -12,7 +12,6 @@ const BalanceCF = () => {
                 <div style={ins} className="cells">{sn}</div>
                 <div style={ins} className="cells">{type} </div>
                 <div style={ins} className="cells">{data === null? "0": ApproximateDecimal(data.balanceCF)}</div>
-                <div style={ins} className="cells">Said</div>
             </div>
         )
     }
@@ -39,10 +38,7 @@ const BalanceCF = () => {
                         <div style={label}>Quantity</div>
                     </div>
 
-                    <div style={{width:'100%'}}>
-                        <div style={title}>Said</div>
-                        <div style={label}>Confirmed By</div>
-                    </div>
+                    <div style={{width:'100%'}}></div>
                 </div>
             </div>
         )
@@ -55,7 +51,6 @@ const BalanceCF = () => {
                     <div className="cells">S/N</div>
                     <div className="cells">Product Type</div>
                     <div className="cells">Quantity</div>
-                    <div className="cells">Confirmed By</div>
                 </div>
 
                 <BalanceCF data={balances?.pms} type={'PMS'} sn={'1'} />

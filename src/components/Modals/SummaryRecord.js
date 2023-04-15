@@ -46,7 +46,7 @@ const FuelCard = (props) => {
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{props.data.tankCapacity} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.tankCapacity)} ltrs</div>
                         <div className='vol_label'>Tanks Capacity</div>
                     </div>
                     <div className='fuel_card_items_right'>
@@ -143,29 +143,29 @@ const ReturnToTank = (props) => {
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{props.data.tankCapacity} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.tankCapacity)} ltrs</div>
                         <div className='vol_label'>Tanks Capacity</div>
                     </div>
                     <div className='fuel_card_items_right'>
-                        <div className='volum'>{props.data.currentLevel} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.currentLevel)} ltrs</div>
                         <div className='vol_label'>Current Level</div>
                     </div>
                 </div>
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{props.data.beforeSales} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.beforeSales)} ltrs</div>
                         <div className='vol_label'>Level Before Sales</div>
                     </div>
                     <div className='fuel_card_items_right'>
-                        <div className='volum'>{props.data.afterSales} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.afterSales)} ltrs</div>
                         <div className='vol_label'>Level After Sales</div>
                     </div>
                 </div>
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{props.data.RTlitre} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.RTlitre)} ltrs</div>
                         <div className='vol_label'>Return to tank</div>
                     </div>
                     <div className='fuel_card_items_right'>
@@ -184,7 +184,7 @@ const ReturnToTank = (props) => {
                                     <div style={{marginLeft:'10px', fontSize:'14px'}} className='volum'>{item.pumpName}</div>
                                 </div>
                                 <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'flex-end'}} className='fuel_card_items_right'>
-                                    <div style={{marginRight:'10px', fontSize:'14px'}} className='volum'>{item.sales} ltrs</div>
+                                    <div style={{marginRight:'10px', fontSize:'14px'}} className='volum'>{ApproximateDecimal(item.sales)} ltrs</div>
                                 </div>
                             </div>
                         )
@@ -380,7 +380,7 @@ const SummaryRecord = (props) => {
                                                     <div className='vol_label'>Truck No</div>
                                                 </div>
                                                 <div className='fuel_card_items_right'>
-                                                    <div className='volum'>{data.lpoLitre} ltrs</div>
+                                                    <div className='volum'>{ApproximateDecimal(data.lpoLitre)} ltrs</div>
                                                     <div className='vol_label'>LPO Volume</div>
                                                 </div>
                                             </div>
@@ -410,7 +410,7 @@ const SummaryRecord = (props) => {
                                                     <div className='vol_label'>Expense Name</div>
                                                 </div>
                                                 <div className='fuel_card_items_right'>
-                                                    <div className='volum'>NGN {data.expenseAmount}</div>
+                                                    <div className='volum'>NGN {ApproximateDecimal(data.expenseAmount)}</div>
                                                     <div className='vol_label'>Expense Amount</div>
                                                 </div>
                                             </div>
@@ -440,7 +440,7 @@ const SummaryRecord = (props) => {
                                                     <div className='vol_label'>Payment Type</div>
                                                 </div>
                                                 <div className='fuel_card_items_right'>
-                                                    <div className='volum'> NGN {data.amountPaid}</div>
+                                                    <div className='volum'> NGN {ApproximateDecimal(data.amountPaid)}</div>
                                                     <div className='vol_label'>Amount Paid</div>
                                                 </div>
                                             </div>
@@ -470,7 +470,7 @@ const SummaryRecord = (props) => {
                                                     <div className='vol_label'>Product</div>
                                                 </div>
                                                 <div className='fuel_card_items_right'>
-                                                    <div className='volum'>{data.dippingValue} Ltrs</div>
+                                                    <div className='volum'>{ApproximateDecimal(data.dippingValue)} Ltrs</div>
                                                     <div className='vol_label'>Stock level</div>
                                                 </div>
                                             </div>
