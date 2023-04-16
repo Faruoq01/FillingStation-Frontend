@@ -68,7 +68,7 @@ const ReportConfirmation = () => {
             organisationID: oneStationData?.organisation,
         }
 
-        DailySalesService.getRemarks(payload).then(data => {
+        DailySalesService.getRemarks(payload).then(data => {console.log(data, "remarks")
             dispatch(saveRemarks(data.remarks));
         }).then(()=>{
             setLoading(false);
@@ -172,7 +172,7 @@ const ReportConfirmation = () => {
                                 height="60" 
                                 width="50" 
                                 radius="9"
-                                color="#fff" 
+                                color="#054834" 
                                 ariaLabel="three-dots-loading"
                                 wrapperStyle={{}}
                                 wrapperClassName=""
