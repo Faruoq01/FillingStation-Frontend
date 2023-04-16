@@ -23,6 +23,7 @@ import DailySalesService from "../../services/DailySales";
 import { useRef } from "react";
 import moment from "moment";
 import { Button } from "@mui/material";
+import ReportConfirmation from "../Comprehensive/ReportConfirmation";
 
 const months = {
     '01' : 'Jan',
@@ -259,8 +260,23 @@ const ComprehensiveReport = () => {
                         <div className="topic_name">Dipping</div>
                     </div>
 
-                    <div style={{borderLeft:'none'}} className="first_mid_layer">
+                    <div className="first_mid_layer">
                         {collapsible === 7 && <Dipping />}
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(8)} className="back_icon">
+                                <img style={{width:'20px', height:'16px'}} src={tank} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Daily report confirmation</div>
+                    </div>
+
+                    <div style={{borderLeft:'none'}} className="first_mid_layer">
+                        {collapsible === 8 && <ReportConfirmation />}
                     </div>
                 </div>
             </div>
