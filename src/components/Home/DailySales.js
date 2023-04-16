@@ -459,7 +459,11 @@ const DailySales = (props) => {
         dispatch(adminOutlet(item));
         setLoads(true);
 
-        getAndAnalyzeDailySales(item, false, currentDate2);
+        if(currentDate2 === ""){
+            getAndAnalyzeDailySales(item, true, currentDate2);
+        }else{
+            getAndAnalyzeDailySales(item, false, currentDate2);
+        }
 
         const payload = {
             organisationID: resolveUserID().id,

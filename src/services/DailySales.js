@@ -178,6 +178,28 @@ const DailySalesService = {
         });
     },
 
+    createRemark: (data) => {
+        return APIs.post('/daily-sales/remark', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getRemarks: (data) => {
+        return APIs.post('/daily-sales/remark-records', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
 }
 
 export default DailySalesService;

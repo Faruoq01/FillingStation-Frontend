@@ -14,7 +14,8 @@ import {
     DPK_BBF,
     BAR_DATA,
     SUMMARY_RECORD_SALES,
-    CURRENT_DATE
+    CURRENT_DATE,
+    REMARKS
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -80,6 +81,11 @@ export const summaryRecordSales = (params) => dispatch => {
 export const currentDateValue = (params) => dispatch => {
     dispatch({type: CURRENT_DATE, payload: params});
 }
+
+export const saveRemarks = (params) => dispatch => {
+    dispatch({type: REMARKS, payload: params});
+}
+
 
 
 

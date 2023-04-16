@@ -80,6 +80,7 @@ export const CHANGE_STATUS = "CHANGE_STATUS";
 export const CHANGE_ALL_STATUS = "CHANGE_ALL_STATUS";
 export const STORE_SINGLE_USER = "STORE_SINGLE_USER";
 export const CURRENT_DATE = "CURRENT_DATE";
+export const REMARKS = "REMARKS";
 
 /////////////////////////////////////////////////////////////////////////
 

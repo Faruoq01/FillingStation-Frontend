@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ReturnToTank from "../Comprehensive/ReturnToTank";
 import PaymentDetails from "../Comprehensive/PaymentDetails";
 import { isSafari } from "react-device-detect";
-import { bulkReports, currentDateValue } from "../../store/actions/dailySales";
+import { bulkReports, currentDateValue, saveRemarks } from "../../store/actions/dailySales";
 import DailySalesService from "../../services/DailySales";
 import { useRef } from "react";
 import moment from "moment";
@@ -90,6 +90,10 @@ const ComprehensiveReport = () => {
 
         DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
             dispatch(bulkReports(data.dailyRecords));
+        });
+
+        DailySalesService.getRemarks(salesPayload).then(data => {
+            dispatch(saveRemarks(data.remarks));
         });
     }
 
