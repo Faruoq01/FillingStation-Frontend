@@ -25,8 +25,6 @@ import { useDispatch } from 'react-redux';
 import { passRecordSales } from '../../store/actions/dailySales';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import IncomingService from '../../services/IncomingService';
-import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import { adminOutlet, getAllOutletTanks, getAllPumps, getAllStations } from '../../store/actions/outlet';
 import LPOService from '../../services/lpo';
 import { createLPO } from '../../store/actions/lpo';
@@ -228,9 +226,10 @@ const DailyRecordSales = () => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('0')){
+            if(getPerm('0') || user.userType === "superAdmin"){
                 if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
+                dispatch(getAllPumps([]));
                 return "None";
             }else{
                 const allStations = data.station;
@@ -238,33 +237,6 @@ const DailyRecordSales = () => {
                 dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
-        }).then((data)=>{
-            const payload = {
-                outletID: data, 
-                organisationID: resolveUserID().id
-            }
-    
-            IncomingService.getAllIncoming3(payload).then((data) => {
-                dispatch(createIncomingOrder(data.incoming.incoming));
-            });
-
-            dispatch(getAllPumps([]));
-
-            OutletService.getAllOutletTanks(payload).then(data => {
-                const outletTanks = data.stations.map(data => {
-                    const newData = {...data, label: data.tankName, value: data._id};
-                    return newData;
-                });
-                dispatch(getAllOutletTanks(outletTanks));
-            });
-
-            OutletService.getAllStationPumps(payload).then(data => {
-                dispatch(getAllPumps(data));
-            });
-
-            LPOService.getAllLPO(payload).then((data) => {
-                dispatch(createLPO(data.lpo.lpo));
-            });
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, user.outletID, user.userType]);
@@ -332,10 +304,6 @@ const DailyRecordSales = () => {
             outletID: item._id, 
             organisationID: item.organisation
         }
-
-        IncomingService.getAllIncoming3(payload).then((data) => {
-            dispatch(createIncomingOrder(data.incoming.incoming));
-        });
 
         OutletService.getAllStationPumps(payload).then(data => {
             dispatch(getAllPumps(data));

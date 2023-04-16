@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import me4 from '../../assets/me4.png';
 import { updatePayload } from "../../store/actions/records";
 import ApproximateDecimal from "../common/approx";
+import OutletService from "../../services/outletService";
+import { ThreeDots } from "react-loader-spinner";
 
 const returnColor = (data, style) => {
     if(data === "PMS"){
@@ -22,43 +24,71 @@ const returnColor = (data, style) => {
 const DippingComponents = (props) => {
 
     const [productType, setProductType] = useState("PMS");
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
     /////////////////////////////////////////////////////////
     const records = useSelector(state => state.recordsReducer.load);
-    const tankList = useSelector(state => state.outletReducer.tankList);
+    const user = useSelector(state => state.authReducer.user);
+    const [pms, setPMS] = useState([]);
+    const [ago, setAGO] = useState([]);
+    const [dpk, setDPK] = useState([]);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
-    const getPMSPump = useCallback(() => {
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
+    const getStationTanks = useCallback(()=>{
+        setLoading(true);
+        const payload = {
+            outletID: oneStationData._id, 
+            organisationID: resolveUserID().id
+        }
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            const outletTanks = data.stations.map(data => {
+                const newData = {...data, label: data.tankName, value: data._id};
+                return newData;
+            });
+            
+            setPMS(getPMSPump(outletTanks));
+            setAGO(getAGOPump(outletTanks));
+            setDPK(getDPKPump(outletTanks));
+        }).then(()=>{
+            setLoading(false);
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [oneStationData._id]);
+
+    useEffect(()=>{
+        getStationTanks();
+    }, [getStationTanks])
+
+    const getPMSPump = (tankList) => {
         const newList = [...tankList];
         const pms = newList.filter(data => data.productType === "PMS");
         const pmsCopy = pms.map(data => Object.assign({}, data));
         return pmsCopy;
-    }, [tankList]);
+    }
 
-    const getAGOPump = useCallback(() => {
+    const getAGOPump = (tankList) => {
         const newList = [...tankList];
         const ago = newList.filter(data => data.productType === "AGO");
         const agoCopy = ago.map(data => Object.assign({}, data));
         return agoCopy;
-    }, [tankList]);
+    }
 
-    const getDPKPump = useCallback(() => {
+    const getDPKPump = (tankList) => {
         const newList = [...tankList];
         const dpk = newList.filter(data => data.productType === "DPK");
         const dpkCopy = dpk.map(data => Object.assign({}, data));
         return dpkCopy;
-    }, [tankList]);
-
-    const [pms, setPMS] = useState([]);
-    const [ago, setAGO] = useState([]);
-    const [dpk, setDPK] = useState([]);
-
-    useEffect(()=>{
-        setPMS(getPMSPump());
-        setAGO(getAGOPump());
-        setDPK(getDPKPump());
-        
-    }, [getAGOPump, getDPKPump, getPMSPump]);
+    }
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -183,8 +213,23 @@ const DippingComponents = (props) => {
 
             <div style={{width:'100%',}} className='pumping'>
                 {
-                    tankList.length === 0?
-                    <div style={created}>No PMS tank created</div>:
+                    pms.length === 0?
+                    <div style={created}>
+                        {
+                            loading?
+                            <ThreeDots 
+                                height="60" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{}}
+                                wrapperClassName=""
+                                visible={true}
+                            />:
+                            <span>No tanks loaded</span>
+                        }
+                    </div>:
                     productType === "PMS"?
                     pms.map((item, index) => {
                         return(
@@ -259,6 +304,9 @@ const created = {
     marginBottom: '20px',
     fontWeight:'bold',
     textAlign:'center',
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'center'
 }
 
 const imps = {

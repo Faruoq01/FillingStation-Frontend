@@ -12,6 +12,8 @@ import RecordPaymentService from '../../services/recordPayment';
 import { allBankPayment, allPosPayment, searchBankPayment, searchPosPayment } from '../../store/actions/recordPayment';
 import config from '../../constants';
 import { ThreeDots } from 'react-loader-spinner';
+import swal from 'sweetalert';
+import DailySalesService from '../../services/DailySales';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 1150px)');
@@ -183,6 +185,40 @@ const Payments = (props) => {
         refresh();
     }
 
+    const confirmPayment = (data, type) => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to confirm this payment?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                
+                const payload = {
+                    type: "bank",
+                    id: data._id,
+                    confirmation: user.userType === "superAdmin"? user.firstname.concat(" ", user.lastname): user.staffName,
+                }
+        
+                const payload2 = {
+                    type: "pos",
+                    id: data._id,
+                    confirmation: user.userType === "superAdmin"? user.firstname.concat(" ", user.lastname): user.staffName,
+                }
+                console.log(payload2, "jhakcvjgkh")
+        
+                DailySalesService.updateSales(type === "bank"? payload: payload2).then(data => {
+                    setLoading(false);
+                    refresh();
+                }).then(()=>{
+                    swal("Success", "Record updated successfully", "success");
+                });
+            }
+        });
+    }
+
     return(
         <React.Fragment>
             <div data-aos="zoom-in-down" style={{marginTop: mobile.matches? "10px": "auto"}} className='paymentsCaontainer'>
@@ -347,6 +383,7 @@ const Payments = (props) => {
                             <div className='column'>Amount Paid</div>
                             <div className='column'>Payment Date</div>
                             <div className='column'>Date Created</div>
+                            <div className='column'>Confirmed By</div>
                             <div className='column'>Reciept</div>
                         </div>
 
@@ -364,6 +401,41 @@ const Payments = (props) => {
                                             <div className='column'>{data.amountPaid}</div>
                                             <div className='column'>{data.paymentDate}</div>
                                             <div className='column'>{data.createdAt.split('T')[0]}</div>
+                                            <div className='column'>
+                                                {
+                                                    ("confirmation" in data? data.confirmation === "null"? 
+                                                        <Button sx={{
+                                                            width:'60px', 
+                                                            height:'30px',  
+                                                            background: '#F36A4C',
+                                                            borderRadius: '3px',
+                                                            fontSize:'10px',
+                                                            textTransform: 'capitalize',
+                                                            '&:hover': {
+                                                                backgroundColor: '#F36A4C'
+                                                            }
+                                                            }}  
+                                                            onClick={()=>{confirmPayment(data, "bank")}}
+                                                            variant="contained"> Confirm
+                                                        </Button>:
+                                                        <div>{data.confirmation}</div> :
+                                                        <Button sx={{
+                                                            width:'60px', 
+                                                            height:'30px',  
+                                                            background: '#F36A4C',
+                                                            borderRadius: '3px',
+                                                            fontSize:'10px',
+                                                            textTransform: 'capitalize',
+                                                            '&:hover': {
+                                                                backgroundColor: '#F36A4C'
+                                                            }
+                                                            }}  
+                                                            onClick={()=>{confirmPayment(data, "bank")}}
+                                                            variant="contained"> Confirm
+                                                        </Button>
+                                                    )
+                                                }                                             
+                                            </div>
                                             <div className='column'>
                                                 {data.uploadSlip !== "null" && <a href={config.BASE_URL + data.uploadSlip} target="_blank" rel="noreferrer">View Slip</a>}
                                                 {data.uploadSlip === "null" && <span>No attachment</span>}
@@ -396,6 +468,7 @@ const Payments = (props) => {
                                 <div className='column'>Amount Paid</div>
                                 <div className='column'>Payment Date</div>
                                 <div className='column'>Date Created</div>
+                                <div className='column'>Confirmed By</div>
                                 <div className='column'>Reciept</div>
                             </div>
 
@@ -413,6 +486,41 @@ const Payments = (props) => {
                                                 <div className='column'>{data.amountPaid}</div>
                                                 <div className='column'>{data.paymentDate}</div>
                                                 <div className='column'>{data.createdAt.split('T')[0]}</div>
+                                                <div className='column'>
+                                                    {
+                                                        ("confirmation" in data? data.confirmation === "null"? 
+                                                            <Button sx={{
+                                                                width:'60px', 
+                                                                height:'30px',  
+                                                                background: '#F36A4C',
+                                                                borderRadius: '3px',
+                                                                fontSize:'10px',
+                                                                textTransform: 'capitalize',
+                                                                '&:hover': {
+                                                                    backgroundColor: '#F36A4C'
+                                                                }
+                                                                }}  
+                                                                onClick={()=>{confirmPayment(data, "pos")}}
+                                                                variant="contained"> Confirm
+                                                            </Button>:
+                                                            <div>{data.confirmation}</div> :
+                                                            <Button sx={{
+                                                                width:'60px', 
+                                                                height:'30px',  
+                                                                background: '#F36A4C',
+                                                                borderRadius: '3px',
+                                                                fontSize:'10px',
+                                                                textTransform: 'capitalize',
+                                                                '&:hover': {
+                                                                    backgroundColor: '#F36A4C'
+                                                                }
+                                                                }}  
+                                                                onClick={()=>{confirmPayment(data, "pos")}}
+                                                                variant="contained"> Confirm
+                                                            </Button>
+                                                        )
+                                                    }
+                                                </div>
                                                 <div className='column'>
                                                     {data.uploadSlip !== "null" && <a href={config.BASE_URL + data.uploadSlip} target="_blank" rel="noreferrer">View Slip</a>}
                                                     {data.uploadSlip === "null" && <span>No attachment</span>}
@@ -458,7 +566,7 @@ const selectStyle2 = {
     borderRadius:'5px',
     background: '#F2F1F1B2',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
@@ -468,13 +576,13 @@ const selectStyle2 = {
 const place = {
     width:'100%',
     textAlign:'center',
-    fontSize:'14px',
+    fontSize:'12px',
     marginTop:'20px',
     color:'green'
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
 }
 
 const load = {
