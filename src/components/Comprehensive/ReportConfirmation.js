@@ -23,7 +23,7 @@ const RemarkCard = () => {
 const ReportConfirmation = () => {
     return(
         <div style={{width:'100%'}}>
-            <div className="initial_balance_container">
+            <div className="initial_balance_container2">
                 <div className="report_confirmation">
                     <div className="left_confirmation">
                         <div className="confirmation_header">
