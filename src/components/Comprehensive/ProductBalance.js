@@ -49,6 +49,22 @@ const ProductBalance = (props) => {
         if(type === "DPK") return row.DPKSellingPrice*diff;
     }
 
+    const sumOfDifference = () => {
+        const totalDifference = product.reduce((accum, current) => {
+            return Number(accum) + (Number(current.closingMeter) - Number(current.openingMeter));
+        }, 0);
+
+        return totalDifference;
+    }
+
+    const sumOfTotals = () => {
+        const totalSum = product.reduce((accum, current) => {
+            return Number(accum) + (amount(current, current.productType));
+        }, 0);
+
+        return totalSum;
+    }
+
     const openEditModal = (data) => {
         setOneRecord(data);
         setOpenEdit(true);
@@ -179,6 +195,15 @@ const ProductBalance = (props) => {
                         )
                     })
                 }
+                <div style={{marginTop:'5px'}} className="product_balance_header">
+                    <div style={{...ins, background:'transparent'}} className="cells"></div>
+                    <div style={{...ins, background:'transparent'}} className="cells"></div>
+                    <div style={{...ins, background:'transparent'}} className="cells"></div>
+                    <div style={ins} className="cells">{ApproximateDecimal(sumOfDifference())}</div>
+                    <div style={ins} className="cells"></div>
+                    <div style={ins} className="cells">{ApproximateDecimal(sumOfTotals())}</div>
+                    <div style={{...ins, background:'transparent'}} className="cells"></div>
+                </div>
             </div>
 
             <div className="initial_balance_container_mobile">

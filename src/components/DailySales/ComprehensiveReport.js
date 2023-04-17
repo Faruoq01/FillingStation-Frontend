@@ -24,6 +24,7 @@ import { useRef } from "react";
 import moment from "moment";
 import { Button } from "@mui/material";
 import ReportConfirmation from "../Comprehensive/ReportConfirmation";
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 const months = {
     '01' : 'Jan',
@@ -273,7 +274,7 @@ const ComprehensiveReport = () => {
                     <div className="first_top_layer">
                         <div className="back_layer">
                             <div onClick={() => setCollapsible(8)} className="back_icon">
-                                <img style={{width:'20px', height:'16px'}} src={tank} alt="icon" />
+                                <AssessmentIcon sx={{width:'25px', height:'20px', color:'#fff'}} />
                             </div>
                         </div>
                         <div className="topic_name">Daily report confirmation</div>

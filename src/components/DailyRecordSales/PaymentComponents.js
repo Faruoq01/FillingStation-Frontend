@@ -11,6 +11,7 @@ import swal from 'sweetalert';
 import config from '../../constants';
 import { updatePayload } from "../../store/actions/records";
 import "../../styles/lpoNew.scss";
+import ApproximateDecimal from "../common/approx";
 
 const PaymentsComponents = (props) => {
 
@@ -109,6 +110,90 @@ const PaymentsComponents = (props) => {
         setGall(null);
     }
 
+    const getPayments = () => {
+
+        const payments = records['5'].filter(data => data.bankName !== null);
+        const pospayment = records['5'].filter(data => data.posName !== null);
+
+        const totalExpenses = records['4'].reduce((accum, current) => {
+            return Number(accum) + Number(current.expenseAmount.replace(/[^0-9.]/g, ''));
+        }, 0);
+
+        const totalBankPayment = payments.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid.replace(/[^0-9.]/g, ''));
+        }, 0);
+
+
+        const totalPOSPayment = pospayment.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid.replace(/[^0-9.]/g, ''));
+        }, 0);
+
+
+        /*############################################
+            Total sales
+        ###############################################*/
+
+        const totalPMS = selectedPumps.filter(data => data.productType === "PMS").reduce((accum, current) => {
+            return Number(accum) + (Number(current.sales) * Number(current.outlet.PMSPrice));
+        }, 0);
+
+        const totalAGO = selectedPumps.filter(data => data.productType === "AGO").reduce((accum, current) => {
+            return Number(accum) + (Number(current.sales) * Number(current.outlet.AGOPrice));
+        }, 0);
+
+        const totalDPK = selectedPumps.filter(data => data.productType === "DPK").reduce((accum, current) => {
+            return Number(accum) + (Number(current.sales) * Number(current.outlet.DPKPrice));
+        }, 0);
+
+        /*############################################
+            Total lpo sales
+        ###############################################*/
+
+        const totalLpoPMS = records['3'].filter(data => data.productType === "PMS").reduce((accum, current) => {
+            return Number(accum) + (Number(current.lpoLitre) * Number(current.PMSRate));
+        }, 0);
+
+        const totalLpoAGO = records['3'].filter(data => data.productType === "AGO").reduce((accum, current) => {
+            return Number(accum) + (Number(current.lpoLitre) * Number(current.AGORate));
+        }, 0);
+
+        const totalLpoDPK = records['3'].filter(data => data.productType === "DPK").reduce((accum, current) => {
+            return Number(accum) + (Number(current.lpoLitre) * Number(current.DPKRate));
+        }, 0);
+
+         /*############################################
+            Return to tank
+        ###############################################*/
+
+        const pmsRT = records['2'].filter(data => data.productType === "PMS").reduce((accum, current) => {
+            return Number(accum) + (Number(current.RTlitre) * Number(current.outlet.PMSPrice));
+        }, 0);
+
+        const agoRT = records['2'].filter(data => data.productType === "AGO").reduce((accum, current) => {
+            return Number(accum) + (Number(current.RTlitre) * Number(current.outlet.AGOPrice));
+        }, 0);
+
+        const dpkRT = records['2'].filter(data => data.productType === "DPK").reduce((accum, current) => {
+            return Number(accum) + (Number(current.RTlitre) * Number(current.outlet.DPKPrice));
+        }, 0);
+
+        const totalSales = totalPMS + totalAGO + totalDPK;
+        const totalLpoSales = totalLpoPMS + totalLpoAGO + totalLpoDPK;
+        const totalRT = pmsRT + agoRT + dpkRT;
+        const netToBank = (totalSales - totalLpoSales - totalRT) - totalExpenses;
+        const totalPayments = totalBankPayment + totalPOSPayment;
+
+        const payment = {
+            totalSales: totalSales - totalRT,
+            salesAmount: totalSales - totalLpoSales - totalRT,
+            netToBank: netToBank,
+            outstanding: totalPayments - netToBank
+        }
+
+        return payment;
+    }
+    console.log(getPayments(), "test")
+
     return(
         <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
@@ -165,6 +250,18 @@ const PaymentsComponents = (props) => {
                         <div className='input-d'>
                             <span>Amount Paid</span>
                             <input value={amountPaid} onChange={e => setAmountPaid(e.target.value)} className='lpo-inputs' type={'text'} />
+                        </div>
+                    </div>
+
+                    <div style={{marginTop:'20px'}} className='double-form'>
+                        <div className='input-d'>
+                            <span>Net to bank</span>
+                            <input value={ApproximateDecimal(getPayments().netToBank)} disabled className='lpo-inputs' type={'text'} />
+                        </div>
+
+                        <div className='input-d'>
+                            <span>Outstanding Balance</span>
+                            <input value={ApproximateDecimal(getPayments().outstanding)} disabled className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
