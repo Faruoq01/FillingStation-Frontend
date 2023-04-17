@@ -237,7 +237,30 @@ const DailyRecordSales = () => {
                 dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
-        });
+        }).then(data => {
+            if(data !== "None"){
+                const payload = {
+                    outletID: data, 
+                    organisationID: resolveUserID().id
+                }
+        
+                OutletService.getAllStationPumps(payload).then(data => {
+                    dispatch(getAllPumps(data));
+                });
+        
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    const outletTanks = data.stations.map(data => {
+                        const newData = {...data, label: data.tankName, value: data._id, dippingValue: "0"};
+                        return newData;
+                    });
+                    dispatch(getAllOutletTanks(outletTanks));
+                });
+        
+                LPOService.getAllLPO(payload).then((data) => {
+                    dispatch(createLPO(data.lpo.lpo));
+                });
+            }
+        })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, user.outletID, user.userType]);
 
