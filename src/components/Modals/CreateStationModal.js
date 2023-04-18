@@ -404,7 +404,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>Longitude</div>
+                                <div className='head-text2'>Latitude</div>
                                 <OutlinedInput 
                                     disabled
                                     sx={{
