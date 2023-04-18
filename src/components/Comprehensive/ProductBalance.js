@@ -198,7 +198,7 @@ const ProductBalance = (props) => {
                 <div style={{marginTop:'5px'}} className="product_balance_header">
                     <div style={{...ins, background:'transparent'}} className="cells"></div>
                     <div style={{...ins, background:'transparent'}} className="cells"></div>
-                    <div style={{...ins, background:'transparent'}} className="cells"></div>
+                    <div style={{...ins, background:'transparent'}} className="cells">Total</div>
                     <div style={ins} className="cells">{ApproximateDecimal(sumOfDifference())}</div>
                     <div style={ins} className="cells"></div>
                     <div style={ins} className="cells">{ApproximateDecimal(sumOfTotals())}</div>

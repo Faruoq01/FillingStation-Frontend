@@ -192,7 +192,6 @@ const PaymentsComponents = (props) => {
 
         return payment;
     }
-    console.log(getPayments(), "test")
 
     return(
         <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
@@ -222,12 +221,12 @@ const PaymentsComponents = (props) => {
                         <div style={{marginTop:'20px'}} className='double-form'>
                             <div className='input-d'>
                                 <span>Bank Name</span>
-                                <input onChange={e => setBankName(e.target.value)} className='lpo-inputs' type={'text'} />
+                                <input value={bankName} onChange={e => setBankName(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
 
                             <div className='input-d'>
                                 <span>Teller ID</span>
-                                <input onChange={e => setTellerID(e.target.value)} className='lpo-inputs' type={'text'} />
+                                <input value={tellerID} onChange={e => setTellerID(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
                         </div>
                     }
@@ -236,12 +235,12 @@ const PaymentsComponents = (props) => {
                         <div style={{marginTop:'20px'}} className='double-form'>
                             <div className='input-d'>
                                 <span>Pos Name</span>
-                                <input onChange={e => setPosName(e.target.value)} className='lpo-inputs' type={'text'} />
+                                <input value={posName} onChange={e => setPosName(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
 
                             <div className='input-d'>
                                 <span>Terminal ID</span>
-                                <input onChange={e => setTerminalID(e.target.value)} className='lpo-inputs' type={'text'} />
+                                <input value={terminalID} onChange={e => setTerminalID(e.target.value)} className='lpo-inputs' type={'text'} />
                             </div>
                         </div>
                     }
@@ -261,7 +260,7 @@ const PaymentsComponents = (props) => {
 
                         <div className='input-d'>
                             <span>Outstanding Balance</span>
-                            <input value={ApproximateDecimal(getPayments().outstanding)} disabled className='lpo-inputs' type={'text'} />
+                            <input value={getPayments().outstanding < 0? "-" + ApproximateDecimal(getPayments().outstanding): ApproximateDecimal(getPayments().outstanding)} disabled className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 
