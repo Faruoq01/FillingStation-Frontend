@@ -21,6 +21,7 @@ import AnalysisService from '../../services/analysis';
 import { setAnalysisData } from '../../store/actions/analysis';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
+import { Skeleton } from '@mui/material';
 
 const Analysis = (props) => {
 
@@ -38,6 +39,7 @@ const Analysis = (props) => {
     const [open2, setOpen2] = useState(false);
     const [type, setType] = useState(false);
     const [mode, setMode] = useState("");
+    const [load, setLoad] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -107,23 +109,28 @@ const Analysis = (props) => {
     
     const DashboardImage = (props) => {
         return(
-            <div style={{margin:'0px'}} onClick={()=>{openCostPrice(props.type)}} className='first-image'>
-                <div style={{marginRight:'10px'}} className='inner-first-image'>
-                    <div className='top-first-image'>
-                        <div className='top-icon'>
-                            <img style={{width:'50px', height:'40px'}} src={props.image} alt="icon" />
-                        </div>
-                        <div style={{alignItems:'flex-end', justifyContent:'center', flexDirection:'column'}} className='top-text'>
-                            <div style={{fontSize:'14px', color:'#06805B'}}>{props.name}</div>
-                            <div style={{fontSize:'12px', fontWeight:'bold', marginTop:'5px'}}>{props.value}</div>
+            <>
+                {load && <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />}
+                {load ||
+                    <div style={{margin:'0px'}} onClick={()=>{openCostPrice(props.type)}} className='first-image'>
+                        <div style={{marginRight:'10px'}} className='inner-first-image'>
+                            <div className='top-first-image'>
+                                <div className='top-icon'>
+                                    <img style={{width:'50px', height:'40px'}} src={props.image} alt="icon" />
+                                </div>
+                                <div style={{alignItems:'flex-end', justifyContent:'center', flexDirection:'column'}} className='top-text'>
+                                    <div style={{fontSize:'14px', color:'#06805B'}}>{props.name}</div>
+                                    <div style={{fontSize:'12px', fontWeight:'bold', marginTop:'5px'}}>{props.value}</div>
+                                </div>
+                            </div>
+                            <div className='bottom-first-image'>
+                                <img style=
+                                {{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                            </div>
                         </div>
                     </div>
-                    <div className='bottom-first-image'>
-                        <img style=
-                        {{width:'30px', height:'10px'}} src={me6} alt="icon" />
-                    </div>
-                </div>
-            </div>
+                }
+            </>
         )
     }
 
@@ -146,6 +153,7 @@ const Analysis = (props) => {
     }
 
     const getDateFromRange = (data) => {
+        setLoad(true);
         if(!getPerm('6')) return swal("Warning!", "Permission denied", "info");
 
         const formatOne = moment(new Date(data[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
@@ -163,6 +171,8 @@ const Analysis = (props) => {
 
         AnalysisService.getAnalysisData(payload).then(data => {
             dispatch(setAnalysisData(data.analysisData));
+        }).then(()=>{
+            setLoad(false);
         });
     }
 
