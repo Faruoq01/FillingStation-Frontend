@@ -22,6 +22,8 @@ import { setAnalysisData } from '../../store/actions/analysis';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import { Skeleton } from '@mui/material';
+import SalesDisplay from '../Modals/SalesDisplay';
+import Varience from '../Modals/Varience';
 
 const Analysis = (props) => {
 
@@ -40,6 +42,8 @@ const Analysis = (props) => {
     const [type, setType] = useState(false);
     const [mode, setMode] = useState("");
     const [load, setLoad] = useState(false);
+    const [openDetails, setOpenDetails] = useState(false);
+    const [openDetails2, setOpenDetails2] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -73,16 +77,6 @@ const Analysis = (props) => {
                 dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
-        }).then(data => {
-            const payload = {
-                organisationID: resolveUserID().id,
-                outletID: data,
-                onLoad: true,
-            }
-
-            AnalysisService.allRecords(payload).then(data => {
-                dispatch(setAnalysisData(data.analysisData));
-            });
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -149,6 +143,12 @@ const Analysis = (props) => {
             if(!getPerm('5')) return swal("Warning!", "Permission denied", "info");
 
             history.push("/home/analysis/expenses");
+        }else if(type === "sales"){
+            setOpenDetails(true);
+
+        }else if(type === "varience"){
+            setOpenDetails2(true);
+
         }
     }
 
@@ -220,7 +220,33 @@ const Analysis = (props) => {
             return Number(accum) + Number(current.sales)*Number(current.DPKSellingPrice);
         }, 0);
 
-        return pmsSales + agoSales + dpkSales;
+        /*#################################################
+            volume records for each product
+        ##################################################*/
+
+        const pmsVol = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const agoVol = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const dpkVol = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        const totalSales = pmsSales + agoSales + dpkSales
+
+        return {
+            totalSales: totalSales, 
+            pmsSales: pmsSales, 
+            pmsVolume: pmsVol,
+            agoSales: agoSales,
+            agoVolume: agoVol,
+            dpkSales: dpkSales,
+            dpkVolume: dpkVol
+        };
     }
 
     const calculateProfit = () => {
@@ -243,26 +269,26 @@ const Analysis = (props) => {
         /*#################################################
             Overages/Shortages records for each product
         ##################################################*/
-
+        
         const pmsDipping = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
-            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
-            const currentDip = analysisData.dipping[ID];
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.PMSSellingPrice);
         }, 0);
 
         const agoDipping = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
-            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
-            const currentDip = analysisData.dipping[ID];
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.AGOSellingPrice);
         }, 0);
 
         const dpkDipping = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
-            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
-            const currentDip = analysisData.dipping[ID];
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.DPKSellingPrice);
@@ -279,37 +305,77 @@ const Analysis = (props) => {
             Overages/Shortages records for each product
         ##################################################*/
 
-        const pmsDipping = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
-            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
-            const currentDip = analysisData.dipping[ID];
+        const pmsVarSales = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.PMSSellingPrice);
         }, 0);
 
-        const agoDipping = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
-            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
-            const currentDip = analysisData.dipping[ID];
+        const agoVarSales = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.AGOSellingPrice);
         }, 0);
 
-        const dpkDipping = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
-            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
-            const currentDip = analysisData.dipping[ID];
+        const dpkVarSales = analysisData?.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.DPKSellingPrice);
         }, 0);
 
-        return pmsDipping + agoDipping + dpkDipping;
+         /*#################################################
+            Overages/Shortages volume records for each product
+        ##################################################*/
+
+        const pmsVarVol = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
+            const varience = Number(currentDip.dipping) - Number(current.afterSales);
+
+            return Number(accum) + Number(varience)*Number(current.PMSSellingPrice);
+        }, 0);
+
+        const agoVarVol = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
+            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
+            const varience = Number(currentDip.dipping) - Number(current.afterSales);
+
+            return Number(accum) + Number(varience)*Number(current.AGOSellingPrice);
+        }, 0);
+
+        const dpkVarVol = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
+            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
+            const currentDip = analysisData?.dipping[ID];
+            const varience = Number(currentDip.dipping) - Number(current.afterSales);
+
+            return Number(accum) + Number(varience)*Number(current.DPKSellingPrice);
+        }, 0);
+
+        const totalSales = pmsVarSales + agoVarSales + dpkVarSales
+
+        return {
+            totalSales: totalSales, 
+            pmsSales: pmsVarSales, 
+            pmsVolume: pmsVarVol,
+            agoSales: agoVarSales,
+            agoVolume: agoVarVol,
+            dpkSales: dpkVarSales,
+            dpkVolume: dpkVarVol
+        };
     }
 
     return(
         <div data-aos="zoom-in-down" style={{background: user.isDark === "0"? '#fff': '#404040'}} className='paymentsCaontainer'>
             {open && <AddCostPrice type={type} open={open} close={setOpen} open2={setOpen2} setMode={setMode} />}
             {open2 && <CostPriceModal type={type} open={open2} close={setOpen2} mode={mode} refresh={getAllOutletData} />}
+            {openDetails && <SalesDisplay open={openDetails} close={setOpenDetails} dash={totalSales()} />}
+            {openDetails2 && <Varience open={openDetails2} close={setOpenDetails2} dash={Variences()} />}
             {props.activeRoute.split('/').length === 3 &&
                 <div style={{width:'100%', marginTop:'0px'}} className='inner-pay'>
                     <div className='action'>
@@ -371,9 +437,9 @@ const Analysis = (props) => {
                             <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${oneStationData? oneStationData?.PMSPrice: "0"}`} />
                             <DashboardImage type={"expenses"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={`NGN ${ApproximateDecimal(calculateExpenses())}`} />
                             <DashboardImage type={"payments"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={`NGN ${ApproximateDecimal(calculatePayment())}`} />
-                            <DashboardImage type={"none"} right={'10px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${ApproximateDecimal(calculateProfit())}`} />
-                            <DashboardImage type={"Net to bank"} right={'10px'} left={'0px'} image={folder} name={'Total Sales'} value={`NGN ${ApproximateDecimal(totalSales())}`} />
-                            <DashboardImage type={"Varience"} right={'10px'} left={'0px'} image={folder2} name={'Varience'} value={`NGN ${ApproximateDecimal(Variences())}`} />
+                            <DashboardImage type={"none"} right={'10px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${ApproximateDecimal(analysisData.dipping.length === 0? 0: calculateProfit())}`} />
+                            <DashboardImage type={"sales"} right={'10px'} left={'0px'} image={folder} name={'Total Sales'} value={`NGN ${ApproximateDecimal(totalSales()?.totalSales)}`} />
+                            <DashboardImage type={"varience"} right={'10px'} left={'0px'} image={folder2} name={'Varience'} value={`NGN ${ApproximateDecimal(analysisData.dipping.length === 0? 0: Variences().totalSales)}`} />
                         </div>
                     </div>
                 </div>

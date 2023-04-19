@@ -10,7 +10,8 @@ const initialState = {
         rtVolumes: [],
         payments: [],
         pospayment: [],
-        expenses: []
+        expenses: [],
+        dipping: [{}],
     },
 }
 
@@ -36,7 +37,8 @@ const analysisReducer = (state = initialState, action) => {
                     rtVolumes: [],
                     payments: [],
                     pospayment: [],
-                    expenses: []
+                    expenses: [],
+                    dipping: []
                 },
             }
         }
