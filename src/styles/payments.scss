@@ -497,8 +497,12 @@
 }
 
 .imgContainer{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    row-gap: 10px;
+    column-gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
 }
 
 @media (max-width: 1150px){

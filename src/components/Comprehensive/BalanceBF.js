@@ -46,7 +46,7 @@ const InitialBalance = () => {
             <div style={{marginTop:'5px'}} className="header_balance_container">
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props.data.balanceCF) + Number(getSales(props.type)))}</div>
+                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props?.data?.balanceCF) + Number(getSales(props.type)))}</div>
                 </div>
                 <div style={ins} className="initial_supply">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
@@ -57,7 +57,7 @@ const InitialBalance = () => {
                 </div>
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props.data.balanceCF) + Number(getInit(props).quantity) + Number(getSales(props.type)))}</div>
+                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props?.data?.balanceCF) + Number(getInit(props).quantity) + Number(getSales(props.type)))}</div>
                 </div>
             </div>
         )
