@@ -124,6 +124,7 @@ const PumpUpdateComponent = (props) => {
             const newPms = [...PMS];
             newPms[index].sales = totalizerDiff;
             newPms[index].newTotalizer = e;
+            newPms[index].outlet = oneStationData;
             newPms[index].totalTankLevel = totalPMSTankLevel;
 
             const selectedPMS = [...selectedPumps];
@@ -150,6 +151,7 @@ const PumpUpdateComponent = (props) => {
             const newAgo = [...AGO];
             newAgo[index].sales = totalizerDiff;
             newAgo[index].newTotalizer = e;
+            newAgo[index].outlet = oneStationData;
             newAgo[index].totalTankLevel = totalAG0TankLevel;
             
             const selectedAGO = [...selectedPumps];
@@ -176,6 +178,7 @@ const PumpUpdateComponent = (props) => {
             const newDpk = [...DPK];
             newDpk[index].sales = totalizerDiff;
             newDpk[index].newTotalizer = e;
+            newDpk[index].outlet = oneStationData;
             newDpk[index].totalTankLevel = totalDPKTankLevel;
             
             const selectedDPK = [...selectedPumps];
