@@ -134,15 +134,15 @@ const PaymentsComponents = (props) => {
         ###############################################*/
 
         const totalPMS = selectedPumps.filter(data => data.productType === "PMS").reduce((accum, current) => {
-            return Number(accum) + (Number(current.sales) * Number(current.outlet.PMSPrice));
+            return Number(accum) + (Number(current.sales) * Number(oneStationData.PMSPrice));
         }, 0);
 
         const totalAGO = selectedPumps.filter(data => data.productType === "AGO").reduce((accum, current) => {
-            return Number(accum) + (Number(current.sales) * Number(current.outlet.AGOPrice));
+            return Number(accum) + (Number(current.sales) * Number(oneStationData.AGOPrice));
         }, 0);
 
         const totalDPK = selectedPumps.filter(data => data.productType === "DPK").reduce((accum, current) => {
-            return Number(accum) + (Number(current.sales) * Number(current.outlet.DPKPrice));
+            return Number(accum) + (Number(current.sales) * Number(oneStationData.DPKPrice));
         }, 0);
 
         /*############################################
@@ -166,15 +166,15 @@ const PaymentsComponents = (props) => {
         ###############################################*/
 
         const pmsRT = records['2'].filter(data => data.productType === "PMS").reduce((accum, current) => {
-            return Number(accum) + (Number(current.RTlitre) * Number(current.outlet.PMSPrice));
+            return Number(accum) + (Number(current.RTlitre) * Number(oneStationData.PMSPrice));
         }, 0);
 
         const agoRT = records['2'].filter(data => data.productType === "AGO").reduce((accum, current) => {
-            return Number(accum) + (Number(current.RTlitre) * Number(current.outlet.AGOPrice));
+            return Number(accum) + (Number(current.RTlitre) * Number(oneStationData.AGOPrice));
         }, 0);
 
         const dpkRT = records['2'].filter(data => data.productType === "DPK").reduce((accum, current) => {
-            return Number(accum) + (Number(current.RTlitre) * Number(current.outlet.DPKPrice));
+            return Number(accum) + (Number(current.RTlitre) * Number(oneStationData.DPKPrice));
         }, 0);
 
         const totalSales = totalPMS + totalAGO + totalDPK;
