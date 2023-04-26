@@ -281,11 +281,13 @@ const DailyRecordSales = () => {
         let newList = {...linkedData}
 
         if(newList.head.next !== null){
+            if(oneStationData === null ) return swal("Warning!", "Please select a station first", "info");
             if(!getPerm('3') && (newList.page === 1)) return swal("Warning!", "Permission denied", "info");
             if(!getPerm('4') && (newList.page === 2)) return swal("Warning!", "Permission denied", "info");
             if(!getPerm('5') && (newList.page === 3)) return swal("Warning!", "Permission denied", "info");
             if(!getPerm('6') && (newList.page === 4)) return swal("Warning!", "Permission denied", "info");
             if(!getPerm('7') && (newList.page === 5)) return swal("Warning!", "Permission denied", "info");
+
             const clonePage = [...pages];
             clonePage[newList.page] = newList.page;
             setPages(clonePage);

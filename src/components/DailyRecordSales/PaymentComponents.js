@@ -1,4 +1,4 @@
-import { Button } from "@mui/material"
+import { Autocomplete, Button } from "@mui/material"
 import axios from "axios";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,7 @@ const PaymentsComponents = (props) => {
     const gallery = useRef();
     const [open, setOpen] = useState(false);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const [autoCOM, setAutoCom] = useState(null);
 
     ///////////////////////////////////////////////////////////
     const records = useSelector(state => state.recordsReducer.load);
@@ -46,8 +47,8 @@ const PaymentsComponents = (props) => {
     }
 
     const deleteFromList = (index) => {
-        const tankFromPayload = {...records};
-        tankFromPayload['5'].pop(index);
+        const tankFromPayload = {...records}
+        tankFromPayload['5'].splice(index, 1);
         dispatch(updatePayload(tankFromPayload));
     }
 
@@ -78,15 +79,15 @@ const PaymentsComponents = (props) => {
 
     const addDetailsToList = () => {
         if(oneStationData === null) return swal("Warning!", "please select station", "info");
-        if(typeof(bankName) === "object" && typeof(posName) === "object") return swal("Warning!", "Please add bank or pos name", "info");
-        if(typeof(tellerID) === "object" && typeof(terminalID) === "object") return swal("Warning!", "Please add teller or terminal ID", "info");
+        if(bankName === "" && posName === "") return swal("Warning!", "Please add bank or pos name", "info");
+        if(tellerID === "" && terminalID === "") return swal("Warning!", "Please add teller or terminal ID", "info");
         if(amountPaid === "") return swal("Warning!", "Amount field should not be empty", "info");
         if(paymentDate === "") return swal("Warning!", "Payment date field should not be empty", "info");
 
         const payload = {
-            bankName: bankName,
+            bankName: bankName === ""? null: bankName,
             tellerNumber: tellerID,
-            posName: posName,
+            posName: posName === ""? null: posName,
             terminalID: terminalID,
             amountPaid: amountPaid,
             paymentDate: paymentDate,
@@ -100,14 +101,16 @@ const PaymentsComponents = (props) => {
         tankFromPayload['5'].push(payload);
         dispatch(updatePayload(tankFromPayload));
 
-        setBankName(null);
-        setTellerID(null);
-        setPosName(null);
-        setTerminalID(null);
+        setBankName("");
+        setTellerID("");
+        setPosName("");
+        setTerminalID("");
         setAmountPaid("");
         setPaymentDate("");
         setCam(null);
         setGall(null);
+
+        if(autoCOM !== null){}
     }
 
     const getPayments = () => {
@@ -193,6 +196,29 @@ const PaymentsComponents = (props) => {
         return payment;
     }
 
+    const banksList = [
+        'Access Bank',
+        'Citibank Nigeria',
+        'Ecobank Nigeria',
+        'Fidelity Bank Nigeria',
+        'First Bank of Nigeria',
+        'First City Monument Bank',
+        'Guaranty Trust Bank',
+        'Heritage Bank',
+        'Jaiz Bank',
+        'Keystone Bank',
+        'Polaris Bank',
+        'Providus Bank',
+        'Stanbic IBTC Bank',
+        'Standard Chartered Bank Nigeria',
+        'Sterling Bank',
+        'Union Bank of Nigeria',
+        'United Bank for Africa',
+        'Unity Bank',
+        'Wema Bank',
+        'Zenith Bank',
+    ];
+
     return(
         <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
@@ -221,7 +247,35 @@ const PaymentsComponents = (props) => {
                         <div style={{marginTop:'20px'}} className='double-form'>
                             <div className='input-d'>
                                 <span>Bank Name</span>
-                                <input value={bankName} onChange={e => setBankName(e.target.value)} className='lpo-inputs' type={'text'} />
+                                <Autocomplete
+                                    freeSolo={true}
+                                    value={bankName}
+                                    onInputChange={(e, val) => {
+                                        setBankName(val);
+                                        setAutoCom(e);
+                                    }}
+                                    className='lpo-inputs'
+                                    sx={{
+                                        display: 'inline-block',
+                                        '& input': {
+                                            width: '96%',
+                                            height:'30px',
+                                            outline:'none',
+                                            border:'none',
+                                            bgcolor: 'transparent',
+                                            fontSize:'12px',
+                                            color: (theme) =>
+                                            theme.palette.getContrastText(theme.palette.background.paper),
+                                        },
+                                    }}
+                                    id="custom-input-demo"
+                                    options={banksList}
+                                    renderInput={(params) => (
+                                        <div ref={params.InputProps.ref}>
+                                            <input type="text" {...params.inputProps} />
+                                        </div>
+                                    )}
+                                />
                             </div>
 
                             <div className='input-d'>

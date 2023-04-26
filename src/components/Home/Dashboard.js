@@ -122,6 +122,7 @@ const Dashboard = (props) => {
     const [productState, setProductState] = useState(0);
     const [value, setValue] = React.useState([new Date(), new Date()]);
     const [prices, setPrices] = useState(false);
+    console.log(oneStationData, "one station")
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -290,17 +291,47 @@ const Dashboard = (props) => {
             return data;
         }
 
+        if(oneStationData !== null){
+            if((getPerm('1') || getPerm('2') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+                const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+
+                const payload = {
+                    organisation: resolveUserID().id,
+                    outletID: oneStationData._id,
+                    startDate: formatOne,
+                    endDate: formatTwo
+                }
+
+                const payload2 = {
+                    id: resolveUserID().id, 
+                    outletID: oneStationData._id
+                }
+
+                Promise.all([getAttendance(payload2), getSalesRecord(payload)]).then(data => {
+                    // attendance records
+                    dispatch(dashEmployees(data[0].employees));
+                    collectAndAnalyseData(data[0]);
+
+                    // sales record
+                    const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
+                    dispatch(dashboardRecordMore(evaluatedDashboard));
+                });
+                return
+            }
+        }
+
         setLoad(true);
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('1') || user.userType === "superAdmin"){
+            if((getPerm('1') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('2')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         }).then(data => {
@@ -314,7 +345,6 @@ const Dashboard = (props) => {
                 startDate: formatOne,
                 endDate: formatTwo
             }
-            console.log(payload, "ffdfgf")
 
             const payload2 = {
                 id: resolveUserID().id, 

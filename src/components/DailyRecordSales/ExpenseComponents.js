@@ -38,8 +38,8 @@ const ExpenseComponents = (props) => {
     const [gall, setGall] = useState(null);
 
     const deleteFromList = (index) => {
-        const tankFromPayload = {...records};
-        tankFromPayload['4'].pop(index);
+        const tankFromPayload = {...records}
+        tankFromPayload['4'].splice(index, 1);
         dispatch(updatePayload(tankFromPayload));
     }
 

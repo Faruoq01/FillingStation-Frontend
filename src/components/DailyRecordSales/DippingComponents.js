@@ -237,7 +237,7 @@ const DippingComponents = (props) => {
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName+"( "+ item.productType +" )"}</div>
                                 <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
-                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Current stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Opening stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
                                 <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />
@@ -251,7 +251,7 @@ const DippingComponents = (props) => {
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName+"( "+ item.productType +" )"}</div>
                                 <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
-                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Current stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Opening stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
                                 <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />
@@ -265,7 +265,7 @@ const DippingComponents = (props) => {
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName+"( "+ item.productType +" )"}</div>
                                 <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
-                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Current stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
+                                <div style={{marginTop:'5px', color:'green'}} className='pop'>{`Opening stock: ${ApproximateDecimal(item.currentLevel)}`}</div>
                                 <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
 
                                 <input value={item.dippingValue} onChange={e => setTotalizer(e, item, index)} style={imps} type="text" />

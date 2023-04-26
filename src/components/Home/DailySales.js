@@ -351,6 +351,29 @@ const DailySales = (props) => {
     }
 
     const getAllProductData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('1') || getPerm('2') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                getAndAnalyzeDailySales(null, true, "");
+
+                const payload = {
+                    organisationID: resolveUserID().id,
+                    outletID: oneStationData._id,
+                }
+
+                DailySalesService.getAllMonthlyReports(payload).then(data => { 
+                    const payments = data.expense.payment.concat(data.expense.posPayment);
+                    const expense = data.expense.expense;
+        
+                    dispatch(storemonthlyBarData({expenses: expense, payments: payments}));
+                });
+                return
+            }
+        }
+
         setLoads(true);
         const payload = {
             organisation: resolveUserID().id
@@ -358,14 +381,11 @@ const DailySales = (props) => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('0')){
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         }).then(async(data)=>{

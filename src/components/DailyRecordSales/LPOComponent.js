@@ -199,8 +199,8 @@ const LPOComponent = (props) => {
     }
 
     const deleteFromList = (index) => {
-        const tankFromPayload = {...records};
-        tankFromPayload['3'].pop(index);
+        const tankFromPayload = {...records}
+        tankFromPayload['3'].splice(index, 1);
         dispatch(updatePayload(tankFromPayload));
     }
 

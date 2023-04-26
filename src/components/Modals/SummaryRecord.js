@@ -40,18 +40,18 @@ const FuelCard = (props) => {
         <div style={{border:'1px solid #ccc'}} className="fuel_card">
             <div className='inner_fuel_card'>
                 <div className='fuel_card_header'>
-                    <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType} ({props.data.tankName})</span>
+                    <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType.concat(" ", props.data.tankName)} ({ApproximateDecimal(props.data.tankCapacity)+" ltrs"})</span>
                     <div onClick={()=>{removeData(props.index)}} className='fuel_delete'>Delete</div>
                 </div>
 
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
-                        <div className='volum'>{ApproximateDecimal(props.data.tankCapacity)} ltrs</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.currentLevel)} ltrs</div>
                         <div className='vol_label'>Tanks Capacity</div>
                     </div>
                     <div className='fuel_card_items_right'>
-                        <div className='volum'>{ApproximateDecimal(props.data.currentLevel)} ltrs</div>
-                        <div className='vol_label'>Current Level</div>
+                        <div className='volum'>{ApproximateDecimal(props.data.afterSales)} ltrs</div>
+                        <div className='vol_label'>Level after sales</div>
                     </div>
                 </div>
 
@@ -63,17 +63,6 @@ const FuelCard = (props) => {
                     <div className='fuel_card_items_right'>
                         <div className='volum'></div>
                         <div className='vol_label'></div>
-                    </div>
-                </div>
-
-                <div className='fuel_card_items'>
-                    <div className='fuel_card_items_left'>
-                        <div className='volum'>{ApproximateDecimal(props.data.beforeSales)} ltrs</div>
-                        <div className='vol_label'>Level Before Sales</div>
-                    </div>
-                    <div className='fuel_card_items_right'>
-                        <div className='volum'>{ApproximateDecimal(props.data.afterSales)} ltrs</div>
-                        <div className='vol_label'>Level After Sales</div>
                     </div>
                 </div>
 
@@ -137,30 +126,8 @@ const ReturnToTank = (props) => {
         <div style={{border:'1px solid #ccc'}} className="fuel_card">
             <div className='inner_fuel_card'>
                 <div className='fuel_card_header'>
-                    <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType} ({props.data.tankName})</span>
+                    <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType.concat(" ", props.data.tankName)} ({ApproximateDecimal(props.data.tankCapacity)+ " ltrs"})</span>
                     <div onClick={()=>{removeData(props.index)}} className='fuel_delete'>Delete</div>
-                </div>
-
-                <div className='fuel_card_items'>
-                    <div className='fuel_card_items_left'>
-                        <div className='volum'>{ApproximateDecimal(props.data.tankCapacity)} ltrs</div>
-                        <div className='vol_label'>Tanks Capacity</div>
-                    </div>
-                    <div className='fuel_card_items_right'>
-                        <div className='volum'>{ApproximateDecimal(props.data.currentLevel)} ltrs</div>
-                        <div className='vol_label'>Current Level</div>
-                    </div>
-                </div>
-
-                <div className='fuel_card_items'>
-                    <div className='fuel_card_items_left'>
-                        <div className='volum'>{ApproximateDecimal(props.data.beforeSales)} ltrs</div>
-                        <div className='vol_label'>Level Before Sales</div>
-                    </div>
-                    <div className='fuel_card_items_right'>
-                        <div className='volum'>{ApproximateDecimal(props.data.afterSales)} ltrs</div>
-                        <div className='vol_label'>Level After Sales</div>
-                    </div>
                 </div>
 
                 <div className='fuel_card_items'>
