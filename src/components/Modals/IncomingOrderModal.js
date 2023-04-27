@@ -14,6 +14,7 @@ import ProductService from '../../services/productService';
 import { createProductOrder } from '../../store/actions/productOrder';
 import { Radio } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { searchStations } from '../../store/actions/outlet';
 
 const IncomingOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
@@ -41,6 +42,7 @@ const IncomingOrderModal = (props) => {
     const [stationSelect, setStationSelect] = useState(false);
     const [selected, setSelected] = useState([]);
     const [loadedQuantity, setLoadedQuantity] = useState("0");
+    const [searchKey, setSearchKey] = useState("");
 
     const handleClose = () => props.close(false);
 
@@ -98,6 +100,13 @@ const IncomingOrderModal = (props) => {
         }
 
         setLoading(false);
+        setDepotStation("");
+        setDestination("");
+        setTransporter("");
+        setTruckNo("");
+        setWayBillNo("");
+        setDriverName("");
+        setPhoneNumber("");
         swal("Success", "Product order created successfully!", "success");
         props.refresh();
         handleClose();
@@ -141,7 +150,7 @@ const IncomingOrderModal = (props) => {
         }else{
             const cloneSelected = [...selected];
             const findID = cloneSelected.findIndex(item => dataClone._id === item._id);
-            cloneSelected.pop(findID);
+            cloneSelected.splice(findID, 1);
             setSelected(cloneSelected);
         }
     }
@@ -160,6 +169,24 @@ const IncomingOrderModal = (props) => {
             }, 0)
     
             setLoadedQuantity(totalLoadedQuantity);
+        }
+    }
+
+    const searchStationList = (data) => {
+        setSearchKey(data);
+    }
+
+    const getStations = (data) => {
+        const stationsCopy = [...data];
+
+        if(searchKey === ""){
+            return stationsCopy;
+        }else{
+
+            const search = stationsCopy.filter(data => !data.outletName.toUpperCase().indexOf(searchKey.toUpperCase()) ||
+                !data.alias.toUpperCase().indexOf(searchKey.toUpperCase()) || !data.city.toUpperCase().indexOf(searchKey.toUpperCase())
+            );
+            return search;
         }
     }
 
@@ -356,8 +383,9 @@ const IncomingOrderModal = (props) => {
                                 </div>
                                 {stationSelect &&
                                     <div style={pop}>
+                                        <input onChange={e => { searchStationList(e.target.value)} } style={searchBar} type={'text'} placeholder='Search' />
                                         {
-                                            allOutlets.map((data, index) => {
+                                            getStations(allOutlets).map((data, index) => {
                                                 return(
                                                     <div key = {index} style={menus}>
                                                         <div style={{width:'70%'}}>
@@ -531,6 +559,16 @@ const IncomingOrderModal = (props) => {
                 </div>
         </Modal>
     )
+}
+
+const searchBar = {
+    width:'91%',
+    height:'30px',
+    margin:'10px',
+    outline:'none',
+    paddingLeft:'2%',
+    border:'none',
+    boxShadow:'0px 0px 2px 0.5px #888888'
 }
 
 const drop = {

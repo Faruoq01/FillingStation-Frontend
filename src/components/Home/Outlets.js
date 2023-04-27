@@ -8,7 +8,7 @@ import eye from '../../assets/eye.png';
 import filling from '../../assets/filling.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useSelector } from 'react-redux';
-import { openModal, getAllStations, searchStations, tankListType, adminOutlet } from '../../store/actions/outlet';
+import { openModal, getAllStations, tankListType, adminOutlet } from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import Tank from '../Outlet/Tanks';
 import Pumps from '../Outlet/Pumps';
@@ -44,6 +44,7 @@ const Outlets = (props) => {
     const tablePrints = useRef();
     const [switchTabs, setSwitchTabs] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [searchKey, setSearchKey] = useState("");
 
     const getPerm = (e) => {
         if(user.userType === "superAdmin"){
@@ -114,8 +115,22 @@ const Outlets = (props) => {
         setSwitchTabs(!switchTabs);
     }
 
-    const searchStation = (value) => {
-        dispatch(searchStations(value))
+    const searchStation = (data) => {
+        setSearchKey(data);
+    }
+
+    const getStations = (data) => {
+        const stationsCopy = [...data];
+
+        if(searchKey === ""){
+            return stationsCopy;
+        }else{
+
+            const search = stationsCopy.filter(data => !data.outletName.toUpperCase().indexOf(searchKey.toUpperCase()) ||
+                !data.alias.toUpperCase().indexOf(searchKey.toUpperCase()) || !data.city.toUpperCase().indexOf(searchKey.toUpperCase())
+            );
+            return search;
+        }
     }
 
     const CardItem = (props) => {
@@ -304,7 +319,7 @@ const Outlets = (props) => {
                             !loading?
                             allOutlets.length === 0?
                             <div style={place}>No data</div>:
-                            allOutlets.map((item, index) => {
+                            getStations(allOutlets).map((item, index) => {
                                 return(
                                     <div key={index} className='mobile-table-container'>
                                         <div className="inner-container">
@@ -375,7 +390,7 @@ const Outlets = (props) => {
                                     !loading?
                                     allOutlets.length === 0?
                                     <div style={place}>No data</div>:
-                                    allOutlets.map((item, index) => {
+                                    getStations(allOutlets).map((item, index) => {
                                         return(
                                             <div key={index} className='row-container'>
                                                 <div className='table-head2'>
@@ -416,7 +431,7 @@ const Outlets = (props) => {
                                 {
                                     allOutlets.length === 0?
                                     <div style={place}>No data</div>:
-                                    allOutlets.map((item, index) => {
+                                    getStations(allOutlets).map((item, index) => {
                                         return(
                                             <CardItem data={item} index={index} />
                                         )
