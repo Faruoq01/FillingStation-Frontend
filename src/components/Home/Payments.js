@@ -44,24 +44,28 @@ const Payments = (props) => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user?.permission?.payments[e];
+    }
+
     const openModal = () => {
         setLpo(true);
     }
 
     const getAllLPOData = useCallback(() => {
-        setLoading(true);
-        const payload = {
-            organisation: resolveUserID().id
-        }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
-            }).then((data)=>{
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: "None", 
+                    outletID: oneStationData._id, 
                     organisationID: resolveUserID().id
                 }
     
@@ -69,34 +73,48 @@ const Payments = (props) => {
                     setLoading(false);
                     setTotal1(data.bank.count);
                     dispatch(allBankPayment(data.bank.bank));
-                })
+                });
         
                 RecordPaymentService.getPOSPayments(payload).then((data) => {
                     dispatch(allPosPayment(data.pos.pos));
-                })
-            });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-            }).then(data => {
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID
-                }
-    
-                RecordPaymentService.getBankPayments(payload).then((data) => {
-                    setLoading(false);
-                    setTotal1(data.bank.count);
-                    dispatch(allBankPayment(data.bank.bank));
-                })
-        
-                RecordPaymentService.getPOSPayments(payload).then((data) => {
-                    dispatch(allPosPayment(data.pos.pos));
-                })
-            });
+                });
+
+                return
+            }
         }
+
+        setLoading(true);
+        const payload = {
+            organisation: resolveUserID().id
+        }
+
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
+                if(!getPerm('1')) setDefault(1);
+                dispatch(adminOutlet(null));
+                return "None";
+            }else{
+                return user.outletID;
+            }
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data, 
+                organisationID: resolveUserID().id
+            }
+
+            RecordPaymentService.getBankPayments(payload).then((data) => {
+                setLoading(false);
+                setTotal1(data.bank.count);
+                dispatch(allBankPayment(data.bank.bank));
+            });
+    
+            RecordPaymentService.getPOSPayments(payload).then((data) => {
+                dispatch(allPosPayment(data.pos.pos));
+            });
+        });
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -186,6 +204,8 @@ const Payments = (props) => {
     }
 
     const confirmPayment = (data, type) => {
+        if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
+
         swal({
             title: "Alert!",
             text: "Are you sure you want to confirm this payment?",
@@ -207,7 +227,6 @@ const Payments = (props) => {
                     id: data._id,
                     confirmation: user.userType === "superAdmin"? user.firstname.concat(" ", user.lastname): user.staffName,
                 }
-                console.log(payload2, "jhakcvjgkh")
         
                 DailySalesService.updateSales(type === "bank"? payload: payload2).then(data => {
                     setLoading(false);
@@ -243,14 +262,14 @@ const Payments = (props) => {
                     <div className='search'>
                         <div className='input-cont'>
                             <div className='second-select'>
-                                {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                {getPerm('0') &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
                                         value={defaultState}
                                         sx={selectStyle2}
                                     >
-                                        <MenuItem onClick={()=>{changeMenu(0, null)}}  style={menu} value={0}>Select Station</MenuItem>
+                                        <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                         {
                                             allOutlets.map((item, index) => {
                                                 return(
@@ -260,7 +279,7 @@ const Payments = (props) => {
                                         }
                                     </Select>
                                 }
-                                {user.userType === "staff" &&
+                                {getPerm('0') ||
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -268,7 +287,7 @@ const Payments = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>
@@ -279,6 +298,7 @@ const Payments = (props) => {
                                             height: '35px',  
                                             background:'#EEF2F1', 
                                             fontSize:'12px',
+                                            borderRadius:'0px',
                                             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                                 border:'1px solid #777777',
                                             },
@@ -563,11 +583,12 @@ const Payments = (props) => {
 const selectStyle2 = {
     width:'100%', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
     fontSize:'12px',
     outline:'none',
+    fontFamily:'Poppins',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
     },
@@ -583,6 +604,7 @@ const place = {
 
 const menu = {
     fontSize:'12px',
+    fontFamily:'Poppins'
 }
 
 const load = {

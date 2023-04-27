@@ -220,21 +220,49 @@ const DailyRecordSales = () => {
     }
 
     const getAllInitialRecords = React.useCallback((list) => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    outletID: oneStationData._id, 
+                    organisationID: resolveUserID().id
+                }
+        
+                OutletService.getAllStationPumps(payload).then(data => {
+                    dispatch(getAllPumps(data));
+                });
+        
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    const outletTanks = data.stations.map(data => {
+                        const newData = {...data, label: data.tankName, value: data._id, dippingValue: "0"};
+                        return newData;
+                    });
+                    dispatch(getAllOutletTanks(outletTanks));
+                });
+        
+                LPOService.getAllLPO(payload).then((data) => {
+                    dispatch(createLPO(data.lpo.lpo));
+                });
+
+                return
+            }
+        }
+
         const payload = {
             organisation: resolveUserID().id
         }
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('0') || user.userType === "superAdmin"){
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
                 dispatch(getAllPumps([]));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         }).then(data => {

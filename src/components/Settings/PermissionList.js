@@ -73,6 +73,14 @@ const ListCards = ({item, section, data, users}) => {
                     return updatedUser.analysis[item];
                 }
 
+                case "payments":{
+                    return updatedUser.payments[item];
+                }
+
+                case "expenses":{
+                    return updatedUser.expenses[item];
+                }
+
                 case "corporatesales":{
                     return updatedUser.corporateSales[item];
                 }
@@ -162,6 +170,24 @@ const ListCards = ({item, section, data, users}) => {
                 updatePerm = [...selectedUsers].map(data => {
                     const copy = {...data};
                     copy.permission.analysis[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "payments":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.payments[item] = e.target.checked;
+                    return copy
+                });
+                break;
+            }
+
+            case "expenses":{
+                updatePerm = [...selectedUsers].map(data => {
+                    const copy = {...data};
+                    copy.permission.expenses[item] = e.target.checked;
                     return copy
                 });
                 break;

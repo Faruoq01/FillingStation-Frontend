@@ -74,6 +74,34 @@ const Employee = () => {
     }
 
     const getAllEmployeeData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    filter: roles[filter],
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: oneStationData._id, 
+                    organisationID: resolveUserID().id
+                }
+                AdminUserService.filterRecords(payload).then(data => {
+                    setLoading(false);
+                    setTotal(data.staff.count);
+                    setCroles(data.staff.roles);
+    
+                    const cloneRoles = ['All Users', 'Admin', 'Accountant', 'Manager', 'Staff'];
+                    const extensions = [...new Set(data.staff.roles.map(data => data.role))];
+                    setRoles(cloneRoles.concat(extensions));
+                    dispatch(storeStaffUsers(data.staff.staff));
+                });
+
+                return
+            }
+        }
+
         setLoading(true);
         const payload = {
             organisation: resolveUserID().id
@@ -81,7 +109,7 @@ const Employee = () => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('0')){
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";

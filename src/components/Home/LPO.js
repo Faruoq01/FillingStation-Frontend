@@ -70,6 +70,29 @@ const LPO = (props) => {
     }
 
     const getAllLPOData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: oneStationData._id, 
+                    organisationID: resolveUserID().id
+                }
+    
+                LPOService.getAllLPO(payload).then((data) => {
+                    setLoading(false);
+                    setTotal(data.lpo.count);
+                    dispatch(createLPO(data.lpo.lpo));
+                })
+
+                return
+            }
+        }
+
         setLoading(true);
         const payload = {
             organisation: resolveUserID().id
@@ -77,14 +100,11 @@ const LPO = (props) => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('0')){
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         }).then((data)=>{

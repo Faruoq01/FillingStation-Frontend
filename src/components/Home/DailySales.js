@@ -353,7 +353,7 @@ const DailySales = (props) => {
     const getAllProductData = useCallback(() => {
 
         if(oneStationData !== null){
-            if((getPerm('1') || getPerm('2') || user.userType === "superAdmin")){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
                 const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
                 setDefault(findID + 1);
 

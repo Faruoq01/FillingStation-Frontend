@@ -67,6 +67,28 @@ const Query = () => {
     }
 
     const getAllQueryData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('9') || getPerm('10') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: oneStationData._id, 
+                    organisationID: resolveUserID().id
+                }
+                QueryService.allQueryRecords(payload).then(data => {
+                    setLoading(false);
+                    setTotal(data.query.count);
+                    dispatch(createQuery(data.query.query));
+                });
+
+                return
+            }
+        }
+
         setLoading(true);
         const payload = {
             organisation: resolveUserID().id
@@ -74,14 +96,11 @@ const Query = () => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('9')){
+            if((getPerm('9') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('10')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         }).then((data)=>{

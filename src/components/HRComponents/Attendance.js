@@ -77,6 +77,34 @@ const Attendance = () => {
     }
 
     const getAllAtendanceData = useCallback((getDataRange) => {
+
+        if(oneStationData !== null){
+            if((getPerm('13') || getPerm('14') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    today: getDataRange.today,
+                    tomorrow: getDataRange.tomorrow,
+                    outletID: oneStationData._id,
+                    organisationID: resolveUserID().id,
+                }
+                AdminUserService.allStaffUserRecords(payload).then(data => {
+                    setLoading(false);
+                    dispatch(storeStaffUsers(data.staff.staff));
+                }).then(()=>{
+                    AtendanceService.allAttendanceRecords(payload).then(data => {
+                        setTotal(data.attendance.count)
+                        dispatch(createAttendance(data.attendance.attendance));
+                    });
+                });
+
+                return
+            }
+        }
+
         setLoading(true);
         const payload = {
             organisation: resolveUserID().id
@@ -84,14 +112,11 @@ const Attendance = () => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('13')){
+            if((getPerm('13') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('14')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         }).then((data)=>{

@@ -63,6 +63,28 @@ const Regulatory = () => {
     }
 
     const getTankData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: oneStationData._id, 
+                    organisationID: resolveUserID().id
+                }
+                PaymentService.getAllPayment(payload).then((data) => {
+                    setLoading(false);
+                    setTotal(data.count);
+                    dispatch(createPayment(data.pay));
+                });
+
+                return
+            }
+        }
+
         setLoading(true);
         const payload = {
             organisation: resolveUserID().id
@@ -70,14 +92,11 @@ const Regulatory = () => {
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('0')){
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         }).then((data)=>{

@@ -7,7 +7,6 @@ import hr5 from '../../assets/hr5.png';
 import me6 from '../../assets/me6.png';
 import { Switch, Route } from 'react-router-dom';
 import Employee from '../HRComponents/Employee';
-import Manager from '../HRComponents/Manager';
 import Salary from '../HRComponents/Salary';
 import Query from '../HRComponents/Query';
 import Attendance from '../HRComponents/Attendance';
@@ -62,9 +61,6 @@ const HumanResource = (props) => {
             { props.activeRoute.split('/').length === 4 &&
                 <div style={contain}>
                     <Switch>
-                        <Route path='/home/hr/manager'>
-                            <Manager history={props.history}/>
-                        </Route>
                         <Route path='/home/hr/employee'>
                             <Employee/>
                         </Route>

@@ -84,6 +84,23 @@ const data = [
     },
 
     {
+        name: "Payments",
+        permissions: {
+            '0': "Selecting a single station",
+            '1': "Selecting all stations",
+            '2': "Payment confirmation function",
+        }
+    },
+
+    {
+        name: "Expenses",
+        permissions: {
+            '0': "Selecting a single station",
+            '1': "Selecting all stations",
+        }
+    },
+
+    {
         name: "Corporate Sales",
         permissions: {
             '0': "Selecting a single station",

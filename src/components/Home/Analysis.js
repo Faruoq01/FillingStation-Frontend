@@ -61,20 +61,26 @@ const Analysis = (props) => {
     }
 
     const getAllOutletData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+                return
+            }
+        }
+
         const payload = {
             organisation: resolveUserID().id
         }
 
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-            if(getPerm('0')){
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
                 if(!getPerm('1')) setDefault(1);
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
                 return user.outletID;
             }
         });

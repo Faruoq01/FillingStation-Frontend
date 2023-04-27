@@ -69,6 +69,17 @@ const data = {
         '6': true,
     },
 
+    payments: {
+        '0': true,
+        '1': true,
+        '2': true,
+    },
+
+    expenses: {
+        '0': true,
+        '1': true,
+    },
+
     corporateSales: {
         '0': true,
         '1': true,

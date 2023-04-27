@@ -41,52 +41,69 @@ const Expenses = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user?.permission?.expenses[e];
+    }
+
     const createOrderHandler = () => {
         setOpen(true);
     }
 
     const getAllProductData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: oneStationData._id, 
+                    organisationID: resolveUserID().id
+                }
+    
+                ExpenseService.getAllExpenses(payload).then((data) => {
+                    setLoading(false);
+                    setTotal(data.expense.count);
+                    dispatch(allExpenses(data.expense.expense));
+                });
+
+                return
+            }
+        }
+
         setLoading(true);
         const payload = {
             organisation: resolveUserID().id
         }
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
-            }).then((data)=>{
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID().id
-                }
-    
-                ExpenseService.getAllExpenses(payload).then((data) => {
-                    setLoading(false);
-                    setTotal(data.expense.count);
-                    dispatch(allExpenses(data.expense.expense));
-                });
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
+                if(!getPerm('1')) setDefault(1);
+                dispatch(adminOutlet(null));
+                return "None";
+            }else{
+                return user.outletID;
+            }
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data, 
+                organisationID: resolveUserID().id
+            }
+
+            ExpenseService.getAllExpenses(payload).then((data) => {
+                setLoading(false);
+                setTotal(data.expense.count);
+                dispatch(allExpenses(data.expense.expense));
             });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                return data.station;
-            }).then(data => {
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: "None", 
-                    organisationID: resolveUserID().id
-                }
-    
-                ExpenseService.getAllExpenses(payload).then((data) => {
-                    setLoading(false);
-                    setTotal(data.expense.count);
-                    dispatch(allExpenses(data.expense.expense));
-                });
-            });
-        }
+        });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -183,14 +200,14 @@ const Expenses = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {(user.userType === "superAdmin" || user.userType === "admin") &&
+                            {getPerm('0') &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
                                     value={defaultState}
                                     sx={selectStyle2}
                                 >
-                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>Select Station</MenuItem>
+                                    <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
                                     {
                                         allOutlets.map((item, index) => {
                                             return(
@@ -200,7 +217,7 @@ const Expenses = () => {
                                     }
                                 </Select>
                             }
-                            {user.userType === "staff" &&
+                            {getPerm('0') ||
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -208,7 +225,7 @@ const Expenses = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>
@@ -219,6 +236,7 @@ const Expenses = () => {
                                         height: '35px',  
                                         background:'#EEF2F1', 
                                         fontSize:'12px',
+                                        borderRadius:'0px',
                                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                             border:'1px solid #777777',
                                         },
@@ -346,11 +364,12 @@ const Expenses = () => {
 const selectStyle2 = {
     width:'100%', 
     height:'35px', 
-    borderRadius:'5px',
+    borderRadius:'0px',
     background: '#F2F1F1B2',
-    color:'#000',
-    fontSize:'14px',
+    color:'grey',
+    fontSize:'12px',
     outline:'none',
+    fontFamily:'Poppins',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
     },
@@ -359,13 +378,14 @@ const selectStyle2 = {
 const place = {
     width:'100%',
     textAlign:'center',
-    fontSize:'14px',
+    fontSize:'12px',
     marginTop:'20px',
     color:'green'
 }
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
+    fontFamily:'Poppins',
 }
 
 const load = {
