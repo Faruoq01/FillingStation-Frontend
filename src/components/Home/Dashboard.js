@@ -122,7 +122,6 @@ const Dashboard = (props) => {
     const [productState, setProductState] = useState(0);
     const [value, setValue] = React.useState([new Date(), new Date()]);
     const [prices, setPrices] = useState(false);
-    console.log(oneStationData, "one station")
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin" || user.userType === "admin"){

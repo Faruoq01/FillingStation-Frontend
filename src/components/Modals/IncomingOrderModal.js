@@ -14,7 +14,6 @@ import ProductService from '../../services/productService';
 import { createProductOrder } from '../../store/actions/productOrder';
 import { Radio } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { searchStations } from '../../store/actions/outlet';
 
 const IncomingOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
