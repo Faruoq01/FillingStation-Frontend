@@ -30,7 +30,6 @@ const ProductOrderModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
-        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
         if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
         if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
