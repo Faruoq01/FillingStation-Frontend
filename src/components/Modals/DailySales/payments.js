@@ -25,7 +25,7 @@ const UpdatePayments = (props) => {
     const [type, setType] = useState('');
 
     const resolveUserID = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
+        if(user.userType === "superAdmin"){
             return {id: user._id}
         }else{
             return {id: user.organisationID}

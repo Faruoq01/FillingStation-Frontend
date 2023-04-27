@@ -67,7 +67,7 @@ const DailySales = (props) => {
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
 
     const resolveUserID = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
+        if(user.userType === "superAdmin"){
             return {id: user._id}
         }else{
             return {id: user.organisationID}
@@ -390,7 +390,7 @@ const DailySales = (props) => {
                 OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                     dispatch(adminOutlet(data.station));
                 });
-                
+
                 return user.outletID;
             }
         }).then(async(data)=>{

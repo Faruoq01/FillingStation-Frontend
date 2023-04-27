@@ -36,7 +36,7 @@ const DippingComponents = (props) => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const resolveUserID = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
+        if(user.userType === "superAdmin"){
             return {id: user._id}
         }else{
             return {id: user.organisationID}

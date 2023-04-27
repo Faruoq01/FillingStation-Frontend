@@ -23,7 +23,7 @@ const UpdateReturnToTank = (props) => {
     const [rate, setRate] = useState('');
 
     const resolveUserID = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
+        if(user.userType === "superAdmin"){
             return {id: user._id}
         }else{
             return {id: user.organisationID}

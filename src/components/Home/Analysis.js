@@ -46,7 +46,7 @@ const Analysis = (props) => {
     const [openDetails2, setOpenDetails2] = useState(false);
 
     const resolveUserID = () => {
-        if(user.userType === "superAdmin" || user.userType === "admin"){
+        if(user.userType === "superAdmin"){
             return {id: user._id}
         }else{
             return {id: user.organisationID}
