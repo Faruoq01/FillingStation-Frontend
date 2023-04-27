@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 const ProductOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const user = useSelector(state => state.authReducer.user);
 
     const [dateCreated, setDateCreated] = useState('');
     const [depot, setDepot] = useState('');
@@ -28,6 +29,14 @@ const ProductOrderModal = (props) => {
     const attach = useRef();
 
     const handleClose = () => props.close(false);
+
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
 
     const submit = () => {
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
@@ -51,7 +60,7 @@ const ProductOrderModal = (props) => {
             costPerLitre: costPerLitre,
             productType: productType,
             attachCertificate: uploadFile,
-            organizationID: oneStationData?.organisation
+            organizationID: resolveUserID().id
         }
 
         ProductService.createProductOrder(payload).then((data) => {
