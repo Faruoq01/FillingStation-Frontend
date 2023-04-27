@@ -83,6 +83,7 @@ const PaymentsComponents = (props) => {
         if(tellerID === "" && terminalID === "") return swal("Warning!", "Please add teller or terminal ID", "info");
         if(amountPaid === "") return swal("Warning!", "Amount field should not be empty", "info");
         if(paymentDate === "") return swal("Warning!", "Payment date field should not be empty", "info");
+        if(isNaN(Number(amountPaid))) return swal("Warning!", "Amount field is not a number, remove characters like comma", "info");
 
         const payload = {
             bankName: bankName === ""? null: bankName,

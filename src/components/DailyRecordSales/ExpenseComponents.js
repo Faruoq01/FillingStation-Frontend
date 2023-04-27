@@ -73,6 +73,7 @@ const ExpenseComponents = (props) => {
         if(expenseName === "") return swal("Warning!", "Expense name field should not be empty", "info");
         if(description === "") return swal("Warning!", "Description field should not be empty", "info");
         if(expenseAmount === "") return swal("Warning!", "Expense amount field should not be empty", "info");
+        if(isNaN(Number(expenseAmount))) return swal("Warning!", "Amount field is not a number, remove characters like comma", "info");
 
         const payload = {
             expenseName: reg? "Regulatory payment": expenseName,

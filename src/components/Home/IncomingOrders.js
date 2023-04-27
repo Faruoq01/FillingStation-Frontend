@@ -145,7 +145,7 @@ const IncomingOrder = () => {
             organisationID: resolveUserID().id
         }
         
-        IncomingService.getAllIncoming(payload).then((data) => {
+        IncomingService.getAllIncoming(payload).then((data) => {console.log(data, "incoming")
             setTotal(data.incoming.count);
             dispatch(createIncomingOrder(data.incoming.incoming));
         }).then(()=>{

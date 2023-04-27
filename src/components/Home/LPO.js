@@ -166,7 +166,7 @@ const LPO = (props) => {
             organisationID: resolveUserID().id
         }
 
-        LPOService.getAllLPO(payload).then((data) => {
+        LPOService.getAllLPO(payload).then((data) => {console.log(data, "lpos")
             setTotal(data.lpo.count);
             dispatch(createLPO(data.lpo.lpo));
         }).then(()=>{
