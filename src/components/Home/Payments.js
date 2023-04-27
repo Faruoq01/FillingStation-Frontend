@@ -95,6 +95,11 @@ const Payments = (props) => {
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
+
+                OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                    dispatch(adminOutlet(data.station));
+                });
+                
                 return user.outletID;
             }
         }).then((data)=>{

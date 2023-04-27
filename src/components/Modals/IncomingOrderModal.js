@@ -50,7 +50,7 @@ const IncomingOrderModal = (props) => {
         if(destination === "") return swal("Warning!", "Destination field cannot be empty", "info");
         if(product === "") return swal("Warning!", "Product field cannot be empty", "info");
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
-        if(productOrderID === "") return swal("Warning!", "Product order ID field cannot be empty", "info");
+        if(productOrderID === "" && productType === "available") return swal("Warning!", "Product order ID field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck No cannot be empty", "info");
         if(driverName === "") return swal("Warning!", "Driver name cannot be empty", "info");
         if(phoneNo === "") return swal("Warning!", "Phone no cannot be empty", "info");
@@ -59,7 +59,7 @@ const IncomingOrderModal = (props) => {
             return Number(accum) + Number(current.incomingQuantity);
         }, 0);
 
-        if(Number(totalLoadedQuantity) > Number(previousBalance)) return swal("Warning!", "Total quantity exceeds current balance", "info");
+        if((Number(totalLoadedQuantity) > Number(previousBalance)) && productType === "available") return swal("Warning!", "Total quantity exceeds current balance", "info");
 
         setLoading(true);
 
@@ -90,7 +90,7 @@ const IncomingOrderModal = (props) => {
                 outletID: station._id,
                 organizationID: station.organisation
             }
-
+            
             const res = await IncomingService.createIncoming(payload);
             if(res)
             previous = currentBalanceUpdate;
@@ -298,45 +298,49 @@ const IncomingOrderModal = (props) => {
                                 />
                             </div>
 
-                            <div className='inputs'>
-                                <div className='head-text2'>Quantity Orderd (ltr)</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        fontSize:'12px',
-                                        borderRadius:'0px',
-                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            border:'1px solid #777777',
-                                        },
-                                    }} placeholder="" 
-                                    type='text'
-                                    disabled
-                                    value={quantityOrdered}
-                                />
-                            </div>
+                            {productType === "available" &&
+                                <div className='inputs'>
+                                    <div className='head-text2'>Quantity Orderd (ltr)</div>
+                                    <OutlinedInput 
+                                        sx={{
+                                            width:'100%',
+                                            height: '35px', 
+                                            marginTop:'5px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="" 
+                                        type='text'
+                                        disabled
+                                        value={quantityOrdered}
+                                    />
+                                </div>
+                            }
 
-                            <div className='inputs'>
-                                <div className='head-text2'>Current Balance (ltr)</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        fontSize:'12px',
-                                        borderRadius:'0px',
-                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            border:'1px solid #777777',
-                                        },
-                                    }} placeholder="" 
-                                    type='text'
-                                    disabled
-                                    value={previousBalance}
-                                />
-                            </div>
+                            {productType === "available" &&
+                                <div className='inputs'>
+                                    <div className='head-text2'>Current Balance (ltr)</div>
+                                    <OutlinedInput 
+                                        sx={{
+                                            width:'100%',
+                                            height: '35px', 
+                                            marginTop:'5px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="" 
+                                        type='text'
+                                        disabled
+                                        value={previousBalance}
+                                    />
+                                </div>
+                            }
 
                             <div className='inputs'>
                                 <div className='head-text2'>Select discharge stations</div>
@@ -389,26 +393,28 @@ const IncomingOrderModal = (props) => {
                                 />
                             </div>
 
-                            <div className='inputs'>
-                                <div className='head-text2'>Product Order ID</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        fontSize:'12px',
-                                        borderRadius:'0px',
-                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            border:'1px solid #777777',
-                                        },
-                                    }} placeholder="" 
-                                    type='text'
-                                    disabled
-                                    value={productOrderID}
-                                    onChange={e => setProductOrderID(e.target.value)}
-                                />
-                            </div>
+                            {productType === "available" &&
+                                <div className='inputs'>
+                                    <div className='head-text2'>Product Order ID</div>
+                                    <OutlinedInput 
+                                        sx={{
+                                            width:'100%',
+                                            height: '35px', 
+                                            marginTop:'5px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="" 
+                                        type='text'
+                                        disabled
+                                        value={productOrderID}
+                                        onChange={e => setProductOrderID(e.target.value)}
+                                    />
+                                </div>
+                            }
 
                             <div className='inputs'>
                                 <div className='head-text2'>Truck No</div>
@@ -578,7 +584,7 @@ const selectStyle2 = {
     height:'35px', 
     background:'#EEF2F1',
     color:'#000',
-    fontSize:'14px',
+    fontSize:'12px',
     outline:'none',
     borderRadius:'0px',
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {

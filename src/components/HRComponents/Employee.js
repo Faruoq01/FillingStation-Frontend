@@ -114,9 +114,11 @@ const Employee = () => {
                 dispatch(adminOutlet(null));
                 return "None";
             }else{
-                const allStations = data.station;
-                const findID = allStations.findIndex(data => data._id === user.outletID);
-                dispatch(adminOutlet(allStations[findID]));
+                
+                OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                    dispatch(adminOutlet(data.station));
+                });
+                
                 return user.outletID;
             }
         }).then((data)=>{
