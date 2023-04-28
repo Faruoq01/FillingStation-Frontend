@@ -46,6 +46,14 @@ const ManagerModal = (props) => {
         props.close(false)
     };
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     useEffect(()=>{
         const extensions = [...new Set(props.roles.map(data => data.role))];
         const existingRoles = [...role].concat(extensions);
@@ -91,7 +99,7 @@ const ManagerModal = (props) => {
             alias: alias,
             jobTitle: jobTitle,
             password: password,
-            organisationID: user._id,
+            organisationID: resolveUserID().id,
             outletID: oneStationData._id
         }
 

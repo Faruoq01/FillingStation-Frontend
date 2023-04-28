@@ -28,7 +28,7 @@ const FuelCard = (props) => {
         .then((willDelete) => {
             if (willDelete) {
                 const pumpUpdate = [...records['1']];
-                pumpUpdate.pop(index);
+                pumpUpdate.splice(index, 1);
                 const cloneRecords  = {...records};
                 cloneRecords['1'] = pumpUpdate;
                 dispatch(updatePayload(cloneRecords));
@@ -114,7 +114,7 @@ const ReturnToTank = (props) => {
         .then((willDelete) => {
             if (willDelete) {
                 const pumpUpdate = [...records['1']];
-                pumpUpdate.pop(index);
+                pumpUpdate.splice(index, 1);
                 const cloneRecords  = {...records};
                 cloneRecords['1'] = pumpUpdate;
                 dispatch(updatePayload(cloneRecords));
@@ -151,7 +151,7 @@ const ReturnToTank = (props) => {
                                     <div style={{marginLeft:'10px', fontSize:'14px'}} className='volum'>{item.pumpName}</div>
                                 </div>
                                 <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'flex-end'}} className='fuel_card_items_right'>
-                                    <div style={{marginRight:'10px', fontSize:'14px'}} className='volum'>{ApproximateDecimal(item.sales)} ltrs</div>
+                                    <div style={{marginRight:'10px', fontSize:'14px'}} className='volum'>{ApproximateDecimal(item.RTlitre)} ltrs</div>
                                 </div>
                             </div>
                         )
