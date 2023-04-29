@@ -1,14 +1,17 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { searchIncoming } from "../../store/actions/incomingOrder";
+import { createIncomingOrder, searchIncoming } from "../../store/actions/incomingOrder";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import "../../styles/supplystyle.scss";
 import SupplyService from "../../services/supplyService";
+import IncomingService from "../../services/IncomingService";
+import OutletService from "../../services/outletService";
+import { adminOutlet, getAllOutletTanks } from "../../store/actions/outlet";
 
 const CreateSupply = (props) => {
 
@@ -20,6 +23,7 @@ const CreateSupply = (props) => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
     const [supplyList, setSupplyList] = useState([]);
+    const user = useSelector(state => state.authReducer.user);
     console.log(tankList, 'tanklist')
 
     // payload data
@@ -44,6 +48,42 @@ const CreateSupply = (props) => {
         setSelectedIncomingOrder(data);
     }
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
+    const getAllIncoming = useCallback(() => {
+
+        if(user.userType !== "superAdmin"){
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+            });
+
+    
+            const income = {
+                outletID: user.outletID,
+                organisationID: resolveUserID().id
+            }
+     
+            IncomingService.getAllIncoming3(income).then((data) => {console.log(data, "income")
+                dispatch(createIncomingOrder(data.incoming.incoming));
+            });
+    
+            OutletService.getAllOutletTanks(income).then(data => {
+                dispatch(getAllOutletTanks(data.stations));
+            });
+        }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(()=>{
+        getAllIncoming();
+    }, [getAllIncoming]);
 
     const incomingTanks = (e, data) => {
         const room = Number(data.tankCapacity) - Number(data.currentLevel);

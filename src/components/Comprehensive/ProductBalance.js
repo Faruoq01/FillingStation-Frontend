@@ -107,8 +107,8 @@ const ProductBalance = (props) => {
         return(
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{data.pumpName}</div>
-                <div style={ins} className="cells">{ApproximateDecimal(data.openingMeter)}</div>
-                <div style={ins} className="cells">{ApproximateDecimal(data.closingMeter)}</div>
+                <div style={ins} className="cells">{data.openingMeter}</div>
+                <div style={ins} className="cells">{data.closingMeter}</div>
                 <div style={ins} className="cells">{ApproximateDecimal(Number(data.closingMeter) - Number(data.openingMeter))}</div>
                 <div style={ins} className="cells">{rate(data, props.type)}</div>
                 <div style={ins} className="cells">{ApproximateDecimal(amount(data, props.type))}</div>

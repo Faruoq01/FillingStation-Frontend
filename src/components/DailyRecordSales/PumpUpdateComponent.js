@@ -121,20 +121,13 @@ const PumpUpdateComponent = (props) => {
                 return Number(accum) + Number(current.currentLevel);
             }, 0);
 
-            const newPms = [...PMS];
-            newPms[index].sales = totalizerDiff;
-            newPms[index].newTotalizer = e;
-            newPms[index].outlet = oneStationData;
-            newPms[index].totalTankLevel = totalPMSTankLevel;
-
             const selectedPMS = [...selectedPumps];
             const pumpID = selectedPMS.findIndex(data => data._id === pump._id);
             selectedPMS[pumpID].sales = totalizerDiff;
             selectedPMS[pumpID].newTotalizer = e;
+            selectedPMS[pumpID].outlet = oneStationData;
             selectedPMS[pumpID].totalTankLevel = totalPMSTankLevel;
 
-
-            dispatch(updateRecords({pms: newPms, ago: AGO, dpk: DPK}));
             dispatch(updateSelectedPumps(selectedPMS));
 
         }else if(productType === "AGO"){
@@ -147,21 +140,14 @@ const PumpUpdateComponent = (props) => {
             const totalAG0TankLevel = onlyAGO.reduce((accum, current) => {
                 return Number(accum) + Number(current.currentLevel);
             }, 0);
-
-            const newAgo = [...AGO];
-            newAgo[index].sales = totalizerDiff;
-            newAgo[index].newTotalizer = e;
-            newAgo[index].outlet = oneStationData;
-            newAgo[index].totalTankLevel = totalAG0TankLevel;
             
             const selectedAGO = [...selectedPumps];
             const pumpID = selectedAGO.findIndex(data => data._id === pump._id);
             selectedAGO[pumpID].sales = totalizerDiff;
             selectedAGO[pumpID].newTotalizer = e;
+            selectedAGO[pumpID].outlet = oneStationData;
             selectedAGO[pumpID].totalTankLevel = totalAG0TankLevel;
 
-
-            dispatch(updateRecords({pms: PMS, ago: newAgo, dpk: DPK}));
             dispatch(updateSelectedPumps(selectedAGO));
 
         }else if(productType === "DPK"){
@@ -174,20 +160,14 @@ const PumpUpdateComponent = (props) => {
             const totalDPKTankLevel = onlyDPK.reduce((accum, current) => {
                 return Number(accum) + Number(current.currentLevel);
             }, 0);
-
-            const newDpk = [...DPK];
-            newDpk[index].sales = totalizerDiff;
-            newDpk[index].newTotalizer = e;
-            newDpk[index].outlet = oneStationData;
-            newDpk[index].totalTankLevel = totalDPKTankLevel;
             
             const selectedDPK = [...selectedPumps];
             const pumpID = selectedDPK.findIndex(data => data._id === pump._id);
             selectedDPK[pumpID].sales = totalizerDiff;
             selectedDPK[pumpID].newTotalizer = e;
+            selectedDPK[pumpID].outlet = oneStationData;
             selectedDPK[pumpID].totalTankLevel = totalDPKTankLevel;
 
-            dispatch(updateRecords({pms: PMS, ago: AGO, dpk: newDpk}));
             dispatch(updateSelectedPumps(selectedDPK));
 
         }
@@ -203,9 +183,6 @@ const PumpUpdateComponent = (props) => {
 
                 const totalizerDiff = Number(e.target.value) - Number(pump.totalizerReading);
                 const quantity = Number(connectedTank[0].currentLevel) - Number(connectedTank[0].deadStockLevel);
-
-                console.log(totalizerDiff, "difference")
-                console.log(connectedTank[0].currentLevel, "current tank")
 
                 if(oneStationData === null){
                     updateTotalizer("0", "0", index, pump);
