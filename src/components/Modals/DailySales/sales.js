@@ -52,12 +52,11 @@ const Sales = (props) => {
 
         const payload = {
             type: "sales",
-            id: props.data._id,
-            sales: Number(closingMeter) - Number(openingMeter),
+            pumpID: props.data.pumpID,
             closingMeter: closingMeter,
-            PMSSellingPrice: props?.data?.PMSSellingPrice,
-            AGOSellingPrice: props?.data?.AGOSellingPrice,
-            DPKSellingPrice: props?.data?.DPKSellingPrice,
+            organisationID: oneStationData.organisation,
+            outletID: oneStationData._id,
+            createdAt: props.data.createdAt
         }
 
         DailySalesService.updateSales(payload).then(data => {

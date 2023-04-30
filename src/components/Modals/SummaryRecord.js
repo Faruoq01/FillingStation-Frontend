@@ -47,7 +47,7 @@ const FuelCard = (props) => {
                 <div className='fuel_card_items'>
                     <div className='fuel_card_items_left'>
                         <div className='volum'>{ApproximateDecimal(props.data.currentLevel)} ltrs</div>
-                        <div className='vol_label'>Tanks Capacity</div>
+                        <div className='vol_label'>Current stock</div>
                     </div>
                     <div className='fuel_card_items_right'>
                         <div className='volum'>{ApproximateDecimal(props.data.afterSales)} ltrs</div>
