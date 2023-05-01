@@ -3,7 +3,40 @@ import ApproximateDecimal from '../common/approx';
 
 const BalanceCF = () => {
 
-    const {balances} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const {balances, supply, sales} = useSelector(state => state.dailySalesReducer.bulkReports);
+
+    const getSales = (type) => {
+        const totalSales = sales.filter(data => data.productType === type).reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        return totalSales;
+    }
+
+    const getInit = (props) => {
+
+        const quantity = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        const shortage = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
+            if(current.shortage === "None"){
+                return 0;
+            }else{
+                return Number(accum) + Number(current.quantity);
+            }
+        }, 0);
+
+        const overage = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
+            if(current.overage === "None"){
+                return 0;
+            }else{
+                return Number(accum) + Number(current.quantity);
+            }
+        }, 0);
+
+        return {quantity: quantity, shortage: shortage, overage: overage}
+    }
 
     const BalanceCF = ({data, type, sn}) => {
 
@@ -11,7 +44,7 @@ const BalanceCF = () => {
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{sn}</div>
                 <div style={ins} className="cells">{type} </div>
-                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal(data.balanceCF)}</div>
+                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal(Number(data.balanceCF) + Number(getInit(type).quantity) - Number(getSales(type)))}</div>
             </div>
         )
     }
@@ -34,7 +67,7 @@ const BalanceCF = () => {
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data === null? "0": ApproximateDecimal(data.balanceCF)}</div>
+                        <div style={title}>{data === null? "0": ApproximateDecimal(Number(data.balanceCF) + Number(getInit(type).quantity) - Number(getSales(type)))}</div>
                         <div style={label}>Quantity</div>
                     </div>
 

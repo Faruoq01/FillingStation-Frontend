@@ -19,7 +19,7 @@ const EditPump = (props) => {
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
 
     const [defaultState, setDefaultState] = useState(0);
-    const [productType, setProduct] = useState('');
+    const [productType, setProduct] = useState('PMS');
     const [pumpName, setPumpName] = useState('');
     const [totalizer, setTotalizer] = useState('');
     const [hostTank, setHostTank] = useState(null);
@@ -65,7 +65,7 @@ const EditPump = (props) => {
         setDefaultState(findID);
         setProduct(props.data.productType);
         setTotalizer(props.data.totalizerReading);
-        setPumpName(props.data.pumpName);
+        setPumpName(props.data.pumpName.split(" ")[1]);
         setHostTank(props.allTank[findID]);
     },[props.data.productType, props.allTank, props.data.totalizerReading, props.data.hostTank, props.data.pumpName]);
 
@@ -80,40 +80,51 @@ const EditPump = (props) => {
             <div style={{height:'430px'}} className='modalContainer2'>
                 <div className='inner'>
                     <div className='head'>
-                        <div className='head-text'>Add Pump</div>
+                        <div className='head-text'>Edit Pump</div>
                         <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                     </div>
 
                     <div style={{marginTop:'15px'}} className='inputs'>
                         <div className='head-text2'>Choose product type</div>
                         <div className='radio'>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{setProduct('PMS')}} checked={productType === 'PMS'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{setProduct('AGO')}} checked={productType === 'AGO'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{setProduct('DPK')}} checked={productType === 'DPK'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
-                            </div>
+                            {(props.tabs === 1 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{setProduct('PMS')}} checked={productType === 'PMS'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                </div>
+                            }
+
+                            {(props.tabs === 2 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{setProduct('AGO')}} checked={productType === 'AGO'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                </div>
+                            }
+                            {(props.tabs === 3 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{setProduct('DPK')}} checked={productType === 'DPK'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                </div>
+                            }                 
                         </div>
                     </div>
 
                     <div className='inputs'>
-                        <div className='head-text2'>Pump Name</div>
+                        <div className='head-text2'>Pump No/ Series</div>
                         <OutlinedInput 
                             sx={{
                                 width:'100%',
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius: '0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }} placeholder="" 
                             value={pumpName}
+                            type="number"
                             onChange={e => setPumpName(e.target.value)}
                         />
                     </div>
@@ -129,8 +140,11 @@ const EditPump = (props) => {
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius: '0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }}
                         >
                             {
@@ -151,10 +165,14 @@ const EditPump = (props) => {
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius: '0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }} placeholder="" 
                             value={totalizer}
+                            type="number"
                             onChange={e => setTotalizer(e.target.value)}
                         />
                     </div>

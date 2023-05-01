@@ -414,7 +414,7 @@ const Pump = (props) => {
 
     return(
         <div className='tanksContainer'>
-            {open && <AddPump allTank={tankList} open={open} close={setOpen} refresh={getAllStationPumps} outRefresh={props.refresh} /> }
+            {open && <AddPump tabs={tabs} allTank={tankList} open={open} close={setOpen} refresh={getAllStationPumps} outRefresh={props.refresh} /> }
             {openEditPump && <EditPump tabs={tabs} allTank={tankList} data={currentPump} open={openEditPump} close={setOpenEditPump} refresh={getAllStationPumps} outRefresh={props.refresh} /> }
             <div className='pump-container'>
                 <div className='head'>

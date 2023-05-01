@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Backdrop, Button } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import SupplyService from "../../services/supplyService";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
 import { adminOutlet, getAllOutletTanks } from "../../store/actions/outlet";
+import { BallTriangle } from "react-loader-spinner";
 
 const CreateSupply = (props) => {
 
@@ -35,6 +36,7 @@ const CreateSupply = (props) => {
     const [overage, setOverage] = useState('');
     const [shortage, setShortage] = useState('');
     const [supplyDate, setSupplyDate] = useState('');
+    const [stop, setStop] = useState(false);
 
     const selectedIncomingOrder = (data) => {
 
@@ -127,8 +129,10 @@ const CreateSupply = (props) => {
         if(selectedIncomingOrders === "") return swal("Warning!", "Incoming order field cannot be empty", "info");
 
         let discharged = 0;
+        let tanks = {};
         for(let data of selected){
             discharged = discharged + Number(data.addedQuantity);
+            tanks[data._id] = data.addedQuantity;
         }
 
         if(typeof discharged === 'number' && discharged !== 0){
@@ -142,6 +146,7 @@ const CreateSupply = (props) => {
                 productType: productSupply,
                 shortage: shortage,
                 overage: overage,
+                recipientTanks: tanks,
                 incomingID: selectedIncomingOrders._id,
                 date: supplyDate,
                 tankUpdate: selected,
@@ -211,16 +216,19 @@ const CreateSupply = (props) => {
     const saveSupply = () => {
 
         if(supplyList.length !== 0){
+            setStop(true);
             const payload = {
                 load: supplyList
             }
+            console.log(payload, "saved tanks")
     
             SupplyService.createSupply(payload).then(data => {
-                swal("Succes!", `Supply recorded successfully!. `, "success");
-            }).then(()=>{
                 setSupplyList([]);
+                setStop(false);
                 props.refresh();
-            })
+            }).then(()=>{
+                swal("Succes!", `Supply recorded successfully!. `, "success");
+            });
         }else{
             swal("Warning!", `You can not submit an empty supply list. `, "info");
         }
@@ -228,6 +236,22 @@ const CreateSupply = (props) => {
 
     return(
         <div className='inner-body'>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={stop}
+                // onClick={handleClose}
+            >
+                <BallTriangle
+                    height={100}
+                    width={100}
+                    radius={5}
+                    color="#fff"
+                    ariaLabel="ball-triangle-loading"
+                    wrapperClass={{}}
+                    wrapperStyle=""
+                    visible={true}
+                />
+            </Backdrop>
             <div className='left-supply'>
                 <div className='double-form'>
                     <div className='input-d'>

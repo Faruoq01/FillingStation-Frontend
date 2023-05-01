@@ -3,8 +3,6 @@ import { useDispatch } from 'react-redux';
 import { 
     closeModal, 
     createTanks, 
-    setSpinner, 
-    removeSpinner, 
 } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
@@ -19,7 +17,6 @@ const AddTank = (props) => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
-    const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
 
     const handleClose = () => dispatch(closeModal(0));
@@ -41,7 +38,6 @@ const AddTank = (props) => {
         if(calibrationDate === "") return swal("Warning!", "Calibration date field cannot be empty", "info");
         if(currentStock === "") return swal("Warning!", "Current stock field cannot be empty", "info");
         if(oneStation === null) return swal("Warning!", "Please create a station", "info");
-        dispatch(setSpinner());
         setWaiting(true);
 
         const today = new Date();
@@ -67,7 +63,6 @@ const AddTank = (props) => {
         } 
 
         await dispatch(createTanks(data, setWaiting));
-        await dispatch(removeSpinner());
         await props.refresh();
         setTimeout(()=>{
             props.outRefresh();
@@ -96,19 +91,19 @@ const AddTank = (props) => {
                             <div className='radio'>
                                 {(props.tabs === 1 || props.tabs === 0) &&
                                     <div className='rad-item'>
-                                        <Radio onClick={()=>{setProductType('PMS')}} checked={productType === 'PMS'? true: false} />
+                                        <Radio onClick={()=>{setProductType('PMS')}} checked={(productType === 'PMS' || props.tabs === 1)? true: false} />
                                         <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
                                     </div>
                                 }
                                 {(props.tabs === 2 || props.tabs === 0) &&
                                     <div className='rad-item'>
-                                        <Radio onClick={()=>{setProductType('AGO')}} checked={productType === 'AGO'? true: false} />
+                                        <Radio onClick={()=>{setProductType('AGO')}} checked={(productType === 'AGO' || props.tabs === 2)? true: false} />
                                         <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
                                     </div>
                                 }
                                 {(props.tabs === 3 || props.tabs === 0) &&
                                     <div className='rad-item'>
-                                        <Radio onClick={()=>{setProductType('DPK')}} checked={productType === 'DPK'? true: false} />
+                                        <Radio onClick={()=>{setProductType('DPK')}} checked={(productType === 'DPK' || props.tabs === 3)? true: false} />
                                         <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
                                     </div>
                                 }
@@ -116,7 +111,7 @@ const AddTank = (props) => {
                         </div>
 
                         <div className='inputs'>
-                            <div className='head-text2'>Tank Name/ Series</div>
+                            <div className='head-text2'>Tank No/ Series</div>
                             <OutlinedInput 
                                 sx={{
                                     width:'100%',
@@ -129,6 +124,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type='number'
                                 onChange={e => setTankName(e.target.value)}
                             />
                         </div>
@@ -147,6 +143,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 onChange={e => setTankHeight(e.target.value)}
                             />
                         </div>
@@ -165,6 +162,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 onChange={e => setTankCapacity(e.target.value)}
                             />
                         </div>
@@ -183,6 +181,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
                         </div>
@@ -201,6 +200,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 onChange={e => setDeadStockLevel(e.target.value)}
                             />
                         </div>
@@ -227,7 +227,7 @@ const AddTank = (props) => {
                             variant="contained"> Save
                         </Button>
 
-                        {loadingSpinner &&
+                        {waiting &&
                             <ThreeDots 
                                 height="60" 
                                 width="50" 

@@ -61,10 +61,9 @@ const Sales = (props) => {
 
         DailySalesService.updateSales(payload).then(data => {
             setLoading(false);
-            handleClose();
-        }).then(()=>{
             getAndAnalyzeDailySales();
         }).then(()=>{
+            handleClose();
             swal("Success", "Record updated successfully", "success");
         });
     }

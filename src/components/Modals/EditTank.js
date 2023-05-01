@@ -1,8 +1,5 @@
 import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
-import { 
-    setSpinner, 
-} from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -30,7 +27,7 @@ const EditTank = (props) => {
     const [currentStock, setCurrentStock] = useState('');
 
     useEffect(()=>{
-        setTankName(props.data.tankName);
+        setTankName(props.data.tankName.split(" ")[1]);
         setTankHeight(props.data.tankHeight);
         setTankCapacity(props.data.tankCapacity);
         setCurrentStock(props.data.currentLevel);
@@ -48,7 +45,6 @@ const EditTank = (props) => {
         if(calibrationDate === "") return swal("Warning!", "Calibration date field cannot be empty", "info");
         if(currentStock === "") return swal("Warning!", "Current stock field cannot be empty", "info");
         if(oneStation === null) return swal("Warning!", "Please create a station", "info");
-        dispatch(setSpinner());
         setLoader(true);
 
         const payload = {
@@ -60,16 +56,22 @@ const EditTank = (props) => {
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
             currentLevel: currentStock,
+            organisationID: oneStation?.organisation,
+            outletID: oneStation?._id,
         }
 
         OutletService.updateTank(payload).then((data)=>{
-            props.outRefresh();
-            props.refresh();
-            swal("Success", "records updated successfully!", "success");
+            if(data.status === "exist"){
+                swal("Warning!", data.message, "info");
+            }else{
+                setLoader(false);
+                props.outRefresh();
+                props.refresh();
+            }
     
         }).then(()=>{
-            setLoader(false);
             handleClose();
+            swal("Success", "records updated successfully!", "success");
         });
     }
 
@@ -114,7 +116,7 @@ const EditTank = (props) => {
                         </div>
 
                         <div className='inputs'>
-                            <div className='head-text2'>Tank Name/ Series</div>
+                            <div className='head-text2'>Tank No/ Series</div>
                             <OutlinedInput 
                                 sx={{
                                     width:'100%',
@@ -127,6 +129,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 value={tankName}
                                 onChange={e => setTankName(e.target.value)}
                             />
@@ -146,6 +149,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 value={tankHeight}
                                 onChange={e => setTankHeight(e.target.value)}
                             />
@@ -165,6 +169,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 value={tankCapacity}
                                 onChange={e => setTankCapacity(e.target.value)}
                             />
@@ -184,6 +189,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                disabled
                                 value={currentStock}
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
@@ -203,6 +209,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type="number"
                                 value={deadStockLevel}
                                 onChange={e => setDeadStockLevel(e.target.value)}
                             />

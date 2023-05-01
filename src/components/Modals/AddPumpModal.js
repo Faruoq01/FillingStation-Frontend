@@ -116,7 +116,7 @@ const AddPump = (props) => {
                     </div>
 
                     <div className='inputs'>
-                        <div className='head-text2'>Pump Name</div>
+                        <div className='head-text2'>Pump No/ Series</div>
                         <OutlinedInput 
                             sx={{
                                 width:'100%',
@@ -129,6 +129,7 @@ const AddPump = (props) => {
                                     border:'1px solid #777777',
                                 },
                             }} placeholder="" 
+                            type="number"
                             onChange={e => setPumpName(e.target.value)}
                         />
                     </div>

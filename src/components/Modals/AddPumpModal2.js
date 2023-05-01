@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -13,21 +12,25 @@ import OutletService from '../../services/outletService';
 
 const AddPump = (props) => {
 
-    const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
-
     const [defaultState, setDefaultState] = useState(0);
-    const [productType, setProduct] = useState(props.allTank[0].productType);
+    const [productType, setProduct] = useState("PMS");
     const [pumpName, setPumpName] = useState('');
     const [totalizer, setTotalizer] = useState('');
     const [currentTank, setCurrentTank] = useState(props.allTank[0]);
+    const [loadingSpinner, setLoader] = useState(false);
 
     const handleClose = () => props.close(false);
+
+    useEffect(()=>{
+        setProduct(props.tabs === 1? "PMS": props.tabs === 2? "AGO": "DPK")
+    }, [props.tabs])
 
     const handleOpen = () => {
         if(pumpName === "") return swal("Warning!", "Pump name field cannot be empty", "info");
         if(defaultState === "") return swal("Warning!", "Tank name field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
         if(totalizer === "") return swal("Warning!", "Totalizer field cannot be empty", "info");
+        setLoader(true);
 
         const payload = {
             pumpName: pumpName,
@@ -47,6 +50,7 @@ const AddPump = (props) => {
                 swal("Success!", "Pump created successfully!", "success");
             }
         }).then(()=>{
+            setLoader(false);
             props.close(false);
             props.refresh();
             setTimeout(()=>{
@@ -87,32 +91,44 @@ const AddPump = (props) => {
                     <div style={{marginTop:'15px'}} className='inputs'>
                         <div className='head-text2'>Choose product type</div>
                         <div className='radio'>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{changeType("PMS")}} checked={productType === 'PMS'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{changeType("AGO")}} checked={productType === 'AGO'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{changeType("DPK")}} checked={productType === 'DPK'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
-                            </div>
+                            {(props.tabs === 1 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{changeType("PMS")}} checked={(productType === 'PMS' || props.tabs === 1)? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                </div>
+                            }
+
+                            {(props.tabs === 2 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{changeType("AGO")}} checked={(productType === 'AGO' || props.tabs === 2)? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                </div>
+                            }
+
+                            {(props.tabs === 3 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{changeType("DPK")}} checked={(productType === 'DPK' || props.tabs === 3)? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                </div>
+                            }
                         </div>
                     </div>
 
                     <div className='inputs'>
-                        <div className='head-text2'>Pump Name</div>
+                        <div className='head-text2'>Pump No/ Series</div>
                         <OutlinedInput 
                             sx={{
                                 width:'100%',
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius: '0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }} placeholder="" 
+                            type="number"
                             onChange={e => setPumpName(e.target.value)}
                         />
                     </div>
@@ -128,8 +144,11 @@ const AddPump = (props) => {
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius: '0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }}
                         >
                             {
@@ -152,15 +171,19 @@ const AddPump = (props) => {
                                 height: '35px', 
                                 marginTop:'5px', 
                                 background:'#EEF2F1', 
-                                border:'1px solid #777777',
                                 fontSize:'12px',
+                                borderRadius: '0px',
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    border:'1px solid #777777',
+                                },
                             }} placeholder="" 
+                            type="number"
                             onChange={e => setTotalizer(e.target.value)}
                         />
                     </div>
 
-                    <div className='butt'>
-                        <Button sx={{
+                    <div className='butt' style={{height:'30px'}}>
+                        <Button disabled={loadingSpinner} sx={{
                             width:'100px', 
                             height:'30px',  
                             background: '#427BBE',
