@@ -5,10 +5,10 @@ import ApproximateDecimal from '../common/approx';
 const InitialBalance = () => {
 
     const {balances, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
-    // console.log(balances, "hhhhhhhhh")
-
+    
     const getInit = (props) => {
-
+        const current = props.type === "PMS"? balances?.pms: props.type === "AGO"? balances?.ago: balances?.dpk;
+        
         const quantity = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
             return Number(accum) + Number(current.quantity);
         }, 0);
@@ -29,7 +29,7 @@ const InitialBalance = () => {
             }
         }, 0);
 
-        return {quantity: quantity, shortage: shortage, overage: overage}
+        return {quantity: quantity, shortage: shortage, overage: overage, balance: current === 0? "0": Number(current?.balanceCF)};
     }
 
     const InitialRows = (props) => {
@@ -38,7 +38,7 @@ const InitialBalance = () => {
             <div style={{marginTop:'5px'}} className="header_balance_container">
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props?.data?.balanceCF))}</div>
+                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(getInit(props).balance)}</div>
                 </div>
                 <div style={ins} className="initial_supply">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
@@ -49,7 +49,7 @@ const InitialBalance = () => {
                 </div>
                 <div style={ins} className="B_forward">
                     <div style={{marginRight:'5px'}} className="b_child">{props.type}</div>
-                    <div className="b_child">{props.data === null? "0": ApproximateDecimal(Number(props?.data?.balanceCF) + Number(getInit(props).quantity))}</div>
+                    <div className="b_child">{ApproximateDecimal( getInit(props).balance + getInit(props).quantity)}</div>
                 </div>
             </div>
         )
@@ -114,9 +114,9 @@ const InitialBalance = () => {
                     </div>
                 </div>
 
-                <InitialRows data = {balances?.pms} type = {'PMS'} />
-                <InitialRows data = {balances?.ago} type = {'AGO'} />
-                <InitialRows data = {balances?.dpk} type = {'DPK'} />
+                <InitialRows type = {'PMS'} />
+                <InitialRows type = {'AGO'} />
+                <InitialRows type = {'DPK'} />
             </div>
 
             <div className="initial_balance_container_mobile">

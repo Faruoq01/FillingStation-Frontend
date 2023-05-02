@@ -189,7 +189,6 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                disabled
                                 value={currentStock}
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
