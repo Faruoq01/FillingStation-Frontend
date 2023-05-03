@@ -3,7 +3,7 @@ import ApproximateDecimal from '../common/approx';
 
 const BalanceCF = () => {
 
-    const {balances, supply, sales} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const {balances, balanceCF, supply, sales} = useSelector(state => state.dailySalesReducer.bulkReports);
 
     const getSales = (type) => {
         const totalSales = sales.filter(data => data.productType === type).reduce((accum, current) => {
@@ -13,13 +13,19 @@ const BalanceCF = () => {
         return totalSales;
     }
 
-    const getInit = (props) => {
+    const getInit = (type) => {
 
-        const quantity = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
+        const current = type === "PMS"? balances?.pms: type === "AGO"? balances?.ago: balances?.dpk;
+        const currentCF = type === "PMS"? balanceCF?.pms: type === "AGO"? balanceCF?.ago: balanceCF?.dpk;
+
+        console.log(current, "brought")
+        console.log(currentCF, "carried")
+
+        const quantity = supply.filter(data => data.productType === type).reduce((accum, current) => {
             return Number(accum) + Number(current.quantity);
         }, 0);
 
-        const shortage = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
+        const shortage = supply.filter(data => data.productType === type).reduce((accum, current) => {
             if(current.shortage === "None"){
                 return 0;
             }else{
@@ -27,7 +33,7 @@ const BalanceCF = () => {
             }
         }, 0);
 
-        const overage = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
+        const overage = supply.filter(data => data.productType === type).reduce((accum, current) => {
             if(current.overage === "None"){
                 return 0;
             }else{
@@ -35,7 +41,7 @@ const BalanceCF = () => {
             }
         }, 0);
 
-        return {quantity: quantity, shortage: shortage, overage: overage}
+        return {quantity: quantity, shortage: shortage, overage: overage, balanceCF: current === 0? currentCF.balanceCF: Number(current.balanceCF) + Number(quantity) - getSales(type) }
     }
 
     const BalanceCF = ({data, type, sn}) => {
@@ -44,7 +50,7 @@ const BalanceCF = () => {
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{sn}</div>
                 <div style={ins} className="cells">{type} </div>
-                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal(Number(data.balanceCF) + Number(getInit(type).quantity) - Number(getSales(type)))}</div>
+                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal( getInit(type).balanceCF )}</div>
             </div>
         )
     }
@@ -86,9 +92,9 @@ const BalanceCF = () => {
                     <div className="cells">Quantity</div>
                 </div>
 
-                <BalanceCF data={balances?.pms} type={'PMS'} sn={'1'} />
-                <BalanceCF data={balances?.ago} type={'AGO'} sn={'2'} />
-                <BalanceCF data={balances?.dpk} type={'DPK'} sn={'3'} />
+                <BalanceCF data={balanceCF?.pms} type={'PMS'} sn={'1'} />
+                <BalanceCF data={balanceCF?.ago} type={'AGO'} sn={'2'} />
+                <BalanceCF data={balanceCF?.dpk} type={'DPK'} sn={'3'} />
             </div>
 
             <div className="initial_balance_container_mobile">
@@ -99,9 +105,9 @@ const BalanceCF = () => {
                 <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
                     <div className='sups'>
                         <div className='slide'>
-                            <MobileBalanceCF data={balances?.pms} type={'PMS'} sn={'1'} />
-                            <MobileBalanceCF data={balances?.ago} type={'AGO'} sn={'2'} />
-                            <MobileBalanceCF data={balances?.dpk} type={'DPK'} sn={'3'} />
+                            <MobileBalanceCF data={balanceCF?.pms} type={'PMS'} sn={'1'} />
+                            <MobileBalanceCF data={balanceCF?.ago} type={'AGO'} sn={'2'} />
+                            <MobileBalanceCF data={balanceCF?.dpk} type={'DPK'} sn={'3'} />
                         </div>
                     </div>
                 </div>
