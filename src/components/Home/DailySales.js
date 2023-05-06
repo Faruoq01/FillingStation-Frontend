@@ -26,6 +26,7 @@ import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import OveragesAndShortages from '../DailySales/OveragesAndShortages';
+import OverageList from '../DailySales/OverageList';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -45,6 +46,7 @@ const months = {
 }
 
 const DailySales = (props) => {
+    const moment = require('moment-timezone');
     const date = new Date();
     const toString = date.toDateString();
     const [month, day, year] = toString.split(' ');
@@ -66,7 +68,6 @@ const DailySales = (props) => {
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
-    console.log(dailySales, "hello")
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -319,6 +320,7 @@ const DailySales = (props) => {
             onLoad: onLoad,
             selectedDate: selectedDate
         }
+        console.log(salesPayload)
 
         DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
 
@@ -358,8 +360,13 @@ const DailySales = (props) => {
             if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
                 const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
                 setDefault(findID + 1);
-
-                getAndAnalyzeDailySales(null, true, "");
+                
+                let todayDate = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+                if(currentDate2 === ""){
+                    getAndAnalyzeDailySales(oneStationData, true, todayDate);
+                }else{
+                    getAndAnalyzeDailySales(oneStationData, false, currentDate2);
+                }
 
                 const payload = {
                     organisationID: resolveUserID().id,
@@ -486,8 +493,10 @@ const DailySales = (props) => {
         dispatch(adminOutlet(item));
         setLoads(true);
 
+        let todayDate = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        
         if(currentDate2 === ""){
-            getAndAnalyzeDailySales(item, true, currentDate2);
+            getAndAnalyzeDailySales(item, true, todayDate);
         }else{
             getAndAnalyzeDailySales(item, false, currentDate2);
         }
@@ -1047,6 +1056,9 @@ const DailySales = (props) => {
                         </Route>
                         <Route path='/home/outlets/list'>
                             <ListAllTanks refresh={getAllProductData}/>
+                        </Route>
+                        <Route path='/home/daily-sales/overage'>
+                            <OverageList/>
                         </Route>
                     </Switch>
                 </div>

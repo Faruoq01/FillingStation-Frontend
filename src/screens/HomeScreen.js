@@ -162,6 +162,7 @@ const HomeScreen = () => {
                 '/home/tank-list': '← Station Tanks',
                 '/home/pump-list': '← Station Pumps',
                 '/home/daily-sales': 'Daily Sales',
+                '/home/daily-sales/overage': 'Overage/Shortage',
                 '/home/daily-sales/report': 'Daily Sales',
                 '/home/daily-sales/pms': 'Daily Sales',
                 '/home/daily-sales/ago': 'Daily Sales',

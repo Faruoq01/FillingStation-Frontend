@@ -1,13 +1,72 @@
-import { Button } from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import "../../styles/overage.scss";
 import slideMenu from '../../assets/slideMenu.png';
 import tank from '../../assets/comp/tank.png';
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 const OveragesAndShortages = () => {
-    return(
-        <div className="overages">
-            <div className='alisss'>
-                <div style={{marginTop:'0px'}} className="tank-text">Overage/Shortage</div>
+
+    const history = useHistory();
+    const [defaultState, setDefault] = useState(10);
+    const [type, setType] = useState('PMS');
+    const { dipping } = useSelector(state => state.dailySalesReducer.bulkReports);
+
+    const getDippingResult = () => {
+        const productCategory = dipping.filter(data => data.productType === type);
+
+        const currentLevel = productCategory.reduce((accum, current) => {
+            return Number(accum) + Number(current.currentLevel);
+        }, 0);
+
+        const dippingLevel = productCategory.reduce((accum, current) => {
+            return Number(accum) + Number(current.dipping);
+        }, 0);
+
+        const capacity = productCategory.reduce((accum, current) => {
+            return Number(accum) + Number(current.tankCapacity);
+        }, 0);
+
+        const currentCent = currentLevel/capacity * 100;
+        const dippingCent = dippingLevel/capacity * 100;
+
+        const detail = {
+            currentCent: isNaN(currentCent)? 0: currentCent,
+            dippingCent: isNaN(dippingCent)? 0: dippingCent,
+            currentLevel: currentLevel,
+            dipping: dippingLevel
+        }
+
+        return detail;
+    }
+
+    const selectedType = (data) => {
+        setDefault(data);
+        if(data === 10){
+            setType("PMS");
+
+        }else if (data === 20){
+            setType("AGO");
+
+        }else{
+            setType("DPK");
+        }
+    }
+
+    const Selectors = () => {
+        return(
+            <div style={selc}>
+                <Select
+                    labelId="demo-select-small"
+                    id="demo-select-small"
+                    value={defaultState}
+                    style={selectMe}
+                >
+                    <MenuItem onClick={() => {selectedType(10)}} style={menu} value={10}>PMS</MenuItem>
+                    <MenuItem onClick={() => {selectedType(20)}} style={menu} value={20}>AGO</MenuItem>
+                    <MenuItem onClick={() => {selectedType(30)}} style={menu} value={30}>DPK</MenuItem>
+                </Select>
                 <Button 
                     variant="contained" 
                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
@@ -23,10 +82,32 @@ const OveragesAndShortages = () => {
                             backgroundColor: '#06805B'
                         }
                     }}
-                    // onClick={()=>{history.push("/home/analysis/payments")}}
+                    onClick={()=>{history.push("/home/daily-sales/overage")}}
                 >
                     View in details
                 </Button>
+            </div>
+        )
+    }
+
+    const status = () => {
+        const total = getDippingResult().dipping - getDippingResult().currentLevel;
+        if(total < 0){
+            return "Shortage"
+
+        }else if(total === 0){
+            return "None"
+
+        }else{
+            return "Overage"
+        }
+    }
+
+    return(
+        <div className="overages">
+            <div className='alisss'>
+                <div style={{marginTop:'0px'}} className="tank-text">Overage/Shortage</div>
+                <Selectors />
             </div>
 
             <div className="overageContainer">
@@ -34,10 +115,10 @@ const OveragesAndShortages = () => {
                     <div className="overlapOne"></div>
                     <div className="overlapTwo">
                         <div className="current-level">
-                            <div className="dippingBarLeft"></div>
+                            <div style={{width: getDippingResult().currentCent + "%"}} className="dippingBarLeft"></div>
                         </div>
                         <div className="dipping">
-                            <div className="dippingBar"></div>
+                            <div style={{width: getDippingResult().dippingCent + "%"}} className="dippingBar"></div>
                         </div>
                     </div>
                     <div className="overlapThree">
@@ -47,28 +128,51 @@ const OveragesAndShortages = () => {
 
                 <div className="labelsOverage">
                     <div>
-                        <div style={title}>10000 Ltrs</div>
+                        <div style={title}>{getDippingResult().currentLevel} Ltrs</div>
                         <div style={label}>Current Level </div>
                     </div>
 
                     <div>
-                        <div style={title}>10000 Ltrs</div>
+                        <div style={title}>{getDippingResult().dipping} Ltrs</div>
                         <div style={label}>Dipping Level </div>
                     </div>
                 </div>
 
                 <div className="statusOverage">
                     <div>
-                        <div style={title}>-300 Ltrs</div>
+                        <div style={title}>{getDippingResult().dipping - getDippingResult().currentLevel} Ltrs</div>
                         <div style={label}>Differences</div>
                     </div>
                     <div style={shortage}>
-                        Shortage
+                        {status()}
                     </div>
                 </div>
             </div>
         </div>
     )
+}
+
+const menu = {
+    fontSize: '12px'
+}
+
+const selectMe = {
+    height: "30px",
+    marginRight:'10px',
+    borderRadius:'0px',
+    background: '#F2F1F1B2',
+    color:'#000',
+    fontSize:'12px',
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
+}
+
+const selc = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
 }
 
 const title = {
