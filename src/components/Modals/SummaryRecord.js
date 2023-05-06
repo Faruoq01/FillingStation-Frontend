@@ -263,7 +263,7 @@ const SummaryRecord = (props) => {
             props.clops(false);
         }).then(()=>{
             setStop(false);
-            history.push('/home/daily-sales')
+            history.push('/home/daily-record-sales')
             swal("Success!", "Daily sales recorded successfully!", "success");
         });
     }

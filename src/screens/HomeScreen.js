@@ -333,7 +333,7 @@ const HomeScreen = () => {
 
             <div style={{background: user.isDark === "0"? '#fff': '#404040'}} className='main-content'>
                 <div className='mobile-bar'>
-                    <AppBar sx={{background:'#06805B', zIndex:'500'}} position="absolute">
+                    <AppBar sx={{background:'#06805B', zIndex:'50'}} position="absolute">
                         <Toolbar>
                             <IconButton
                                 size="large"
