@@ -25,6 +25,7 @@ import { Skeleton } from '@mui/material';
 import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
+import OveragesAndShortages from '../DailySales/OveragesAndShortages';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -65,6 +66,7 @@ const DailySales = (props) => {
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
+    console.log(dailySales, "hello")
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -754,6 +756,8 @@ const DailySales = (props) => {
                                 </div>
                             }
                         </div>
+
+                        <OveragesAndShortages />
                     </div>
 
                     <div className='daily-right'>
@@ -875,7 +879,7 @@ const DailySales = (props) => {
 
                         <div style={{marginTop:'30px'}} className='section'>
                             <div className='alisss'>
-                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Net to bank</div>
+                                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Net to bank</div>
                                 <Button 
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}

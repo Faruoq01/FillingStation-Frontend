@@ -5,6 +5,7 @@ import ApproximateDecimal from '../common/approx';
 const InitialBalance = () => {
 
     const {balances, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
+    console.log(balances, "balance")
     
     const getInit = (props) => {
         const current = props.type === "PMS"? balances?.pms: props.type === "AGO"? balances?.ago: balances?.dpk;

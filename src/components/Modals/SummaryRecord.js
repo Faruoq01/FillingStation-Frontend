@@ -199,6 +199,7 @@ const SummaryRecord = (props) => {
             ...tank,
             pumps: allPumps,
             totalSales: sales,
+            productSales: productSales,
             afterSales: Number(tank.currentLevel) - sales,
             outlet: oneStationData,
             totalTankLevel: totalTankLevel,
@@ -248,6 +249,7 @@ const SummaryRecord = (props) => {
             tanksRecords.forEach(async(item) => {
                 const payload = {
                     id: item._id,
+                    tankName: item.tankName.split(' ')[1],
                     previousLevel: item.previousLevel,
                     currentLevel: Number(item.RTlitre) > 0? Number(item.RTlitre) + Number(item.afterSales): Number(item.afterSales),
                 };
