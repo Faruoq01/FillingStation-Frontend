@@ -78,6 +78,17 @@ const DashboardService = {
             throw err
         })
     },
+
+    dipping: (data) => {
+        return APIs.post('/dashboard/dashboard-dipping', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default DashboardService;

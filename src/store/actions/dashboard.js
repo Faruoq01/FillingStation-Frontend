@@ -6,7 +6,8 @@ import {
     CHANGE_STATUS,
     CHANGE_ALL_STATUS,
     SEARCH_DASH,
-    UTILS
+    UTILS,
+    DATE_RANGE
 } from '../types';
 
 export const addDashboard = (params) => dispatch => {
@@ -40,3 +41,8 @@ export const searchdashStaffs = (params) => dispatch => {
 export const utils = (params) => dispatch => {
     dispatch({ type: UTILS, payload: params});
 }
+
+export const dateRange = (params) => dispatch => {
+    dispatch({ type: DATE_RANGE, payload: params});
+}
+

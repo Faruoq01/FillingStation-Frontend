@@ -19,7 +19,7 @@ import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
-import { bulkReports, currentDateValue, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
+import { bulkReports, currentDateValue, dailySupplies, lpoRecords, overages, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
 import { isSafari } from 'react-device-detect';
@@ -27,6 +27,7 @@ import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import OveragesAndShortages from '../DailySales/OveragesAndShortages';
 import OverageList from '../DailySales/OverageList';
+import { dateRange } from '../../store/actions/dashboard';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -68,6 +69,13 @@ const DailySales = (props) => {
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
+    const [currentRoute, setCurrentRoute] = useState(false);
+
+    history.listen((location) => {
+        if(location.pathname === "/home/daily-sales"){
+            setCurrentRoute(true);
+        }
+    });
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -320,7 +328,6 @@ const DailySales = (props) => {
             onLoad: onLoad,
             selectedDate: selectedDate
         }
-        console.log(salesPayload)
 
         DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
 
@@ -342,6 +349,10 @@ const DailySales = (props) => {
             getAggregatePayment(paymentsRecords);
             dispatch(bulkReports(data.dailyRecords));
 
+            if(currentRoute){
+                dispatch(overages(data.dailyRecords.dipping));
+            }
+            
             dispatch(lpoRecords(data.dailyRecords.lpo));
             getMasterRows(salesDataRecord);
 
@@ -364,6 +375,7 @@ const DailySales = (props) => {
                 let todayDate = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
                 if(currentDate2 === ""){
                     getAndAnalyzeDailySales(oneStationData, true, todayDate);
+                    dispatch(dateRange([new Date(todayDate), new Date(todayDate)]));
                 }else{
                     getAndAnalyzeDailySales(oneStationData, false, currentDate2);
                 }
@@ -547,6 +559,8 @@ const DailySales = (props) => {
         setCurrentDate(format);
         dispatch(currentDateValue(e.target.value));
         getAndAnalyzeDailySales(oneStationData, false, e.target.value);
+
+        dispatch(dateRange([new Date(e.target.value), new Date(e.target.value)]));
     }
 
     const goToSupply = () => {

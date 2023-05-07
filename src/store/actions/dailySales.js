@@ -15,7 +15,8 @@ import {
     BAR_DATA,
     SUMMARY_RECORD_SALES,
     CURRENT_DATE,
-    REMARKS
+    REMARKS,
+    OVERAGES
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -86,6 +87,9 @@ export const saveRemarks = (params) => dispatch => {
     dispatch({type: REMARKS, payload: params});
 }
 
+export const overages = (params) => dispatch => {
+    dispatch({type: OVERAGES, payload: params});
+}
 
 
 

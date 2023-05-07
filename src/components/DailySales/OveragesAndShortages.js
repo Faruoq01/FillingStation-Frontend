@@ -11,7 +11,7 @@ const OveragesAndShortages = () => {
     const history = useHistory();
     const [defaultState, setDefault] = useState(10);
     const [type, setType] = useState('PMS');
-    const { dipping } = useSelector(state => state.dailySalesReducer.bulkReports);
+    const dipping = useSelector(state => state.dailySalesReducer.overages);
 
     const getDippingResult = () => {
         const productCategory = dipping.filter(data => data.productType === type);

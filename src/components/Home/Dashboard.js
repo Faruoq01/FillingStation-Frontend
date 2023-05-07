@@ -18,7 +18,7 @@ import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
 import expense from '../../assets/expense.png';
 import DashboardService from '../../services/dashboard';
-import { addDashboard, dashboardRecordMore, dashEmployees, utils } from '../../store/actions/dashboard';
+import { addDashboard, dashboardRecordMore, dashEmployees, dateRange, utils } from '../../store/actions/dashboard';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
@@ -26,6 +26,8 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import SalesDisplay from '../Modals/SalesDisplay';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
+import OveragesAndShortages from '../DailySales/OveragesAndShortages';
+import { overages } from '../../store/actions/dailySales';
 
 const mobile = window.matchMedia('(max-width: 600px)');
 
@@ -120,7 +122,8 @@ const Dashboard = (props) => {
     const [load, setLoad] = useState(false);
     const [product, setProduct] = useState('PMS');
     const [productState, setProductState] = useState(0);
-    const [value, setValue] = React.useState([new Date(), new Date()]);
+    // const [value, setValue] = React.useState([new Date(), new Date()]);
+    const updatedDate = useSelector(state => state.dashboardReducer.dateRange);
     const [prices, setPrices] = useState(false);
 
     const resolveUserID = () => {
@@ -295,8 +298,8 @@ const Dashboard = (props) => {
                 const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
                 setDefault(findID + 1);
 
-                const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-                const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+                const formatOne = moment(new Date(updatedDate[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+                const formatTwo = moment(new Date(updatedDate[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
                 const payload = {
                     organisation: resolveUserID().id,
@@ -314,6 +317,7 @@ const Dashboard = (props) => {
                     // attendance records
                     dispatch(dashEmployees(data[0].employees));
                     collectAndAnalyseData(data[0]);
+                    dispatch(overages(data[1].dipping));
 
                     // sales record
                     const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -340,8 +344,8 @@ const Dashboard = (props) => {
             }
         }).then(data => {
 
-            const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-            const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+            const formatOne = moment(new Date(updatedDate[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+            const formatTwo = moment(new Date(updatedDate[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
             const payload = {
                 organisation: resolveUserID().id,
@@ -359,6 +363,7 @@ const Dashboard = (props) => {
                 // attendance records
                 dispatch(dashEmployees(data[0].employees));
                 collectAndAnalyseData(data[0]);
+                dispatch(overages(data[1].dipping));
 
                 // sales record
                 const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -396,8 +401,8 @@ const Dashboard = (props) => {
         dispatch(adminOutlet(item));
         setLoad(true);
         
-        const formatOne = moment(new Date(value[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-        const formatTwo = moment(new Date(value[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const formatOne = moment(new Date(updatedDate[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const formatTwo = moment(new Date(updatedDate[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
 
         const payload = {
             organisation: resolveUserID().id,
@@ -410,6 +415,7 @@ const Dashboard = (props) => {
             // employee details
             dispatch(dashEmployees(data[0].employees));
             collectAndAnalyseData(data[0]);
+            dispatch(overages(data[1].dipping));
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -605,6 +611,7 @@ const Dashboard = (props) => {
 
         const formatOne = moment(new Date(date[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
         const formatTwo = moment(new Date(date[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        dispatch(dateRange([new Date(formatOne), new Date(formatTwo)]));
 
         const payload = {
             organisation: resolveUserID().id,
@@ -617,6 +624,7 @@ const Dashboard = (props) => {
             // employee details
             dispatch(dashEmployees(data[0].employees));
             collectAndAnalyseData(data[0]);
+            dispatch(overages(data[1].dipping));
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -624,7 +632,6 @@ const Dashboard = (props) => {
         }).then(()=>{
             setLoad(false);
         });
-        setValue(date);
     }
 
     const getProgress = (sales, before) => {
@@ -658,7 +665,7 @@ const Dashboard = (props) => {
                     <div className='left-dash'>
                         <div style={{width:'auto'}} className='selectItem'>
                             <div style={{marginRight:'10px'}} className='first-select'>
-                                <DateRangePicker disabled={!getPerm('0')} onChange={onChangeRange} value={value} />
+                                <DateRangePicker disabled={!getPerm('0')} onChange={onChangeRange} value={updatedDate} />
                             </div>
                             <div style={{width: mobile.matches? '230px': "150px"}} className='second-select'>
                                 {getPerm('1') &&
@@ -719,6 +726,7 @@ const Dashboard = (props) => {
                         </div>
                         <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'15px', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
                         <DashboardGraph load={load} station={oneStationData} />
+                        <OveragesAndShortages />
                     </div>
                     <div className='right-dash'>
                         <div className='asset'>

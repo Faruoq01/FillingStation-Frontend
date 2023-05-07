@@ -16,7 +16,8 @@ import {
     BAR_DATA,
     SUMMARY_RECORD_SALES,
     CURRENT_DATE,
-    REMARKS
+    REMARKS,
+    OVERAGES
 } from '../types'
 
 const initialState = {
@@ -50,7 +51,8 @@ const initialState = {
     barData: {},
     summary: {},
     currentDate: "",
-    remarks: []
+    remarks: [],
+    overages: []
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -63,6 +65,13 @@ const dailySalesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dailySales: payload,
+            }
+        }
+
+        case OVERAGES: {
+            return{
+                ...state,
+                overages: payload
             }
         }
 
