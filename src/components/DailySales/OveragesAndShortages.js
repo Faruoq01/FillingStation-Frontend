@@ -3,18 +3,20 @@ import "../../styles/overage.scss";
 import slideMenu from '../../assets/slideMenu.png';
 import tank from '../../assets/comp/tank.png';
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { overageType } from "../../store/actions/dailySales";
 
-const OveragesAndShortages = () => {
+const OveragesAndShortages = (props) => {
 
     const history = useHistory();
+    const dispatch = useDispatch();
     const [defaultState, setDefault] = useState(10);
-    const [type, setType] = useState('PMS');
     const dipping = useSelector(state => state.dailySalesReducer.overages);
+    const overageTypeData = useSelector(state => state.dailySalesReducer.overageType);
 
     const getDippingResult = () => {
-        const productCategory = dipping.filter(data => data.productType === type);
+        const productCategory = dipping.filter(data => data.productType === overageTypeData);
 
         const currentLevel = productCategory.reduce((accum, current) => {
             return Number(accum) + Number(current.currentLevel);
@@ -44,14 +46,18 @@ const OveragesAndShortages = () => {
     const selectedType = (data) => {
         setDefault(data);
         if(data === 10){
-            setType("PMS");
+            dispatch(overageType("PMS"));
 
         }else if (data === 20){
-            setType("AGO");
+            dispatch(overageType("AGO"));
 
         }else{
-            setType("DPK");
+            dispatch(overageType("DPK"));
         }
+    }
+
+    const loadOverageList = () => {
+        history.push("/home/overage");
     }
 
     const Selectors = () => {
@@ -82,7 +88,7 @@ const OveragesAndShortages = () => {
                             backgroundColor: '#06805B'
                         }
                     }}
-                    onClick={()=>{history.push("/home/daily-sales/overage")}}
+                    onClick={loadOverageList}
                 >
                     View in details
                 </Button>

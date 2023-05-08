@@ -656,7 +656,7 @@ const Dashboard = (props) => {
     const closeModal = () => {
         setPrices(false);
     }
-
+    
     return(
         <>
             <SalesDisplay open={prices} close={closeModal} dash = {dashboardRecords.sales} />
@@ -726,7 +726,7 @@ const Dashboard = (props) => {
                         </div>
                         <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'15px', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
                         <DashboardGraph load={load} station={oneStationData} />
-                        <OveragesAndShortages />
+                        <OveragesAndShortages path={"dash"} />
                     </div>
                     <div className='right-dash'>
                         <div className='asset'>

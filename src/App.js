@@ -23,6 +23,7 @@ function App() {
         <Switch>
           <Route exact path='/' component={Homepage} />
           <ProtectedRoute path='/home' component={HomeScreen}/>
+          <Route path='/home/overage' component={HomeScreen} />
           <Route path='/home/daily-sales' component={HomeScreen} />
           <Route path='/home/daily-sales/overage' component={HomeScreen} />
           <Route path='/home/tank-list' component={HomeScreen} />

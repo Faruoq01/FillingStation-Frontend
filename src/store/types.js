@@ -83,6 +83,7 @@ export const CURRENT_DATE = "CURRENT_DATE";
 export const REMARKS = "REMARKS";
 export const OVERAGES = "OVERAGES";
 export const DATE_RANGE = "DATE_RANGE";
+export const OVERAGE_TYPE = "OVERAGE_TYPE";
 
 /////////////////////////////////////////////////////////////////////////
 

@@ -9,10 +9,8 @@ import { getAllStations , adminOutlet} from '../../store/actions/outlet';
 import { ThreeDots } from 'react-loader-spinner';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardService from '../../services/dashboard';
-import { overages } from '../../store/actions/dailySales';
+import { overageType, overages } from '../../store/actions/dailySales';
 import { dateRange } from '../../store/actions/dashboard';
-
-const mobile = window.matchMedia('(max-width: 1150px)');
 
 const OverageList = () => {
 
@@ -22,12 +20,14 @@ const OverageList = () => {
     const updatedDate = useSelector(state => state.dashboardReducer.dateRange);
     const user = useSelector(state => state.authReducer.user);
     const [defaultState, setDefault] = useState(0);
+    const [defaultState2, setDefault2] = useState(10);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [skip, setSkip] = useState(0);
     const [limit] = useState(15);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
+    const overageTypeData = useSelector(state => state.dailySalesReducer.overageType);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -213,8 +213,26 @@ const OverageList = () => {
         });
     }
 
+    const getDippingResult = () => {
+        const productCategory = dipping.filter(data => data.productType === overageTypeData);
+        return productCategory;
+    }
+
+    const selectedType = (data) => {
+        setDefault2(data);
+        if(data === 10){
+            dispatch(overageType("PMS"));
+
+        }else if (data === 20){
+            dispatch(overageType("AGO"));
+
+        }else{
+            dispatch(overageType("DPK"));
+        }
+    }
+
     return(
-        <div data-aos="zoom-in-down" style={{marginTop: mobile.matches? "10px": "auto"}} className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down"  className='paymentsCaontainer'>
             <div className='inner-pay'>
                 <div className='search'>
                     <div className='input-cont'>
@@ -250,13 +268,23 @@ const OverageList = () => {
                         </div>
                     </div>
                     <div style={{width: 'auto'}} className='butt'>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={defaultState2}
+                            style={selectMe}
+                        >
+                            <MenuItem onClick={() => {selectedType(10)}} style={menu} value={10}>PMS</MenuItem>
+                            <MenuItem onClick={() => {selectedType(20)}} style={menu} value={20}>AGO</MenuItem>
+                            <MenuItem onClick={() => {selectedType(30)}} style={menu} value={30}>DPK</MenuItem>
+                        </Select>
                         <DateRangePicker onChange={getDateFromRange} value={updatedDate} />
                     </div>
                 </div>
 
                 <div></div>
 
-                <div className='table-container'>
+                <div style={{marginTop:'10px'}} className='table-container'>
                     <div className='table-head'>
                         <div className='column'>S/N</div>
                         <div className='column'>Date Created</div>
@@ -269,9 +297,9 @@ const OverageList = () => {
                     <div className='row-container'>
                         {
                             !loading?
-                            dipping.length === 0?
+                            getDippingResult().length === 0?
                             <div style={place}>No Shortage/Overage</div>:
-                            dipping.map((data, index) => {
+                            getDippingResult().map((data, index) => {
                                 return(
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>
@@ -313,6 +341,19 @@ const OverageList = () => {
             </div>
         </div>
     )
+}
+
+const selectMe = {
+    height: "30px",
+    marginRight:'10px',
+    borderRadius:'0px',
+    background: '#F2F1F1B2',
+    color:'#000',
+    fontSize:'12px',
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 const short = {

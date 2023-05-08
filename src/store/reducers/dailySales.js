@@ -17,7 +17,8 @@ import {
     SUMMARY_RECORD_SALES,
     CURRENT_DATE,
     REMARKS,
-    OVERAGES
+    OVERAGES,
+    OVERAGE_TYPE
 } from '../types'
 
 const initialState = {
@@ -52,7 +53,8 @@ const initialState = {
     summary: {},
     currentDate: "",
     remarks: [],
-    overages: []
+    overages: [],
+    overageType: 'PMS'
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -72,6 +74,13 @@ const dailySalesReducer = (state = initialState, action) => {
             return{
                 ...state,
                 overages: payload
+            }
+        }
+
+        case OVERAGE_TYPE: {
+            return {
+                ...state,
+                overageType: payload
             }
         }
 

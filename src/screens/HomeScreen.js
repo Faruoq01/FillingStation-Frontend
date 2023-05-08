@@ -66,6 +66,7 @@ import { socket } from '../services/socket';
 import { useCallback } from 'react';
 import OutletService from '../services/outletService';
 import { adminOutlet, getAllStations } from '../store/actions/outlet';
+import OverageList from '../components/DailySales/OverageList';
 
 const HomeScreen = () => {
 
@@ -162,7 +163,7 @@ const HomeScreen = () => {
                 '/home/tank-list': '← Station Tanks',
                 '/home/pump-list': '← Station Pumps',
                 '/home/daily-sales': 'Daily Sales',
-                '/home/daily-sales/overage': 'Overage/Shortage',
+                '/home/overage': '← Overage/Shortage',
                 '/home/daily-sales/report': 'Daily Sales',
                 '/home/daily-sales/pms': 'Daily Sales',
                 '/home/daily-sales/ago': 'Daily Sales',
@@ -270,7 +271,7 @@ const HomeScreen = () => {
     }
 
     const navigateBack = (name) => {
-        if(name === "← Station Tanks" || name === "← Station Pumps" || name === '← Employee List'){
+        if(name === "← Station Tanks" || name === "← Station Pumps" || name === '← Employee List' || '← Overage/Shortage'){
             history.goBack();
         }
     }
@@ -414,68 +415,73 @@ const HomeScreen = () => {
                         </IconButton>
                     </div>
                 </div>
-                <Switch>
-                    <Route exact path='/home'>
-                        <Dashboard activeRoute={activeRoute}/>
-                    </Route>
-                    <Route path='/home/daily-sales'>
-                        <DailySales activeRoute={activeRoute} history={history}/>
-                    </Route>
-                    <Route path='/home/hr'>
-                        <HumanResources 
-                            history={history}
-                            activeRoute={activeRoute}
-                        />
-                    </Route>
-                    <Route path='/home/dashEmp'>
-                        <DashboardEmployee 
-                            history={history}
-                            activeRoute={activeRoute}
-                        />
-                    </Route>
-                    <Route path='/home/inc-orders'>
-                        <IncomingOrders/>
-                    </Route>
-                    <Route path='/home/outlets'>
-                        <Outlets 
-                            history={history}
-                            activeRoute={activeRoute}
-                        />
-                    </Route>
-                    <Route path='/home/product-orders'>
-                        <ProductOrders/>
-                    </Route>
-                    <Route path='/home/analysis'>
-                        <Analysis activeRoute={activeRoute}/>
-                    </Route>
-                    <Route path='/home/lpo'>
-                        <LPO 
-                            history={history}
-                            activeRoute={activeRoute}
-                        />
-                    </Route>
-                    <Route path='/home/supply'>
-                        <Supply activeRoute={activeRoute}/>
-                    </Route>
-                    <Route path='/home/daily-record-sales'>
-                        <DailyRecordSales history={history}/>
-                    </Route>
-                    <Route path='/home/regulatory'>
-                        <Regulatory/>
-                    </Route>
-                    <Route path='/home/tank'>
-                        <TankUpdate/>
-                    </Route>
-                    <Route path='/home/settings'>
-                        <Settings history={history}/>
-                    </Route>
-                    <Route path='/home/tank-list'>
-                        <StationTanks />
-                    </Route>
-                    <Route path='/home/pump-list'>
-                        <StationPumps />
-                    </Route>
-                </Switch>
+                <div style={inner}>
+                    <Switch>
+                        <Route exact path='/home'>
+                            <Dashboard activeRoute={activeRoute}/>
+                        </Route>
+                        <Route path='/home/daily-sales'>
+                            <DailySales activeRoute={activeRoute} history={history}/>
+                        </Route>
+                        <Route path='/home/hr'>
+                            <HumanResources 
+                                history={history}
+                                activeRoute={activeRoute}
+                            />
+                        </Route>
+                        <Route path='/home/dashEmp'>
+                            <DashboardEmployee 
+                                history={history}
+                                activeRoute={activeRoute}
+                            />
+                        </Route>
+                        <Route path='/home/inc-orders'>
+                            <IncomingOrders/>
+                        </Route>
+                        <Route path='/home/outlets'>
+                            <Outlets 
+                                history={history}
+                                activeRoute={activeRoute}
+                            />
+                        </Route>
+                        <Route path='/home/product-orders'>
+                            <ProductOrders/>
+                        </Route>
+                        <Route path='/home/analysis'>
+                            <Analysis activeRoute={activeRoute}/>
+                        </Route>
+                        <Route path='/home/lpo'>
+                            <LPO 
+                                history={history}
+                                activeRoute={activeRoute}
+                            />
+                        </Route>
+                        <Route path='/home/supply'>
+                            <Supply activeRoute={activeRoute}/>
+                        </Route>
+                        <Route path='/home/daily-record-sales'>
+                            <DailyRecordSales history={history}/>
+                        </Route>
+                        <Route path='/home/regulatory'>
+                            <Regulatory/>
+                        </Route>
+                        <Route path='/home/tank'>
+                            <TankUpdate/>
+                        </Route>
+                        <Route path='/home/settings'>
+                            <Settings history={history}/>
+                        </Route>
+                        <Route path='/home/tank-list'>
+                            <StationTanks />
+                        </Route>
+                        <Route path='/home/pump-list'>
+                            <StationPumps />
+                        </Route>
+                        <Route path='/home/overage'>
+                            <OverageList />
+                        </Route>
+                    </Switch>
+                </div>
             </div>
         </div>
     )
@@ -487,6 +493,13 @@ const roots = {
     display:'flex', 
     flexDirection:'row', 
     justifyContent:'flex-start'
+}
+
+const inner = {
+    width: '100%', 
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
 }
 
 export default withRouter(HomeScreen);

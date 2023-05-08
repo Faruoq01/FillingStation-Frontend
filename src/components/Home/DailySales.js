@@ -26,7 +26,6 @@ import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import OveragesAndShortages from '../DailySales/OveragesAndShortages';
-import OverageList from '../DailySales/OverageList';
 import { dateRange } from '../../store/actions/dashboard';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
@@ -69,13 +68,6 @@ const DailySales = (props) => {
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
-    const [currentRoute, setCurrentRoute] = useState(false);
-
-    history.listen((location) => {
-        if(location.pathname === "/home/daily-sales"){
-            setCurrentRoute(true);
-        }
-    });
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -348,10 +340,7 @@ const DailySales = (props) => {
             dispatch(paymentRecords(paymentsRecords));
             getAggregatePayment(paymentsRecords);
             dispatch(bulkReports(data.dailyRecords));
-
-            if(currentRoute){
-                dispatch(overages(data.dailyRecords.dipping));
-            }
+            dispatch(overages(data.dailyRecords.dipping));
             
             dispatch(lpoRecords(data.dailyRecords.lpo));
             getMasterRows(salesDataRecord);
@@ -582,7 +571,7 @@ const DailySales = (props) => {
         if(data === 'exp') return history.push('/home/analysis/expenses');
         if(data === 'pay') return history.push('/home/analysis/payments');
     }
-
+    
     return(
         <>
             { props.activeRoute.split('/').length === 3 &&
@@ -780,7 +769,7 @@ const DailySales = (props) => {
                             }
                         </div>
 
-                        <OveragesAndShortages />
+                        <OveragesAndShortages path={"sales"} />
                     </div>
 
                     <div className='daily-right'>
@@ -1070,9 +1059,6 @@ const DailySales = (props) => {
                         </Route>
                         <Route path='/home/outlets/list'>
                             <ListAllTanks refresh={getAllProductData}/>
-                        </Route>
-                        <Route path='/home/daily-sales/overage'>
-                            <OverageList/>
                         </Route>
                     </Switch>
                 </div>
