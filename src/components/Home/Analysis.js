@@ -24,14 +24,16 @@ import ApproximateDecimal from '../common/approx';
 import { Skeleton } from '@mui/material';
 import SalesDisplay from '../Modals/SalesDisplay';
 import Varience from '../Modals/Varience';
+import { overages } from '../../store/actions/dailySales';
+import { dateRange } from '../../store/actions/dashboard';
 
 const Analysis = (props) => {
 
-    const [range, setRange] = useState([new Date(), new Date()]);
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const analysisData = useSelector(state => state.analysisReducer.analysisData);
+    const updatedDate = useSelector(state => state.dashboardReducer.dateRange);
     const moment = require('moment-timezone');
 
     const dispatch = useDispatch();
@@ -100,15 +102,23 @@ const Analysis = (props) => {
         if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         setDefault(index);
         dispatch(adminOutlet(item));
+        setLoad(true);
 
+        const formatOne = moment(new Date(updatedDate[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const formatTwo = moment(new Date(updatedDate[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+    
         const payload = {
             organisationID: resolveUserID().id,
             outletID: item === null? "None": item?._id,
-            onLoad: true,
+            startDate: formatOne,
+            endDate: formatTwo
         }
 
-        AnalysisService.allRecords(payload).then(data => {
+        AnalysisService.getAnalysisData(payload).then(data => {
             dispatch(setAnalysisData(data.analysisData));
+            dispatch(overages(data.analysisData.dipping));
+        }).then(()=>{
+            setLoad(false);
         });
     }
     
@@ -169,6 +179,7 @@ const Analysis = (props) => {
 
         const formatOne = moment(new Date(data[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
         const formatTwo = moment(new Date(data[1])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        dispatch(dateRange([new Date(formatOne), new Date(formatTwo)]));
 
     
         const payload = {
@@ -178,10 +189,9 @@ const Analysis = (props) => {
             endDate: formatTwo
         }
 
-        setRange([formatOne, formatTwo]);
-
         AnalysisService.getAnalysisData(payload).then(data => {
             dispatch(setAnalysisData(data.analysisData));
+            dispatch(overages(data.analysisData.dipping));
         }).then(()=>{
             setLoad(false);
         });
@@ -438,7 +448,7 @@ const Analysis = (props) => {
                             </div>
                         </div>
                         <div style={{justifyContent:'flex-end'}} className='butt'>
-                            <DateRangePicker onChange={getDateFromRange} value={range} />
+                            <DateRangePicker onChange={getDateFromRange} value={updatedDate} />
                         </div>
                     </div>
 

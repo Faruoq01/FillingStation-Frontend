@@ -206,6 +206,7 @@ const Dashboard = (props) => {
             const totalSales = Array.from(salesDetails.entries());
 
             let sortedSales = [];
+
             if(product === "PMS"){
                 sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
                     return Number(sales1.pms) - Number(sales2.pms);
@@ -243,15 +244,15 @@ const Dashboard = (props) => {
     
             return {
                 first: {
-                    station: stationDetails.get(first[0]),
+                    station: stationDetails?.get(first[0]),
                     sales: first[1],
-                    beforeSales: totalBeforeSales.get(first[0])
+                    beforeSales: totalBeforeSales?.get(first[0])
                 },
     
                 second: {
-                    station: stationDetails.get(second[0]),
+                    station: stationDetails?.get(second[0]),
                     sales: second[1],
-                    beforeSales: totalBeforeSales.get(second[0])
+                    beforeSales: totalBeforeSales?.get(second[0])
                 }
             }
         }

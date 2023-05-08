@@ -18,18 +18,19 @@ const EditPump = (props) => {
     const dispatch = useDispatch();
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
 
-    const [defaultState, setDefaultState] = useState(0);
+    const [initialState, setInitialState] = useState(0);
     const [productType, setProduct] = useState('PMS');
     const [pumpName, setPumpName] = useState('');
     const [totalizer, setTotalizer] = useState('');
     const [hostTank, setHostTank] = useState(null);
+    const [list, setList] = useState([]);
 
     const handleClose = () => dispatch(props.close(false));
 
     const handleOpen = () => {
         if(hostTank === null) return swal("Warning!", "Please select host tank", "info");
         if(pumpName === "") return swal("Warning!", "Pump name field cannot be empty", "info");
-        if(defaultState === "") return swal("Warning!", "Tank name field cannot be empty", "info");
+        if(initialState === "") return swal("Warning!", "Tank name field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
         if(totalizer === "") return swal("Warning!", "Totalizer field cannot be empty", "info");
         dispatch(setSpinner());
@@ -55,19 +56,19 @@ const EditPump = (props) => {
         });
     }
 
-    const updateTank = (data, index) => {
-        setDefaultState(index);
+    const updateTankDetails = (data, index) => {
+        setInitialState(index);
         setHostTank(data);
     }
 
     useEffect(()=>{
         const findID = props.allTank.findIndex(data => data._id === props.data.hostTank);
-        setDefaultState(findID);
         setProduct(props.data.productType);
         setTotalizer(props.data.totalizerReading);
         setPumpName(props.data.pumpName.split(" ")[1]);
         setHostTank(props.allTank[findID]);
-    },[props.data.productType, props.allTank, props.data.totalizerReading, props.data.hostTank, props.data.pumpName]);
+        setList(props.allTank.filter(data => data.productType === props.data.productType));
+    },[props.data.productType, props.allTank, props.data.totalizerReading, props.data.hostTank, props.data.pumpName, productType]);
 
     return(
         <Modal
@@ -134,7 +135,7 @@ const EditPump = (props) => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={defaultState}
+                            value={initialState}
                             sx={{
                                 width:'100%',
                                 height: '35px', 
@@ -147,10 +148,11 @@ const EditPump = (props) => {
                                 },
                             }}
                         >
+                            <MenuItem style={menu} value={0}>Select a tank</MenuItem>
                             {
-                                props.allTank.map((data, index) => {
+                                list.map((data, index) => {
                                     return(
-                                        <MenuItem onChange={()=>{updateTank(data, index)}} key={index} style={menu} value={index}>{data.tankName}</MenuItem>
+                                        <MenuItem onClick={()=>{updateTankDetails(data, index+1)}} key={index} style={menu} value={index+1}>{data.tankName}</MenuItem>
                                     )
                                 })
                             }

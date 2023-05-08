@@ -162,7 +162,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 onChange={e => setTankCapacity(e.target.value)}
                             />
                         </div>
@@ -181,7 +181,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
                         </div>
@@ -200,7 +200,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 onChange={e => setDeadStockLevel(e.target.value)}
                             />
                         </div>
