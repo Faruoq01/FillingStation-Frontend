@@ -3,10 +3,15 @@ import close from '../../assets/close.png';
 import pumpHead from '../../assets/pumpHead.png';
 import Modal from '@mui/material/Modal';
 import '../../styles/cost.scss'
+import { useDispatch } from 'react-redux';
+import { overageType } from '../../store/actions/dailySales';
+import { useHistory } from 'react-router-dom';
 
 const Varience = (props) => {
 
     const handleClose = () => props.close(false);
+    const dispatch = useDispatch();
+    const history = useHistory();
 
     const approx2 = (data) => {
         const changeToString = String(data);
@@ -36,6 +41,22 @@ const Varience = (props) => {
         return approxNumber;
     }
 
+    const changePage = (data) => {
+        if(data === 'pms'){
+            dispatch(overageType("PMS"));
+            history.push("/home/overage");
+
+        }else if(data === "ago"){
+            dispatch(overageType("AGO"));
+            history.push("/home/overage");
+
+        }else if(data === "dpk"){
+            dispatch(overageType("DPK"));
+            history.push("/home/overage");
+        }
+        
+    }
+
     return(
         <Modal
             open={props.open}
@@ -52,7 +73,7 @@ const Varience = (props) => {
                     </div>
                     <div className='cont'>
                         <div className='card'>
-                            <div className='inCard'>
+                            <div onClick={()=>changePage("pms")} className='inCard'>
                                 <div className='left'>
                                     <img src={pumpHead} style={{width:'80px', height:'80px'}} alt="icon" />
                                 </div>
@@ -67,7 +88,7 @@ const Varience = (props) => {
                             </div>
                         </div>
                         <div className='card'>
-                            <div className='inCard'>
+                            <div onClick={()=>changePage("ago")} className='inCard'>
                                 <div className='left'>
                                     <img src={pumpHead} style={{width:'80px', height:'80px'}} alt="icon" />
                                 </div>
@@ -82,7 +103,7 @@ const Varience = (props) => {
                             </div>
                         </div>
                         <div className='card'>
-                            <div className='inCard'>
+                            <div onClick={()=>changePage("dpk")} className='inCard'>
                                 <div className='left'>
                                     <img src={pumpHead} style={{width:'80px', height:'80px'}} alt="icon" />
                                 </div>
