@@ -245,26 +245,43 @@ const SummaryRecord = (props) => {
         props.close(false);
         props.clops(true);
 
-        RecordSalesService.saveRecordSales({load: records, currentDate: currentDate}).then(data => {
-            tanksRecords.forEach(async(item) => {
-                const payload = {
-                    id: item._id,
-                    tankName: item.tankName.split(' ')[1],
-                    previousLevel: item.previousLevel,
-                    currentLevel: Number(item.RTlitre) > 0? Number(item.RTlitre) + Number(item.afterSales): Number(item.afterSales),
-                };
+        const payload = {
+            load: records, 
+            currentDate: currentDate, 
+            org: oneStationData.organisation, 
+            outletID: oneStationData._id
+        }
 
-                await OutletService.updateTank(payload);
-            });
+        RecordSalesService.saveRecordSales(payload).then(data => {
             
-            dispatch(changeStation());
-            props.refresh();
-            props.setPages([1, 0, 0, 0, 0, 0]);
-            props.clops(false);
-        }).then(()=>{
+            if(data.status === "exist"){
+                return data;
+            }else{
+                tanksRecords.forEach(async(item) => {
+                    const payload = {
+                        id: item._id,
+                        tankName: item.tankName.split(' ')[1],
+                        previousLevel: item.previousLevel,
+                        currentLevel: Number(item.RTlitre) > 0? Number(item.RTlitre) + Number(item.afterSales): Number(item.afterSales),
+                    };
+                    await OutletService.updateTank(payload);
+                });
+                
+                dispatch(changeStation());
+                props.refresh();
+                props.setPages([1, 0, 0, 0, 0, 0]);
+                props.clops(false);
+                return data;
+            } 
+        }).then((data)=>{
             setStop(false);
-            history.push('/home/daily-record-sales')
-            swal("Success!", "Daily sales recorded successfully!", "success");
+            history.push('/home/daily-sales')
+            if(data.status === 'exist'){
+                swal("Warning!", data.message, "error");
+            }else{
+                swal("Success!", "Daily sales recorded successfully!", "success");
+            }
+            
         });
     }
 
