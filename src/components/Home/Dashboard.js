@@ -224,37 +224,51 @@ const Dashboard = (props) => {
                 
             }
 
-            if(totalSales.length === 0){
-                return {
-                    first: {
-                        station: {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-                        sales: {pms: 0, ago: 0, dpk: 0},
-                        beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
-                    },
-        
-                    second: {
-                        station: {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-                        sales: {pms: 0, ago: 0, dpk: 0},
-                        beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
-                    }
-                }
-            }
-            // eslint-disable-next-line no-unused-vars
-            const [first, second, ...tops] = sortedSales.reverse();
-    
             return {
                 first: {
-                    station: stationDetails?.get(first[0]),
-                    sales: first[1],
-                    beforeSales: totalBeforeSales?.get(first[0])
+                    station: {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+                    sales: {pms: 0, ago: 0, dpk: 0},
+                    beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
                 },
     
                 second: {
-                    station: stationDetails?.get(second[0]),
-                    sales: second[1],
-                    beforeSales: totalBeforeSales?.get(second[0])
+                    station: {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+                    sales: {pms: 0, ago: 0, dpk: 0},
+                    beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
                 }
             }
+
+            // if(totalSales.length === 0){
+            //     return {
+            //         first: {
+            //             station: {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+            //             sales: {pms: 0, ago: 0, dpk: 0},
+            //             beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
+            //         },
+        
+            //         second: {
+            //             station: {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
+            //             sales: {pms: 0, ago: 0, dpk: 0},
+            //             beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
+            //         }
+            //     }
+            // }
+            // eslint-disable-next-line no-unused-vars
+            // const [first, second, ...tops] = sortedSales.reverse();
+    
+            // return {
+            //     first: {
+            //         station: stationDetails?.get(first[0]),
+            //         sales: first[1],
+            //         beforeSales: totalBeforeSales?.get(first[0])
+            //     },
+    
+            //     second: {
+            //         station: stationDetails?.get(second[0]),
+            //         sales: second[1],
+            //         beforeSales: totalBeforeSales?.get(second[0])
+            //     }
+            // }
         }
     }
 
