@@ -26,7 +26,7 @@ import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import OveragesAndShortages from '../DailySales/OveragesAndShortages';
-import { dateRange } from '../../store/actions/dashboard';
+import { dateRange, setSales } from '../../store/actions/dashboard';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -341,6 +341,7 @@ const DailySales = (props) => {
             getAggregatePayment(paymentsRecords);
             dispatch(bulkReports(data.dailyRecords));
             dispatch(overages(data.dailyRecords.dipping));
+            dispatch(setSales(data.dailyRecords.sales));
             
             dispatch(lpoRecords(data.dailyRecords.lpo));
             getMasterRows(salesDataRecord);

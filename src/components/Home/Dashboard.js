@@ -18,7 +18,7 @@ import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
 import expense from '../../assets/expense.png';
 import DashboardService from '../../services/dashboard';
-import { addDashboard, dashboardRecordMore, dashEmployees, dateRange, utils } from '../../store/actions/dashboard';
+import { addDashboard, dashboardRecordMore, dashEmployees, dateRange, setSales, utils } from '../../store/actions/dashboard';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
@@ -319,8 +319,8 @@ const Dashboard = (props) => {
                 const payload = {
                     organisation: resolveUserID().id,
                     outletID: oneStationData._id,
-                    startDate: formatOne,
-                    endDate: formatTwo
+                    today: formatOne,
+                    tomorrow: formatTwo
                 }
 
                 const payload2 = {
@@ -333,6 +333,7 @@ const Dashboard = (props) => {
                     dispatch(dashEmployees(data[0].employees));
                     collectAndAnalyseData(data[0]);
                     dispatch(overages(data[1].dipping));
+                    dispatch(setSales(data[1].sales));
 
                     // sales record
                     const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -365,8 +366,8 @@ const Dashboard = (props) => {
             const payload = {
                 organisation: resolveUserID().id,
                 outletID: data,
-                startDate: formatOne,
-                endDate: formatTwo
+                today: formatOne,
+                tomorrow: formatTwo
             }
 
             const payload2 = {
@@ -379,6 +380,7 @@ const Dashboard = (props) => {
                 dispatch(dashEmployees(data[0].employees));
                 collectAndAnalyseData(data[0]);
                 dispatch(overages(data[1].dipping));
+                dispatch(setSales(data[1].sales));
 
                 // sales record
                 const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -422,8 +424,8 @@ const Dashboard = (props) => {
         const payload = {
             organisation: resolveUserID().id,
             outletID: item === null? "None": item?._id,
-            startDate: formatOne,
-            endDate: formatTwo
+            today: formatOne,
+            tomorrow: formatTwo
         }
 
         Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {
@@ -431,6 +433,7 @@ const Dashboard = (props) => {
             dispatch(dashEmployees(data[0].employees));
             collectAndAnalyseData(data[0]);
             dispatch(overages(data[1].dipping));
+            dispatch(setSales(data[1].sales));
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -621,7 +624,7 @@ const Dashboard = (props) => {
         return details;
     }
 
-    const onChangeRange = (date) => {
+    const onChangeRange = (date) => {console.log(date, "hello")
         setLoad(true);
 
         const formatOne = moment(new Date(date[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
@@ -631,8 +634,8 @@ const Dashboard = (props) => {
         const payload = {
             organisation: resolveUserID().id,
             outletID: oneStationData === null? "None": oneStationData?._id,
-            startDate: formatOne,
-            endDate: formatTwo
+            today: formatOne,
+            tomorrow: formatTwo
         }
 
         Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {
@@ -640,6 +643,7 @@ const Dashboard = (props) => {
             dispatch(dashEmployees(data[0].employees));
             collectAndAnalyseData(data[0]);
             dispatch(overages(data[1].dipping));
+            dispatch(setSales(data[1].sales));
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);

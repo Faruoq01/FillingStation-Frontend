@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { overageType } from "../../store/actions/dailySales";
+import ApproximateDecimal from "../common/approx";
 
 const OveragesAndShortages = (props) => {
 
@@ -14,6 +15,16 @@ const OveragesAndShortages = (props) => {
     const [defaultState, setDefault] = useState(10);
     const dipping = useSelector(state => state.dailySalesReducer.overages);
     const overageTypeData = useSelector(state => state.dailySalesReducer.overageType);
+    const sales = useSelector(state => state.dashboardReducer.sales);
+
+    const productSales = () => {
+        const getSales = sales.filter(data => data.productType === overageTypeData);
+        const totalSales = getSales.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        return totalSales;
+    }
 
     const getDippingResult = () => {
         const productCategory = dipping.filter(data => data.productType === overageTypeData);
@@ -134,19 +145,19 @@ const OveragesAndShortages = (props) => {
 
                 <div className="labelsOverage">
                     <div>
-                        <div style={title}>{getDippingResult().currentLevel} Ltrs</div>
+                        <div style={title}>{ApproximateDecimal(getDippingResult().currentLevel - productSales())} Ltrs</div>
                         <div style={label}>Current Level </div>
                     </div>
 
                     <div>
-                        <div style={title}>{getDippingResult().dipping} Ltrs</div>
+                        <div style={title}>{ApproximateDecimal(getDippingResult().dipping)} Ltrs</div>
                         <div style={label}>Dipping Level </div>
                     </div>
                 </div>
 
                 <div className="statusOverage">
                     <div>
-                        <div style={title}>{getDippingResult().dipping - getDippingResult().currentLevel} Ltrs</div>
+                        <div style={title}>{ApproximateDecimal(getDippingResult().dipping - (getDippingResult().currentLevel - productSales()))} Ltrs</div>
                         <div style={label}>Differences</div>
                     </div>
                     <div style={shortage}>

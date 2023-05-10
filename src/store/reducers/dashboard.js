@@ -8,7 +8,8 @@ import {
     SEARCH_DASH, 
     UTILS,
     LOGOUT,
-    DATE_RANGE
+    DATE_RANGE,
+    SET_SALES
 } from '../types'
 
 const initialState = {
@@ -48,7 +49,8 @@ const initialState = {
     searchData: [],
     utils:{},
     singleUser:{},
-    dateRange: [new Date(), new Date()]
+    dateRange: [new Date(), new Date()],
+    sales: []
 }
 
 const dashboardReducer = (state = initialState, action) => {
@@ -68,6 +70,13 @@ const dashboardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dateRange: payload
+            }
+        }
+
+        case SET_SALES: {
+            return {
+                ...state,
+                sales: payload
             }
         }
 

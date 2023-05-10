@@ -5,30 +5,26 @@ const ApproximateDecimal = (data) => {
     if(findIndex === -1){
         const rem = changeToString.replace(/[^0-9.]/g, '')
         return Number(rem).toLocaleString();
-    }
-
-    const splitDataByDecimal = changeToString.split('.');
-    const splitFractions = splitDataByDecimal[1].split('');
-    if(splitFractions.length <= 2){
-        const left = splitDataByDecimal[0].replace(/[^0-9.]/g, '')
-        const format = Number(left).toLocaleString();
-        return format.concat(splitDataByDecimal[1]);
-    }
-    
-    let fractionBuilder = splitFractions[0];
-    if(Number(splitFractions[2] > 5)){
-        const tenths = Number(splitFractions[1]) + 1;
-        fractionBuilder = fractionBuilder.concat("", tenths);
 
     }else{
-        fractionBuilder = fractionBuilder.concat(splitFractions[1]);
+        let splitByDecimal = changeToString.split(".");
+
+        ////////// left hand side //////////////////////
+        let removeSpecialCharacters = splitByDecimal[0].replace(/[^0-9.]/g, '');
+        let addCommaToLeftSide = Number(removeSpecialCharacters).toLocaleString();
+
+        ////////// right hand side /////////////////////
+        let removeCharactersRight = splitByDecimal[1].replace(/[^0-9.]/g, '');
+        if(removeCharactersRight.length <= 2){
+            return addCommaToLeftSide.concat(".", removeCharactersRight);
+
+        }else{
+            let tenths = Number(removeCharactersRight.charAt(2)) < 5? removeCharactersRight.charAt(1): String(Number(removeCharactersRight.charAt(1)) + 1);
+            let newRight = removeCharactersRight.charAt(0).concat("", tenths);
+
+            return addCommaToLeftSide.concat(".", newRight); 
+        }
     }
-
-    const left = splitDataByDecimal[0].replace(/[^0-9.]/g, '')
-    const approxWithComma = Number(left).toLocaleString();
-    const approxNumber = approxWithComma.concat(".", fractionBuilder);
-
-    return approxNumber;
 }
 
 export default ApproximateDecimal;
