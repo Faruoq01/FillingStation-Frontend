@@ -240,6 +240,10 @@ const Supply = (props) => {
         refresh();
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <SupplyModal station={oneStationData} open={open} close={setOpen} refresh={refresh} />}
@@ -357,7 +361,9 @@ const Supply = (props) => {
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
-                            }}  variant="contained"> History
+                            }}  
+                            onClick={goToHistory}
+                            variant="contained"> History
                         </Button>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 

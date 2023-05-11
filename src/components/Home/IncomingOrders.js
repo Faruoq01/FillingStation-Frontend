@@ -14,6 +14,7 @@ import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import IncomingReport from '../Reports/IncomingReport';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
+import { useHistory } from 'react-router-dom';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -32,6 +33,7 @@ const IncomingOrder = () => {
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
     const [loading, setLoading] = useState(false);
+    const history = useHistory();
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -187,6 +189,10 @@ const IncomingOrder = () => {
         refresh();
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <IncomingOrderModal station={oneStationData} open={open} close={setOpen} refresh={refresh} />}
@@ -303,7 +309,9 @@ const IncomingOrder = () => {
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
-                            }}  variant="contained"> History
+                            }}  
+                            onClick={goToHistory}
+                            variant="contained"> History
                         </Button>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 

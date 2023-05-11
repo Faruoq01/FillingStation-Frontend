@@ -5,11 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createLPOSales, searchLPOList } from '../../store/actions/lpo';
 import LPOSalesReport from '../Reports/LPOSales';
 import config from '../../constants';
+import { useHistory } from 'react-router-dom';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const ListLPO = () => {
-
+    const history = useHistory();
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -81,6 +82,10 @@ const ListLPO = () => {
         setPrints(true);
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <div data-aos="zoom-in-down" style={{display:'flex', flexDirection:'column', padding:'10px'}} className='paymentsCaontainer'>
             { prints && <LPOSalesReport allOutlets={lpos} open={prints} close={setPrints}/>}
@@ -129,7 +134,9 @@ const ListLPO = () => {
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
-                            }}  variant="contained"> History
+                            }}  
+                            onClick={goToHistory}
+                            variant="contained"> History
                         </Button>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 

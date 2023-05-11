@@ -15,6 +15,7 @@ import RegulatoryReports from '../Reports/RegulatoryReports';
 import config from '../../constants';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
+import { useHistory } from 'react-router-dom';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -36,6 +37,7 @@ const Regulatory = () => {
     const [openPayment, setOpenPayment] = useState(false);
     const [description, setDescription] = useState(false);
     const [loading, setLoading] = useState(false);
+    const history = useHistory();
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -195,6 +197,10 @@ const Regulatory = () => {
         setDescription(data.description)
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <PaymentModal station={oneStationData} open={open} close={setOpen} refresh={refresh} /> }
@@ -310,7 +316,9 @@ const Regulatory = () => {
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
-                            }}  variant="contained"> History
+                            }}  
+                            onClick={goToHistory}
+                            variant="contained"> History
                         </Button>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 

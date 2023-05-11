@@ -16,6 +16,7 @@ import ClockOutModal from '../Modals/AttendanceClockOut';
 import PrintAttendanceRecords from '../Reports/Attendance';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
+import { useHistory } from 'react-router-dom';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -37,6 +38,7 @@ const Attendance = () => {
     const [entries, setEntries] = useState(10);
     const [prints, setPrints] = useState(false);
     const [loading, setLoading] = useState(false);
+    const history = useHistory();
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -278,6 +280,10 @@ const Attendance = () => {
         setPrints(true);
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<AttendanceModal currentOutlet={oneStationData} open={open} close={setOpen} refresh={refresh} />}
@@ -396,7 +402,8 @@ const Attendance = () => {
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
-                            }}  variant="contained"> History
+                            }} onClick={goToHistory}
+                            variant="contained"> History
                         </Button>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 

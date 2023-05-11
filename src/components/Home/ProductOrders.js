@@ -13,6 +13,7 @@ import ProductReport from '../Reports/ProductReport';
 import IncomingList from '../Modals/IncomingList';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
+import { useHistory } from 'react-router-dom';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -31,6 +32,7 @@ const ProductOrders = () => {
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
     const [loadingData, setLoading] = useState(false);
+    const history = useHistory();
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -124,6 +126,10 @@ const ProductOrders = () => {
         setOpen2({...open2, id: data._id, trigger: true});
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {open && <ProductOrderModal station = {oneStationData} open={open} close={setOpen} refresh={refresh} />}
@@ -211,7 +217,9 @@ const ProductOrders = () => {
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
-                            }}  variant="contained"> History
+                            }} 
+                            onClick={goToHistory} 
+                            variant="contained"> History
                         </Button>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 

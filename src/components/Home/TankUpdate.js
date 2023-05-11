@@ -12,6 +12,7 @@ import PrintTankUpdate from '../Reports/PrintTankUpdate';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
 import ApproximateDecimal from '../common/approx';
+import { useHistory } from 'react-router-dom';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 600px)');
@@ -32,6 +33,7 @@ const TankUpdate = () => {
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
     const [loading, setLoading] = useState(false);
+    const history = useHistory();
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -183,6 +185,10 @@ const TankUpdate = () => {
         setPrints(true);
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <TankUpdateModal data={tankList} open={open} close={setOpen} tanks={tanks} refresh={getTankData} /> }
@@ -297,7 +303,9 @@ const TankUpdate = () => {
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
-                            }}  variant="contained"> History
+                            }}  
+                            onClick={goToHistory}
+                            variant="contained"> History
                         </Button>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 

@@ -156,6 +156,10 @@ const LPO = (props) => {
         history.push('/home/lpo/company');
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <React.Fragment>
             <div data-aos="zoom-in-down" className='paymentsCaontainer'>
@@ -278,7 +282,9 @@ const LPO = (props) => {
                                     '&:hover': {
                                         backgroundColor: '#58A0DF'
                                     }
-                                    }}  variant="contained"> History
+                                    }}  
+                                    onClick={goToHistory}
+                                    variant="contained"> History
                                 </Button>
                                 <Button sx={{
                                     width: mediaMatch.matches? '100%': '80px', 
