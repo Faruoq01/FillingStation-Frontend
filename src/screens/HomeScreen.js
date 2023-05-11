@@ -58,6 +58,7 @@ import UserService from '../services/user';
 import { updateUser } from '../store/actions/auth';
 import StationTanks from '../components/Home/StationTanks';
 import StationPumps from '../components/Home/StationPumps'; 
+import HistoryPage from '../components/Home/History';
 import config from '../constants';
 import DailyRecordSales from '../components/Home/DailyRecordSales';
 import DashboardEmployee from '../components/DashboardComponents/DashboardEmp';
@@ -164,6 +165,7 @@ const HomeScreen = () => {
                 '/home/pump-list': '← Station Pumps',
                 '/home/daily-sales': 'Daily Sales',
                 '/home/overage': '← Overage/Shortage',
+                '/home/history': '← History',
                 '/home/daily-sales/report': 'Daily Sales',
                 '/home/daily-sales/pms': 'Daily Sales',
                 '/home/daily-sales/ago': 'Daily Sales',
@@ -479,6 +481,9 @@ const HomeScreen = () => {
                         </Route>
                         <Route path='/home/overage'>
                             <OverageList />
+                        </Route>
+                        <Route path='/home/history'>
+                            <HistoryPage />
                         </Route>
                     </Switch>
                 </div>

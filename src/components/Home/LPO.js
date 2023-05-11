@@ -70,62 +70,19 @@ const LPO = (props) => {
     }
 
     const getAllLPOData = useCallback(() => {
-
-        if(oneStationData !== null){
-            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
-                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
-                setDefault(findID + 1);
-
-                const payload = {
-                    skip: skip * limit,
-                    limit: limit,
-                    outletID: oneStationData._id, 
-                    organisationID: resolveUserID().id
-                }
-    
-                LPOService.getAllLPO(payload).then((data) => {
-                    setLoading(false);
-                    setTotal(data.lpo.count);
-                    dispatch(createLPO(data.lpo.lpo));
-                })
-
-                return
-            }
-        }
-
         setLoading(true);
+
         const payload = {
-            organisation: resolveUserID().id
+            skip: skip * limit,
+            limit: limit,
+            organisationID: resolveUserID().id
         }
 
-        OutletService.getAllOutletStations(payload).then(data => {
-            dispatch(getAllStations(data.station));
-            if((getPerm('0') || user.userType === "superAdmin") && oneStationData === null){
-                if(!getPerm('1')) setDefault(1);
-                dispatch(adminOutlet(null));
-                return "None";
-            }else{
-
-                OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                    dispatch(adminOutlet(data.station));
-                });
-                
-                return user.outletID;
-            }
-        }).then((data)=>{
-            const payload = {
-                skip: skip * limit,
-                limit: limit,
-                outletID: data, 
-                organisationID: resolveUserID().id
-            }
-
-            LPOService.getAllLPO(payload).then((data) => {
-                setLoading(false);
-                setTotal(data.lpo.count);
-                dispatch(createLPO(data.lpo.lpo));
-            })
-        });
+        LPOService.getAllLPO(payload).then((data) => {
+            setLoading(false);
+            setTotal(data.lpo.count);
+            dispatch(createLPO(data.lpo.lpo));
+        })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -151,27 +108,6 @@ const LPO = (props) => {
         }
 
         LPOService.getAllLPO(payload).then((data) => {
-            setTotal(data.lpo.count);
-            dispatch(createLPO(data.lpo.lpo));
-        }).then(()=>{
-            setLoading(false);
-        })
-    }
-
-    const changeMenu = (index, item ) => {
-        if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
-        setLoading(true);
-        setDefault(index);
-        dispatch(adminOutlet(item));
-
-        const payload = {
-            skip: skip * limit,
-            limit: limit,
-            outletID: item === null? "None": item?._id,
-            organisationID: resolveUserID().id
-        }
-
-        LPOService.getAllLPO(payload).then((data) => {console.log(data, "lpos")
             setTotal(data.lpo.count);
             dispatch(createLPO(data.lpo.lpo));
         }).then(()=>{
@@ -250,36 +186,6 @@ const LPO = (props) => {
 
                         <div className='search'>
                             <div className='input-cont'>
-                               <div className='second-select'>
-                                    {getPerm('0') &&
-                                        <Select
-                                            labelId="demo-select-small"
-                                            id="demo-select-small"
-                                            value={defaultState}
-                                            sx={selectStyle2}
-                                        >
-                                            <MenuItem onClick={()=>{changeMenu(0, null)}} style={menu} value={0}>All Stations</MenuItem>
-                                            {
-                                                allOutlets.map((item, index) => {
-                                                    return(
-                                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
-                                                    )
-                                                })  
-                                            }
-                                        </Select>
-                                    }
-                                    {getPerm('0') ||
-                                        <Select
-                                            labelId="demo-select-small"
-                                            id="demo-select-small"
-                                            value={0}
-                                            sx={selectStyle2}
-                                            disabled
-                                        >
-                                            <MenuItem style={menu} value={0}>{!getPerm('0')? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
-                                        </Select>
-                                    }
-                                </div>
                                 <div className='second-select'>
                                         <OutlinedInput
                                             sx={{

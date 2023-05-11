@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 import Tank from '../Outlet/Tanks';
 import Pumps from '../Outlet/Pumps';
 import Sales from '../Outlet/Sales';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import CreateFillingStation from '../Modals/CreateStationModal';
 import AddTankSuccess from '../Modals/AddTankSuccess';
 import AddPumpSuccess from '../Modals/AddPumpSuccess';
@@ -35,7 +35,7 @@ import { ThreeDots } from 'react-loader-spinner';
 const mobile = window.matchMedia('(max-width: 600px)');
 
 const Outlets = (props) => {
-
+    const history = useHistory();
     const open = useSelector(state => state.outletReducer.openModal);
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
@@ -190,6 +190,10 @@ const Outlets = (props) => {
         )
     }
 
+    const goToHistory = () => {
+        history.push('/home/history');
+    }
+
     return(
         <>
             {props.activeRoute.split('/').length === 3 &&
@@ -292,7 +296,8 @@ const Outlets = (props) => {
                                         '&:hover': {
                                             backgroundColor: '#58A0DF'
                                         }
-                                        }}  
+                                        }}
+                                        onClick={goToHistory}  
                                         variant="contained"> History
                                     </Button>
                                 </div>
