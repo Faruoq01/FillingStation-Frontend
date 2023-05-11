@@ -28,6 +28,8 @@ import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import OveragesAndShortages from '../DailySales/OveragesAndShortages';
 import { overages } from '../../store/actions/dailySales';
+import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
+import 'react-calendar/dist/Calendar.css';
 
 const mobile = window.matchMedia('(max-width: 600px)');
 

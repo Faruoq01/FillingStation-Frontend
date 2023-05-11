@@ -15,9 +15,14 @@
             flex-direction: row;
             margin-bottom: 20px;
 
+            .ant-picker-input{
+                border-radius: 0px;
+            }
+
             .outlet_control{
                 width: auto;
                 margin-right: 10px;
+                margin-left: 10px;
             }
         }
 

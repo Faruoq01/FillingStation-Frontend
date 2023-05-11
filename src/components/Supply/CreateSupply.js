@@ -220,14 +220,19 @@ const CreateSupply = (props) => {
             const payload = {
                 load: supplyList
             }
-            console.log(payload, "saved tanks")
     
             SupplyService.createSupply(payload).then(data => {
-                setSupplyList([]);
-                setStop(false);
-                props.refresh();
-            }).then(()=>{
-                swal("Succes!", `Supply recorded successfully!. `, "success");
+                if(data.status === "failed"){
+                    return "Supply can only be recorded for today or less."
+                }else{
+                    setSupplyList([]);
+                    setStop(false);
+                    props.refresh();
+                    return "Supply recorded successfully!"
+                }
+                
+            }).then((msg)=>{
+                swal("Succes!", msg, "success");
             });
         }else{
             swal("Warning!", `You can not submit an empty supply list. `, "info");

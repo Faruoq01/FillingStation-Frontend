@@ -8,8 +8,6 @@ import LPOService from '../../services/lpo';
 import { useSelector } from 'react-redux';
 import { createLPO, searchLPO, singleLPORecord } from '../../store/actions/lpo';
 import { useDispatch } from 'react-redux';
-import OutletService from '../../services/outletService';
-import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
 import edit2 from '../../assets/edit2.png';
 import eyes from '../../assets/eyes.png';
@@ -31,8 +29,6 @@ const LPO = (props) => {
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const dispatch = useDispatch();
     const history = useHistory();
-    const [defaultState, setDefault] = useState(0);
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [activeButton, setActiveButton] = useState(false);
     const [entries, setEntries] = useState(10);

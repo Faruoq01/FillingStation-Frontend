@@ -4,7 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
 import { adminOutlet, getAllStations } from "../../store/actions/outlet";
-import swal from "sweetalert";
+import { DatePicker } from "antd";
+import HistoryService from "../../services/history";
+import { ThreeDots } from "react-loader-spinner";
 
 const months = {
     '01' : 'January',
@@ -39,7 +41,7 @@ const RemarkCard = (props) => {
                 }
                 <div className="rmk_content">
                     <div className="user_rmk">{props.data.name}</div>
-                    <div className="content_rmk">{props.data.remark}</div>
+                    <div className="content_rmk">{props.data.content}</div>
                     <div className="rmk_date">{convertDate(props.data.createdAt)}.</div>
                 </div>
             </div>
@@ -47,37 +49,16 @@ const RemarkCard = (props) => {
     )
 }
 
-const data = [
-    {
-        image: "null",
-        name: 'Akinseye Olayemi',
-        remark: 'Lorem ipsum dolor sit amet consectetur. Cursus posuere nibh commodo leo pellentesque bibendum. Est pharetra at tellus in. Suspendisse diam consectetur vitae diam erat tincidunt.',
-        createdAt: '2023-05-11'
-    },
-
-    {
-        image: "null",
-        name: 'Akinseye Olayemi',
-        remark: 'Lorem ipsum dolor sit amet consectetur. Cursus posuere nibh commodo leo pellentesque bibendum. Est pharetra at tellus in. Suspendisse diam consectetur vitae diam erat tincidunt.',
-        createdAt: '2023-05-11'
-    },
-
-    {
-        image: "null",
-        name: 'Akinseye Olayemi',
-        remark: 'Lorem ipsum dolor sit amet consectetur. Cursus posuere nibh commodo leo pellentesque bibendum. Est pharetra at tellus in. Suspendisse diam consectetur vitae diam erat tincidunt.',
-        createdAt: '2023-05-11'
-    }
-]
-
 const HistoryPage = () => {
     const dispatch = useDispatch();
-
+    const moment = require('moment-timezone');
     const [defaultState, setDefaultState] = useState(0);
+    const [date, setDate] = useState(new Date());
     const [loading, setLoading] = useState();
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const [historyData, setHistory] = useState([]);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -101,18 +82,17 @@ const HistoryPage = () => {
                 const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
                 setDefaultState(findID + 1);
 
-                // const payload = {
-                //     skip: skip * limit,
-                //     limit: limit,
-                //     outletID: oneStationData._id, 
-                //     organisationID: resolveUserID().id
-                // }
-    
-                // IncomingService.getAllIncoming(payload).then((data) => {
-                //     setLoading(false);
-                //     setTotal(data.incoming.count);
-                //     dispatch(createIncomingOrder(data.incoming.incoming));
-                // });
+                const historyDate = moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+                const payload = {
+                    outletID: oneStationData._id, 
+                    organisationID: resolveUserID().id,
+                    date: historyDate
+                }
+
+                HistoryService.allRecords(payload).then((data) => {
+                    setLoading(false);
+                    setHistory(data.history.history)
+                });
 
                 return
             }
@@ -138,18 +118,19 @@ const HistoryPage = () => {
                 return user.outletID;
             }
         }).then((data)=>{
-            // const payload = {
-            //     skip: skip * limit,
-            //     limit: limit,
-            //     outletID: data, 
-            //     organisationID: resolveUserID().id
-            // }
 
-            // IncomingService.getAllIncoming(payload).then((data) => {
-            //     setLoading(false);
-            //     setTotal(data.incoming.count);
-            //     dispatch(createIncomingOrder(data.incoming.incoming));
-            // });
+            const historyDate = moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+
+            const payload = {
+                outletID: data, 
+                organisationID: resolveUserID().id,
+                date: historyDate
+            }
+
+            HistoryService.allRecords(payload).then((data) => {
+                setLoading(false);
+                setHistory(data.history.history)
+            });
         });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -162,29 +143,45 @@ const HistoryPage = () => {
     const changeMenu = (index, item ) => {
         // if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
         // setLoading(true);
+        setLoading(true);
         setDefaultState(index);
         dispatch(adminOutlet(item));
 
-        // const payload = {
-        //     skip: skip * limit,
-        //     limit: limit,
-        //     outletID: item === null? "None": item?._id,
-        //     organisationID: resolveUserID().id
-        // }
-        
-        // IncomingService.getAllIncoming(payload).then((data) => {console.log(data, "incoming")
-        //     setTotal(data.incoming.count);
-        //     dispatch(createIncomingOrder(data.incoming.incoming));
-        // }).then(()=>{
-        //     setLoading(false);
-        // })
+        const historyDate = moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const payload = {
+            outletID: item, 
+            organisationID: resolveUserID().id,
+            date: historyDate
+        }
+
+        HistoryService.allRecords(payload).then((data) => {
+            setLoading(false);
+            setHistory(data.history.history)
+        });
+    }
+
+    function onChange(date, dateString) {
+        setDate(dateString);
+        setLoading(true);
+
+        const historyDate = moment(new Date(dateString)).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const payload = {
+            outletID: oneStationData === null? "None": oneStationData._id, 
+            organisationID: resolveUserID().id,
+            date: historyDate
+        }
+
+        HistoryService.allRecords(payload).then((data) => {
+            setLoading(false);
+            setHistory(data.history.history)
+        });
     }
 
     return(
         <div className="historyContainer">
             <div className="inner_history">
                 <div className='history_controls'>
-                    
+                    <DatePicker className="ant-picker-input" onChange={onChange} />
                     <div className='outlet_control'>
                         {true &&
                             <Select
@@ -235,9 +232,20 @@ const HistoryPage = () => {
                 </div>
                 
                 {
-                    data.length === 0?
+                    loading?
+                    <ThreeDots 
+                        height="60" 
+                        width="50" 
+                        radius="9"
+                        color="#076146" 
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />:
+                    historyData.length === 0?
                     <div style={place}>No history created</div>:
-                    data.map((item, index) => {
+                    historyData.map((item, index) => {
                         return(
                             <RemarkCard key={index} data={item} />
                         )

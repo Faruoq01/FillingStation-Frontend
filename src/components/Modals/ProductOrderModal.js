@@ -14,7 +14,6 @@ import { useSelector } from 'react-redux';
 
 const ProductOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const user = useSelector(state => state.authReducer.user);
 
     const [dateCreated, setDateCreated] = useState('');
