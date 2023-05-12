@@ -27,6 +27,7 @@ const LPO = (props) => {
     const [lpo, setLpo] = React.useState(false);
     const user = useSelector(state => state.authReducer.user);
     const lpos = useSelector(state => state.lpoReducer.lpo);
+    
     const dispatch = useDispatch();
     const history = useHistory();
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);

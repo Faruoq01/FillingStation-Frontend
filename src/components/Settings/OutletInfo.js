@@ -18,6 +18,14 @@ const OutletInfo = (props) => {
     const [street, setStreet] = useState('');
     const [loadingSpinner, setLoadingSpinner] = useState(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     useEffect(()=>{
         setOutletName(oneStation?.outletName);
         setNoOfPump(oneStation?.noOfPumps);
@@ -67,6 +75,8 @@ const OutletInfo = (props) => {
             noOfTanks: noOfTank,
             noOfPumps: noOfPump,
             activeState: oneStation.activeState,
+            organisationID: resolveUserID().id,
+            outletID: oneStation === null? "None": oneStation._id,
         }
 
         OutletService.updateStation(payload).then(data => {

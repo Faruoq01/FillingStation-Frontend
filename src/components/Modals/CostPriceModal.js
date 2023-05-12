@@ -16,6 +16,7 @@ import OutletService from '../../services/outletService';
 const CostPriceModal = (props) => {
 
     const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [cost, setCost] = useState("");
@@ -30,6 +31,14 @@ const CostPriceModal = (props) => {
         setType(props.type);
     },[props.type])
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const handleSelection = (e, item) => {
 
         if(!(e.target.children[0].style.visibility === "visible")){
@@ -43,7 +52,7 @@ const CostPriceModal = (props) => {
             e.target.children[0].style.marginRight = "0px";
             setCollections(prev => prev.filter(data => !(data._id === item._id)));
         }
-
+        
         if(props.type === "cost" && props.mode === "pms"){
             setCost(item.PMSCost);
             setCost1(item.PMSCost);
@@ -54,14 +63,14 @@ const CostPriceModal = (props) => {
             setCost(item.DPKCost);
             setCost1(item.DPKCost);
         }else if(props.type === "selling" && props.mode === "pms"){
-            setCost(item.PMSCost);
-            setCost1(item.PMSCost);
+            setCost(item.PMSPrice);
+            setCost1(item.PMSPrice);
         }else if(props.type === "selling" && props.mode === "ago"){
-            setCost(item.AGOCost);
-            setCost1(item.AGOCost);
+            setCost(item.AGOPrice);
+            setCost1(item.AGOPrice);
         }else if(props.type === "selling" && props.mode === "dpk"){
-            setCost(item.DPKCost);
-            setCost1(item.DPKCost);
+            setCost(item.DPKPrice);
+            setCost1(item.DPKPrice);
         }
     }
 
@@ -77,21 +86,39 @@ const CostPriceModal = (props) => {
         if(props.type === "cost" && props.mode === "pms"){
             payload['stations'] = collections;
             payload['PMSCost'] = cost;
+            payload['outletID'] = oneStationData === null? "None": oneStationData._id;
+            payload['organisationID'] = resolveUserID().id;
+
         }else if(props.type === "cost" && props.mode === "ago"){
             payload['stations'] = collections;
             payload['AGOCost'] = cost;
+            payload['outletID'] = oneStationData === null? "None": oneStationData._id;
+            payload['organisationID'] = resolveUserID().id;
+
         }else if(props.type === "cost" && props.mode === "dpk"){
             payload['stations'] = collections;
             payload['DPKCost'] = cost;
+            payload['outletID'] = oneStationData === null? "None": oneStationData._id;
+            payload['organisationID'] = resolveUserID().id;
+
         }else if(props.type === "selling" && props.mode === "pms"){
             payload['stations'] = collections;
             payload['PMSPrice'] = cost;
+            payload['outletID'] = oneStationData === null? "None": oneStationData._id;
+            payload['organisationID'] = resolveUserID().id;
+
         }else if(props.type === "selling" && props.mode === "ago"){
             payload['stations'] = collections;
             payload['AGOPrice'] = cost;
+            payload['outletID'] = oneStationData === null? "None": oneStationData._id;
+            payload['organisationID'] = resolveUserID().id;
+
         }else if(props.type === "selling" && props.mode === "dpk"){
             payload['stations'] = collections;
             payload['DPKPrice'] = cost;
+            payload['outletID'] = oneStationData === null? "None": oneStationData._id;
+            payload['organisationID'] = resolveUserID().id;
+
         }
 
         OutletService.updateStation(payload).then(data => {
