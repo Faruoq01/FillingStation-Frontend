@@ -98,8 +98,11 @@ const OutletInfo = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
-                            fontSize:'12px'
+                            fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         value={outletName}
                         onChange={e => setOutletName(e.target.value)}
@@ -113,8 +116,11 @@ const OutletInfo = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
-                            fontSize:'12px'
+                            fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         value={noOfTank}
                         onChange={e => setNoOfTank(e.target.value)}
@@ -128,8 +134,11 @@ const OutletInfo = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
-                            fontSize:'12px'
+                            fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         value={noOfPump}
                         onChange={e => setNoOfPump(e.target.value)}
@@ -143,8 +152,11 @@ const OutletInfo = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
-                            fontSize:'12px'
+                            fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         value={state}
                         onChange={e => setState(e.target.value)}
@@ -158,8 +170,11 @@ const OutletInfo = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
-                            fontSize:'12px'
+                            fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         value={town}
                         onChange={e => setTown(e.target.value)}
@@ -175,8 +190,11 @@ const OutletInfo = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
-                            fontSize:'12px'
+                            fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         value={lga}
                         onChange={e => setLga(e.target.value)}
@@ -191,9 +209,12 @@ const OutletInfo = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
                             marginBottom:'30px',
-                            fontSize:'12px'
+                            fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         value={street}
                         onChange={e => setStreet(e.target.value)}
@@ -209,6 +230,7 @@ const OutletInfo = (props) => {
                         background:'#054834',
                         fontSize:'11px',
                         marginBottom:'20px',
+                        borderRadius: '0px',
                         '&:hover': {
                             backgroundColor: '#054834'
                         }

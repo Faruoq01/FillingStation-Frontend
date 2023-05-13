@@ -64,7 +64,10 @@ const Password = () => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777'
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         type="password"
                         value={password}
@@ -81,7 +84,10 @@ const Password = () => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777'
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         type="password"
                         value={confirmPassword}
@@ -100,6 +106,8 @@ const Password = () => {
                             fontSize:'11px',
                             marginTop:'20px',
                             marginBottom:'20px',
+                            borderRadius: '0px',
+                            textTransform: 'capitalize',
                             '&:hover': {
                                 backgroundColor: '#054834'
                             }
@@ -172,7 +180,10 @@ const Email = () => {
                             marginTop:'5px', 
                             fontSize:'12px',
                             background:'#EEF2F1', 
-                            border:'1px solid #777777'
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         type="email"
                         value={email}
@@ -191,6 +202,8 @@ const Email = () => {
                             fontSize:'11px',
                             marginTop:'20px',
                             marginBottom:'20px',
+                            borderRadius: '0px',
+                            textTransform: 'capitalize',
                             '&:hover': {
                                 backgroundColor: '#054834'
                             }
@@ -218,16 +231,11 @@ const Email = () => {
 }
 
 const DeleteOutlet = (props) => {
-    const [station, setStation] = useState("");
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const [loadingSpinner, setLoadingSpinner] = useState(false);
 
-    useEffect(()=>{
-        setStation(oneStation?.outletName)
-    }, [oneStation.outletName]);
-
     const deleteStation = () => {
-        if(station === "") return swal("Warning!", "Please select a station", "info");
+        if(oneStation === null) return swal("Warning!", "Please select a station", "info");
 
         setLoadingSpinner(true);
 
@@ -268,11 +276,14 @@ const DeleteOutlet = (props) => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
                             fontSize:'12px',
+                            borderRadius: '0px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }}
                         disabled={true} 
-                        value={station}
+                        value={oneStation === null? "Select station": oneStation?.outletName}
                         placeholder="" 
                     />
                 </div>
@@ -287,6 +298,7 @@ const DeleteOutlet = (props) => {
                             fontSize:'11px',
                             marginTop:'20px',
                             marginBottom:'20px',
+                            borderRadius: '0px',
                             '&:hover': {
                                 backgroundColor: '#054834'
                             }
