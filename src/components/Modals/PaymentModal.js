@@ -37,7 +37,7 @@ const PaymentModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => { 
-        if((typeof(cert) === "string")){
+        if((typeof(cert) === "string") || (typeof(reciept) === "string")){
             if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
             if(organisation === "") return swal("Warning!", "Organisation field cannot be empty", "info");
             if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
@@ -45,7 +45,7 @@ const PaymentModal = (props) => {
             if(contact === "") return swal("Warning!", "Contact field cannot be empty", "info");
             if(phone === "") return swal("Warning!", "Contact phone field cannot be empty", "info");
             if(typeof(cert) !== "string") return swal("Warning!", "Please select a certificate", "info");
-            if(typeof(cert) !== "string") return swal("Warning!", "Please select a reciept", "info");
+            if(typeof(reciept) !== "string") return swal("Warning!", "Please use the camera instead", "info");
             setLoading(true);
 
             const payload = {
@@ -176,8 +176,11 @@ const PaymentModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius: '0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     onChange={e => setOrganisation(e.target.value)}
@@ -191,9 +194,12 @@ const PaymentModal = (props) => {
                                         width:'100%',
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
                                         padding:'10px',
+                                        borderRadius: '0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} 
                                     placeholder="" 
                                     multiline
@@ -210,8 +216,11 @@ const PaymentModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius: '0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type="number"
                                     onChange={e => setAmount(e.target.value)}
@@ -226,8 +235,11 @@ const PaymentModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius: '0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     onChange={e => setContact(e.target.value)}
                                 />
@@ -241,8 +253,11 @@ const PaymentModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius: '0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     onChange={e => setPhone(e.target.value)}
                                 />
@@ -264,8 +279,8 @@ const PaymentModal = (props) => {
                                         onClick={takePicFromCamera}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        {typeof(cert) === "string" && <div>Take Photo</div>}
-                                        {typeof(cert) === "string" || <div>{cert.name}</div>}
+                                        {typeof(cert) === "string" && <div>Image Taken</div>}
+                                        {typeof(cert) === "string" || <div>Take Photo</div>}
                                     </Button>
                                     <Button sx={{
                                         width:'49%', 
@@ -280,8 +295,8 @@ const PaymentModal = (props) => {
                                         onClick={uploadProductOrders}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                                        {typeof(reciept.name) === "undefined" && <div>Upload Image</div>}
-                                        {typeof(reciept.name) === "undefined" || <div>{reciept.name}</div>}
+                                        {typeof(cert.name) === "undefined" && <div>Upload Image</div>}
+                                        {typeof(cert.name) === "undefined" || <div>{cert.name}</div>}
                                     </Button>
                                 </div>
                             </div>
@@ -302,8 +317,8 @@ const PaymentModal = (props) => {
                                         onClick={takePicFromCamera2}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        {typeof(cert) === "string" && <div>Take Photo</div>}
-                                        {typeof(cert) === "string" || <div>{reciept.name}</div>}
+                                        {typeof(reciept) === "string" && <div>Image Taken</div>}
+                                        {typeof(reciept) === "string" || <div>Take Photo</div>}
                                     </Button>
                                     <Button sx={{
                                         width:'49%', 
@@ -327,7 +342,7 @@ const PaymentModal = (props) => {
                             <input style={{visibility:'hidden'}} onChange={selectedFile2} type="file" ref={attach2} />
                        </div>
 
-                        <div style={{marginTop:'10px'}} className='butt'>
+                        <div style={{marginTop:'10px', height: '30px'}} className='butt'>
                             <Button sx={{
                                 width:'100px', 
                                 height:'30px',  

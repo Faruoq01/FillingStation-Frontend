@@ -1,6 +1,7 @@
 import { 
     ANALYSIS_DATA,
-    LOGOUT
+    LOGOUT,
+    HISTORY_TAG
 } from '../types'
 
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
         expenses: [],
         dipping: [{}],
     },
+    historyTag: "station",
 }
 
 const analysisReducer = (state = initialState, action) => {
@@ -20,6 +22,13 @@ const analysisReducer = (state = initialState, action) => {
     const { type, payload } = action
 
     switch (type) {
+
+        case HISTORY_TAG:{
+            return {
+                ...state,
+                historyTag: payload
+            }
+        }
 
         case ANALYSIS_DATA:{
             return {

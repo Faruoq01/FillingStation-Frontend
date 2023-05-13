@@ -6,13 +6,15 @@
     align-items: center;
 
     .inner_history{
-        width: 80%;
+        width: 70%;
         height: auto;
         margin-top: 50px;
 
         .history_controls{
-            display: flex;
-            flex-direction: row;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            row-gap: 10px;
+            column-gap: 10px;
             margin-bottom: 20px;
 
             .ant-picker-input{
@@ -21,8 +23,6 @@
 
             .outlet_control{
                 width: auto;
-                margin-right: 10px;
-                margin-left: 10px;
             }
         }
 
@@ -70,6 +70,22 @@
                     }
                 }
             }
+        }
+    }
+}
+
+@media (max-width: 1150px){
+    .historyContainer{
+        margin-top: 40px;
+    }
+}
+
+@media (max-width: 500px){
+    .historyContainer{
+        margin-top: 40px;
+
+        .inner_history{
+            width: 90%;
         }
     }
 }

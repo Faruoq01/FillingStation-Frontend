@@ -85,6 +85,7 @@ export const OVERAGES = "OVERAGES";
 export const DATE_RANGE = "DATE_RANGE";
 export const OVERAGE_TYPE = "OVERAGE_TYPE";
 export const SET_SALES= "SET_SALES";
+export const HISTORY_TAG = "HISTORY_TAG";
 
 /////////////////////////////////////////////////////////////////////////
 

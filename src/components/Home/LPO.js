@@ -27,7 +27,6 @@ const LPO = (props) => {
     const [lpo, setLpo] = React.useState(false);
     const user = useSelector(state => state.authReducer.user);
     const lpos = useSelector(state => state.lpoReducer.lpo);
-    
     const dispatch = useDispatch();
     const history = useHistory();
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
@@ -58,12 +57,7 @@ const LPO = (props) => {
 
     const openModal = () => {
         if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
-        
-        if(oneStationData === null){
-            swal("Warning!", "Please select a station first", "info");
-        }else{
-            setLpo(true);
-        }
+        setLpo(true);
     }
 
     const getAllLPOData = useCallback(() => {

@@ -12,7 +12,7 @@ import LPOService from '../../services/lpo';
 const LPOModal = (props) => {
     const [productType, setProductType] = useState('Weekly');
     const [loading, setLoading] = useState(false);
-    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const user = useSelector(state => state.authReducer.user);
 
     const [companyName, setCompanyName] = useState('');
     const [address, setAddress] = useState('');
@@ -28,8 +28,15 @@ const LPOModal = (props) => {
 
     const handleClose = () => props.close(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const submit = () => {
-        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(companyName === "") return swal("Warning!", "Company name field cannot be empty", "info");
         if(address === "") return swal("Warning!", "Address field cannot be empty", "info");
         if(personOfContact === "") return swal("Warning!", "Contact field cannot be empty", "info");
@@ -63,8 +70,7 @@ const LPOModal = (props) => {
             AGORate: AGORate,
             DPKRate: DPKRate,
             paymentStructure: productType,
-            outletID: oneStationData?._id,
-            organizationID: oneStationData?.organisation
+            organizationID: resolveUserID().id
         }
 
         LPOService.createLPO(payload).then((data) => {

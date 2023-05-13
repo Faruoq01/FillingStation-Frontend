@@ -7,6 +7,7 @@ import { adminOutlet, getAllStations } from "../../store/actions/outlet";
 import { DatePicker } from "antd";
 import HistoryService from "../../services/history";
 import { ThreeDots } from "react-loader-spinner";
+import { historyTags } from "../../store/actions/analysis";
 
 const months = {
     '01' : 'January',
@@ -31,6 +32,17 @@ const RemarkCard = (props) => {
         return format;
     }
 
+    const convertTime = (data) => {
+        const time = data.split(" ").pop();
+        const getHour = time.split(":");
+        if(Number(getHour[0]) < 12){
+            return data.replace(time, getHour[0].concat(":", getHour[1]).concat(" ", "AM")) ;
+
+        }else{
+            return data.replace(time, getHour[0].concat(":", getHour[1]).concat(" ", "PM")); 
+        }
+    }
+
     return(
         <div className="remark_card">
             <div className="name_avatar">
@@ -41,7 +53,7 @@ const RemarkCard = (props) => {
                 }
                 <div className="rmk_content">
                     <div className="user_rmk">{props.data.name}</div>
-                    <div className="content_rmk">{props.data.content}</div>
+                    <div className="content_rmk">{convertTime(props.data.content)}</div>
                     <div className="rmk_date">{convertDate(props.data.createdAt)}.</div>
                 </div>
             </div>
@@ -53,13 +65,15 @@ const HistoryPage = () => {
     const dispatch = useDispatch();
     const moment = require('moment-timezone');
     const [defaultState, setDefaultState] = useState(0);
+    const [defaultState2, setDefaultState2] = useState(0);
     const [date, setDate] = useState(new Date());
     const [loading, setLoading] = useState();
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const historyTag = useSelector(state => state.analysisReducer.historyTag);
     const [historyData, setHistory] = useState([]);
-
+    
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
             return {id: user._id}
@@ -165,6 +179,7 @@ const HistoryPage = () => {
         setLoading(true);
 
         const historyDate = moment(new Date(dateString)).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        
         const payload = {
             outletID: oneStationData === null? "None": oneStationData._id, 
             organisationID: resolveUserID().id,
@@ -175,6 +190,26 @@ const HistoryPage = () => {
             setLoading(false);
             setHistory(data.history.history)
         });
+    }
+
+    const getTags = () => {
+        const tags = historyData.map(item => item.tag).filter((value, index, self) => self.indexOf(value) === index);
+        return tags;
+    }
+
+    const changeTagMenu = (index, item) => {
+        setDefaultState2(index);
+        dispatch(historyTags(item));
+    }
+
+    const getHistory = () => {
+        if(historyTag === "All tags"){
+            return historyData;
+
+        }else{
+            const filtered = historyData.filter(data => data.tag === historyTag);
+            return filtered;
+        }
     }
 
     return(
@@ -229,6 +264,36 @@ const HistoryPage = () => {
                             // onChange={(e) => {searchTable(e.target.value)}}
                         />
                     </div>
+                    <div className='outlet_control'>
+                        {true &&
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={defaultState2}
+                                sx={selectStyle2}
+                            >
+                                <MenuItem onClick={()=>{changeTagMenu(0, "All tags")}} style={menu} value={0}>All tags</MenuItem>
+                                {
+                                    getTags().map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeTagMenu(index + 1, item)}} value={index + 1}>{item}</MenuItem>
+                                        )
+                                    })  
+                                }
+                            </Select>
+                        }
+                        {true ||
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={0}
+                                sx={selectStyle2}
+                                disabled
+                            >
+                                <MenuItem style={menu} value={0}>{historyTag}</MenuItem>
+                            </Select>
+                        }
+                    </div>
                 </div>
                 
                 {
@@ -243,9 +308,9 @@ const HistoryPage = () => {
                         wrapperClassName=""
                         visible={true}
                     />:
-                    historyData.length === 0?
+                    getHistory().length === 0?
                     <div style={place}>No history created</div>:
-                    historyData.map((item, index) => {
+                    getHistory().map((item, index) => {
                         return(
                             <RemarkCard key={index} data={item} />
                         )
