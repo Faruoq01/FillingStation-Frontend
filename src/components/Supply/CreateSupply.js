@@ -221,17 +221,19 @@ const CreateSupply = (props) => {
                 load: supplyList
             }
     
-            SupplyService.createSupply(payload).then(data => {
+            SupplyService.createSupply(payload).then(data => {console.log(data, "supply data here")
                 if(data.status === "failed"){
+                    setSupplyList([]);
+                    props.refresh();
                     return "Supply can only be recorded for today or less."
                 }else{
                     setSupplyList([]);
-                    setStop(false);
                     props.refresh();
                     return "Supply recorded successfully!"
                 }
                 
-            }).then((msg)=>{
+            }).then((msg)=>{console.log("this line executes")
+                setStop(false);
                 swal("Succes!", msg, "success");
             });
         }else{

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { searchStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations, searchStations } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -73,6 +73,18 @@ const CostPriceModal = (props) => {
             setCost1(item.DPKPrice);
         }
     }
+    
+    const freshUp = () => {
+        OutletService.getOneOutletStation({outletID: oneStationData._id}).then(data => {
+            dispatch(adminOutlet(data.station));
+            return data.station;
+        }).then(data => {
+            const copy = [...allOutlets];
+            const idx = copy.findIndex(item => item._id === data._id);
+            copy[idx] = data;
+            dispatch(getAllStations(copy));
+        })
+    }
 
     const editCostPrice = () => {
         if(collections.length === 0) return swal("Warning!", "Please select a station", "info");
@@ -122,13 +134,12 @@ const CostPriceModal = (props) => {
         }
 
         OutletService.updateStation(payload).then(data => {
-            swal("Success", "Records updated successfully!", "success");
-        }).then(()=>{
             setLoading(false);
-            props.refresh();
-        }).then(()=>{
+            freshUp();
             handleClose();
-        })
+        }).then(()=>{
+            swal("Success", "Records updated successfully!", "success");
+        });
     }
 
     const searchStationList = (e) => {

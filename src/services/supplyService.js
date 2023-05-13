@@ -5,7 +5,7 @@ const SupplyService = {
     createSupply: (data) => {
         return APIs.post('/supply/create', data)
         .then(({data}) => {
-            return data.supply;
+            return data;
         })
          .catch(err => {
             console.log("Auth service err", err);
