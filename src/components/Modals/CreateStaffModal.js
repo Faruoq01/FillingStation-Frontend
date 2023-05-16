@@ -34,6 +34,14 @@ const StaffModal = (props) => {
     const [jobTitle, setJobTitle] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
     
     const changeMenu = (index, item) => {
         setDefaultState(index);
@@ -113,7 +121,7 @@ const StaffModal = (props) => {
             role: role,
             jobTitle: jobTitle,
             password: password,
-            organisationID: user._id,
+            organisationID: resolveUserID().id,
             outletID: oneStationData._id,
         }
 

@@ -46,6 +46,14 @@ const Outlets = (props) => {
     const [loading, setLoading] = useState(false);
     const [searchKey, setSearchKey] = useState("");
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const getPerm = (e) => {
         if(user.userType === "superAdmin"){
             return true;
@@ -83,14 +91,15 @@ const Outlets = (props) => {
     const getAllStationData = useCallback(() => {
         setLoading(true);
         const payload = {
-            organisation: user.userType === "superAdmin"? user._id : user.organisationID
+            organisation: resolveUserID().id
         }
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
         }).then(()=>{
             setLoading(false);
         })
-    }, [user.organisationID, user.userType, user._id, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch]);
 
     useEffect(()=>{
         getAllStationData();

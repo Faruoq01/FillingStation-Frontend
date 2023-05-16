@@ -14,7 +14,7 @@ const initialState = {
         expenses: [],
         dipping: [{}],
     },
-    historyTag: "station",
+    historyTag: "All tags",
 }
 
 const analysisReducer = (state = initialState, action) => {

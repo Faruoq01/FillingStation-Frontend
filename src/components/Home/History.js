@@ -8,58 +8,7 @@ import { DatePicker } from "antd";
 import HistoryService from "../../services/history";
 import { ThreeDots } from "react-loader-spinner";
 import { historyTags } from "../../store/actions/analysis";
-
-const months = {
-    '01' : 'January',
-    '02': 'February',
-    '03': 'March',
-    '04': 'April',
-    '05': 'May',
-    '06': 'June',
-    '07': 'July',
-    '08': 'August',
-    '09': 'September',
-    '10': 'October',
-    '11': 'November',
-    '12': 'December',
-}
-
-const RemarkCard = (props) => {
-
-    const convertDate = (data) => {
-        const date = data.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        return format;
-    }
-
-    const convertTime = (data) => {
-        const time = data.split(" ").pop();
-        const getHour = time.split(":");
-        if(Number(getHour[0]) < 12){
-            return data.replace(time, getHour[0].concat(":", getHour[1]).concat(" ", "AM")) ;
-
-        }else{
-            return data.replace(time, getHour[0].concat(":", getHour[1]).concat(" ", "PM")); 
-        }
-    }
-
-    return(
-        <div className="remark_card">
-            <div className="name_avatar">
-                {
-                    props.data.image === "null"?
-                    <Avatar sx={{width:'35px', background: 'grey', height:'35px', fontSize:'14px'}} alt="Remy Sharp">{props.data.name.substring(0, 2)}</Avatar>:
-                    <Avatar alt="Remy Sharp" src={props.data.image} />
-                }
-                <div className="rmk_content">
-                    <div className="user_rmk">{props.data.name}</div>
-                    <div className="content_rmk">{convertTime(props.data.content)}</div>
-                    <div className="rmk_date">{convertDate(props.data.createdAt)}.</div>
-                </div>
-            </div>
-        </div>
-    )
-}
+import RemarkCard from "../common/RemarkCard";
 
 const HistoryPage = () => {
     const dispatch = useDispatch();
@@ -73,6 +22,7 @@ const HistoryPage = () => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const historyTag = useSelector(state => state.analysisReducer.historyTag);
     const [historyData, setHistory] = useState([]);
+    const [historyDataCopy, setHistoryCopy] = useState([]);
     
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -106,6 +56,7 @@ const HistoryPage = () => {
                 HistoryService.allRecords(payload).then((data) => {
                     setLoading(false);
                     setHistory(data.history.history)
+                    setHistoryCopy(data.history.history)
                 });
 
                 return
@@ -144,6 +95,7 @@ const HistoryPage = () => {
             HistoryService.allRecords(payload).then((data) => {
                 setLoading(false);
                 setHistory(data.history.history)
+                setHistoryCopy(data.history.history)
             });
         });
 
@@ -171,6 +123,7 @@ const HistoryPage = () => {
         HistoryService.allRecords(payload).then((data) => {
             setLoading(false);
             setHistory(data.history.history)
+            setHistoryCopy(data.history.history)
         });
     }
 
@@ -189,6 +142,7 @@ const HistoryPage = () => {
         HistoryService.allRecords(payload).then((data) => {
             setLoading(false);
             setHistory(data.history.history)
+            setHistoryCopy(data.history.history)
         });
     }
 
@@ -209,6 +163,19 @@ const HistoryPage = () => {
         }else{
             const filtered = historyData.filter(data => data.tag === historyTag);
             return filtered;
+        }
+    }
+
+    const searchTable = (searchKey) => {
+
+        if(searchKey.length === 0){
+            setHistory(historyDataCopy);
+        }else{
+
+            const search = historyDataCopy.filter(data => !data.name.toUpperCase().indexOf(searchKey.toUpperCase()) ||
+                !data.content.toUpperCase().indexOf(searchKey.toUpperCase()) || !data.createdAt.toUpperCase().indexOf(searchKey.toUpperCase())
+            );
+            setHistory(search);
         }
     }
 
@@ -261,7 +228,7 @@ const HistoryPage = () => {
                             }} 
                             type='text'
                             placeholder="Search" 
-                            // onChange={(e) => {searchTable(e.target.value)}}
+                            onChange={(e) => {searchTable(e.target.value)}}
                         />
                     </div>
                     <div className='outlet_control'>

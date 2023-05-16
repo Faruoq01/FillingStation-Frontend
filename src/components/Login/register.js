@@ -197,7 +197,7 @@ const Register = (props) => {
                     onChange = {e => setLocation(e.target.value)}
                 />
 
-                <Button disabled sx={{
+                <Button sx={{
                     width:'100%', 
                     height:'35px', 
                     background:'#076146', 

@@ -399,7 +399,7 @@ const Settings = (props) => {
     
     return(
 
-        <div data-aos="zoom-in-down" className='settingsContainer'>
+        <div style={{marginTop: '50px'}} data-aos="zoom-in-down" className='settingsContainer'>
             <div className='action'>
                 <Select
                     labelId="demo-select-small"

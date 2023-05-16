@@ -53,6 +53,7 @@ const IncomingOrder = () => {
     const [open, setOpen] = useState(false);
 
     const openCreateModal = () => {
+        if(oneStationData === null) return swal("Warning!", "Please select a station first", "info");
         if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
         setOpen(true);
     }

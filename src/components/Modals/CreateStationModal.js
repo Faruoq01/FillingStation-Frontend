@@ -45,6 +45,14 @@ const CreateFillingStation = (props) => {
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const handleTankModal = async() => {
 
         if(outletName === "") return swal("Warning!", "Outlet name field cannot be empty", "info");
@@ -77,7 +85,7 @@ const CreateFillingStation = (props) => {
             AGOPrice: agoPrice,
             DPKCost: dpkCost,
             DPKPrice: dpkPrice,
-            organisation: user._id,
+            organisation: resolveUserID().id,
             longitude: longitude,
             latitude: latitude
         }

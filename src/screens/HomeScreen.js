@@ -68,6 +68,10 @@ import { useCallback } from 'react';
 import OutletService from '../services/outletService';
 import { adminOutlet, getAllStations } from '../store/actions/outlet';
 import OverageList from '../components/DailySales/OverageList';
+import { Badge } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import RemarkCard from '../components/common/RemarkCard';
+import { ThreeDots } from 'react-loader-spinner';
 
 const HomeScreen = () => {
 
@@ -143,15 +147,39 @@ const HomeScreen = () => {
                 }
             }
         }
+
+        function updateHistory(data){
+            if(resolveUserID().id === data.orgID){
+                if(user.outletID === "Admin Office"){
+                    const copyUser = {...user};
+                    copyUser.noteCount = Number(copyUser.noteCount) + 1;
+                    dispatch(updateUser(copyUser));
+                    localStorage.setItem('user', JSON.stringify(copyUser));
+                    return
+
+                }else{
+
+                    if(user.outletID === data.to){
+                        const copyUser = {...user};
+                        copyUser.noteCount = Number(copyUser.noteCount) + 1;
+                        dispatch(updateUser(copyUser));
+                        localStorage.setItem('user', JSON.stringify(copyUser));
+                        return
+                    }
+                }
+            }
+        }
     
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
         socket.on('permission', updatePermission);
+        socket.on('history', updateHistory);
     
         return () => {
             socket.off('connect', onConnect);
             socket.off('disconnect', onDisconnect);
             socket.off('permission', updatePermission);
+            socket.on('history', updateHistory);
         };
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -202,7 +230,10 @@ const HomeScreen = () => {
 
     const [activeRoute, setActiveRoute] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [openRight, setOpenRight] = useState(false);
     const [name, setName] = useState('');
+    const [historyData, setHistory] = useState([]);
+    const [historyLoad, setHistoryLoad] = useState(false);
 
     const toggleDrawer = () => {
         setIsOpen((prevState) => !prevState)
@@ -288,6 +319,10 @@ const HomeScreen = () => {
         }
     }
 
+    const openTheRightDrawer = () => {
+        setOpenRight(!openRight);
+    }
+
     return(
         <div className='home-container'>
             <div style={{background: user.sideBarMode}} className='side-bar'>
@@ -334,6 +369,42 @@ const HomeScreen = () => {
                 </div>
             </Drawer>
 
+            {openRight &&
+                <div className='overlays'>
+                    <div data-aos="zoom-in-down" className='rightDrawer'>
+                        <div className='innerDrawer'>
+                            <div className='topWrite'>
+                                <div className='notewrite'>Notification</div>
+                                <div onClick={()=>{setOpenRight(false)}} className='IconDraw'>
+                                    <CloseIcon/>
+                                </div>
+                            </div>
+
+                            {
+                                historyLoad?
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />:
+                                historyData.length === 0?
+                                <div style={place}>No history created</div>:
+                                historyData.map((item, index) => {
+                                    return(
+                                        <RemarkCard key={index} data={item} />
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
             <div style={{background: user.isDark === "0"? '#fff': '#404040'}} className='main-content'>
                 <div className='mobile-bar'>
                     <AppBar sx={{background:'#06805B', zIndex:'50'}} position="absolute">
@@ -367,8 +438,11 @@ const HomeScreen = () => {
                                     color="inherit"
                                     aria-label="menu"
                                     sx={{ marginRight: '0px' }}
+                                    onClick={openTheRightDrawer}
                                 >
-                                    <img style={{width:'35px', height:'35px'}} src={note} alt="icon" />
+                                    <Badge badgeContent={user.noteCount} color="error">
+                                        <img style={{width:'35px', height:'35px'}} src={note} alt="icon" /> 
+                                    </Badge>
                                 </IconButton>
                                 <IconButton
                                     size="large"
@@ -402,8 +476,11 @@ const HomeScreen = () => {
                             color="inherit"
                             aria-label="menu"
                             sx={{ marginRight: '0px' }}
+                            onClick={openTheRightDrawer}
                         >
-                            <img style={{width:'35px', height:'35px'}} src={note} alt="icon" />
+                            <Badge badgeContent={user.noteCount} color="error">
+                                <img style={{width:'35px', height:'35px'}} src={note} alt="icon" /> 
+                            </Badge>
                         </IconButton>
                         <IconButton
                             size="large"
@@ -505,6 +582,17 @@ const inner = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+}
+
+const place = {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    color: 'grey',
+    marginTop: '30px'
 }
 
 export default withRouter(HomeScreen);

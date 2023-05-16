@@ -170,6 +170,55 @@
     .main-content::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
+
+    .overlays{
+        width: 100%;
+        height: 100vh;
+        position: absolute;
+        z-index: 500;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+
+        .rightDrawer{
+            width: 25%;
+            max-width: 500px;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #fff;
+            
+            .innerDrawer{
+                width: 94%;
+                height: auto;
+                margin-top: 10px;
+
+                .topWrite{
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .notewrite{
+                        font-size: 16px;
+                        font-weight: bold;
+                    }
+
+                    .IconDraw{
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 35px;
+                        background: #EDEDED99;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                }
+            }
+        }
+    }
 }
 
 @media (max-width: 1250px){
@@ -209,3 +258,4 @@
         }
     }
 }
+
