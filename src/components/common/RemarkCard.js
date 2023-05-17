@@ -1,4 +1,5 @@
 import { Avatar } from "@mui/material";
+import "../../styles/history.scss";
 
 const months = {
     '01' : 'January',

@@ -1,4 +1,4 @@
-import { Avatar, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { MenuItem, OutlinedInput, Select } from "@mui/material";
 import "../../styles/history.scss";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
