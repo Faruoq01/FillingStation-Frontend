@@ -440,9 +440,14 @@ const HomeScreen = () => {
                                     sx={{ marginRight: '0px' }}
                                     onClick={openTheRightDrawer}
                                 >
-                                    <Badge badgeContent={user.noteCount} color="error">
+                                    {user.noteCount === '0' ||
+                                        <Badge badgeContent={user.noteCount} color="error">
+                                            <img style={{width:'35px', height:'35px'}} src={note} alt="icon" /> 
+                                        </Badge>
+                                    }
+                                    {user.noteCount === '0' &&
                                         <img style={{width:'35px', height:'35px'}} src={note} alt="icon" /> 
-                                    </Badge>
+                                    }
                                 </IconButton>
                                 <IconButton
                                     size="large"
@@ -478,9 +483,14 @@ const HomeScreen = () => {
                             sx={{ marginRight: '0px' }}
                             onClick={openTheRightDrawer}
                         >
-                            <Badge badgeContent={user.noteCount} color="error">
+                            {user.noteCount === '0' ||
+                                <Badge badgeContent={user.noteCount} color="error">
+                                    <img style={{width:'35px', height:'35px'}} src={note} alt="icon" /> 
+                                </Badge>
+                            }
+                            {user.noteCount === '0' &&
                                 <img style={{width:'35px', height:'35px'}} src={note} alt="icon" /> 
-                            </Badge>
+                            }
                         </IconButton>
                         <IconButton
                             size="large"
