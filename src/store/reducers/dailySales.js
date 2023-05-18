@@ -18,7 +18,8 @@ import {
     CURRENT_DATE,
     REMARKS,
     OVERAGES,
-    OVERAGE_TYPE
+    OVERAGE_TYPE,
+    SUPPLIES
 } from '../types'
 
 const initialState = {
@@ -54,7 +55,8 @@ const initialState = {
     currentDate: "",
     remarks: [],
     overages: [],
-    overageType: 'PMS'
+    overageType: 'PMS',
+    supplies: []
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -62,6 +64,13 @@ const dailySalesReducer = (state = initialState, action) => {
     const { type, payload } = action
 
     switch (type) {
+
+        case SUPPLIES: {
+            return {
+                ...state,
+                supplies: payload
+            }
+        }
 
         case SALES_DATA:{
             return {

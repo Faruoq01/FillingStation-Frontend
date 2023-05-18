@@ -10,7 +10,8 @@ import ApproximateDecimal from '../common/approx';
 
 const Dipping = () => {
 
-    const {dipping, sales} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const {dipping} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const supplies = useSelector(state => state.dailySalesReducer.supplies);
 
     const dispatch = useDispatch();
     const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
@@ -59,6 +60,19 @@ const Dipping = () => {
         });
     }
 
+    const getSupply = (id, type) => {
+        const getSelectedType = supplies.filter(data => data.productType === type);
+        const getForATank = getSelectedType.filter(data => Object.keys(data.recipientTanks).includes(id));
+    
+        const secondPriority = getForATank.filter(data => data.priority === "1");
+
+        const secondTotals = secondPriority.reduce((accum, current) => {
+            return Number(accum) + Number(current.recipientTanks[id]);
+        }, 0);
+
+        return {second: secondTotals};
+    }
+
     const getAndAnalyzeDailySales = () => {
         const salesPayload = {
             organisationID: resolveUserID().id,
@@ -72,19 +86,8 @@ const Dipping = () => {
         });
     }
 
-    const afterSales = (tank) => {
-        const returnTank = sales.filter(data => data.tankID === tank.tankID);
-
-        if(returnTank.length === 0){
-            return ApproximateDecimal(tank.dipping);
-
-        }else{
-            return ApproximateDecimal(returnTank[0].afterSales);
-        }
-    }
-
     const difference = (current, dipping) => {
-        const diff = Number(dipping.replace(/[^0-9.]/g, '')) - Number(current.replace(/[^0-9.]/g, ''));
+        const diff = Number(dipping) - Number(current);
         return ApproximateDecimal(diff);
     }
 
@@ -95,9 +98,9 @@ const Dipping = () => {
                 <div style={ins} className="cells">{props.index + 1}</div>
                 <div style={ins} className="cells">{props.data.tankName}</div>
                 <div style={ins} className="cells">{props.data.productType}</div>
-                <div style={ins} className="cells">{afterSales(props.data)}</div>
+                <div style={ins} className="cells">{Number(props.data.afterSales) + getSupply(props.data.tankID, props.data.productType).second}</div>
                 <div style={ins} className="cells">{ApproximateDecimal(props.data.dipping)}</div>
-                <div style={ins} className="cells">{difference(afterSales(props.data), props.data.dipping)}</div>
+                <div style={ins} className="cells">{difference(Number(props.data.afterSales) + getSupply(props.data.tankID, props.data.productType).second, props.data.dipping)}</div>
                 {getPerm('17') &&
                     <div style={ins} className="cells">
                         <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -126,7 +129,7 @@ const Dipping = () => {
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{afterSales(data)}</div>
+                        <div style={title}>{Number(data.afterSales) + getSupply(data.tankID, data.productType).second}</div>
                         <div style={label}>Computed Level</div>
                     </div>
 
@@ -138,7 +141,7 @@ const Dipping = () => {
 
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{difference(afterSales(data), data.dipping)}</div>
+                        <div style={title}>{difference(Number(data.afterSales) + getSupply(data.tankID, data.productType).second, data.dipping)}</div>
                         <div style={label}>Difference</div>
                     </div>
 

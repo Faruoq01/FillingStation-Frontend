@@ -17,7 +17,8 @@ import {
     CURRENT_DATE,
     REMARKS,
     OVERAGES,
-    OVERAGE_TYPE
+    OVERAGE_TYPE,
+    SUPPLIES
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -94,6 +95,10 @@ export const overages = (params) => dispatch => {
 
 export const overageType = (params) => dispatch => {
     dispatch({type: OVERAGE_TYPE, payload: params});
+}
+
+export const supplies = (params) => dispatch => {
+    dispatch({type: SUPPLIES, payload: params});
 }
 
 

@@ -34,6 +34,7 @@ const DippingComponents = (props) => {
     const [ago, setAGO] = useState([]);
     const [dpk, setDPK] = useState([]);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -107,8 +108,14 @@ const DippingComponents = (props) => {
     const setTotalizer = (e, item, index) => {
 
         if(item.productType === "PMS"){
+            const connectedPumps = selectedPumps.filter(data => data.hostTank === item._id);
+            const totalSales = connectedPumps.reduce((accum, current) => {
+                return Number(accum) + Number(current.sales);
+            }, 0);
+
+            const levelAfterSales = Number(item.currentLevel) - totalSales;
             let clonedPMS = {...item};
-            clonedPMS = {...clonedPMS, dippingValue: e.target.value};
+            clonedPMS = {...clonedPMS, dippingValue: e.target.value, afterSales: levelAfterSales};
             const newPMSList = [...pms];
             newPMSList[index] = clonedPMS;
             setPMS(newPMSList);
@@ -126,8 +133,14 @@ const DippingComponents = (props) => {
             }
 
         }else if(item.productType === "AGO"){
+            const connectedPumps = selectedPumps.filter(data => data.hostTank === item._id);
+            const totalSales = connectedPumps.reduce((accum, current) => {
+                return Number(accum) + Number(current.sales);
+            }, 0);
+
+            const levelAfterSales = Number(item.currentLevel) - totalSales;
             let clonedAGO = {...item};
-            clonedAGO = {...clonedAGO, dippingValue: e.target.value};
+            clonedAGO = {...clonedAGO, dippingValue: e.target.value, afterSales: levelAfterSales};
             const newAGOList = [...ago]
             newAGOList[index] = clonedAGO;
             setAGO(newAGOList);
@@ -145,8 +158,14 @@ const DippingComponents = (props) => {
             }
 
         }else if(item.productType === "DPK"){
+            const connectedPumps = selectedPumps.filter(data => data.hostTank === item._id);
+            const totalSales = connectedPumps.reduce((accum, current) => {
+                return Number(accum) + Number(current.sales);
+            }, 0);
+
+            const levelAfterSales = Number(item.currentLevel) - totalSales;
             let clonedDPK = {...item};
-            clonedDPK = {...clonedDPK, dippingValue: e.target.value};
+            clonedDPK = {...clonedDPK, dippingValue: e.target.value, afterSales: levelAfterSales};
             const newDPKList = [...dpk]
             newDPKList[index] = clonedDPK;
             setDPK(newDPKList);

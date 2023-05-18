@@ -14,23 +14,30 @@ const OveragesAndShortages = (props) => {
     const dispatch = useDispatch();
     const [defaultState, setDefault] = useState(10);
     const dipping = useSelector(state => state.dailySalesReducer.overages);
+    const supplies = useSelector(state => state.dailySalesReducer.supplies);
     const overageTypeData = useSelector(state => state.dailySalesReducer.overageType);
-    const sales = useSelector(state => state.dashboardReducer.sales);
+    
+    const getSupply = () => {
+        const getSelectedType = supplies.filter(data => data.productType === overageTypeData);
+        const firstPriority = getSelectedType.filter(data => data.priority === "0");
+        const secondPriority = getSelectedType.filter(data => data.priority === "1");
 
-    const productSales = () => {
-        const getSales = sales.filter(data => data.productType === overageTypeData);
-        const totalSales = getSales.reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
+        const firstTotals = firstPriority.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
         }, 0);
 
-        return totalSales;
-    }
+        const secondTotals = secondPriority.reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
 
+        return {first: firstTotals, second: secondTotals};
+    }
+    
     const getDippingResult = () => {
         const productCategory = dipping.filter(data => data.productType === overageTypeData);
 
         const currentLevel = productCategory.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel);
+            return Number(accum) + Number(current.afterSales);
         }, 0);
 
         const dippingLevel = productCategory.reduce((accum, current) => {
@@ -145,7 +152,7 @@ const OveragesAndShortages = (props) => {
 
                 <div className="labelsOverage">
                     <div>
-                        <div style={title}>{ApproximateDecimal(getDippingResult().currentLevel - productSales())} Ltrs</div>
+                        <div style={title}>{ApproximateDecimal(getDippingResult().currentLevel + getSupply().second)} Ltrs</div>
                         <div style={label}>Current Level </div>
                     </div>
 
@@ -157,7 +164,7 @@ const OveragesAndShortages = (props) => {
 
                 <div className="statusOverage">
                     <div>
-                        <div style={title}>{ApproximateDecimal(getDippingResult().dipping - (getDippingResult().currentLevel - productSales()))} Ltrs</div>
+                        <div style={title}>{ApproximateDecimal(getDippingResult().dipping - (getDippingResult().currentLevel + getSupply().second))} Ltrs</div>
                         <div style={label}>Differences</div>
                     </div>
                     <div style={shortage}>

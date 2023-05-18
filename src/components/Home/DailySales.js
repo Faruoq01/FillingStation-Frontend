@@ -19,7 +19,7 @@ import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
-import { bulkReports, currentDateValue, dailySupplies, lpoRecords, overages, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData } from '../../store/actions/dailySales';
+import { bulkReports, currentDateValue, dailySupplies, lpoRecords, overages, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData, supplies } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 import { Skeleton } from '@mui/material';
 import { isSafari } from 'react-device-detect';
@@ -342,6 +342,7 @@ const DailySales = (props) => {
             dispatch(bulkReports(data.dailyRecords));
             dispatch(overages(data.dailyRecords.dipping));
             dispatch(setSales(data.dailyRecords.sales));
+            dispatch(supplies(data.dailyRecords.supply));
             
             dispatch(lpoRecords(data.dailyRecords.lpo));
             getMasterRows(salesDataRecord);

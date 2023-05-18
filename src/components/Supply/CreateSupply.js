@@ -25,7 +25,6 @@ const CreateSupply = (props) => {
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
     const [supplyList, setSupplyList] = useState([]);
     const user = useSelector(state => state.authReducer.user);
-    console.log(tankList, 'tanklist')
 
     // payload data
     const [transporter, setTransporter] = useState('');
@@ -71,7 +70,7 @@ const CreateSupply = (props) => {
                 organisationID: resolveUserID().id
             }
      
-            IncomingService.getAllIncoming3(income).then((data) => {console.log(data, "income")
+            IncomingService.getAllIncoming3(income).then((data) => {
                 dispatch(createIncomingOrder(data.incoming.incoming));
             });
     
@@ -221,19 +220,19 @@ const CreateSupply = (props) => {
                 load: supplyList
             }
     
-            SupplyService.createSupply(payload).then(data => {console.log(data, "supply data here")
+            SupplyService.createSupply(payload).then(data => {
                 if(data.status === "failed"){
                     setSupplyList([]);
                     props.refresh();
                     return "Supply can only be recorded for today or less."
                 }else{
-                    setSupplyList([]);
-                    props.refresh();
-                    return "Supply recorded successfully!"
+                    return "Supply has been recorded successfully!."
                 }
-                
             }).then((msg)=>{console.log("this line executes")
                 setStop(false);
+                setSupplyList([]);
+                props.refresh();
+                getAllIncoming();
                 swal("Succes!", msg, "success");
             });
         }else{

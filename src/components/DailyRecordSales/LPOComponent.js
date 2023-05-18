@@ -31,9 +31,9 @@ const LPOComponent = (props) => {
     const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
     const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
 
-    console.log(selectedPumps, "selected pumps")
-    console.log(selectedTanks, "selected tanks")
-    console.log(records, "records")
+    // console.log(selectedPumps, "selected pumps")
+    // console.log(selectedTanks, "selected tanks")
+    // console.log(records, "records")
 
     // payload records
     const [cam, setCam] = useState(null);

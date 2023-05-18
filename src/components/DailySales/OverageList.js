@@ -25,9 +25,10 @@ const OverageList = () => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [skip, setSkip] = useState(0);
     const [limit] = useState(15);
-    const [total, setTotal] = useState(0);
+    const [total] = useState(0);
     const [loading, setLoading] = useState(false);
     const overageTypeData = useSelector(state => state.dailySalesReducer.overageType);
+    const supplies = useSelector(state => state.dailySalesReducer.supplies);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -42,6 +43,19 @@ const OverageList = () => {
             return true;
         }
         return user?.permission?.expenses[e];
+    }
+
+    const getSupply = (id) => {
+        const getSelectedType = supplies.filter(data => data.productType === overageTypeData);
+        const getForATank = getSelectedType.filter(data => Object.keys(data.recipientTanks).includes(id));
+    
+        const secondPriority = getForATank.filter(data => data.priority === "1");
+
+        const secondTotals = secondPriority.reduce((accum, current) => {
+            return Number(accum) + Number(current.recipientTanks[id]);
+        }, 0);
+
+        return {second: secondTotals};
     }
 
     const getAllProductData = useCallback(() => {
@@ -179,7 +193,7 @@ const OverageList = () => {
     }
 
     const status = (data) => {
-        const total = Number(data.dipping) - Number(data.currentLevel);
+        const total = Number(data.dipping) - (Number(data.afterSales) + getSupply(data.tankID).second);
         if(total === 0){
             return "None";
 
@@ -304,9 +318,9 @@ const OverageList = () => {
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{data.createdAt}</div>
-                                        <div className='column'>{data.currentLevel}</div>
+                                        <div className='column'>{Number(data.afterSales) + getSupply(data.tankID).second}</div>
                                         <div className='column'>{data.dipping}</div>
-                                        <div className='column'>{Number(data.dipping) - Number(data.currentLevel)}</div>
+                                        <div className='column'>{Number(data.dipping) - (Number(data.afterSales) + getSupply(data.tankID).second)}</div>
                                         <div className='column'>
                                             <span style={status(data) === "Shortage"? short2: short}>{status(data)}</span>
                                         </div>

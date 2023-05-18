@@ -27,7 +27,7 @@ import SalesDisplay from '../Modals/SalesDisplay';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import OveragesAndShortages from '../DailySales/OveragesAndShortages';
-import { overages } from '../../store/actions/dailySales';
+import { overages, supplies } from '../../store/actions/dailySales';
 import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
 import 'react-calendar/dist/Calendar.css';
 
@@ -205,26 +205,26 @@ const Dashboard = (props) => {
                 totalBeforeSales.set(station._id, summary2);
             }
     
-            const totalSales = Array.from(salesDetails.entries());
+            // const totalSales = Array.from(salesDetails.entries());
 
-            let sortedSales = [];
+            // let sortedSales = [];
 
-            if(product === "PMS"){
-                sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-                    return Number(sales1.pms) - Number(sales2.pms);
-                });
+            // if(product === "PMS"){
+            //     sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
+            //         return Number(sales1.pms) - Number(sales2.pms);
+            //     });
 
-            }else if(product === "AGO"){
-                sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-                    return Number(sales1.ago) - Number(sales2.ago);
-                });
+            // }else if(product === "AGO"){
+            //     sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
+            //         return Number(sales1.ago) - Number(sales2.ago);
+            //     });
 
-            }else if(product === "DPK"){
-                sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-                    return Number(sales1.dpk) - Number(sales2.dpk);
-                });
+            // }else if(product === "DPK"){
+            //     sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
+            //         return Number(sales1.dpk) - Number(sales2.dpk);
+            //     });
                 
-            }
+            // }
 
             return {
                 first: {
@@ -336,6 +336,7 @@ const Dashboard = (props) => {
                     collectAndAnalyseData(data[0]);
                     dispatch(overages(data[1].dipping));
                     dispatch(setSales(data[1].sales));
+                    dispatch(supplies(data[1].supply));
 
                     // sales record
                     const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -383,6 +384,7 @@ const Dashboard = (props) => {
                 collectAndAnalyseData(data[0]);
                 dispatch(overages(data[1].dipping));
                 dispatch(setSales(data[1].sales));
+                dispatch(supplies(data[1].supply));
 
                 // sales record
                 const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -436,6 +438,7 @@ const Dashboard = (props) => {
             collectAndAnalyseData(data[0]);
             dispatch(overages(data[1].dipping));
             dispatch(setSales(data[1].sales));
+            dispatch(supplies(data[1].supply));
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -646,6 +649,7 @@ const Dashboard = (props) => {
             collectAndAnalyseData(data[0]);
             dispatch(overages(data[1].dipping));
             dispatch(setSales(data[1].sales));
+            dispatch(supplies(data[1].supply));
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
