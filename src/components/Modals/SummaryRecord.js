@@ -174,7 +174,7 @@ const SummaryRecord = (props) => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const [stop, setStop] = useState(false);
-    console.log(records, "summary")
+    // console.log(records, "summary")
     // console.log(selectedPumps, "Pumps")
     // console.log(selectedTanks, "Tanks")
 

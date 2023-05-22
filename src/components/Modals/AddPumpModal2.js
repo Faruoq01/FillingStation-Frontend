@@ -9,6 +9,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import swal from 'sweetalert';
 import OutletService from '../../services/outletService';
+import { useSelector } from 'react-redux';
 
 const AddPump = (props) => {
 
@@ -16,14 +17,39 @@ const AddPump = (props) => {
     const [productType, setProduct] = useState("PMS");
     const [pumpName, setPumpName] = useState('');
     const [totalizer, setTotalizer] = useState('');
-    const [currentTank, setCurrentTank] = useState(props.allTank[0]);
+    const [currentTank, setCurrentTank] = useState();
+    const [allTanks, setAllTanks] = useState([]);
     const [loadingSpinner, setLoader] = useState(false);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const handleClose = () => props.close(false);
 
     useEffect(()=>{
-        setProduct(props.tabs === 1? "PMS": props.tabs === 2? "AGO": "DPK")
-    }, [props.tabs])
+        if(props.tabs === 0){
+            setProduct('PMS');
+
+        }else if(props.tabs === 1){
+            setProduct('PMS');
+
+        }else if(props.tabs === 2){
+            setProduct('AGO');
+
+        }else if(props.tabs === 3){
+            setProduct('DPK');
+        }
+    }, [props.tabs]);
+
+    useEffect(()=>{
+        setAllTanks([]);
+        const payload = {
+            organisationID: oneStationData.organisation,
+            outletID: oneStationData._id,
+            productType: productType
+        }
+        OutletService.getAllOutletTanks2(payload).then(data => {
+            setAllTanks(data.stations);
+        })
+    }, [oneStationData._id, oneStationData.organisation, productType]);
 
     const handleOpen = () => {
         if(pumpName === "") return swal("Warning!", "Pump name field cannot be empty", "info");
@@ -69,10 +95,6 @@ const AddPump = (props) => {
         setProduct(data);
     }
 
-    const getTanks = () => {
-        return props.allTank.filter(data => data.productType === productType);
-    }
-
     return(
         <Modal
             open={props.open}
@@ -84,7 +106,7 @@ const AddPump = (props) => {
             <div style={{height:'430px'}} className='modalContainer2'>
                 <div className='inner'>
                     <div className='head'>
-                        <div className='head-text'>Add Pump</div>
+                        <div className='head-text'>Add Pumps</div>
                         <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                     </div>
 
@@ -138,7 +160,7 @@ const AddPump = (props) => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={props.allTank.length === 0? 0: defaultState}
+                            value={defaultState}
                             sx={{
                                 width:'100%',
                                 height: '35px', 
@@ -151,12 +173,13 @@ const AddPump = (props) => {
                                 },
                             }}
                         >
+                            <MenuItem style={menu} value={0}>Please select a tank</MenuItem>
                             {
-                                getTanks().length === 0?
-                                <MenuItem style={menu} value={0}>No tanks available</MenuItem>:
-                                getTanks().map((item, index) => {
+                                allTanks.length === 0?
+                                <MenuItem style={menu} value={0}>No available tanks</MenuItem>:
+                                allTanks.map((item, index) => {
                                     return(
-                                        <MenuItem onClick={()=>{selectMenu(index, item)}} style={menu} value={index}>{item.productType} {item.tankName}</MenuItem>
+                                        <MenuItem onClick={()=>{selectMenu(index+1, item)}} style={menu} value={index+1}>{item.productType} {item.tankName}</MenuItem>
                                     )
                                 })
                             }

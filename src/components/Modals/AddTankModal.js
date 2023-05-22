@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useDispatch } from 'react-redux';
 import { 
     closeModal, 
@@ -28,6 +28,21 @@ const AddTank = (props) => {
     const [calibrationDate, setCalibrationDate] = useState('');
     const [currentStock, setCurrentStock] = useState('');
     const [waiting, setWaiting] = useState(false);
+    
+    useEffect(()=>{
+        if(props.tabs === 0){
+            setProductType('PMS');
+
+        }else if(props.tabs === 1){
+            setProductType('PMS');
+
+        }else if(props.tabs === 2){
+            setProductType('AGO');
+
+        }else if(props.tabs === 3){
+            setProductType('DPK');
+        }
+    }, [props.tabs])
 
     const handleAddPump = async() => {
 
@@ -61,7 +76,7 @@ const AddTank = (props) => {
             quantityAdded: "None",
             currentLevel: currentStock,
         } 
-
+        
         await dispatch(createTanks(data, setWaiting));
         await props.refresh();
         setTimeout(()=>{
