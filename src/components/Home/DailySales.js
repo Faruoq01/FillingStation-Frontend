@@ -1140,18 +1140,4 @@ const sales = {
     alignItems:'flex-start',
 }
 
-const cover = {
-    position: 'absolute',
-    width:'100px',
-    height: '20px',
-    background:'#054834',
-    fontSize:'12px',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:'5px',
-    left: '0px',
-    color:'#fff'
-}
-
 export default DailySales;

@@ -36,6 +36,9 @@ import SummaryRecord from '../Modals/SummaryRecord';
 import { changeDate, changeStation } from '../../store/actions/records';
 import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
+import ButtonDatePicker from '../common/CustomDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -192,6 +195,7 @@ const DailyRecordSales = () => {
     const toString = date.toDateString();
     const [month, day, year] = toString.split(' ');
     const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
 
     const dateHandle = useRef();
     const dispatch = useDispatch();
@@ -382,13 +386,22 @@ const DailyRecordSales = () => {
         dispatch(adminOutlet(item));
     }
 
-    const updateDate = (e) => {
+    const updateDate = (newValue) => {
         if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
-        const date = e.target.value.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setCurrentDate(format);
+        setValue(newValue);
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
 
-        dispatch(changeDate(e.target.value));
+        dispatch(changeDate(getDate));
+    }
+
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
     }
 
     const [pages, setPages] = useState([1, 0, 0, 0, 0, 0]);
@@ -445,7 +458,7 @@ const DailyRecordSales = () => {
                 </div>
                 <div>
                     <div style={sales}>
-                        <input onChange={updateDate} ref={dateHandle} style={{
+                        {/* <input onChange={updateDate} ref={dateHandle} style={{
                             width: mediaMatch? '140px': '170px',
                             height:'30px',
                             background:'#054834',
@@ -460,7 +473,18 @@ const DailyRecordSales = () => {
                             border:'none',
                             paddingRight:'10px'
                         }} type="date" />
-                        {isSafari || <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>}
+                        {isSafari || <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>} */}
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Stack spacing={1}>
+                                <ButtonDatePicker
+                                    label={`${
+                                        value == null || "" ? date2 : convertDate(value)
+                                    }`}
+                                    value={value}
+                                    onChange={(newValue) => updateDate(newValue)}
+                                />
+                            </Stack>
+                        </LocalizationProvider>
                     </div>
                 </div>
             </div>

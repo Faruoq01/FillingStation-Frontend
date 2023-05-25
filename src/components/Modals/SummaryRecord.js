@@ -239,7 +239,9 @@ const SummaryRecord = (props) => {
     }, []);
 
     const saveRecordSales = () => {
+        if(currentDate === null) return swal("Warning!", "Please select date!", "info");
         setStop(true);
+        
         const tankFromPayload = {...records};
         const tanksRecords = tankFromPayload['1'];
         props.close(false);

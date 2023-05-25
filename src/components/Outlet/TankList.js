@@ -1,5 +1,5 @@
 
-import { MenuItem, Select, Switch } from '@mui/material';
+import { MenuItem, Select, Stack, Switch } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
@@ -13,8 +13,23 @@ import swal from 'sweetalert';
 import Button from '@mui/material/Button';
 import { ThreeDots } from 'react-loader-spinner';
 import ApproximateDecimal from '../common/approx';
+import DailySalesService from '../../services/DailySales';
+import {currentDateValue, overages } from '../../store/actions/dailySales';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import ButtonDatePicker from '../common/CustomDatePicker';
+import { dateRange } from '../../store/actions/dashboard';
 
 const ListAllTanks = () => {
+
+    const date = new Date();
+    const toString = date.toDateString();
+    const [day, year, month] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
+
+    const moment = require('moment-timezone');
+    const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
 
     const tankList = useSelector(state => state.outletReducer.tankList);
     const user = useSelector(state => state.authReducer.user);
@@ -25,7 +40,6 @@ const ListAllTanks = () => {
     const [list, setList] = useState(null);
     const tankListType = useSelector(state => state.outletReducer.tankListType);
     const [loader, setLoader] = useState(false);
-    console.log(list, 'all')
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -51,8 +65,9 @@ const ListAllTanks = () => {
 
                 const payload = {
                     organisationID: resolveUserID().id,
-                    outletID: "None"
+                    outletID: oneStationData._id
                 }
+
                 OutletService.getAllOutletTanks(payload).then(data => {
                     dispatch(getAllOutletTanks(data.stations));
                     setLoader(false);
@@ -72,7 +87,7 @@ const ListAllTanks = () => {
         }).then(()=>{
             const payload = {
                 organisationID: resolveUserID().id,
-                outletID: "None"
+                outletID: oneStationData === null? "None": oneStationData._id
             }
             OutletService.getAllOutletTanks(payload).then(data => {
                 dispatch(getAllOutletTanks(data.stations));
@@ -88,19 +103,27 @@ const ListAllTanks = () => {
         const AGO = tankList.filter(tank => tank.productType === "AGO");
         const DPK = tankList.filter(tank => tank.productType === "DPK");
 
-        const payload = {
-            PMS: PMS,
-            AGO: AGO,
-            DPK: DPK
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        if((today === currentDate2) || (currentDate2 === "")){
+            const payload = {
+                PMS: PMS,
+                AGO: AGO,
+                DPK: DPK
+            }
+    
+            setList(payload);
+        }else{
+
+            getAndAnalyzeDailySales(oneStationData, false, currentDate2);
         }
 
-        setList(payload);
-
-    }, [tankList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
+        setValue(currentDate2);
         getAllProductData();
-    },[getAllProductData])
+    },[currentDate2, getAllProductData])
 
     useEffect(()=>{
         getTanksLists();
@@ -119,7 +142,9 @@ const ListAllTanks = () => {
             dispatch(getAllOutletTanks(data.stations));
         }).then(()=>{
             setLoader(false);
-        })
+        });
+
+        getAndAnalyzeDailySales(item, false, currentDate2);
     }
 
     const refresh = () => {
@@ -218,10 +243,52 @@ const ListAllTanks = () => {
         });
     }
 
+    const getAndAnalyzeDailySales = (data, status, value) => {
+        const salesPayload = {
+            organisationID: resolveUserID().id,
+            outletID: data === null? "None": data._id,
+            onLoad: status,
+            selectedDate: value
+        }
+
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+            dispatch(overages(data.dailyRecords.dipping));
+            const dipp = data.dailyRecords.dipping;
+
+            const payload = {
+                PMS: dipp.filter(data => data.productType === "PMS"),
+                AGO: dipp.filter(data => data.productType === "AGO"),
+                DPK: dipp.filter(data => data.productType === "DPK"),
+            }
+            
+            setList(payload);
+        });
+    }
+
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
+    }
+
+    const updateDate = (newValue) => {
+        // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
+        setValue(newValue);
+
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
+        dispatch(currentDateValue(newValue));
+        getAndAnalyzeDailySales(oneStationData, false, getDate);
+        dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+    }
+
     return(
         <React.Fragment>
             <div className='listContainer'>
-                <div className='stat'>
+                <div style={{flexDirection: 'row', justifyContent: 'space-between'}} className='stat'>
                     <Select
                         labelId="demo-select-small"
                         id="demo-select-small"
@@ -237,6 +304,17 @@ const ListAllTanks = () => {
                             })  
                         }
                     </Select>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Stack spacing={1}>
+                            <ButtonDatePicker
+                                label={`${
+                                    value == null || "" ? date2 : convertDate(value)
+                                }`}
+                                value={value}
+                                onChange={(newValue) => updateDate(newValue)}
+                            />
+                        </Stack>
+                    </LocalizationProvider>
                 </div>
 
                 <div className='mains'>
@@ -257,6 +335,8 @@ const ListAllTanks = () => {
                         <div className='inner-main'>    
                             {
                                 tankListType === "PMS" &&
+                                (list?.PMS.length === 0?
+                                <div style={cover}>No Tank Record</div>:
                                 list?.PMS?.map((item, index) => {
                                     return(
                                         <div key={index} className='item'>
@@ -294,10 +374,12 @@ const ListAllTanks = () => {
                                             </div>
                                         </div>
                                     )
-                                })
+                                }))
                             }
                             {
                                 tankListType === "AGO" &&
+                                (list?.AGO.length === 0?
+                                <div style={cover}>No Tank Record</div>:
                                 list?.AGO?.map((item, index) => {
                                     return(
                                         <div className='item'>
@@ -335,10 +417,12 @@ const ListAllTanks = () => {
                                         </div>
                                         </div>
                                     )
-                                })
+                                }))
                             }
                             {
                                 tankListType === "DPK" &&
+                                (list?.DPK.length === 0?
+                                <div style={cover}>No Tank Record</div>:
                                 list?.DPK?.map((item, index) => {
                                     return(
                                         <div className='item'>
@@ -376,7 +460,7 @@ const ListAllTanks = () => {
                                         </div>
                                         </div>
                                     )
-                                })
+                                }))
                             }
                         </div>
                         
@@ -404,7 +488,7 @@ const menu = {
 
 const selectStyle2 = {
     width:'200px', 
-    height:'35px', 
+    height:'30px', 
     borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
@@ -413,6 +497,18 @@ const selectStyle2 = {
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
     },
+}
+
+const cover = {
+    width:'100px',
+    height: '20px',
+    fontSize:'12px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop:'5px',
+    color:'green',
+    fontWeight: '700'
 }
 
 export default ListAllTanks;

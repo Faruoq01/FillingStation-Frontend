@@ -15,7 +15,6 @@ import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
-import { isSafari } from "react-device-detect";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ButtonDatePicker from "./CustomDatePicker";
@@ -29,21 +28,6 @@ ChartJS.register(
     Tooltip,
     Legend
 );
-
-const months = {
-    '01' : 'Jan',
-    '02': 'Feb',
-    '03': 'Mar',
-    '04': 'Apr',
-    '05': 'May',
-    '06': 'Jun',
-    '07': 'Jul',
-    '08': 'Aug',
-    '09': 'Sep',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec',
-}
 
 const labels = [
     'Jan',
@@ -471,7 +455,6 @@ const DashboardGraph = (props) => {
     const user = useSelector(state => state.authReducer.user);
 
     const [currentSelection, setCurrentSelection] = useState(0);
-    const dateHandle = useRef();
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -781,10 +764,6 @@ const DashboardGraph = (props) => {
 
         getAllCurrentWeekData();
     }, [getAllCurrentWeekData]);
-
-    const changeSalesDate = () => {
-        dateHandle.current.showPicker();
-    }
 
     const convertDate = (newValue) => {
         const getDate = newValue.format('MM/DD/YYYY');
