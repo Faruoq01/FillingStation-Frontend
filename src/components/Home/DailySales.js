@@ -424,7 +424,7 @@ const DailySales = (props) => {
         
         const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
         const getDate = currentDate2 === ""? today: currentDate2.format('YYYY-MM-DD');
-        console.log(getDate, "working")
+        
         if(today === getDate){
 
             totalPMS = pms.reduce((accum, current) => {
