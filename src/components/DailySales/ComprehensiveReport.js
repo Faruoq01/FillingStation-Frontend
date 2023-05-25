@@ -18,7 +18,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ReturnToTank from "../Comprehensive/ReturnToTank";
 import PaymentDetails from "../Comprehensive/PaymentDetails";
-import { bulkReports, currentDateValue, saveRemarks } from "../../store/actions/dailySales";
+import { bulkReports, currentDateValue, overages, passCummulative, saveRemarks } from "../../store/actions/dailySales";
 import DailySalesService from "../../services/DailySales";
 import { Button, Stack } from "@mui/material";
 import ReportConfirmation from "../Comprehensive/ReportConfirmation";
@@ -28,8 +28,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { dateRange } from '../../store/actions/dashboard';
 
-const ComprehensiveReport = () => {
-
+const ComprehensiveReport = (props) => {
+    const moment = require('moment-timezone');
     const date = new Date();
     const toString = date.toDateString();
     const [day, year, month] = toString.split(' ');
@@ -42,6 +42,8 @@ const ComprehensiveReport = () => {
     const user = useSelector(state => state.authReducer.user);
     const history = useHistory();
     const dispatch = useDispatch();
+    const dipping = useSelector(state => state.dailySalesReducer.overages);
+    const tankList = useSelector(state => state.outletReducer.tankList);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -80,6 +82,10 @@ const ComprehensiveReport = () => {
 
         DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
             dispatch(bulkReports(data.dailyRecords));
+            dispatch(overages(data.dailyRecords.dipping));
+            return data.dailyRecords.dipping;
+        }).then((data)=>{
+            getProductTanks(data);
         });
 
         DailySalesService.getRemarks(salesPayload).then(data => {
@@ -95,6 +101,101 @@ const ComprehensiveReport = () => {
         const finalDate = `${day} ${month} ${year}`;
 
         return finalDate;
+    }
+
+    const getCummulativeVolumePerProduct = (pms, ago, dpk, dipping) => {
+        let totalPMS = 0;
+        let PMSTankCapacity = 0;
+        let totalAGO = 0;
+        let AGOTankCapacity = 0;
+        let totalDPK = 0;
+        let DPKTankCapacity = 0;
+        
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const getDate = currentDate2 === ""? today: currentDate2.format('YYYY-MM-DD');
+        
+        if(today === getDate){
+
+            totalPMS = pms.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel)
+            }, 0);
+
+            PMSTankCapacity = pms.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalAGO = ago.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel)
+            }, 0);
+
+            AGOTankCapacity = ago.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalDPK = dpk.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel)
+            }, 0);
+
+            DPKTankCapacity = dpk.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+        }else{
+
+            const pmsTanks = dipping.filter(data => data.productType === "PMS");
+            const agoTanks = dipping.filter(data => data.productType === "AGO");
+            const dpkTanks = dipping.filter(data => data.productType === "DPK");
+
+            totalPMS = pmsTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.afterSales)
+            }, 0);
+
+            PMSTankCapacity = pmsTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalAGO = agoTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.afterSales)
+            }, 0);
+
+            AGOTankCapacity = agoTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalDPK = dpkTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.afterSales)
+            }, 0);
+
+            DPKTankCapacity = dpkTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+        }
+
+        let PMSDeadStock = 0;
+        let AGODeadStock = 0;
+        let DPKDeadStock = 0;
+
+        const payload = {
+            totalPMS: totalPMS,
+            PMSTankCapacity: PMSTankCapacity === 0? 33000: PMSTankCapacity,
+            PMSDeadStock: PMSDeadStock,
+            totalAGO: totalAGO,
+            AGOTankCapacity: AGOTankCapacity === 0? 33000: AGOTankCapacity,
+            AGODeadStock: AGODeadStock,
+            totalDPK: totalDPK,
+            DPKTankCapacity: DPKTankCapacity === 0? 33000: DPKTankCapacity,
+            DPKDeadStock: DPKDeadStock,
+        }
+        dispatch(passCummulative(payload));
+    }
+
+    const getProductTanks = (dipping) => {
+        const PMSList = tankList.filter(tank => tank.productType === "PMS");
+        const AGOList = tankList.filter(tank => tank.productType === "AGO");
+        const DPKList = tankList.filter(tank => tank.productType === "DPK");
+
+        getCummulativeVolumePerProduct(PMSList, AGOList, DPKList, dipping);
+        
     }
 
     return(
