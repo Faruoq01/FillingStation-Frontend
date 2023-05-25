@@ -35,7 +35,33 @@ const ListAllTanks = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
     const getAllProductData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    organisationID: resolveUserID().id,
+                    outletID: "None"
+                }
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    dispatch(getAllOutletTanks(data.stations));
+                    setLoader(false);
+                });
+
+                return
+            }
+        }
+
         setLoader(true);
         const payload = {
             organisation: resolveUserID().id, 

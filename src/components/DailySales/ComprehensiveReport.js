@@ -1,3 +1,4 @@
+import React from 'react';
 import "../../styles/comprehensive.scss";
 import pump from '../../assets/comp/pump.png';
 import expenses from '../../assets/comp/expenses.png';
@@ -17,40 +18,30 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ReturnToTank from "../Comprehensive/ReturnToTank";
 import PaymentDetails from "../Comprehensive/PaymentDetails";
-import { isSafari } from "react-device-detect";
 import { bulkReports, currentDateValue, saveRemarks } from "../../store/actions/dailySales";
 import DailySalesService from "../../services/DailySales";
-import { useRef } from "react";
-import moment from "moment";
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import ReportConfirmation from "../Comprehensive/ReportConfirmation";
 import AssessmentIcon from '@mui/icons-material/Assessment';
-
-const months = {
-    '01' : 'Jan',
-    '02': 'Feb',
-    '03': 'Mar',
-    '04': 'Apr',
-    '05': 'May',
-    '06': 'Jun',
-    '07': 'Jul',
-    '08': 'Aug',
-    '09': 'Sep',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec',
-}
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import ButtonDatePicker from "../common/CustomDatePicker";
+import { dateRange } from '../../store/actions/dashboard';
 
 const ComprehensiveReport = () => {
 
+    const date = new Date();
+    const toString = date.toDateString();
+    const [day, year, month] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
+
     const [collapsible, setCollapsible] = useState(0);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
     const user = useSelector(state => state.authReducer.user);
     const history = useHistory();
     const dispatch = useDispatch();
-    const dateHandle = useRef();
-
-    const [currentDate, setCurrentDate] = useState("");
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -61,10 +52,7 @@ const ComprehensiveReport = () => {
     }
 
     useEffect(()=>{
-        const todayMoment = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-        const date = todayMoment.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setCurrentDate(format);
+        setValue(currentDate2);
 
         if(oneStationData === null){
             history.push('/home/daily-sales');
@@ -72,13 +60,14 @@ const ComprehensiveReport = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const updateDate = (e) => {
+    const updateDate = (newValue) => {
         // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
-        const date = e.target.value.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setCurrentDate(format);
-        dispatch(currentDateValue(e.target.value));
-        getAndAnalyzeDailySales(oneStationData, false, e.target.value);
+        setValue(newValue);
+
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
+        dispatch(currentDateValue(newValue));
+        getAndAnalyzeDailySales(oneStationData, false, getDate);
+        dispatch(dateRange([new Date(getDate), new Date(getDate)]));
     }
 
     const getAndAnalyzeDailySales = (data, status, value) => {
@@ -98,6 +87,16 @@ const ComprehensiveReport = () => {
         });
     }
 
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
+    }
+
     return(
         <div className="comprehensive_container">
             <div className="reportings">
@@ -105,24 +104,17 @@ const ComprehensiveReport = () => {
                     <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
                         <div>
                             <div style={sales}>
-                                <input onChange={updateDate} ref={dateHandle} style={{
-                                    width: '100px',
-                                    height:'30px',
-                                    background:'#054834',
-                                    fontSize:'12px',
-                                    borderRadius:'0px',
-                                    textTransform:'capitalize',
-                                    display:'flex',
-                                    flexDirection:'row',
-                                    alignItems:'center',
-                                    color:'#fff',
-                                    outline:'none',
-                                    border:'none',
-                                    paddingRight:'10px'
-                                }} type="date" />
-                                {isSafari || 
-                                    <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>
-                                }
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <Stack spacing={1}>
+                                        <ButtonDatePicker
+                                            label={`${
+                                                value == null || "" ? date2 : convertDate(value)
+                                            }`}
+                                            value={value}
+                                            onChange={(newValue) => updateDate(newValue)}
+                                        />
+                                    </Stack>
+                                </LocalizationProvider>
                             </div>
                         </div>
                     </div>

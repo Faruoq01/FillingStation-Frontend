@@ -13,11 +13,24 @@ import { allExpenses, searchExpenses } from '../../store/actions/expense';
 import config from '../../constants';
 import ExpenseReport from '../Reports/ExpenseReport';
 import { ThreeDots } from 'react-loader-spinner';
+import { Stack } from '@mui/material';
+import ButtonDatePicker from '../common/CustomDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { bulkReports, currentDateValue } from '../../store/actions/dailySales';
+import { dateRange } from '../../store/actions/dashboard';
+import DailySalesService from '../../services/DailySales';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 1150px)');
 
 const Expenses = () => {
+
+    const date = new Date();
+    const toString = date.toDateString();
+    const [day, year, month] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
 
     const [setOpen] = React.useState(false);
     const dispatch = useDispatch();
@@ -182,6 +195,41 @@ const Expenses = () => {
         refresh();
     }
 
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
+    }
+
+    const updateDate = (newValue) => {
+        // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
+        setValue(newValue);
+        
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
+        dispatch(currentDateValue(newValue));
+        getAndAnalyzeDailySales(oneStationData, false, getDate);
+        dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+    }
+
+    const getAndAnalyzeDailySales = (data, status, value) => {
+        const salesPayload = {
+            organisationID: resolveUserID().id,
+            outletID: data._id,
+            onLoad: status,
+            selectedDate: value
+        }
+
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+            dispatch(bulkReports(data.dailyRecords));
+            dispatch(allExpenses(data.dailyRecords.expenses));
+        });
+    }
+
+
     return(
         <div data-aos="zoom-in-down" style={{marginTop: mobile.matches? "10px": "auto"}} className='paymentsCaontainer'>
             { prints && <ExpenseReport allOutlets={expense} open={prints} close={setPrints}/>}
@@ -252,8 +300,18 @@ const Expenses = () => {
                                 />
                         </div>
                     </div>
-                    <div style={{width:'120px'}} className='butt'>
-                        
+                    <div style={{width:'auto'}} className='butt'>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Stack spacing={1}>
+                                <ButtonDatePicker
+                                    label={`${
+                                        value == null || "" ? date2 : convertDate(value)
+                                    }`}
+                                    value={value}
+                                    onChange={(newValue) => updateDate(newValue)}
+                                />
+                            </Stack>
+                        </LocalizationProvider>
                     </div>
                 </div>
 
