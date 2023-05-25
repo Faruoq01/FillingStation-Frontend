@@ -41,10 +41,6 @@ const LPOModalEdit = (props) => {
     }
   };
 
-  useEffect(() => {
-    console.log(singleLPO);
-  }, [singleLPO]);
-
   const submit = () => {
     if (companyName === "")
       return swal("Warning!", "Company name field cannot be empty", "info");
@@ -103,11 +99,17 @@ const LPOModalEdit = (props) => {
     //     swal("Success", "LPO created successfully!", "success");
     //   })
     //   .then(() => {
-    //     setLoading(false);
-    //     setLoader(false);
-    //     props.refresh();
-    //     handleClose();
+    // setLoading(false);
+    // setLoader(false);
+    // props.refresh();
+    // handleClose();
     //   });
+    setTimeout(() => {
+      setLoading(false);
+      setLoader(false);
+      props.refresh();
+      handleClose();
+    }, 2000);
   };
 
   const setFormState = (setState) => (e) => {
@@ -138,6 +140,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">Company Name</div>
               <input
+                value={companyName}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -156,6 +159,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">Address</div>
               <input
+                value={address}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -174,6 +178,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">Person of Contact</div>
               <input
+                value={personOfContact}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -192,6 +197,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">Contact phone</div>
               <input
+                value={contactPhone}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -211,6 +217,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">PMS Limit (Litres)</div>
               <input
+                value={PMS}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -230,6 +237,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">AGO Limit (Litres)</div>
               <input
+                value={AGO}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -249,6 +257,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">DPK Limit (Litres)</div>
               <input
+                value={DPK}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -268,6 +277,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">PMS Rate (amount)</div>
               <input
+                value={PMSRate}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -287,6 +297,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">AGO Rate(amount)</div>
               <input
+                value={AGORate}
                 style={{
                   width: "96%",
                   height: "35px",
@@ -306,6 +317,7 @@ const LPOModalEdit = (props) => {
             <div className="inputs">
               <div className="head-text2">DPK Rate (amount)</div>
               <input
+                value={DPKRate}
                 style={{
                   width: "96%",
                   height: "35px",

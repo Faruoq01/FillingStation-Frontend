@@ -782,7 +782,11 @@ const LPO = (props) => {
           </Switch>
         )}
       </div>
-      <LPOModalEdit close={setLpoModalEditStatus} open={lpoModalEditStatus} />
+      <LPOModalEdit
+        refresh={refresh}
+        close={setLpoModalEditStatus}
+        open={lpoModalEditStatus}
+      />
       <LPOEditOptions
         handleEditDetails={handleEditDetailsModal}
         handleEditRate={handleEditRateModal}
