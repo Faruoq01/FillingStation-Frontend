@@ -1,5 +1,9 @@
 const ApproximateDecimal = (data) => {
     const changeToString = String(data);
+    let prefix = "";
+    if(changeToString.charAt(0) === '-'){
+        prefix = '-';
+    }
 
     const findIndex = changeToString.indexOf(".");
     if(findIndex === -1){
@@ -22,7 +26,7 @@ const ApproximateDecimal = (data) => {
             let tenths = Number(removeCharactersRight.charAt(2)) < 5? removeCharactersRight.charAt(1): String(Number(removeCharactersRight.charAt(1)) + 1);
             let newRight = removeCharactersRight.charAt(0).concat("", tenths);
 
-            return addCommaToLeftSide.concat(".", newRight); 
+            return prefix + addCommaToLeftSide.concat(".", newRight); 
         }
     }
 }

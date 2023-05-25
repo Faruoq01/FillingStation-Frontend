@@ -421,9 +421,11 @@ const DailySales = (props) => {
         let AGOTankCapacity = 0;
         let totalDPK = 0;
         let DPKTankCapacity = 0;
-
+        
         const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-        if((today === currentDate2) || (currentDate2 === "")){
+        const getDate = currentDate2 === ""? today: currentDate2.format('YYYY-MM-DD');
+        console.log(getDate, "working")
+        if(today === getDate){
 
             totalPMS = pms.reduce((accum, current) => {
                 return Number(accum) + Number(current.currentLevel)
