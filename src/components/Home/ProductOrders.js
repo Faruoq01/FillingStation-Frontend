@@ -155,8 +155,11 @@ const ProductOrders = () => {
   };
 
   const handleDelete = () => {
-    if (!singleProductOrder)
+    setDeleteLoad(!deleteLoad);
+    if (!singleProductOrder) {
+      setDeleteLoad(!deleteLoad);
       return swal("Warning!", "You can't delete this product order", "info");
+    }
     setTimeout(() => {
       refresh();
       setDeleteLoad(!deleteLoad);
