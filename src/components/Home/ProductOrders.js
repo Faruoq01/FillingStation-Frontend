@@ -163,6 +163,7 @@ const ProductOrders = () => {
     setTimeout(() => {
       refresh();
       setDeleteLoad(!deleteLoad);
+      setConfirmDeleteModalStatus(!confirmDeleteModalStatus);
     }, 2000);
   };
   return (
