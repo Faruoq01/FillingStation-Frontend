@@ -21,6 +21,7 @@ import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
+import IncomingOrderEditModal from "../Modals/IncomingOrderEditModal";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -63,8 +64,8 @@ const IncomingOrder = () => {
   const [open, setOpen] = useState(false);
   const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
     useState(false);
-  const { singleIncomingOrder } = useSelector(
-    (state) => state?.incomingOrderReducer
+  const singleIncomingOrder = useSelector(
+    (state) => state?.incomingOrderReducer.singleIncomingOrder
   );
 
   const openCreateModal = () => {
@@ -235,6 +236,8 @@ const IncomingOrder = () => {
       refresh();
     }, 8000);
   };
+  const [incomingOrderEditModal, setIncomingOrderEditModal] = useState(false);
+
   return (
     <Fragment>
       <div data-aos="zoom-in-down" className="paymentsCaontainer">
@@ -561,7 +564,8 @@ const IncomingOrder = () => {
                                   backgroundColor: "tomato",
                                 }}
                                 onClick={() => {
-                                  // Handle Edit
+                                  dispatch(singleIncomingOrderRecord(data));
+                                  setIncomingOrderEditModal(true);
                                 }}
                               />
                               <DeleteIcon
@@ -622,6 +626,10 @@ const IncomingOrder = () => {
         handleDelete={handleDelete}
         open={confirmDeleteModalStatus}
         close={setConfirmDeleteModalStatus}
+      />
+      <IncomingOrderEditModal
+        open={incomingOrderEditModal}
+        close={setIncomingOrderEditModal}
       />
     </Fragment>
   );

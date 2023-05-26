@@ -25,6 +25,7 @@ import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
+import ProductOrderEditModal from "../Modals/ProductOrderEditModal";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -166,6 +167,7 @@ const ProductOrders = () => {
       refresh();
     }, 8000);
   };
+  const [productOrderEditModal, setProductOrderEditModal] = useState(false);
   return (
     <Fragment>
       <div data-aos="zoom-in-down" className="paymentsCaontainer">
@@ -441,7 +443,8 @@ const ProductOrders = () => {
                                   backgroundColor: "tomato",
                                 }}
                                 onClick={() => {
-                                  // Handle Edit
+                                  dispatch(singleProductOrderRecord(data));
+                                  setProductOrderEditModal(true);
                                 }}
                               />
                               <DeleteIcon
@@ -512,6 +515,10 @@ const ProductOrders = () => {
         open={confirmDeleteModalStatus}
         close={setConfirmDeleteModalStatus}
       />
+      <ProductOrderEditModal
+        open={productOrderEditModal}
+        close={setProductOrderEditModal}
+      />
     </Fragment>
   );
 };
@@ -554,7 +561,6 @@ const styles = {
     padding: 2,
     backgroundColor: "#06805b",
     borderRadius: "100%",
-    cursor: "pointer",
   },
 };
 
