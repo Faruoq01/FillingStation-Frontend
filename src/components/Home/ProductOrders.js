@@ -42,7 +42,9 @@ const ProductOrders = () => {
   const oneStationData = useSelector(
     (state) => state.outletReducer.adminOutlet
   );
-  const { singleProductOrder } = (state) => state?.productOrderReducer;
+  const { singleProductOrder } = useSelector(
+    (state) => state?.productOrderReducer
+  );
   const [deleteLoad, setDeleteLoad] = useState(false);
 
   const [entries, setEntries] = useState(10);
@@ -153,12 +155,13 @@ const ProductOrders = () => {
   };
 
   const handleDelete = () => {
-    if (!singleProductOrder)
-      return swal("Warning!", "You can't delete this product order", "info");
-    setTimeout(() => {
-      refresh();
-      setDeleteLoad(!deleteLoad);
-    }, 2000);
+    console.log(singleProductOrder);
+    // if (!singleProductOrder)
+    //   return swal("Warning!", "You can't delete this product order", "info");
+    // setTimeout(() => {
+    //   refresh();
+    //   setDeleteLoad(!deleteLoad);
+    // }, 2000);
   };
   return (
     <Fragment>
