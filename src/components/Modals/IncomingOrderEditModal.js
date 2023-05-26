@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import close from "../../assets/close.png";
 import Button from "@mui/material/Button";
@@ -60,7 +60,7 @@ const IncomingOrderEditModal = (props) => {
   const [driverName, setDriverName] = useState(
     singleIncomingOrder.driverName ?? ""
   );
-  const [phoneNo, setPhoneNumber] = useState(singleIncomingOrder.phoneNo ?? "");
+  const [phoneNo, setPhoneNumber] = useState(singleIncomingOrder.phoneNo);
   const [val, setVal] = useState(1);
   const [stationSelect, setStationSelect] = useState(false);
   const [selected, setSelected] = useState([]);
@@ -236,6 +236,10 @@ const IncomingOrderEditModal = (props) => {
       return search;
     }
   };
+
+  useEffect(() => {
+    console.log();
+  }, []);
 
   return (
     <Modal
