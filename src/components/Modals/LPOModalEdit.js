@@ -15,7 +15,7 @@ const LPOModalEdit = (props) => {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.authReducer.user);
 
-  const [companyName, setCompanyName] = useState(singleLPO.companyName ?? "");
+  const [companyName, setCompanyName] = useState(singleLPO.companyName);
   const [address, setAddress] = useState(singleLPO?.address ?? "");
   const [personOfContact, setPersonOfContact] = useState(
     singleLPO?.personOfContact ?? ""
@@ -40,6 +40,12 @@ const LPOModalEdit = (props) => {
       return { id: user.organisationID };
     }
   };
+
+  useEffect(() => {
+    console.log("==============peret====================");
+    console.log(singleLPO.DPKRate);
+    console.log("==================================");
+  }, [singleLPO]);
 
   const submit = () => {
     if (companyName === "")
