@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { ThreeDots } from "react-loader-spinner";
 
 const ConfirmDeleteModal = (props) => {
   const handleClose = () => props.close(false);
@@ -24,6 +25,18 @@ const ConfirmDeleteModal = (props) => {
           >
             {props.deleteStatus ? (
               <>
+                <div style={styles().load}>
+                  <ThreeDots
+                    height="60"
+                    width="50"
+                    radius="9"
+                    color="#ffffff"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClassName=""
+                    visible={true}
+                  />
+                </div>
                 {/*
             spainner gose here
             
@@ -85,6 +98,13 @@ const styles = (_mobile) => ({
     fontFamily: "poppin",
     fontSize: 18,
     color: "#ffffff",
+  },
+  load: {
+    width: "100%",
+    height: "30px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

@@ -148,12 +148,13 @@ const ProductOrders = () => {
     history.push("/home/history");
   };
   const { singleProductOrder } = (state) => state?.productOrderReducer;
-  const [deleteLoad, setDeleteLoad] = useState(false);
+  const [deleteLoad, setDeleteLoad] = useState(true);
 
   const handleDelete = () => {
     if (!singleProductOrder)
       return swal("Warning!", "You can't delete this product order", "info");
     setTimeout(() => {
+      refresh();
       setDeleteLoad(!deleteLoad);
     }, 2000);
   };
