@@ -23,8 +23,8 @@ const LPOModalEdit = (props) => {
   const [PMS, setPMS] = useState(singleLPO?.PMS ?? "");
   const [AGO, setAGO] = useState(singleLPO?.AGO ?? "");
   const [DPK, setDPK] = useState(singleLPO?.DPK ?? "");
-  const [PMSRate, setPMSRate] = useState(singleLPO?.PMSRate ?? "");
-  const [AGORate, setAGORate] = useState(singleLPO?.AGORate ?? "");
+  const [PMSRate, setPMSRate] = useState(singleLPO?.PMSRate);
+  const [AGORate, setAGORate] = useState(singleLPO?.AGORate);
   const [DPKRate, setDPKRate] = useState(singleLPO?.DPKRate ?? "");
   const [contactPhone, setContactPhone] = useState(
     singleLPO?.contactPhone ?? ""
