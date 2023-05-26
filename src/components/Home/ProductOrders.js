@@ -32,7 +32,7 @@ const mobile = window.matchMedia("(max-width: 600px)");
 const ProductOrders = () => {
   const [open, setOpen] = React.useState(false);
   const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
-    useState(true);
+    useState(false);
   const [open2, setOpen2] = React.useState({ id: "", trigger: false });
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
@@ -42,7 +42,11 @@ const ProductOrders = () => {
   const oneStationData = useSelector(
     (state) => state.outletReducer.adminOutlet
   );
+  const { singleProductOrder } = (state) => state?.productOrderReducer;
+  const [deleteLoad, setDeleteLoad] = useState(false);
+
   const [entries, setEntries] = useState(10);
+
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
   const [total, setTotal] = useState(0);
@@ -147,8 +151,6 @@ const ProductOrders = () => {
   const goToHistory = () => {
     history.push("/home/history");
   };
-  const { singleProductOrder } = (state) => state?.productOrderReducer;
-  const [deleteLoad, setDeleteLoad] = useState(true);
 
   const handleDelete = () => {
     if (!singleProductOrder)
