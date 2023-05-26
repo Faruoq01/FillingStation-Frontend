@@ -93,6 +93,7 @@ const styles = (_mobile) => ({
   button: {
     width: "45%",
     height: 40,
+    cursor: "pointer",
     border: "none",
     borderRadius: 20,
     fontFamily: "poppin",
