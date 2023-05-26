@@ -791,7 +791,6 @@ const styles = {
     padding: 2,
     backgroundColor: "#06805b",
     borderRadius: "100%",
-    cursor: "pointer",
   },
 };
 
