@@ -155,13 +155,12 @@ const ProductOrders = () => {
   };
 
   const handleDelete = () => {
-    console.log(singleProductOrder);
-    // if (!singleProductOrder)
-    //   return swal("Warning!", "You can't delete this product order", "info");
-    // setTimeout(() => {
-    //   refresh();
-    //   setDeleteLoad(!deleteLoad);
-    // }, 2000);
+    if (!singleProductOrder)
+      return swal("Warning!", "You can't delete this product order", "info");
+    setTimeout(() => {
+      refresh();
+      setDeleteLoad(!deleteLoad);
+    }, 2000);
   };
   return (
     <Fragment>
