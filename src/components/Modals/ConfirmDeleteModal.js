@@ -16,7 +16,7 @@ const ConfirmDeleteModal = (props) => {
       sx={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}
     >
       <div style={styles(mobile).container}>
-        <span style={styles(mobile).title}>WISH TO CONTINUE?</span>
+        <span style={styles(mobile).title}>Wish to Continue?</span>
         <div style={styles(mobile).buttonWrap}>
           <button
             disabled={props.deleteStatus}
