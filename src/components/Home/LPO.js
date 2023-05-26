@@ -43,7 +43,7 @@ const LPO = (props) => {
   const [prints, setPrints] = useState(false);
   const [priceModal, setPriceModal] = useState(false);
   const [editProductModal, setEditProductModal] = useState(false);
-  const [editOptionModal, setEditOptionsModal] = useState(true);
+  const [editOptionModal, setEditOptionsModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const resolveUserID = () => {
