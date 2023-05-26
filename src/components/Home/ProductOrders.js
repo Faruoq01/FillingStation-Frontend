@@ -155,16 +155,16 @@ const ProductOrders = () => {
   };
 
   const handleDelete = () => {
-    setDeleteLoad(!deleteLoad);
+    setDeleteLoad(true);
     if (!singleProductOrder) {
-      setDeleteLoad(!deleteLoad);
+      setDeleteLoad(false);
       return swal("Warning!", "You can't delete this product order", "info");
     }
     setTimeout(() => {
+      setDeleteLoad(false);
+      setConfirmDeleteModalStatus(false);
       refresh();
-      setDeleteLoad(!deleteLoad);
-      setConfirmDeleteModalStatus(!confirmDeleteModalStatus);
-    }, 2000);
+    }, 8000);
   };
   return (
     <Fragment>
