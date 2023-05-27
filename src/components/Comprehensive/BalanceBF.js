@@ -17,7 +17,7 @@ const InitialBalance = () => {
             if(current.shortage === "None"){
                 return 0;
             }else{
-                return Number(accum) + Number(current.quantity);
+                return Number(accum) + Number(current.shortage);
             }
         }, 0);
 
@@ -25,7 +25,7 @@ const InitialBalance = () => {
             if(current.overage === "None"){
                 return 0;
             }else{
-                return Number(accum) + Number(current.quantity);
+                return Number(accum) + Number(current.overage);
             }
         }, 0);
 
