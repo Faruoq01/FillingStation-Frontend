@@ -41,7 +41,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
   const [description, setDescription] = useState(
     `${singleRegulatoryDetails.description}`
   );
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(`${singleRegulatoryDetails.amount}`);
   const [contact, setContact] = useState(
     `${singleRegulatoryDetails.contactPerson}`
   );
