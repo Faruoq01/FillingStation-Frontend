@@ -242,11 +242,6 @@ const Regulatory = () => {
       refresh();
     }, 8000);
   };
-  useEffect(() => {
-    console.log("=========Reg================");
-    console.log(singleRegulatoryDetails);
-    console.log("=========rg================");
-  }, [singleRegulatoryDetails]);
 
   return (
     <>

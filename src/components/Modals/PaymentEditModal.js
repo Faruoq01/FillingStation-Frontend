@@ -220,6 +220,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
             <div className="inputs">
               <div className="head-text2">Organisation Name</div>
               <OutlinedInput
+                value={organisation}
                 sx={{
                   width: "100%",
                   height: "35px",
@@ -240,6 +241,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
             <div className="inputs">
               <div className="head-text2">Description</div>
               <OutlinedInput
+                value={description}
                 sx={{
                   width: "100%",
                   marginTop: "5px",
@@ -261,6 +263,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
             <div className="inputs">
               <div className="head-text2">Amount</div>
               <OutlinedInput
+                value={amount}
                 sx={{
                   width: "100%",
                   height: "35px",
@@ -281,6 +284,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
             <div className="inputs">
               <div className="head-text2">Contact person</div>
               <OutlinedInput
+                value={contact}
                 sx={{
                   width: "100%",
                   height: "35px",
@@ -300,6 +304,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
             <div className="inputs">
               <div className="head-text2">Contact phone</div>
               <OutlinedInput
+                value={phone}
                 sx={{
                   width: "100%",
                   height: "35px",
