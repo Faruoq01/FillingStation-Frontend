@@ -22,21 +22,21 @@ const ProductOrderEditModal = (props) => {
   const [dateCreated, setDateCreated] = useState(
     singleProductOrder.dateCreated
   );
-  const [depot, setDepot] = useState(singleProductOrder.depot ?? "");
+  const [depot, setDepot] = useState(singleProductOrder.depot);
   const [depotAddress, setDepotAddress] = useState(
-    singleProductOrder.depotAddress ?? ""
+    singleProductOrder.depotAddress
   );
-  const [quantity, setQuantity] = useState(singleProductOrder.quantity ?? "");
+  const [quantity, setQuantity] = useState(singleProductOrder.quantity);
   const [uploadFile, setUpload] = useState(
-    singleProductOrder.attachCertificate ?? ""
+    singleProductOrder.attachCertificate
   );
   const [loading2, setLoading2] = useState(0);
   const [defaults, setDefaults] = useState(10);
   const [productType, setProductType] = useState(
-    singleProductOrder.productType ?? ""
+    singleProductOrder.productType
   );
   const [costPerLitre, setCostPerLitre] = useState(
-    singleProductOrder.costPerLitre ?? ""
+    singleProductOrder.costPerLitre
   );
 
   const attach = useRef();
