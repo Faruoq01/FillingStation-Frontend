@@ -29,7 +29,7 @@ const IncomingOrderEditModal = (props) => {
   const dispatch = useDispatch();
   const [productType, setProductType] = useState("available");
   const [quantityOrdered, setQuantityOrdered] = useState(
-    singleIncomingOrder.quantityOrdered ?? ""
+    singleIncomingOrder.quantityOrdered
   );
   const [previousBalance, setPreviousBalance] = useState("");
   const [quantityLoaded, setQuantityLoaded] = useState("");
