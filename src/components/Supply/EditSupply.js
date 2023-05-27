@@ -28,6 +28,9 @@ const EditSupply = (props) => {
   const oneStationData = useSelector(
     (state) => state.outletReducer.adminOutlet
   );
+  const singleSupplyDetails = useSelector(
+    (state) => state.supplyReducer.singleSupply
+  );
   const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
   const [supplyList, setSupplyList] = useState([]);
   const user = useSelector((state) => state.authReducer.user);
@@ -36,11 +39,15 @@ const EditSupply = (props) => {
   const [transporter, setTransporter] = useState("");
   const [waybillNo, setWaybillNo] = useState("Select waybill no");
   const [truckNo, setTruckNo] = useState("");
-  const [productSupply, setProductSupply] = useState("");
-  const [quantityLoaded, setQuantityLoaded] = useState("");
-  const [overage, setOverage] = useState("");
-  const [shortage, setShortage] = useState("");
-  const [supplyDate, setSupplyDate] = useState("");
+  const [productSupply, setProductSupply] = useState(
+    singleSupplyDetails.productSupply
+  );
+  const [quantityLoaded, setQuantityLoaded] = useState(
+    singleSupplyDetails.quantityLoaded
+  );
+  const [overage, setOverage] = useState(singleSupplyDetails.overage);
+  const [shortage, setShortage] = useState(singleSupplyDetails.shortage);
+  const [supplyDate, setSupplyDate] = useState(singleSupplyDetails.supplyDate);
   const [stop, setStop] = useState(false);
 
   const selectedIncomingOrder = (data) => {
