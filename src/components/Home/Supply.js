@@ -292,8 +292,8 @@ const Supply = (props) => {
     setTimeout(() => {
       setDeleteLoad(false);
       setConfirmDeleteModalStatus(false);
+      refresh();
     }, 8000);
-    refresh();
   };
 
   return (
