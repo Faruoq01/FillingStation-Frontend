@@ -200,6 +200,17 @@ const DailySalesService = {
         });
     },
 
+    getDippingList: (data) => {
+        return APIs.post('/daily-sales/dipping-list', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
 }
 
 export default DailySalesService;

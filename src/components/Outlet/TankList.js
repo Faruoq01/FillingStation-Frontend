@@ -32,6 +32,7 @@ const ListAllTanks = () => {
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
 
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const {balances} = useSelector(state => state.dailySalesReducer.bulkReports);
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);

@@ -480,6 +480,20 @@ const DailySales = (props) => {
             DPKTankCapacity = dpkTanks.reduce((accum, current) => {
                 return Number(accum) + Number(current.tankCapacity)
             }, 0);
+
+            if(totalPMS === 0 && balances.pms !== 0){
+                totalPMS = balances?.pms?.balanceCF;
+
+            }
+            
+            if(totalAGO === 0 && balances.ago !== 0){
+                totalAGO = balances?.ago?.balanceCF;
+
+            }
+            
+            if(totalDPK === 0 && balances.dpk !== 0){
+                totalDPK = balances?.dpk?.balanceCF
+            }
         }
 
         let PMSDeadStock = 0;
