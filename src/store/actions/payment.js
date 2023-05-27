@@ -21,6 +21,7 @@ export const reciepts = (params) => (dispatch) => {
 export const searchPayment = (params) => (dispatch) => {
   dispatch({ type: SEARCH_PAYMENT, payload: params });
 };
-export const singlePayment = (params) => (dispatch) => {
+
+export const singlePaymentAction = (params) => (dispatch) => {
   dispatch({ type: SINGLE_PAYMENT, payload: params });
 };

@@ -10,11 +10,12 @@ import { adminOutlet, getAllStations } from "../../store/actions/outlet";
 import OutletService from "../../services/outletService";
 import PaymentService from "../../services/paymentService";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
+import PaymentEditModal from "../Modals/PaymentEditModal";
 
 import {
   createPayment,
   searchPayment,
-  singlePayment,
+  singlePaymentAction,
 } from "../../store/actions/payment";
 import ViewPayment from "../Modals/ViewPayment";
 import RegulatoryReports from "../Reports/RegulatoryReports";
@@ -52,6 +53,7 @@ const Regulatory = () => {
   const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
     useState(false);
   const history = useHistory();
+  const [paymentEditModalStatus, setPaymentEditModalStatus] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -240,6 +242,11 @@ const Regulatory = () => {
       refresh();
     }, 8000);
   };
+  useEffect(() => {
+    console.log("=========Reg================");
+    console.log(singleRegulatoryDetails);
+    console.log("=========rg================");
+  }, [singleRegulatoryDetails]);
 
   return (
     <>
@@ -651,12 +658,13 @@ const Regulatory = () => {
                                   backgroundColor: "tomato",
                                 }}
                                 onClick={() => {
-                                  // Handle Edit
+                                  dispatch(singlePaymentAction(item));
+                                  setPaymentEditModalStatus(true);
                                 }}
                               />
                               <DeleteIcon
                                 onClick={() => {
-                                  dispatch(singlePayment(item));
+                                  dispatch(singlePaymentAction(item));
                                   setConfirmDeleteModalStatus(
                                     !confirmDeleteModalStatus
                                   );
@@ -712,6 +720,11 @@ const Regulatory = () => {
         handleDelete={handleDelete}
         open={confirmDeleteModalStatus}
         close={setConfirmDeleteModalStatus}
+      />
+      <PaymentEditModal
+        singleRegulatoryDetails={singleRegulatoryDetails}
+        open={paymentEditModalStatus}
+        close={setPaymentEditModalStatus}
       />
     </>
   );

@@ -57,7 +57,7 @@ const paymentReducer = (state = initialState, action) => {
     case SINGLE_PAYMENT: {
       return {
         ...state,
-        singlePaymenT: payload,
+        singlePayment: payload,
       };
     }
 

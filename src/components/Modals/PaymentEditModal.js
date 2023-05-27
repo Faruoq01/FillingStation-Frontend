@@ -16,7 +16,16 @@ import { certificate, reciepts } from "../../store/actions/payment";
 import config from "../../constants";
 import ReactCamera from "./ReactCamera";
 
-const PaymentEditModal = (props) => {
+const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
+  //  formData.append("organisationalName", organisation);
+  //  formData.append("description", description);
+  //  formData.append("amount", amount);
+  //  formData.append("contactPerson", contact);
+  //  formData.append("phone", phone);
+  //  formData.append("attachCertificate", cert);
+  //  formData.append("paymentReceipt", reciept);
+  //  formData.append("outletID", oneStationData?._id);
+  //  formData.append("organizationID", oneStationData?.organisation);
   const [loading, setLoading] = useState(false);
   const cert = useSelector((state) => state.paymentReducer.certificate);
   const reciept = useSelector((state) => state.paymentReducer.receipt);
@@ -25,13 +34,20 @@ const PaymentEditModal = (props) => {
   );
   const dispatch = useDispatch();
 
-  const [organisation, setOrganisation] = useState("");
-  const [description, setDescription] = useState("");
+  const [organisation, setOrganisation] = useState(
+    `${singleRegulatoryDetails.organisationalName}`
+  );
+
+  const [description, setDescription] = useState(
+    `${singleRegulatoryDetails.description}`
+  );
   const [amount, setAmount] = useState("");
-  const [contact, setContact] = useState("");
+  const [contact, setContact] = useState(
+    `${singleRegulatoryDetails.contactPerson}`
+  );
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(`${singleRegulatoryDetails.phone}`);
 
   const attach = useRef();
   const attach2 = useRef();
@@ -191,7 +207,7 @@ const PaymentEditModal = (props) => {
         />
         <div className="inner">
           <div className="head">
-            <div className="head-text">Register Payment</div>
+            <div className="head-text">Edit Payment</div>
             <img
               onClick={handleClose}
               style={{ width: "18px", height: "18px" }}
