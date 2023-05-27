@@ -80,6 +80,15 @@ const Supply = (props) => {
     history.push("/home/supply/create");
   };
 
+  const handleNavigateToEditSupply = () => {
+    if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
+
+    if (oneStationData === null) {
+      return swal("Warning!", "Please select a station to proceed", "info");
+    }
+    history.push("/home/supply/edit");
+  };
+
   const getAllSupplyData = useCallback(() => {
     if (oneStationData !== null) {
       if (getPerm("0") || getPerm("1") || user.userType === "superAdmin") {
@@ -635,7 +644,8 @@ const Supply = (props) => {
                                     backgroundColor: "tomato",
                                   }}
                                   onClick={() => {
-                                    // Handle Edit
+                                    dispatch(singleSupply(data));
+                                    handleNavigateToEditSupply();
                                   }}
                                 />
                                 <DeleteIcon
