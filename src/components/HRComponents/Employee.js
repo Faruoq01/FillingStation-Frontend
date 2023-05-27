@@ -23,11 +23,13 @@ import ManagerModal from "../Modals/ManagerModal";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import EditStaffModal from "../Modals/EditStaffModal";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const Employee = () => {
+  const [editStaffModalStatus, setEditStaffModalStatus] = useState(false);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [defaultState, setDefault] = useState(0);
@@ -687,7 +689,8 @@ const Employee = () => {
                                   backgroundColor: "tomato",
                                 }}
                                 onClick={() => {
-                                  // Handle Edit
+                                  dispatch(singleEmployee(item));
+                                  setEditStaffModalStatus(true);
                                 }}
                               />
                               <DeleteIcon
@@ -748,6 +751,11 @@ const Employee = () => {
         handleDelete={handleDelete}
         open={confirmDeleteModalStatus}
         close={setConfirmDeleteModalStatus}
+      />
+      <EditStaffModal
+        allOutlets={allOutlets}
+        open={editStaffModalStatus}
+        close={setEditStaffModalStatus}
       />
     </>
   );
