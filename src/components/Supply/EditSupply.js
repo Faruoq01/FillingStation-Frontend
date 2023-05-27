@@ -255,6 +255,7 @@ const EditSupply = (props) => {
   };
 
   const saveSupply = () => {
+    return;
     if (supplyList.length !== 0) {
       setStop(true);
       const payload = {
