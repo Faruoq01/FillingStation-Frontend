@@ -255,7 +255,6 @@ const EditSupply = (props) => {
   };
 
   const saveSupply = () => {
-    return;
     if (supplyList.length !== 0) {
       setStop(true);
       const payload = {
@@ -286,7 +285,7 @@ const EditSupply = (props) => {
   };
 
   return (
-    <div className="inner-body">
+    <div className="inner-body" style={{ width: 1000 }}>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={stop}

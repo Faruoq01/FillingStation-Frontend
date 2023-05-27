@@ -28,6 +28,7 @@ import IncomingService from "../../services/IncomingService";
 import { createIncomingOrder } from "../../store/actions/incomingOrder";
 import { ThreeDots } from "react-loader-spinner";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
+import EditSupply from "../Supply/EditSupply";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -707,6 +708,15 @@ const Supply = (props) => {
             <Switch>
               <Route path="/home/supply/create">
                 <CreateSupply refresh={refresh} history={props.history} />
+              </Route>
+            </Switch>
+          </div>
+        )}
+        {props.activeRoute === "/home/supply/edit" && (
+          <div style={{ width: "100%", marginTop: "30px" }}>
+            <Switch>
+              <Route path="/home/supply/edit">
+                <EditSupply refresh={refresh} history={props.history} />
               </Route>
             </Switch>
           </div>
