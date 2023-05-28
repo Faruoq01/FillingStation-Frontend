@@ -248,7 +248,7 @@ const ListAllTanks = () => {
         });
     }
 
-    const getAndAnalyzeDailySales = (data, status, value) => {
+    const getAndAnalyzeDailySales = async(data, status, value) => {
         setLoader(true);
         const salesPayload = {
             organisationID: resolveUserID().id,
@@ -257,7 +257,7 @@ const ListAllTanks = () => {
             selectedDate: value
         }
 
-        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(async data => {
             dispatch(overages(data.dailyRecords.dipping));
             const dipp = data.dailyRecords.dipping;
 
@@ -285,7 +285,7 @@ const ListAllTanks = () => {
                     selectedDate: newDate
                 }
 
-                DailySalesService.getDailySalesDataAndAnalyze(load).then(data => {
+                await DailySalesService.getDailySalesDataAndAnalyze(load).then(data => {
                     dispatch(overages(data.dailyRecords.dipping));
                     const dipp = data.dailyRecords.dipping;
 
