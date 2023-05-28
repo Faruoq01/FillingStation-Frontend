@@ -483,16 +483,17 @@ const DailySales = (props) => {
 
             if(totalPMS === 0 && balances.pms !== 0){
                 totalPMS = balances?.pms?.balanceCF;
-
+                PMSTankCapacity = 33000
             }
             
             if(totalAGO === 0 && balances.ago !== 0){
                 totalAGO = balances?.ago?.balanceCF;
-
+                AGOTankCapacity = 33000
             }
             
             if(totalDPK === 0 && balances.dpk !== 0){
                 totalDPK = balances?.dpk?.balanceCF
+                DPKTankCapacity = 33000
             }
         }
 

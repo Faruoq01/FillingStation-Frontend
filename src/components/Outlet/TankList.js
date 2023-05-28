@@ -38,7 +38,11 @@ const ListAllTanks = () => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [defaultState, setDefault] = useState(0);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
-    const [list, setList] = useState(null);
+    const [list, setList] = useState({
+        PMS: [],
+        AGO: [],
+        DPK: []
+    });
     const tankListType = useSelector(state => state.outletReducer.tankListType);
     const [loader, setLoader] = useState(false);
 
@@ -245,6 +249,7 @@ const ListAllTanks = () => {
     }
 
     const getAndAnalyzeDailySales = (data, status, value) => {
+        setLoader(true);
         const salesPayload = {
             organisationID: resolveUserID().id,
             outletID: data === null? "None": data._id,
@@ -256,13 +261,56 @@ const ListAllTanks = () => {
             dispatch(overages(data.dailyRecords.dipping));
             const dipp = data.dailyRecords.dipping;
 
-            const payload = {
-                PMS: dipp.filter(data => data.productType === "PMS"),
-                AGO: dipp.filter(data => data.productType === "AGO"),
-                DPK: dipp.filter(data => data.productType === "DPK"),
+            let newDate;
+
+            if(dipp.length === 0){
+                if(balances.pms !== 0){
+                    newDate = balances?.pms?.createdAt;
+    
+                }
+                
+                if(balances.ago !== 0){
+                    newDate = balances?.ago?.createdAt;
+    
+                }
+                
+                if(balances.dpk !== 0){
+                    newDate = balances?.dpk?.createdAt
+                }
+
+                const load = {
+                    organisationID: resolveUserID().id,
+                    outletID: oneStationData === null? "None": oneStationData._id,
+                    onLoad: status,
+                    selectedDate: newDate
+                }
+
+                DailySalesService.getDailySalesDataAndAnalyze(load).then(data => {
+                    dispatch(overages(data.dailyRecords.dipping));
+                    const dipp = data.dailyRecords.dipping;
+
+                    const payload = {
+                        PMS: dipp.filter(data => data.productType === "PMS"),
+                        AGO: dipp.filter(data => data.productType === "AGO"),
+                        DPK: dipp.filter(data => data.productType === "DPK"),
+                    }
+                    
+                    setList(payload);
+                }).then(()=>{
+                    setLoader(false);
+                });
+
+            }else{
+
+                const payload = {
+                    PMS: dipp.filter(data => data.productType === "PMS"),
+                    AGO: dipp.filter(data => data.productType === "AGO"),
+                    DPK: dipp.filter(data => data.productType === "DPK"),
+                }
+                
+                setList(payload);
+                setLoader(false);
             }
-            
-            setList(payload);
         });
     }
 
