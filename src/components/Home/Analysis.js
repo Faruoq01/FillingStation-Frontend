@@ -276,15 +276,15 @@ const Analysis = (props) => {
         ##################################################*/
 
         const pmsSales = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
-            return Number(accum) + Number(current.sales)*(Number(current.PMSSellingPrice) - Number(current.PMSCostPrice));
+            return Number(accum) + Number(current.sales)*(Number(current.PMSSellingPrice) - Number(current.sales)*Number(current.PMSCostPrice));
         }, 0);
 
         const agoSales = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
-            return Number(accum) + Number(current.sales)*(Number(current.AGOSellingPrice) - Number(current.AGOCostPrice));
+            return Number(accum) + Number(current.sales)*(Number(current.AGOSellingPrice) - Number(current.sales)*Number(current.AGOCostPrice));
         }, 0);
 
         const dpkSales = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
-            return Number(accum) + Number(current.sales)*(Number(current.DPKSellingPrice) - Number(current.DPKCostPrice));
+            return Number(accum) + Number(current.sales)*(Number(current.DPKSellingPrice) - Number(current.sales)*Number(current.DPKCostPrice));
         }, 0);
 
         /*#################################################
@@ -293,6 +293,7 @@ const Analysis = (props) => {
         
         const pmsDipping = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
@@ -301,18 +302,22 @@ const Analysis = (props) => {
 
         const agoDipping = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.AGOSellingPrice);
+            
         }, 0);
 
         const dpkDipping = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
             return Number(accum) + Number(varience)*Number(current.DPKSellingPrice);
+            
         }, 0);
 
         const totalSales = pmsSales + agoSales + dpkSales;
@@ -328,6 +333,7 @@ const Analysis = (props) => {
 
         const pmsVarSales = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
@@ -336,6 +342,7 @@ const Analysis = (props) => {
 
         const agoVarSales = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
@@ -344,6 +351,7 @@ const Analysis = (props) => {
 
         const dpkVarSales = analysisData?.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
@@ -356,6 +364,7 @@ const Analysis = (props) => {
 
         const pmsVarVol = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
@@ -364,6 +373,7 @@ const Analysis = (props) => {
 
         const agoVarVol = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
             const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
@@ -372,6 +382,7 @@ const Analysis = (props) => {
 
         const dpkVarVol = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
             const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
+            if(ID === -1) return 0;
             const currentDip = analysisData?.dipping[ID];
             const varience = Number(currentDip.dipping) - Number(current.afterSales);
 
