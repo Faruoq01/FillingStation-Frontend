@@ -3,14 +3,20 @@ import ApproximateDecimal from '../common/approx';
 
 const BalanceCF = () => {
 
-    const {balances, balanceCF} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const {balances, balanceCF, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
 
     const getInit = (type) => {
 
         const current = type === "PMS"? balances?.pms: type === "AGO"? balances?.ago: balances?.dpk;
         const currentCF = type === "PMS"? balanceCF?.pms: type === "AGO"? balanceCF?.ago: balanceCF?.dpk;
 
-        return{CF: currentCF === 0? current.balanceCF: currentCF.balanceCF}
+        const second = supply.filter(data => data.priority === "0");
+
+        const quantity = second.filter(data => data.productType === type).reduce((accum, current) => {
+            return Number(accum) + Number(current.quantity);
+        }, 0);
+
+        return{CF: currentCF === 0? Number(current.balanceCF) + quantity: Number(currentCF.balanceCF) + quantity}
 
     }
 
