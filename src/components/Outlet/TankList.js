@@ -399,10 +399,10 @@ const ListAllTanks = () => {
                                                         <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                     </div>
                                                 </div>
-                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.tankCapacity), totalPMS: Number(item.currentLevel), PMSDeadStock: Number(item.deadStockLevel)}} />
+                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.tankCapacity), totalPMS: Number(item.afterSales), PMSDeadStock: Number(item.deadStockLevel)}} />
                                                 <div className='foot'>
                                                     <div className='tex'>
-                                                        <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.currentLevel)} litres</div>
+                                                        <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
                                                         <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
                                                     </div>
                                                     <Button sx={{
@@ -442,10 +442,10 @@ const ListAllTanks = () => {
                                                     <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                 </div>
                                             </div>
-                                            <AGOTank margin={'80px'} data={{AGOTankCapacity: Number(item.tankCapacity), totalAGO: Number(item.currentLevel), AGODeadStock: Number(item.deadStockLevel)}} />
+                                            <AGOTank margin={'80px'} data={{AGOTankCapacity: Number(item.tankCapacity), totalAGO: Number(item.afterSales), AGODeadStock: Number(item.deadStockLevel)}} />
                                             <div className='foot'>
                                                 <div className='tex'>
-                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.currentLevel)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
                                                     <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
                                                 </div>
                                                 <Button sx={{
@@ -485,10 +485,10 @@ const ListAllTanks = () => {
                                                     <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                 </div>
                                             </div>
-                                            <DPKTank margin={'80px'} data={{DPKTankCapacity: Number(item.tankCapacity), totalDPK: Number(item.currentLevel), DPKDeadStock: Number(item.deadStockLevel)}} />
+                                            <DPKTank margin={'80px'} data={{DPKTankCapacity: Number(item.tankCapacity), totalDPK: Number(item.afterSales), DPKDeadStock: Number(item.deadStockLevel)}} />
                                             <div className='foot'>
                                                 <div className='tex'>
-                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.currentLevel)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
                                                     <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
                                                 </div>
                                                 <Button sx={{

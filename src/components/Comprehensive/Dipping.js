@@ -98,9 +98,9 @@ const Dipping = () => {
                 <div style={ins} className="cells">{props.index + 1}</div>
                 <div style={ins} className="cells">{props.data.tankName}</div>
                 <div style={ins} className="cells">{props.data.productType}</div>
-                <div style={ins} className="cells">{Number(props.data.afterSales) + getSupply(props.data.tankID, props.data.productType).second}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(Number(props.data.afterSales) + getSupply(props.data.tankID, props.data.productType).second)}</div>
                 <div style={ins} className="cells">{ApproximateDecimal(props.data.dipping)}</div>
-                <div style={ins} className="cells">{difference(Number(props.data.afterSales) + getSupply(props.data.tankID, props.data.productType).second, props.data.dipping)}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(difference(Number(props.data.afterSales) + getSupply(props.data.tankID, props.data.productType).second, props.data.dipping))}</div>
                 {getPerm('17') &&
                     <div style={ins} className="cells">
                         <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
@@ -129,7 +129,7 @@ const Dipping = () => {
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{Number(data.afterSales) + getSupply(data.tankID, data.productType).second}</div>
+                        <div style={title}>{ApproximateDecimal(Number(data.afterSales) + getSupply(data.tankID, data.productType).second)}</div>
                         <div style={label}>Computed Level</div>
                     </div>
 
@@ -141,7 +141,7 @@ const Dipping = () => {
 
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{difference(Number(data.afterSales) + getSupply(data.tankID, data.productType).second, data.dipping)}</div>
+                        <div style={title}>{ApproximateDecimal(difference(Number(data.afterSales) + getSupply(data.tankID, data.productType).second, data.dipping))}</div>
                         <div style={label}>Difference</div>
                     </div>
 
