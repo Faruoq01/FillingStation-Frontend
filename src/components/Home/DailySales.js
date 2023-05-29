@@ -838,6 +838,7 @@ const DailySales = (props) => {
                                                     value === null || "" ? date2 : convertDate(value)
                                                 }`}
                                                 value={value}
+                                                disabled = {load}
                                                 onChange={(newValue) => updateDate(newValue)}
                                             />
                                         </Stack>
