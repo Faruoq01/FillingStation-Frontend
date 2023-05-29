@@ -484,17 +484,17 @@ const DailySales = (props) => {
 
             if(totalPMS === 0 && balances?.pms !== 0){
                 totalPMS = balances?.pms?.balanceCF;
-                PMSTankCapacity = 33000*pmsTanks.length
+                PMSTankCapacity = "totalTankCapacity" in balances?.pms? balances?.pms?.totalTankCapacity:  33000*pmsTanks.length;
             }
             
             if(totalAGO === 0 && balances?.ago !== 0){
                 totalAGO = balances?.ago?.balanceCF;
-                AGOTankCapacity = 33000*agoTanks.length
+                AGOTankCapacity = "totalTankCapacity" in balances?.ago? balances?.ago?.totalTankCapacity: 33000*agoTanks.length
             }
             
             if(totalDPK === 0 && balances?.dpk !== 0){
                 totalDPK = balances?.dpk?.balanceCF
-                DPKTankCapacity = 33000*dpkTanks.length
+                DPKTankCapacity = "totalTankCapacity" in balances?.dpk? balances?.dpk?.totalTankCapacity: 33000*dpkTanks.length
             }
         }
 
