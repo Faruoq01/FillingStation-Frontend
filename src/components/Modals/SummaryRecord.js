@@ -181,9 +181,12 @@ const SummaryRecord = (props) => {
     const updateTankDetails = (product, tank) => {
         const onlyPMS = [...tankList].filter(data => data.productType === product);
         const totalTankLevel = onlyPMS.reduce((accum, current) => {
-            return Number(accum) + Number(current.currentLevel.replace(/[^0-9.]/g, ''));
+            return Number(accum) + Number(current.currentLevel);
         }, 0);
-        console.log(totalTankLevel, "tank list ")
+
+        const totalTankCapacity = onlyPMS.reduce((accum, current) => {
+            return Number(accum) + Number(current.tankCapacity);
+        }, 0);
 
         const allPumps = selectedPumps.filter(pump => pump.hostTank === tank._id);
         const allProductPumps = selectedPumps.filter(pump => pump.productType === product);
@@ -204,6 +207,7 @@ const SummaryRecord = (props) => {
             afterSales: Number(tank.currentLevel) - sales,
             outlet: oneStationData,
             totalTankLevel: totalTankLevel,
+            totalTankCapacity: totalTankCapacity,
             balanceCF: totalTankLevel - productSales,
         }
 

@@ -415,6 +415,7 @@ const DailySales = (props) => {
     },[getAllProductData]);
 
     const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
+
         let totalPMS = 0;
         let PMSTankCapacity = 0;
         let totalAGO = 0;
@@ -481,19 +482,19 @@ const DailySales = (props) => {
                 return Number(accum) + Number(current.tankCapacity)
             }, 0);
 
-            if(totalPMS === 0 && balances.pms !== 0){
+            if(totalPMS === 0 && balances?.pms !== 0){
                 totalPMS = balances?.pms?.balanceCF;
-                PMSTankCapacity = 33000
+                PMSTankCapacity = 33000*pmsTanks.length
             }
             
-            if(totalAGO === 0 && balances.ago !== 0){
+            if(totalAGO === 0 && balances?.ago !== 0){
                 totalAGO = balances?.ago?.balanceCF;
-                AGOTankCapacity = 33000
+                AGOTankCapacity = 33000*agoTanks.length
             }
             
-            if(totalDPK === 0 && balances.dpk !== 0){
+            if(totalDPK === 0 && balances?.dpk !== 0){
                 totalDPK = balances?.dpk?.balanceCF
-                DPKTankCapacity = 33000
+                DPKTankCapacity = 33000*dpkTanks.length
             }
         }
 
@@ -503,13 +504,13 @@ const DailySales = (props) => {
 
         const payload = {
             totalPMS: totalPMS,
-            PMSTankCapacity: PMSTankCapacity === 0? 33000: PMSTankCapacity,
+            PMSTankCapacity: PMSTankCapacity === 0? totalPMS === 0? 33000: Math.floor(totalPMS*2): PMSTankCapacity,
             PMSDeadStock: PMSDeadStock,
             totalAGO: totalAGO,
-            AGOTankCapacity: AGOTankCapacity === 0? 33000: AGOTankCapacity,
+            AGOTankCapacity: AGOTankCapacity === 0? totalAGO === 0? 33000: Math.floor(totalAGO*2): AGOTankCapacity,
             AGODeadStock: AGODeadStock,
             totalDPK: totalDPK,
-            DPKTankCapacity: DPKTankCapacity === 0? 33000: DPKTankCapacity,
+            DPKTankCapacity: DPKTankCapacity === 0? totalDPK === 0? 33000: Math.floor(totalDPK*2): DPKTankCapacity,
             DPKDeadStock: DPKDeadStock,
         }
 
