@@ -40,7 +40,7 @@ const EditPump = (props) => {
             pumpName: pumpName,
             hostTank: hostTank._id,
             productType: productType,
-            totalizerReading: totalizer,
+            totalizerReading: totalizer.replace(/[^0-9.]/g, ''),
             organisationID: hostTank.organisationID,
             outletID: hostTank.outletID,
             hostTankName: hostTank.tankName,

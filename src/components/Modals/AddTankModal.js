@@ -65,7 +65,7 @@ const AddTank = (props) => {
             tankName: tankName,
             tankHeight: tankHeight,
             productType: productType,
-            tankCapacity: tankCapacity,
+            tankCapacity: tankCapacity.replace(/[^0-9.]/g, ''),
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
             organisationID: oneStation?.organisation,
@@ -74,7 +74,7 @@ const AddTank = (props) => {
             station: oneStation?.outletName,
             previousLevel: "None",
             quantityAdded: "None",
-            currentLevel: currentStock,
+            currentLevel: currentStock.replace(/[^0-9.]/g, ''),
         } 
         
         await dispatch(createTanks(data, setWaiting));

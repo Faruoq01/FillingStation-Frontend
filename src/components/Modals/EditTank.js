@@ -52,10 +52,10 @@ const EditTank = (props) => {
             tankName: tankName,
             tankHeight: tankHeight,
             productType: productType,
-            tankCapacity: tankCapacity,
+            tankCapacity: tankCapacity.replace(/[^0-9.]/g, ''),
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
-            currentLevel: currentStock,
+            currentLevel: currentStock.replace(/[^0-9.]/g, ''),
             organisationID: oneStation?.organisation,
             outletID: oneStation?._id,
         }

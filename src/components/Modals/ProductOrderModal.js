@@ -55,7 +55,7 @@ const ProductOrderModal = (props) => {
             dateCreated: dateCreated,
             depot: depot,
             depotAddress: depotAddress,
-            quantity: quantity,
+            quantity: quantity.replace(/[^0-9.]/g, ''),
             costPerLitre: costPerLitre,
             productType: productType,
             attachCertificate: uploadFile,
