@@ -154,7 +154,6 @@ const CreateSupply = (props) => {
             }
             
             const findID = supplyList.indexOf(payload);
-            console.log(findID)
             if(findID === -1){
                 setSupplyList(prev => [...prev, payload]);
             }else{

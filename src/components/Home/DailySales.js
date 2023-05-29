@@ -835,7 +835,7 @@ const DailySales = (props) => {
                                         <Stack spacing={1}>
                                             <ButtonDatePicker
                                                 label={`${
-                                                    value === null || value === "" ? date2 : convertDate(value)
+                                                    value === null || "" ? date2 : convertDate(value)
                                                 }`}
                                                 value={value}
                                                 onChange={(newValue) => updateDate(newValue)}
