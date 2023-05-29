@@ -42,8 +42,9 @@ const ComprehensiveReport = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const history = useHistory();
     const dispatch = useDispatch();
-    const dipping = useSelector(state => state.dailySalesReducer.overages);
+    // const dipping = useSelector(state => state.dailySalesReducer.overages);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const [load, setLoad] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -73,6 +74,7 @@ const ComprehensiveReport = (props) => {
     }
 
     const getAndAnalyzeDailySales = (data, status, value) => {
+        setLoad(true)
         const salesPayload = {
             organisationID: resolveUserID().id,
             outletID: data._id,
@@ -85,6 +87,7 @@ const ComprehensiveReport = (props) => {
             dispatch(overages(data.dailyRecords.dipping));
             return data.dailyRecords.dipping;
         }).then((data)=>{
+            setLoad(false)
             getProductTanks(data);
         });
 
@@ -212,6 +215,7 @@ const ComprehensiveReport = (props) => {
                                                 value == null || "" ? date2 : convertDate(value)
                                             }`}
                                             value={value}
+                                            disabled = {load}
                                             onChange={(newValue) => updateDate(newValue)}
                                         />
                                     </Stack>
