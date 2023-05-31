@@ -43,9 +43,10 @@ const ListAllTanks = () => {
         AGO: [],
         DPK: []
     });
+    const [supply, setSupply] = useState([]);
     const tankListType = useSelector(state => state.outletReducer.tankListType);
     const [loader, setLoader] = useState(false);
-
+    
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
             return {id: user._id}
@@ -149,7 +150,23 @@ const ListAllTanks = () => {
             setLoader(false);
         });
 
-        getAndAnalyzeDailySales(item, false, currentDate2);
+        const PMS = tankList.filter(tank => tank.productType === "PMS");
+        const AGO = tankList.filter(tank => tank.productType === "AGO");
+        const DPK = tankList.filter(tank => tank.productType === "DPK");
+
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        if((today === currentDate2) || (currentDate2 === "")){
+            const payload = {
+                PMS: PMS,
+                AGO: AGO,
+                DPK: DPK
+            }
+    
+            setList(payload);
+        }else{
+
+            getAndAnalyzeDailySales(item, false, currentDate2);
+        }
     }
 
     const refresh = () => {
@@ -162,7 +179,7 @@ const ListAllTanks = () => {
             dispatch(getAllOutletTanks(data.stations));
         }).then(()=>{
             setLoader(false);
-        })
+        });
     }
 
     const IOSSwitch = styled((props) => (
@@ -259,6 +276,7 @@ const ListAllTanks = () => {
 
         DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(async data => {
             dispatch(overages(data.dailyRecords.dipping));
+            setSupply(data.dailyRecords.supply);
             const dipp = data.dailyRecords.dipping;
 
             let newDate;
@@ -287,6 +305,7 @@ const ListAllTanks = () => {
 
                 await DailySalesService.getDailySalesDataAndAnalyze(load).then(data => {
                     dispatch(overages(data.dailyRecords.dipping));
+                    setSupply(data.dailyRecords.supply);
                     const dipp = data.dailyRecords.dipping;
 
                     const payload = {
@@ -330,8 +349,45 @@ const ListAllTanks = () => {
 
         const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
         dispatch(currentDateValue(newValue));
-        getAndAnalyzeDailySales(oneStationData, false, getDate);
         dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+
+        const PMS = tankList.filter(tank => tank.productType === "PMS");
+        const AGO = tankList.filter(tank => tank.productType === "AGO");
+        const DPK = tankList.filter(tank => tank.productType === "DPK");
+        
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        
+        if((today === getDate)){console.log(PMS, "ppppp")
+            const payload = {
+                PMS: PMS,
+                AGO: AGO,
+                DPK: DPK
+            }
+    
+            setList(payload);
+        }else{
+
+            getAndAnalyzeDailySales(oneStationData, false, getDate);
+        }
+    }
+
+    const checkSupply = (item) => {
+        const filterSupply = supply.filter(data => item.tankID in data.recipientTanks);
+        const supplyStatus = filterSupply.filter(data => data.priority === "0");
+
+        const totalSupply = supplyStatus.reduce((accum, current) => {
+            return Number(accum) + Number(current.recipientTanks[item.tankID]);
+        }, 0);
+
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        
+        if((today === currentDate2)){
+            return Number(item.currentLevel);
+
+        }else{
+
+            return Number(item.afterSales) + totalSupply;
+        }
     }
 
     return(
@@ -399,10 +455,10 @@ const ListAllTanks = () => {
                                                         <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                     </div>
                                                 </div>
-                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.tankCapacity), totalPMS: Number(item.afterSales), PMSDeadStock: Number(item.deadStockLevel)}} />
+                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.tankCapacity), totalPMS: Number(checkSupply(item)), PMSDeadStock: Number(item.deadStockLevel)}} />
                                                 <div className='foot'>
                                                     <div className='tex'>
-                                                        <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
+                                                        <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(checkSupply(item))} litres</div>
                                                         <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
                                                     </div>
                                                     <Button sx={{
