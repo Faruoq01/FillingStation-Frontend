@@ -39,6 +39,7 @@ import swal from 'sweetalert';
 import ButtonDatePicker from '../common/CustomDatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import PendingSales from '../Modals/PendingSales';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -207,6 +208,7 @@ const DailyRecordSales = () => {
     const [open, setOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(date2);
     const [openSummary, setOpenSummary] = useState(false);
+    const [pending, setPending] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -310,8 +312,12 @@ const DailyRecordSales = () => {
             });
         }
         dispatch(passRecordSales(list));
-
         getAllInitialRecords(list);
+
+        const pendingTasks = localStorage.getItem('machine');
+        if(pendingTasks){
+            setPending(true);
+        }
     },[getAllInitialRecords, dispatch]);
 
     const nextQuestion = () => {
@@ -354,7 +360,13 @@ const DailyRecordSales = () => {
         let newList = {...linkedData}
 
         if(!getPerm('8') && (newList.page === 6)) return swal("Warning!", "Permission denied", "info");
-        setOpenSummary(true);
+
+        const pendingTasks = localStorage.getItem('machine');
+        if(pendingTasks){
+            setPending(true);
+        }else{
+            setOpenSummary(true);
+        }
     }
 
     const changeMenu = (index, item ) => {
@@ -409,6 +421,7 @@ const DailyRecordSales = () => {
     return (
         <div className='salesRecordStyle'>
             {openSummary && <SummaryRecord setPages={setPages} refresh={getAllInitialRecords} clops={setOpen} open={openSummary} close={setOpenSummary} />}
+            {pending && <PendingSales open={pending} close={setPending} />}
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={open}

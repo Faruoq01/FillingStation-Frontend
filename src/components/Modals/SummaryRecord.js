@@ -11,6 +11,8 @@ import { useHistory } from 'react-router-dom';
 import '../../styles/summary.scss';
 import { useState } from 'react';
 import ApproximateDecimal from '../common/approx';
+import SalesMachine from '../../modules/salesMachine';
+import { ThreeDots } from 'react-loader-spinner';
 
 const FuelCard = (props) => {
 
@@ -163,11 +165,16 @@ const ReturnToTank = (props) => {
 }
 
 const SummaryRecord = (props) => {
+    const { Buffer } = require('buffer');
 
+    const records = useSelector(state => state.recordsReducer.load);
+    const [machine, setMachine] = useState(null);
+    const [progress, setProgress] = useState('Loading...');
+    const [loading, setLoading] = useState(true);
+    
     const handleClose = () => props.close(false);
     const dispatch = useDispatch();
     const history = useHistory();
-    const records = useSelector(state => state.recordsReducer.load);
     const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
     const selectedTanks = useSelector(state => state.recordsReducer.selectedTanks);
     const currentDate = useSelector(state => state.recordsReducer.currentDate);
@@ -239,57 +246,89 @@ const SummaryRecord = (props) => {
     };
 
     useEffect(()=>{
+        const createMachine = new SalesMachine(records);
+        setMachine(createMachine);
         updateAllTanks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const saveRecordSales = () => {
         if(currentDate === null) return swal("Warning!", "Please select date!", "info");
-        setStop(true);
+        // setStop(true);
         
-        const tankFromPayload = {...records};
-        const tanksRecords = tankFromPayload['1'];
-        props.close(false);
-        props.clops(true);
+        // const tankFromPayload = {...records};
+        // const tanksRecords = tankFromPayload['1'];
+        // props.close(false);
+        // props.clops(true);
 
-        const payload = {
-            load: records, 
-            currentDate: currentDate, 
-            org: oneStationData.organisation, 
-            outletID: oneStationData._id
-        }
+        // const payload = {
+        //     load: records, 
+        //     currentDate: currentDate, 
+        //     org: oneStationData.organisation, 
+        //     outletID: oneStationData._id
+        // }
 
-        RecordSalesService.saveRecordSales(payload).then(data => {
+        // RecordSalesService.saveRecordSales(payload).then(data => {
             
-            if(data.status === "exist"){
-                return data;
-            }else{
-                tanksRecords.forEach(async(item) => {
-                    const payload = {
-                        id: item._id,
-                        tankName: item.tankName.split(' ')[1],
-                        previousLevel: item.previousLevel,
-                        currentLevel: Number(item.RTlitre) > 0? Number(item.RTlitre) + Number(item.afterSales): Number(item.afterSales),
-                    };
-                    await OutletService.updateTank(payload);
-                });
+        //     if(data.status === "exist"){
+        //         return data;
+        //     }else{
+        //         tanksRecords.forEach(async(item) => {
+        //             const payload = {
+        //                 id: item._id,
+        //                 tankName: item.tankName.split(' ')[1],
+        //                 previousLevel: item.previousLevel,
+        //                 currentLevel: Number(item.RTlitre) > 0? Number(item.RTlitre) + Number(item.afterSales): Number(item.afterSales),
+        //             };
+        //             await OutletService.updateTank(payload);
+        //         });
                 
-                dispatch(changeStation());
-                props.refresh();
-                props.setPages([1, 0, 0, 0, 0, 0]);
-                props.clops(false);
-                return data;
-            } 
-        }).then((data)=>{
-            setStop(false);
-            history.push('/home/daily-sales')
-            if(data.status === 'exist'){
-                swal("Warning!", data.message, "error");
-            }else{
-                swal("Success!", "Daily sales recorded successfully!", "success");
-            }
+        //         dispatch(changeStation());
+        //         props.refresh();
+        //         props.setPages([1, 0, 0, 0, 0, 0]);
+        //         props.clops(false);
+        //         return data;
+        //     } 
+        // }).then((data)=>{
+        //     setStop(false);
+        //     history.push('/home/daily-sales')
+        //     if(data.status === 'exist'){
+        //         swal("Warning!", data.message, "error");
+        //     }else{
+        //         swal("Success!", "Daily sales recorded successfully!", "success");
+        //     }
             
+        // });
+        
+        machine.onStateChange(({label, mch, error}) => {
+            if(error){
+                console.log(label, "label")
+                console.log(error, 'error')
+                const info = {
+                    date: currentDate,
+                    data: mch.data,
+                    label: label,
+                    error: JSON.stringify(error.message),
+                    org: oneStationData.organisation, 
+                    outletID: oneStationData._id
+                }
+
+                setMachine(new SalesMachine(records));
+                localStorage.setItem('machine', Buffer.from(JSON.stringify(info)).toString('base64'));
+                handleClose();
+                swal("Error!", "Ooops there is an error but your data is not lost refresh and try again or contact admin!", "error");
+
+            }else{
+                setProgress(label);
+                if(label === 'done'){
+                    localStorage.removeItem('machine');
+                    setMachine(null);
+                    handleClose();
+                    swal("Warning!", "Record saved successfully!", "success");
+                }
+            }
         });
+        machine.start();
     }
 
     const getBackground = (type) => {
@@ -475,7 +514,22 @@ const SummaryRecord = (props) => {
                     </div>
                 </div>
 
-                <div style={{...add, justifyContent:'flex-end'}}>
+                <div style={{...add, justifyContent:'space-between'}}>
+                    <div style={{marginLeft: '10px'}}>
+                        {loading && <div>{progress}</div>}
+                        {loading?
+                            <ThreeDots 
+                                height="30" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{}}
+                                wrapperClassName=""
+                                visible={true}
+                            />: null
+                        }
+                    </div>
                     <Button disabled={stop} sx={{
                         width:'100px', 
                         height:'30px',  

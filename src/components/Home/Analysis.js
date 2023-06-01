@@ -169,7 +169,6 @@ const Analysis = (props) => {
 
         }else if(type === "varience"){
             setOpenDetails2(true);
-
         }
     }
 
