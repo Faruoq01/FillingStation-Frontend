@@ -37,7 +37,6 @@ const PendingSales = (props) => {
     }, [Buffer, dispatch]);
 
     const submit = () => {
-
         machine.onStateChange(({label, mch, error}) => {
             if(error){
                 const info = {
@@ -97,9 +96,7 @@ const PendingSales = (props) => {
                             <p style={{marginTop: '30px', fontWeight:'600'}}>Retry or contact admin with the error log!</p>
                             <div style={row2}>
                                 <div>
-                                    <pre>
-                                        {JSON.stringify(decode?.error)}
-                                    </pre>
+                                    {decode?.error}
                                 </div>
                             </div>
 

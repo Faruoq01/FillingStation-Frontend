@@ -39,7 +39,7 @@ const FuelCard = (props) => {
     }
 
     return(
-        <div style={{border:'1px solid #ccc'}} className="fuel_card">
+        <div key={props.index} style={{border:'1px solid #ccc'}} className="fuel_card">
             <div className='inner_fuel_card'>
                 <div className='fuel_card_header'>
                     <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType.concat(" ", props.data.tankName)} ({ApproximateDecimal(props.data.tankCapacity)+" ltrs"})</span>
@@ -125,7 +125,7 @@ const ReturnToTank = (props) => {
     }
 
     return(
-        <div style={{border:'1px solid #ccc'}} className="fuel_card">
+        <div key={props.index} style={{border:'1px solid #ccc'}} className="fuel_card">
             <div className='inner_fuel_card'>
                 <div className='fuel_card_header'>
                     <span style={{fontSize:'14px', fontWeight:'bold', color: props.getBackground(props.data.productType)}}>{props.data.productType.concat(" ", props.data.tankName)} ({ApproximateDecimal(props.data.tankCapacity)+ " ltrs"})</span>
@@ -170,7 +170,7 @@ const SummaryRecord = (props) => {
     const records = useSelector(state => state.recordsReducer.load);
     const [machine, setMachine] = useState(null);
     const [progress, setProgress] = useState('Loading...');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     
     const handleClose = () => props.close(false);
     const dispatch = useDispatch();
@@ -246,11 +246,18 @@ const SummaryRecord = (props) => {
     };
 
     useEffect(()=>{
-        const createMachine = new SalesMachine(records);
-        setMachine(createMachine);
         updateAllTanks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(()=>{
+        const createMachine = new SalesMachine({
+            load: records, 
+            date: currentDate,
+            outletID: oneStationData._id
+        });
+        setMachine(createMachine);
+    }, [currentDate, oneStationData._id, oneStationData.organisation, records])
 
     const saveRecordSales = () => {
         if(currentDate === null) return swal("Warning!", "Please select date!", "info");
@@ -299,16 +306,14 @@ const SummaryRecord = (props) => {
         //     }
             
         // });
-        
+        setLoading(true);
         machine.onStateChange(({label, mch, error}) => {
             if(error){
-                console.log(label, "label")
-                console.log(error, 'error')
                 const info = {
                     date: currentDate,
                     data: mch.data,
                     label: label,
-                    error: JSON.stringify(error.message),
+                    error: error,
                     org: oneStationData.organisation, 
                     outletID: oneStationData._id
                 }
@@ -321,6 +326,7 @@ const SummaryRecord = (props) => {
             }else{
                 setProgress(label);
                 if(label === 'done'){
+                    setLoading(false);
                     localStorage.removeItem('machine');
                     setMachine(null);
                     handleClose();
@@ -516,7 +522,7 @@ const SummaryRecord = (props) => {
 
                 <div style={{...add, justifyContent:'space-between'}}>
                     <div style={{marginLeft: '10px'}}>
-                        {loading && <div>{progress}</div>}
+                        {loading && <div style={prog}>{progress}</div>}
                         {loading?
                             <ThreeDots 
                                 height="30" 
@@ -558,7 +564,6 @@ const add = {
     flexDirection:'row',
     justifyContent:'flex-start',
     alightItems:'center',
-    marginBottom:'10px',
     marginTop:'10px'
 }
 
@@ -620,6 +625,13 @@ const topStyle = {
     fontWeight:'bold',
     fontSize:'16px',
     marginBottom:'10px'
+}
+
+const prog = {
+    fontSize: '12px',
+    color: 'green',
+    fontFamily: 'Poppins',
+    fontWeight: '600'
 }
 
 export default SummaryRecord;
