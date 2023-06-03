@@ -10,33 +10,33 @@ import '../../styles/lpo.scss';
 import { useEffect } from 'react';
 import SalesMachine from '../../modules/salesMachine';
 import { updatePayload } from '../../store/actions/records';
+import { useHistory } from 'react-router-dom';
 
 const PendingSales = (props) => {
     const { Buffer } = require('buffer');
     const dispatch = useDispatch();
+    const history = useHistory();
     
     const [decode, setDecode] = useState(null);
     const [machine, setMachine] = useState(null);
 
     const handleClose = () => props.close(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState('Loading...');
 
     useEffect(()=>{
         const getData = localStorage.getItem('machine');
         const getString = Buffer.from(getData, 'base64').toString('ascii');
         const metaData = JSON.parse(getString);
-
-        const createMachine = new SalesMachine(metaData);
+        
+        const createMachine = new SalesMachine(metaData.data);
         setDecode(metaData);
         setMachine(createMachine);
-
-        const tankFromPayload = {...metaData.data};
-        dispatch(updatePayload(tankFromPayload));
 
     }, [Buffer, dispatch]);
 
     const submit = () => {
+        setLoading(true);
         machine.onStateChange(({label, mch, error}) => {
             if(error){
                 const info = {
@@ -56,14 +56,39 @@ const PendingSales = (props) => {
             }else{
                 setProgress(label);
                 if(label === 'done'){
+                    setLoading(false);
                     localStorage.removeItem('machine');
                     setMachine(null);
                     handleClose();
-                    swal("Warning!", "Record saved successfully!", "success");
+                    history.push('/home/daily-sales')
+                    swal("Success!", "Record saved successfully!", "success");
+
+                }else if(label === "exist"){
+                    setMachine(null);
+                    localStorage.removeItem('machine');
+                    handleClose();
+                    history.push('/home/daily-sales')
+                    swal("Error!", "Today's record has already been submitted!", "error");
                 }
             }
         });
-        machine.changeState(decode.label, machine);
+        machine.changeState(decode.label, machine, true);
+    }
+
+    const clearProcess = () => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to abort this process? all data will be lost!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                localStorage.removeItem('machine');
+                handleClose();
+            }
+        });
     }
 
     return(
@@ -96,13 +121,16 @@ const PendingSales = (props) => {
                             <p style={{marginTop: '30px', fontWeight:'600'}}>Retry or contact admin with the error log!</p>
                             <div style={row2}>
                                 <div>
-                                    {decode?.error}
+                                    Please review your internet settings and 
+                                    try again or contact admin with the description 
+                                    of your error!.
                                 </div>
                             </div>
 
                             <div style={{marginTop:'10px', height: '30px'}} className='butt'>
                                 <div >
-                                    {loading && <div>{progress}</div>}
+                                    {loading || <div onClick={clearProcess} style={prog}>click here to abort the process</div>}
+                                    {loading && <div style={prog}>{progress}</div>}
                                     {loading?
                                         <ThreeDots 
                                             height="30" 
@@ -180,6 +208,13 @@ const right = {
     fontSize: '15px',
     fontWeight: 'bold',
     marginRight: '15px'
+}
+
+const prog = {
+    fontSize: '12px',
+    color: 'green',
+    fontFamily: 'Poppins',
+    fontWeight: '600'
 }
 
 export default PendingSales;

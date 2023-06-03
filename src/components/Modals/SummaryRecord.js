@@ -13,6 +13,7 @@ import { useState } from 'react';
 import ApproximateDecimal from '../common/approx';
 import SalesMachine from '../../modules/salesMachine';
 import { ThreeDots } from 'react-loader-spinner';
+import DailySalesService from '../../services/DailySales';
 
 const FuelCard = (props) => {
 
@@ -181,7 +182,7 @@ const SummaryRecord = (props) => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const [stop, setStop] = useState(false);
-    // console.log(records, "summary")
+    console.log(records, "summary")
     // console.log(selectedPumps, "Pumps")
     // console.log(selectedTanks, "Tanks")
 
@@ -240,8 +241,18 @@ const SummaryRecord = (props) => {
             return update;
         });
 
+        const updatedSet = [...updatedTanks];
+        let tankSet = [...tankList];
+
+        for(let tank of updatedSet){
+            tankSet = tankSet.filter(data => data._id !== tank._id);
+        }
+
+        const updatedTankList = [...updatedSet, ...tankSet];
+
         const tankFromPayload = {...records};
         tankFromPayload['1'] = updatedTanks;
+        tankFromPayload['7'] = updatedTankList;
         dispatch(updatePayload(tankFromPayload));
     };
 
@@ -254,87 +265,65 @@ const SummaryRecord = (props) => {
         const createMachine = new SalesMachine({
             load: records, 
             date: currentDate,
-            outletID: oneStationData._id
+            outletID: oneStationData._id,
+            org: oneStationData.organisation
         });
+        
         setMachine(createMachine);
     }, [currentDate, oneStationData._id, oneStationData.organisation, records])
 
-    const saveRecordSales = () => {
+    const saveRecordSales = async() => {
         if(currentDate === null) return swal("Warning!", "Please select date!", "info");
-        // setStop(true);
-        
-        // const tankFromPayload = {...records};
-        // const tanksRecords = tankFromPayload['1'];
-        // props.close(false);
-        // props.clops(true);
-
-        // const payload = {
-        //     load: records, 
-        //     currentDate: currentDate, 
-        //     org: oneStationData.organisation, 
-        //     outletID: oneStationData._id
-        // }
-
-        // RecordSalesService.saveRecordSales(payload).then(data => {
-            
-        //     if(data.status === "exist"){
-        //         return data;
-        //     }else{
-        //         tanksRecords.forEach(async(item) => {
-        //             const payload = {
-        //                 id: item._id,
-        //                 tankName: item.tankName.split(' ')[1],
-        //                 previousLevel: item.previousLevel,
-        //                 currentLevel: Number(item.RTlitre) > 0? Number(item.RTlitre) + Number(item.afterSales): Number(item.afterSales),
-        //             };
-        //             await OutletService.updateTank(payload);
-        //         });
-                
-        //         dispatch(changeStation());
-        //         props.refresh();
-        //         props.setPages([1, 0, 0, 0, 0, 0]);
-        //         props.clops(false);
-        //         return data;
-        //     } 
-        // }).then((data)=>{
-        //     setStop(false);
-        //     history.push('/home/daily-sales')
-        //     if(data.status === 'exist'){
-        //         swal("Warning!", data.message, "error");
-        //     }else{
-        //         swal("Success!", "Daily sales recorded successfully!", "success");
-        //     }
-            
-        // });
         setLoading(true);
-        machine.onStateChange(({label, mch, error}) => {
-            if(error){
-                const info = {
-                    date: currentDate,
-                    data: mch.data,
-                    label: label,
-                    error: error,
-                    org: oneStationData.organisation, 
-                    outletID: oneStationData._id
-                }
 
-                setMachine(new SalesMachine(records));
-                localStorage.setItem('machine', Buffer.from(JSON.stringify(info)).toString('base64'));
-                handleClose();
-                swal("Error!", "Ooops there is an error but your data is not lost refresh and try again or contact admin!", "error");
+        const payload = {
+            currentDate: currentDate,
+            outletID: oneStationData._id,
+            org: oneStationData.organisation
+        }
 
-            }else{
-                setProgress(label);
-                if(label === 'done'){
-                    setLoading(false);
-                    localStorage.removeItem('machine');
-                    setMachine(null);
+        let data = await DailySalesService.validateSales(payload);
+
+        if(data.status === 'exist'){
+            setMachine(null);
+            localStorage.removeItem('machine');
+            handleClose();
+            history.push('/home/daily-sales')
+            swal("Error!", "Today's record has already been submitted!", "error");
+
+        }else{
+
+            machine.onStateChange(({label, mch, error}) => {
+                if(error){
+                    const info = {
+                        date: currentDate,
+                        data: mch.data,
+                        label: label,
+                        error: error,
+                        org: oneStationData.organisation, 
+                        outletID: oneStationData._id
+                    }
+
+                    setMachine(new SalesMachine(records));
+                    localStorage.setItem('machine', Buffer.from(JSON.stringify(info)).toString('base64'));
                     handleClose();
-                    swal("Warning!", "Record saved successfully!", "success");
+                    swal("Error!", "Ooops there is an error but your data is not lost refresh and try again or contact admin!", "error");
+
+                }else{
+                    setProgress(label);
+                    if(label === 'done'){
+                        setLoading(false);
+                        localStorage.removeItem('machine');
+                        setMachine(null);
+                        handleClose();
+                        history.push('/home/daily-sales')
+                        swal("Success!", "Record saved successfully!", "success");
+
+                    }
                 }
-            }
-        });
-        machine.start();
+            });
+            machine.start();
+        }
     }
 
     const getBackground = (type) => {

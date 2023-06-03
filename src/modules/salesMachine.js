@@ -10,10 +10,10 @@ const SalesMachine = function(data){
     this.data = data;
 
     this.start = () => {
-        this.changeState('Sales', this);
+        this.changeState('Sales', this, true);
     }
 
-    this.changeState = (name, machine) => {
+    this.changeState = (name, machine, retry) => {
         if(name === 'done'){
             this.stateLabel = '';
             this.error = null;
@@ -33,7 +33,7 @@ const SalesMachine = function(data){
                 error: this.error,
             });
             const getState = this[name.split(' ').join('').toLowerCase()]
-            getState(machine);
+            getState(machine, retry);
         }
     }
 
@@ -47,7 +47,7 @@ const SalesMachine = function(data){
         });
     }
 
-    this.sales = (mch) => {
+    this.sales = (mch, retry) => {
         try{
             const payload = data.load['1'];
             const result = new Promise(async function(resolve, reject){
@@ -55,11 +55,13 @@ const SalesMachine = function(data){
                     label: 'sales',
                     currentDate: data.date,
                     sales: payload,
-                    outletID: data.outletID
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
                 }
 
                 await APIs.post('/daily-sales/create', load)
-                .then(( {data} ) => {
+                .then(( {data} ) => {console.log(data, 'sales record')
                     if(data.code === 200){
                         resolve("success");
                     }
@@ -71,7 +73,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('Return to tank', mch);
+                        mch.changeState('Return to tank', mch, retry);
                     }
                 },
                 (error) => {
@@ -98,7 +100,7 @@ const SalesMachine = function(data){
         }
     }
 
-    this.returntotank = (mch) => {
+    this.returntotank = (mch, retry) => {
         try{
             const payload = data.load['2'];
             const result = new Promise(async function(resolve, reject){
@@ -106,7 +108,9 @@ const SalesMachine = function(data){
                     label: 'rt',
                     currentDate: data.date,
                     rt: payload,
-                    outletID: data.outletID
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
                 }
 
                 await APIs.post('/daily-sales/create', load)
@@ -122,7 +126,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('esales', mch);
+                        mch.changeState('esales', mch, retry);
                     }
                 },
                 (error) => {
@@ -149,7 +153,7 @@ const SalesMachine = function(data){
         }
     }
 
-    this.esales = (mch) => {
+    this.esales = (mch, retry) => {
         try{
             const payload = data.load['3'];
             const result = new Promise(async function(resolve, reject){
@@ -157,7 +161,9 @@ const SalesMachine = function(data){
                     label: 'esales',
                     currentDate: data.date,
                     lpo: payload,
-                    outletID: data.outletID
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
                 }
 
                 await APIs.post('/daily-sales/create', load)
@@ -173,7 +179,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('Expenses', mch);
+                        mch.changeState('Expenses', mch, false);
                     }
                 },
                 (error) => {
@@ -200,7 +206,7 @@ const SalesMachine = function(data){
         }
     }
 
-    this.expenses = (mch) => {
+    this.expenses = (mch, retry) => {
         try{
             const payload = data.load['4'];
             const result = new Promise(async function(resolve, reject){
@@ -208,7 +214,9 @@ const SalesMachine = function(data){
                     label: 'expenses',
                     currentDate: data.date,
                     expenses: payload,
-                    outletID: data.outletID
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
                 }
 
                 await APIs.post('/daily-sales/create', load)
@@ -224,7 +232,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('Payments', mch);
+                        mch.changeState('Payments', mch, retry);
                     }
                 },
                 (error) => {
@@ -251,7 +259,7 @@ const SalesMachine = function(data){
         }
     }
 
-    this.payments = (mch) => {
+    this.payments = (mch, retry) => {
         try{
             const payload = data.load['5'];
             const result = new Promise(async function(resolve, reject){
@@ -259,7 +267,9 @@ const SalesMachine = function(data){
                     label: 'payments',
                     currentDate: data.date,
                     payments: payload,
-                    outletID: data.outletID
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
                 }
 
                 await APIs.post('/daily-sales/create', load)
@@ -275,7 +285,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('Dipping', mch);
+                        mch.changeState('Dipping', mch, retry);
                     }
                 },
                 (error) => {
@@ -302,7 +312,7 @@ const SalesMachine = function(data){
         }
     }
 
-    this.dipping = (mch) => {
+    this.dipping = (mch, retry) => {
         try{
             const payload = data.load['6'];
             const result = new Promise(async function(resolve, reject){
@@ -310,7 +320,9 @@ const SalesMachine = function(data){
                     label: 'dipping',
                     currentDate: data.date,
                     dipping: payload,
-                    outletID: data.outletID
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
                 }
 
                 await APIs.post('/daily-sales/create', load)
@@ -326,7 +338,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('Balance Carried Forward', mch);
+                        mch.changeState('Balance Carried Forward', mch, retry);
                     }
                 },
                 (error) => {
@@ -353,7 +365,7 @@ const SalesMachine = function(data){
         }
     }
 
-    this.balancecarriedforward = (mch) => {
+    this.balancecarriedforward = (mch, retry) => {
         try{
             const payload = data.load['1'];
             const result = new Promise(async function(resolve, reject){
@@ -361,7 +373,9 @@ const SalesMachine = function(data){
                     label: 'balanceCF',
                     currentDate: data.date,
                     balanceCF: payload,
-                    outletID: data.outletID
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
                 }
 
                 await APIs.post('/daily-sales/create', load)
@@ -377,7 +391,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('done', mch);
+                        mch.changeState('Tank Levels', mch, retry);
                     }
                 },
                 (error) => {
@@ -404,11 +418,47 @@ const SalesMachine = function(data){
         }
     }
 
-    this.tanklevels = (mch) => {
+    this.tanklevels = (mch, retry) => {
         try{
-            setTimeout(()=>{
-                mch.changeState('done', mch);
-            }, 1000);
+            const payload = data.load['7'];
+            const result = new Promise(async function(resolve, reject){
+                const load = {
+                    label: 'tankLevels',
+                    currentDate: data.date,
+                    tankLevels: payload,
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
+                }
+
+                await APIs.post('/daily-sales/create', load)
+                .then(( {data} ) => {
+                    if(data.code === 200){
+                        resolve("success");
+                    }
+                }).catch(e => {
+                    reject(e)
+                });
+            });
+
+            result.then(
+                (value) => {
+                    if(value === 'success'){
+                        mch.changeState('done', mch, retry);
+                    }
+                },
+                (error) => {
+                    if(error){
+                        mch.error = error;
+                        mch.events.emit('change', {
+                            label: mch.stateLabel, 
+                            machine: mch,
+                            error: error,
+                            state: mch.currentState
+                        });
+                    }
+                }
+            );
         }catch(e){
             mch.error = e;
             mch.events.emit('change', {
@@ -425,6 +475,3 @@ export default SalesMachine;
 
 //Buffer.from(data, 'base64').toString('ascii'); to decode
 //Buffer.from(JSON.stringify(mch)).toString('base64') to encode
-
-//jc.decycle(a)
-//jc.retrocycle(JSON.parse(s));

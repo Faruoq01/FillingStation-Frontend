@@ -211,6 +211,16 @@ const DailySalesService = {
         });
     },
 
+    validateSales: (data) => {
+        return APIs.post('/daily-sales/validate-sales', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
 }
 
 export default DailySalesService;

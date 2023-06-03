@@ -55,7 +55,7 @@ const DailySales = (props) => {
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
-    
+    console.log(balances, 'balances')
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
             return {id: user._id}
@@ -308,7 +308,7 @@ const DailySales = (props) => {
             selectedDate: selectedDate
         }
 
-        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {console.log(data, "sales")
 
             const salesDataRecord = {
                 sales: data.dailyRecords.sales,
