@@ -198,7 +198,6 @@ const DailyRecordSales = () => {
     const date2 = `${day} ${month} ${year}`;
     const [value, setValue] = React.useState(null);
 
-    const dateHandle = useRef();
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
@@ -206,7 +205,6 @@ const DailyRecordSales = () => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
-    const [currentDate, setCurrentDate] = useState(date2);
     const [openSummary, setOpenSummary] = useState(false);
     const [pending, setPending] = useState(false);
 

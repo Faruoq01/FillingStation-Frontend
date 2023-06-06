@@ -221,6 +221,17 @@ const DailySalesService = {
             throw err
         });
     },
+
+    getAllTankLevels: (data) => {
+        return APIs.post('/daily-sales/tanklevels', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
 }
 
 export default DailySalesService;
