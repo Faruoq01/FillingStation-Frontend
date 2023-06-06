@@ -52,10 +52,10 @@ const EditTank = (props) => {
             tankName: tankName,
             tankHeight: tankHeight,
             productType: productType,
-            tankCapacity: tankCapacity.replace(/[^0-9.]/g, ''),
+            tankCapacity: tankCapacity,
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
-            currentLevel: currentStock.replace(/[^0-9.]/g, ''),
+            currentLevel: currentStock,
             organisationID: oneStation?.organisation,
             outletID: oneStation?._id,
         }
@@ -189,6 +189,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type={'number'}
                                 value={currentStock}
                                 onChange={e => setCurrentStock(e.target.value)}
                             />

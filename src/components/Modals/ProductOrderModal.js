@@ -55,7 +55,7 @@ const ProductOrderModal = (props) => {
             dateCreated: dateCreated,
             depot: depot,
             depotAddress: depotAddress,
-            quantity: quantity.replace(/[^0-9.]/g, ''),
+            quantity: quantity,
             costPerLitre: costPerLitre,
             productType: productType,
             attachCertificate: uploadFile,
@@ -206,7 +206,7 @@ const ProductOrderModal = (props) => {
                                         outline: 'none',
                                         paddingLeft:'10px',
                                     }} placeholder="" 
-                                    type='text'
+                                    type={'number'}
                                     onChange={e => setQuantity(e.target.value)}
                                 />
                             </div>

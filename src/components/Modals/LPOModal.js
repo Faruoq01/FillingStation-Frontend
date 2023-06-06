@@ -181,7 +181,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type="text"
+                                    type={'number'}
                                     onChange={e => setPMS(e.target.value)}
                                 />
                             </div>
@@ -199,7 +199,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='text'
+                                    type={'number'}
                                     onChange={e => setAGO(e.target.value)}
                                 />
                             </div>
@@ -217,7 +217,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='text'
+                                    type={'number'}
                                     onChange={e => setDPK(e.target.value)}
                                 />
                             </div>
@@ -235,7 +235,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type="text"
+                                    type={'number'}
                                     onChange={e => setPMSRate(e.target.value)}
                                 />
                             </div>
@@ -253,7 +253,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type="text"
+                                    type={'number'}
                                     onChange={e => setAGORate(e.target.value)}
                                 />
                             </div>
@@ -271,7 +271,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='text'
+                                    type={'number'}
                                     onChange={e => setDPKRate(e.target.value)}
                                 />
                             </div>

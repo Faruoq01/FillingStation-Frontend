@@ -65,7 +65,7 @@ const AddTank = (props) => {
             tankName: tankName,
             tankHeight: tankHeight,
             productType: productType,
-            tankCapacity: tankCapacity.replace(/[^0-9.]/g, ''),
+            tankCapacity: tankCapacity,
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
             organisationID: oneStation?.organisation,
@@ -74,7 +74,7 @@ const AddTank = (props) => {
             station: oneStation?.outletName,
             previousLevel: "None",
             quantityAdded: "None",
-            currentLevel: currentStock.replace(/[^0-9.]/g, ''),
+            currentLevel: currentStock,
         } 
         
         await dispatch(createTanks(data, setWaiting));
@@ -177,7 +177,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="text"
+                                type="number"
                                 onChange={e => setTankCapacity(e.target.value)}
                             />
                         </div>
@@ -196,7 +196,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="text"
+                                type="number"
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
                         </div>
@@ -215,7 +215,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="text"
+                                type="number"
                                 onChange={e => setDeadStockLevel(e.target.value)}
                             />
                         </div>

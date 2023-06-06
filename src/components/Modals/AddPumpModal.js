@@ -170,6 +170,7 @@ const AddPump = (props) => {
                                     border:'1px solid #777777',
                                 },
                             }} placeholder="" 
+                            type={'number'}
                             onChange={e => setTotalizer(e.target.value)}
                         />
                     </div>

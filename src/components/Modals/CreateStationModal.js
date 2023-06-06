@@ -79,12 +79,12 @@ const CreateFillingStation = (props) => {
             alias: alias,
             noOfTanks: "",
             noOfPumps: "",
-            PMSCost: pmsCost.replace(/[^0-9.]/g, ''),
-            PMSPrice: pmsPrice.replace(/[^0-9.]/g, ''),
-            AGOCost: agoCost.replace(/[^0-9.]/g, ''),
-            AGOPrice: agoPrice.replace(/[^0-9.]/g, ''),
-            DPKCost: dpkCost.replace(/[^0-9.]/g, ''),
-            DPKPrice: dpkPrice.replace(/[^0-9.]/g, ''),
+            PMSCost: pmsCost,
+            PMSPrice: pmsPrice,
+            AGOCost: agoCost,
+            AGOPrice: agoPrice,
+            DPKCost: dpkCost,
+            DPKPrice: dpkPrice,
             organisation: resolveUserID().id,
             longitude: longitude,
             latitude: latitude
@@ -298,6 +298,7 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
+                                    type={'number'}
                                     onChange={e => setPMSCost(e.target.value)}
                                 />
                             </div>
@@ -316,6 +317,7 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
+                                    type={'number'}
                                     onChange={e => setPMSPrice(e.target.value)}
                                 />
                             </div>
@@ -334,6 +336,7 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
+                                    type={'number'}
                                     onChange={e => setAGOCost(e.target.value)}
                                 />
                             </div>
@@ -352,6 +355,7 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
+                                    type={'number'}
                                     onChange={e => setAGOPrice(e.target.value)}
                                 />
                             </div>
@@ -370,6 +374,7 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
+                                    type={'number'}
                                     onChange={e => setDPKCost(e.target.value)}
                                 />
                             </div>
@@ -388,6 +393,7 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
+                                    type={'number'}
                                     onChange={e => setDPKPrice(e.target.value)}
                                 />
                             </div>
