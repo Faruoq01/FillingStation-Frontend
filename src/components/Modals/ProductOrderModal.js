@@ -100,6 +100,10 @@ const ProductOrderModal = (props) => {
         setProductType(data);
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     return(
         <Modal
             open={props.open}
@@ -206,8 +210,8 @@ const ProductOrderModal = (props) => {
                                         outline: 'none',
                                         paddingLeft:'10px',
                                     }} placeholder="" 
-                                    type={'number'}
-                                    onChange={e => setQuantity(e.target.value)}
+                                    type={'text'}
+                                    onChange={e => setQuantity(removeSpecialCharacters(e.target.value))}
                                 />
                             </div>
 
@@ -226,7 +230,7 @@ const ProductOrderModal = (props) => {
                                     }} placeholder="" 
                                     type='text'
                                     value={costPerLitre}
-                                    onChange={e => setCostPerLitre(e.target.value)}
+                                    onChange={e => setCostPerLitre(removeSpecialCharacters(e.target.value))}
                                 />
                             </div>
 
@@ -265,7 +269,7 @@ const ProductOrderModal = (props) => {
                        </div>
 
                         <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                            <Button sx={{
+                            <Button disabled={loading} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',

@@ -109,7 +109,7 @@ const ListAllTanks = () => {
         const DPK = tankList.filter(tank => tank.productType === "DPK");
 
         const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-        const date = currentDate2.format('YYYY-MM-DD');
+        const date = currentDate2 === ""? today: currentDate2.format('YYYY-MM-DD');
 
         if((today === date) || (currentDate2 === "")){
             const payload = {
@@ -156,7 +156,7 @@ const ListAllTanks = () => {
         const DPK = tankList.filter(tank => tank.productType === "DPK");
 
         const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-        const date = currentDate2.format('YYYY-MM-DD');
+        const date = currentDate2 === ""? today: currentDate2.format('YYYY-MM-DD');
 
         if((today === date) || (currentDate2 === "")){
             const payload = {
@@ -343,7 +343,7 @@ const ListAllTanks = () => {
         }, 0);
 
         const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
-        const date = currentDate2.format('YYYY-MM-DD');
+        const date = currentDate2 === ""? today: currentDate2.format('YYYY-MM-DD');
 
         if((today === date || currentDate2 === "")){
             return Number(item.currentLevel);
@@ -419,11 +419,11 @@ const ListAllTanks = () => {
                                                         <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                     </div>
                                                 </div>
-                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.totalTankCapacity), totalPMS: Number(checkSupply(item)), PMSDeadStock: 0}} />
+                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.tankCapacity), totalPMS: Number(checkSupply(item)), PMSDeadStock: 0}} />
                                                 <div className='foot'>
                                                     <div className='tex'>
                                                         <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(checkSupply(item))} litres</div>
-                                                        <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.totalTankCapacity)} litres</div>
+                                                        <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
                                                     </div>
                                                     <Button sx={{
                                                         width:'70px', 
@@ -462,11 +462,11 @@ const ListAllTanks = () => {
                                                     <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                 </div>
                                             </div>
-                                            <AGOTank margin={'80px'} data={{AGOTankCapacity: Number(item.totalTankCapacity), totalAGO: Number(item.afterSales), AGODeadStock: 0}} />
+                                            <AGOTank margin={'80px'} data={{AGOTankCapacity: Number(item.tankCapacity), totalAGO: Number(checkSupply(item)), AGODeadStock: 0}} />
                                             <div className='foot'>
                                                 <div className='tex'>
-                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
-                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.totalTankCapacity)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(checkSupply(item))} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
                                                 </div>
                                                 <Button sx={{
                                                     width:'70px', 
@@ -505,11 +505,11 @@ const ListAllTanks = () => {
                                                     <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                 </div>
                                             </div>
-                                            <DPKTank margin={'80px'} data={{DPKTankCapacity: Number(item.totalTankCapacity), totalDPK: Number(item.afterSales), DPKDeadStock: 0}} />
+                                            <DPKTank margin={'80px'} data={{DPKTankCapacity: Number(item.tankCapacity), totalDPK: Number(checkSupply(item)), DPKDeadStock: 0}} />
                                             <div className='foot'>
                                                 <div className='tex'>
-                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
-                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.totalTankCapacity)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(checkSupply(item))} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
                                                 </div>
                                                 <Button sx={{
                                                     width:'70px', 

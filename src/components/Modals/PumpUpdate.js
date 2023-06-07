@@ -99,7 +99,7 @@ const PumpUpdate = (props) => {
                                     }} placeholder="" 
                                     type='text'
                                     value={totalizer}
-                                    onChange={e => setTotalizer(e.target.value)}
+                                    onChange={e => setTotalizer(removeSpecialCharacters(e.target.value))}
                                 />
                             </div>
 

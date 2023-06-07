@@ -110,6 +110,7 @@ const IncomingOrderModal = (props) => {
         setWayBillNo("");
         setDriverName("");
         setPhoneNumber("");
+        setLoadedQuantity("0");
         swal("Success", "Product order created successfully!", "success");
         props.refresh();
         handleClose();
@@ -529,7 +530,7 @@ const IncomingOrderModal = (props) => {
                        </div>
 
                         <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                            <Button sx={{
+                            <Button disabled={loading} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',
