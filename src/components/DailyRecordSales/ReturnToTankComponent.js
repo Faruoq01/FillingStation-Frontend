@@ -190,13 +190,17 @@ const ReturnToTank = (props) => {
         }
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const setTotalizer = (e, item) => {
         if(selectedTanks.length !== 0){
             const clonedTanks = [...selectedTanks];
             const currentTank = clonedTanks.filter(data => data._id === item.hostTank);
 
             if(currentTank.length !== 0){
-                const quantity = Number(currentTank[0].currentLevel) + Number(e.target.value);
+                const quantity = Number(currentTank[0].currentLevel) + Number(removeSpecialCharacters(e.target.value));
 
                 if(oneStationData === null){
                     swal("Warning!", "Please select a station", "info");
@@ -215,7 +219,7 @@ const ReturnToTank = (props) => {
                         swal("Warning!", "Reading exceeded tank level", "info");
 
                     }else{
-                        updateTotalizer(e.target.value, item, currentTank);
+                        updateTotalizer(removeSpecialCharacters(e.target.value), item, currentTank);
                     }
                 }
             }else{

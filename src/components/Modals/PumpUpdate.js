@@ -21,7 +21,11 @@ const PumpUpdate = (props) => {
 
     useEffect(()=>{
         setTotalizer(props.current.totalizerReading)
-    }, [props])
+    }, [props]);
+
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
 
     const submit = () => {
         const prev = (Number(totalizer) - Number(props.current.totalizerReading)) < Number(oneTank.deadStockLevel)
@@ -41,7 +45,7 @@ const PumpUpdate = (props) => {
         const payload = {
             id: oneTank._id,
             previousLevel: oneTank.currentLevel,
-            totalizer: totalizer,
+            totalizer: removeSpecialCharacters(totalizer),
             currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - difference),
             outletID: oneStationData?._id,
             organisationID: oneStationData?.organisation,
@@ -93,7 +97,7 @@ const PumpUpdate = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type='text'
                                     value={totalizer}
                                     onChange={e => setTotalizer(e.target.value)}
                                 />

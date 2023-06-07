@@ -45,6 +45,10 @@ const IncomingOrderModal = (props) => {
 
     const handleClose = () => props.close(false);
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const submit = async() => {
         if(transporter === "") return swal("Warning!", "Transporter cannot be empty", "info");
         if(depotStation === "") return swal("Warning!", "Depot station field cannot be empty", "info");
@@ -160,12 +164,12 @@ const IncomingOrderModal = (props) => {
         if(findID === -1){
             swal("Warning!", "Please select a field first to add quantity!", "info");
         }else{
-            cloneSelected[findID] = {...cloneSelected[findID], incomingQuantity: e.target.value}
+            cloneSelected[findID] = {...cloneSelected[findID], incomingQuantity: removeSpecialCharacters(e.target.value)}
             setSelected(cloneSelected);
 
             const totalLoadedQuantity = cloneSelected.reduce((accum, current) => {
                 return Number(accum) + Number(current.incomingQuantity);
-            }, 0)
+            }, 0);
     
             setLoadedQuantity(totalLoadedQuantity);
         }

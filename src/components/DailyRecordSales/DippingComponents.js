@@ -105,6 +105,10 @@ const DippingComponents = (props) => {
         }
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const setTotalizer = (e, item, index) => {
 
         if(item.productType === "PMS"){
@@ -115,7 +119,7 @@ const DippingComponents = (props) => {
 
             const levelAfterSales = Number(item.currentLevel) - totalSales;
             let clonedPMS = {...item};
-            clonedPMS = {...clonedPMS, dippingValue: e.target.value, afterSales: levelAfterSales};
+            clonedPMS = {...clonedPMS, dippingValue: removeSpecialCharacters(e.target.value), afterSales: levelAfterSales};
             const newPMSList = [...pms];
             newPMSList[index] = clonedPMS;
             setPMS(newPMSList);
@@ -140,7 +144,7 @@ const DippingComponents = (props) => {
 
             const levelAfterSales = Number(item.currentLevel) - totalSales;
             let clonedAGO = {...item};
-            clonedAGO = {...clonedAGO, dippingValue: e.target.value, afterSales: levelAfterSales};
+            clonedAGO = {...clonedAGO, dippingValue: removeSpecialCharacters(e.target.value), afterSales: levelAfterSales};
             const newAGOList = [...ago]
             newAGOList[index] = clonedAGO;
             setAGO(newAGOList);
@@ -165,7 +169,7 @@ const DippingComponents = (props) => {
 
             const levelAfterSales = Number(item.currentLevel) - totalSales;
             let clonedDPK = {...item};
-            clonedDPK = {...clonedDPK, dippingValue: e.target.value, afterSales: levelAfterSales};
+            clonedDPK = {...clonedDPK, dippingValue: removeSpecialCharacters(e.target.value), afterSales: levelAfterSales};
             const newDPKList = [...dpk]
             newDPKList[index] = clonedDPK;
             setDPK(newDPKList);

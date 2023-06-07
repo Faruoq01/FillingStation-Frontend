@@ -36,6 +36,10 @@ const LPOModal = (props) => {
         }
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const submit = () => {
         if(companyName === "") return swal("Warning!", "Company name field cannot be empty", "info");
         if(address === "") return swal("Warning!", "Address field cannot be empty", "info");
@@ -49,26 +53,17 @@ const LPOModal = (props) => {
         if(contactPhone === "") return swal("Warning!", "Contact phone field cannot be empty", "info");
         setLoader(true);
 
-        if(isNaN(Number(PMS))) return swal("Warning!", "PMS limit field is not a number", "info");
-        if(isNaN(Number(AGO))) return swal("Warning!", "AGO limit field is not a number", "info");
-        if(isNaN(Number(DPK))) return swal("Warning!", "DPK limit field is not a number", "info");
-        if(isNaN(Number(PMSRate))) return swal("Warning!", "PMS rate field is not a number", "info");
-        if(isNaN(Number(AGORate))) return swal("Warning!", "AGO rate field is not a number", "info");
-        if(isNaN(Number(DPKRate))) return swal("Warning!", "DPK rate field is not a number", "info");
-
-        setLoading(true);
-
         const payload = {
             companyName: companyName,
             address: address,
             personOfContact: personOfContact,
             contactPhone: contactPhone,
-            PMS: PMS,
-            AGO: AGO,
-            DPK: DPK,
-            PMSRate: PMSRate,
-            AGORate: AGORate,
-            DPKRate: DPKRate,
+            PMS: removeSpecialCharacters(PMS),
+            AGO: removeSpecialCharacters(AGO),
+            DPK: removeSpecialCharacters(DPK),
+            PMSRate: removeSpecialCharacters(PMSRate),
+            AGORate: removeSpecialCharacters(AGORate),
+            DPKRate: removeSpecialCharacters(DPKRate),
             paymentStructure: productType,
             organizationID: resolveUserID().id
         }
@@ -181,7 +176,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
                                     onChange={e => setPMS(e.target.value)}
                                 />
                             </div>
@@ -199,7 +194,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
                                     onChange={e => setAGO(e.target.value)}
                                 />
                             </div>
@@ -217,7 +212,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
                                     onChange={e => setDPK(e.target.value)}
                                 />
                             </div>
@@ -235,7 +230,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
                                     onChange={e => setPMSRate(e.target.value)}
                                 />
                             </div>
@@ -253,7 +248,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
                                     onChange={e => setAGORate(e.target.value)}
                                 />
                             </div>
@@ -271,7 +266,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
                                     onChange={e => setDPKRate(e.target.value)}
                                 />
                             </div>

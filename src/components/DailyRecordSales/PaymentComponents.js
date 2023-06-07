@@ -221,6 +221,10 @@ const PaymentsComponents = (props) => {
         'Zenith Bank',
     ];
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     return(
         <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
@@ -304,7 +308,7 @@ const PaymentsComponents = (props) => {
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Amount Paid</span>
-                            <input value={amountPaid} onChange={e => setAmountPaid(e.target.value)} className='lpo-inputs' type={'text'} />
+                            <input value={amountPaid} onChange={e => setAmountPaid(removeSpecialCharacters(e.target.value))} className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 

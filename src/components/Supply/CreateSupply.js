@@ -88,7 +88,7 @@ const CreateSupply = (props) => {
 
     const incomingTanks = (e, data) => {
         const room = Number(data.tankCapacity) - Number(data.currentLevel);
-        let addedQuantity = Number(e.target.value);
+        let addedQuantity = Number(removeSpecialCharacters(e.target.value));
 
         if(addedQuantity > room){
             swal("Warning!", `This tank doesn't have the capacity, can only accommodate ${room} litres extra. `, "info");
@@ -207,8 +207,12 @@ const CreateSupply = (props) => {
         }
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const updatedTankSupply = (e) => {
-        setQuantityLoaded(e.target.value);
+        setQuantityLoaded(removeSpecialCharacters(e.target.value));
     }
 
     const saveSupply = () => {

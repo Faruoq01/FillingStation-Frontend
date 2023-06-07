@@ -51,6 +51,10 @@ const AddPump = (props) => {
         })
     }, [oneStationData._id, oneStationData.organisation, productType]);
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const handleOpen = () => {
         if(pumpName === "") return swal("Warning!", "Pump name field cannot be empty", "info");
         if(defaultState === "") return swal("Warning!", "Tank name field cannot be empty", "info");
@@ -63,7 +67,7 @@ const AddPump = (props) => {
             hostTank: currentTank._id,
             hostTankName: currentTank.tankName,
             productType: productType,
-            totalizerReading: totalizer.replace(/[^0-9.]/g, ''),
+            totalizerReading: removeSpecialCharacters(totalizer),
             organisationID: currentTank.organisationID,
             outletID: currentTank.outletID
         }
@@ -200,7 +204,7 @@ const AddPump = (props) => {
                                     border:'1px solid #777777',
                                 },
                             }} placeholder="" 
-                            type="number"
+                            type="text"
                             onChange={e => setTotalizer(e.target.value)}
                         />
                     </div>

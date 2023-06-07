@@ -21,10 +21,10 @@ import {
     TANK_LIST_TYPE
 } from '../types';
 
-export const createFillingStation = (params, saveButton) => dispatch => {
+export const createFillingStation = (params, loader) => dispatch => {
     return OutletService.registerFillingStation(params)
     .then(data => {
-        saveButton.current.disabled = false;
+        loader(false);
         dispatch({ type: NEW_OUTLET, payload: data});
     })
     .catch(err => {
