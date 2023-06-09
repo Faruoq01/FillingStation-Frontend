@@ -179,12 +179,31 @@ const HomeScreen = () => {
                 }
             }
         }
+
+        function updatePrices(data){
+            if(resolveUserID().id === data.stations[0].organisation){
+                const status = data.stations.findIndex(item => item._id === oneStationData._id);
+                if(status !== -1){
+                    const stationCopy = {...oneStationData};
+                    stationCopy['PMSCost'] = 'PMSCost' in data? data.PMSCost: stationCopy['PMSCost'];
+                    stationCopy['PMSPrice'] = 'PMSPrice' in data? data.PMSPrice: stationCopy['PMSPrice'];
+                    stationCopy['AGOCost'] = 'AGOCost' in data? data.AGOCost: stationCopy['AGOCost'];
+                    stationCopy['AGOPrice'] = 'AGOPrice' in data? data.AGOPrice: stationCopy['AGOPrice'];
+                    stationCopy['DPKCost'] = 'DPKCost' in data? data.DPKCost: stationCopy['DPKCost'];
+                    stationCopy['DPKPrice'] = 'DPKPrice' in data? data.DPKPrice: stationCopy['DPKPrice'];
+
+                    dispatch(adminOutlet(stationCopy));
+                    console.log(stationCopy, "updated station")
+                }
+            }
+        }
     
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
         socket.on('permission', updatePermission);
         socket.on('history', updateHistory);
         socket.on('clearCount', clearCount);
+        socket.on('prices', updatePrices);
     
         return () => {
             socket.off('connect', onConnect);
@@ -192,6 +211,7 @@ const HomeScreen = () => {
             socket.off('permission', updatePermission);
             socket.off('history', updateHistory);
             socket.off('clearCount', clearCount);
+            socket.off('prices', updatePrices);
         };
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
