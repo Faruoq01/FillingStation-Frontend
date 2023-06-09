@@ -111,7 +111,10 @@ const IncomingOrderModal = (props) => {
         setDriverName("");
         setPhoneNumber("");
         setLoadedQuantity("0");
-        swal("Success", "Product order created successfully!", "success");
+        setProductOrderID("");
+        setDefault(0);
+        setVal(1);
+        swal("Success", "Incoming order created successfully!", "success");
         props.refresh();
         handleClose();
     }

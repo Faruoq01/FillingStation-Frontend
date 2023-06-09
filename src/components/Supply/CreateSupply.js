@@ -13,9 +13,10 @@ import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
 import { adminOutlet, getAllOutletTanks } from "../../store/actions/outlet";
 import { BallTriangle } from "react-loader-spinner";
+import { useHistory } from "react-router-dom";
 
 const CreateSupply = (props) => {
-
+    const history = useHistory();
     const [selected, setSelected] = useState([]);
     const [menus, setMenus] = useState(false);
     const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const CreateSupply = (props) => {
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
     const [supplyList, setSupplyList] = useState([]);
     const user = useSelector(state => state.authReducer.user);
+    const [incomingList, setIncomingList] = useState([]);
 
     // payload data
     const [transporter, setTransporter] = useState('');
@@ -84,7 +86,17 @@ const CreateSupply = (props) => {
 
     useEffect(()=>{
         getAllIncoming();
-    }, [getAllIncoming]);
+
+        return () => {
+            props.refresh();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(()=>{
+        setIncomingList(incomingOrder);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const incomingTanks = (e, data) => {
         const room = Number(data.tankCapacity) - Number(data.currentLevel);
@@ -169,6 +181,9 @@ const CreateSupply = (props) => {
             setProductSupply("");
             setSupplyDate("");
             setSelected([]);
+
+            const incomingLeft = incomingOrder.filter(data => data._id !== selectedIncomingOrders._id);
+            setIncomingList(incomingLeft);
         
         }else{
             swal("Warning!", `Please add quantity to each tank. `, "info");
@@ -216,31 +231,39 @@ const CreateSupply = (props) => {
     }
 
     const saveSupply = () => {
-
-        if(supplyList.length !== 0){
-            setStop(true);
-            const payload = {
-                load: supplyList
-            }
-    
-            SupplyService.createSupply(payload).then(data => {
-                if(data.status === "failed"){
-                    setSupplyList([]);
-                    props.refresh();
-                    return "Supply can only be recorded for today or less."
+        swal({
+            title: "Alert!",
+            text: `Are you sure you want to save this supply?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                
+                if(supplyList.length !== 0){
+                    setStop(true);
+                    const payload = {
+                        load: supplyList
+                    }
+            
+                    SupplyService.createSupply(payload).then(data => {
+                        if(data.status === "failed"){
+                            setSupplyList([]);
+                            swal("Succes!", 'Supply can only be recorded for today or less.', "success");
+                        }else{
+                            setSupplyList([]);
+                            swal("Succes!", 'Supply has been recorded successfully!', "success");
+                        }
+                    }).then(()=>{
+                        setStop(false);
+                        history.push('/home/supply');
+                    });
                 }else{
-                    return "Supply has been recorded successfully!."
+                    swal("Warning!", `You can not submit an empty supply list. `, "info");
                 }
-            }).then((msg)=>{console.log("this line executes")
-                setStop(false);
-                setSupplyList([]);
-                props.refresh();
-                getAllIncoming();
-                swal("Succes!", msg, "success");
-            });
-        }else{
-            swal("Warning!", `You can not submit an empty supply list. `, "info");
-        }
+            }
+        });
     }
 
     return(
@@ -275,7 +298,7 @@ const CreateSupply = (props) => {
                                     <input onChange={(e => searchWayBill(e))} className="searches" type={'text'} placeholder="Search" />
                                     <div className="cons">
                                         {
-                                            incomingOrder.map((data, index) => {
+                                            incomingList.map((data, index) => {
                                                 return(
                                                     <span key={index} onClick={()=>{selectedIncomingOrder(data)}} className="ids">&nbsp;&nbsp;&nbsp;{`${data.wayBillNo}`}</span>
                                                 )

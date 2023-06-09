@@ -261,6 +261,7 @@ const PaymentsComponents = (props) => {
                                         setAutoCom(e);
                                     }}
                                     className='lpo-inputs'
+                                    id="custom-input-demo"
                                     sx={{
                                         display: 'inline-block',
                                         '& input': {
@@ -274,10 +275,9 @@ const PaymentsComponents = (props) => {
                                             theme.palette.getContrastText(theme.palette.background.paper),
                                         },
                                     }}
-                                    id="custom-input-demo"
                                     options={banksList}
                                     renderInput={(params) => (
-                                        <div ref={params.InputProps.ref}>
+                                        <div style={{fontSize:'12px'}} ref={params.InputProps.ref}>
                                             <input type="text" {...params.inputProps} />
                                         </div>
                                     )}

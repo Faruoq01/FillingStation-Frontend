@@ -63,12 +63,13 @@ const Supply = (props) => {
         history.push("/home/supply/create");
     }
 
-    const getAllSupplyData = useCallback(() => {
+    const getAllSupplyData = () => {
 
         if(oneStationData !== null){
             if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
                 const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
                 setDefault(findID + 1);
+                setLoading(true);
                 
                 const payload = {
                     skip: skip * limit,
@@ -87,7 +88,6 @@ const Supply = (props) => {
                     organisationID: resolveUserID().id,
                     outletID: oneStationData._id
                 }
-
                 OutletService.getAllOutletTanks(payload2).then(data => {
                     dispatch(getAllOutletTanks(data.stations));
                 });
@@ -138,12 +138,12 @@ const Supply = (props) => {
             });
         });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    };
 
     useEffect(()=>{
         getAllSupplyData();
-    },[getAllSupplyData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     const refresh = () => {
         setLoading(true);
