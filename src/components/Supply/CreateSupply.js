@@ -1,9 +1,9 @@
 import { Backdrop, Button } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { createIncomingOrder, searchIncoming } from "../../store/actions/incomingOrder";
+import { searchIncoming } from "../../store/actions/incomingOrder";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -11,7 +11,7 @@ import "../../styles/supplystyle.scss";
 import SupplyService from "../../services/supplyService";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
-import { adminOutlet, getAllOutletTanks } from "../../store/actions/outlet";
+import { getAllOutletTanks } from "../../store/actions/outlet";
 import { BallTriangle } from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
 
@@ -20,7 +20,6 @@ const CreateSupply = (props) => {
     const [selected, setSelected] = useState([]);
     const [menus, setMenus] = useState(false);
     const dispatch = useDispatch();
-    const incomingOrder = useSelector(state => state.incomingOrderReducer.incomingOrder);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
@@ -59,44 +58,35 @@ const CreateSupply = (props) => {
         }
     }
 
-    const getAllIncoming = useCallback(() => {
+    const getAllIncoming = () => {
 
-        if(user.userType !== "superAdmin"){
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-            });
-
-    
-            const income = {
-                outletID: user.outletID,
-                organisationID: resolveUserID().id
-            }
-     
-            IncomingService.getAllIncoming3(income).then((data) => {
-                dispatch(createIncomingOrder(data.incoming.incoming));
-            });
-    
-            OutletService.getAllOutletTanks(income).then(data => {
-                dispatch(getAllOutletTanks(data.stations));
-            });
+        const income = {
+            outletID: oneStationData._id,
+            organisationID: resolveUserID().id
         }
+ 
+        IncomingService.getAllIncoming3(income).then((data) => {console.log(data, "incoming")
+            setIncomingList(data.incoming.incoming);
+        });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        OutletService.getAllOutletTanks(income).then(data => {
+            dispatch(getAllOutletTanks(data.stations));
+        });
+    };
 
     useEffect(()=>{
-        getAllIncoming();
+        if(oneStationData === null){
+            history.push("/home/supply")
+        }else{
+            getAllIncoming();
+        }
 
         return () => {
             props.refresh();
         }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(()=>{
-        setIncomingList(incomingOrder);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
     const incomingTanks = (e, data) => {
         const room = Number(data.tankCapacity) - Number(data.currentLevel);
@@ -182,7 +172,7 @@ const CreateSupply = (props) => {
             setSupplyDate("");
             setSelected([]);
 
-            const incomingLeft = incomingOrder.filter(data => data._id !== selectedIncomingOrders._id);
+            const incomingLeft = incomingList.filter(data => data._id !== selectedIncomingOrders._id);
             setIncomingList(incomingLeft);
         
         }else{
