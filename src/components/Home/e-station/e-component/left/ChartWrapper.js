@@ -6,7 +6,7 @@ export default function ChartWrapper() {
     <div className="chart-wrapper">
       <img
         re
-        src={require("../../img/chart1.svg").default}
+        src={require("../../../../../assets/estation/chart1.svg").default}
         style={{
           color: "#fff",
           width: "100%",

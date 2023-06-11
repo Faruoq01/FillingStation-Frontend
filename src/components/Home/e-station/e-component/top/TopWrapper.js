@@ -42,35 +42,41 @@ function TopWrapper({ disableCard, ...props }) {
             title="Wallet Balance"
           />
           <TopCard
-            arrowStyle={{ left: !mobile ? "30px" : tablet ? "25rem" : "45px" }}
+            arrowStyle={{ left: !mobile ? "0px" : tablet ? "25rem" : "45px" }}
             amount="NGN 220,000"
             title="Assets"
             icon={
               <img
-                src={require("../../img/asset.svg").default}
-                style={{ color: "#fff", width: 30, height: 30 }}
+                src={
+                  require("./../../../../../assets/estation/assets.svg").default
+                }
+                style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }
           />
           <TopCard
-            arrowStyle={{ left: !mobile ? "30px" : tablet ? "25rem" : "45px" }}
+            arrowStyle={{ left: !mobile ? "0px" : tablet ? "25rem" : "45px" }}
             amount="NGN 230,000"
             title="Liability"
             icon={
               <img
-                src={require("../../img/liability.svg").default}
-                style={{ color: "#fff", width: 30, height: 30 }}
+                src={
+                  require("./../../../../../assets/estation/liab.svg").default
+                }
+                style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }
           />
           <TopCard
-            arrowStyle={{ left: !mobile ? "30px" : tablet ? "25rem" : "45px" }}
+            arrowStyle={{ left: !mobile ? "0px" : tablet ? "25rem" : "45px" }}
             amount="NGN 350,000"
             title="Sales"
             icon={
               <img
-                src={require("../../img/sales.svg").default}
-                style={{ color: "#fff", width: 30, height: 30 }}
+                src={
+                  require("./../../../../../assets/estation/saless.svg").default
+                }
+                style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }
           />

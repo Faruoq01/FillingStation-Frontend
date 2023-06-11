@@ -7,8 +7,8 @@ import TableWrapper from "./TableWrapper";
 function LeftWrapper(props) {
   return (
     <div className="l-wrapper">
-      <ChartWrapper />
-      <TableWrapper />
+      {/* <ChartWrapper />
+      <TableWrapper /> */}
     </div>
   );
 }

@@ -111,23 +111,20 @@ padding: 15px;
   
  }
  .tcard-amount {
-   font-family: 'Poppins';
-   font-style: normal;
-   font-weight: 700;
-   font-size: 20px;
-   line-height: 32px;
-   color: #323232;
+font-weight: bold;
+  font-size: 15px;
+  color: rgb(0, 0, 0);
  }
  .tcard-title{
   font-family: 'Poppins';
-    font-style: normal;
+   font-size: 11px;
     font-weight: 500;
     color: #054834;
  }
 .t-card-bottom{
  align-self: flex-end;
  position: relative;
- left: 40px;
+//  left: 40px;
 }
 
 

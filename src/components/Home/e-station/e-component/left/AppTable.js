@@ -35,7 +35,10 @@ export default function AppTable() {
                 <td>
                   <div style={styles(mobile, tablet).userName}>
                     <img
-                      src={require("../../img/image.svg").default}
+                      src={
+                        require("../../../../../assets/estation/image.svg")
+                          .default
+                      }
                       className="profile-image"
                     />
                     {!mobile && <label>{item.account_name}</label>}

@@ -6,7 +6,6 @@ import { Doughnut } from "react-chartjs-2";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import RCard from "./RCard";
-import CircleIcon from "@mui/icons-material/Circle";
 import DotProduct from "./DotProduct";
 function RightWrapper(props) {
   ChartJS.register(ArcElement, Tooltip, Legend);
@@ -34,7 +33,7 @@ function RightWrapper(props) {
         style={{ width: "100%", backgroundColor: " #F6FFFF" }}
         icon={
           <img
-            src={require("../../img/user.svg").default}
+            src={require("../../../../../assets/estation/user.svg").default}
             style={{ color: "#fff" }}
           />
         }
@@ -51,7 +50,7 @@ function RightWrapper(props) {
         }}
         icon={
           <img
-            src={require("../../img/users.svg").default}
+            src={require("../../../../../assets/estation/users.svg").default}
             style={{ color: "#fff" }}
           />
         }
@@ -59,7 +58,7 @@ function RightWrapper(props) {
         title="Individual Customers"
       />
 
-      <div style={styles(mobile, tablet).doughnutWrap}>
+      {/* <div style={styles(mobile, tablet).doughnutWrap}>
         <div className="donut-chart">
           <label className="dou-title">Product Dispensed</label>
           <div className="donut-chart-wrapper">
@@ -78,7 +77,9 @@ function RightWrapper(props) {
           onClick={() => {}}
           icon={
             <img
-              src={require("../../img/pump (1).svg").default}
+              src={
+                require("../../../../../assets/estation/pump (1).svg").default
+              }
               style={{ color: "#fff" }}
             />
           }
@@ -93,7 +94,9 @@ function RightWrapper(props) {
           onClick={() => {}}
           icon={
             <img
-              src={require("../../img/pump (1).svg").default}
+              src={
+                require("../../../../../assets/estation/pump (1).svg").default
+              }
               style={{ color: "#fff" }}
             />
           }
@@ -107,15 +110,17 @@ function RightWrapper(props) {
           onClick={() => {}}
           icon={
             <img
-              src={require("../../img/pump (1).svg").default}
+              src={
+                require("../../../../../assets/estation/pump (1).svg").default
+              }
               style={{ color: "#fff" }}
             />
           }
           amount="23, 281.00 Liters"
           title="Total PMS Dispensed"
         />
-      </div>
-      <RCard
+      </div> */}
+      {/* <RCard
         onClick={() => {}}
         arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{
@@ -125,13 +130,13 @@ function RightWrapper(props) {
         }}
         icon={
           <img
-            src={require("../../img/asset.svg").default}
+            src={require("../../../../../assets/estation/assets.svg").default}
             style={{ color: "#fff" }}
           />
         }
         amount="NGN 40, 000"
         title="Incoming Orders"
-      />
+      /> */}
     </div>
   );
 }
