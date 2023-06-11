@@ -7,8 +7,7 @@ function TopCard(props) {
   return (
     <div className="t-card" {...props}>
       <div className="t-card-top">
-        <div className="icon-shade"></div>
-        <div className="icon-wrapper">{props.icon}</div>
+        <div className="icon-shade">{props.icon}</div>
         <div className="title-wrap">
           <span className="tcard-amount">{props.amount}</span>
           <label className="tcard-title">{props.title}</label>
