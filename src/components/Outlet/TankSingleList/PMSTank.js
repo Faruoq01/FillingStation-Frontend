@@ -2,13 +2,13 @@ import React, {useRef, useEffect} from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import ApproximateDecimal from '../../common/approx';
 
-const TankComponent = (props) => {
+const TankComponent = (props) => {console.log(props.data, "this is it")
 
     const canvas = useRef();
     const fuel = useRef();
 
     useEffect(()=>{
-        createTankCanvas(props.data.totalPMS, props.data.PMSTankCapacity, props.data.PMSDeadStock);
+        createTankCanvas(props.data.totalPMS, props.data.PMSTankCapacity, 0);
     }, [props.data.PMSDeadStock, props.data.PMSTankCapacity, props.data.totalPMS]);
 
     const createTankCanvas = (level, capacity, deadstock) => {

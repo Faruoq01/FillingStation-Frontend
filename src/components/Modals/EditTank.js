@@ -189,6 +189,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
+                                type={'number'}
                                 value={currentStock}
                                 onChange={e => setCurrentStock(e.target.value)}
                             />

@@ -5,7 +5,6 @@ import ApproximateDecimal from '../common/approx';
 const InitialBalance = () => {
 
     const {balances, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
-    console.log(balances, "balance")
     
     const getInit = (props) => {
         const current = props.type === "PMS"? balances?.pms: props.type === "AGO"? balances?.ago: balances?.dpk;
@@ -18,7 +17,7 @@ const InitialBalance = () => {
             if(current.shortage === "None"){
                 return 0;
             }else{
-                return Number(accum) + Number(current.quantity);
+                return Number(accum) + Number(current.shortage);
             }
         }, 0);
 
@@ -26,7 +25,7 @@ const InitialBalance = () => {
             if(current.overage === "None"){
                 return 0;
             }else{
-                return Number(accum) + Number(current.quantity);
+                return Number(accum) + Number(current.overage);
             }
         }, 0);
 

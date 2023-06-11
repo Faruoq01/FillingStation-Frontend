@@ -1,5 +1,5 @@
 
-import { MenuItem, Select, Switch } from '@mui/material';
+import { MenuItem, Select, Stack, Switch } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
@@ -13,8 +13,23 @@ import swal from 'sweetalert';
 import Button from '@mui/material/Button';
 import { ThreeDots } from 'react-loader-spinner';
 import ApproximateDecimal from '../common/approx';
+import DailySalesService from '../../services/DailySales';
+import {currentDateValue, overages } from '../../store/actions/dailySales';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import ButtonDatePicker from '../common/CustomDatePicker';
+import { dateRange } from '../../store/actions/dashboard';
 
 const ListAllTanks = () => {
+
+    const date = new Date();
+    const toString = date.toDateString();
+    const [day, year, month] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
+
+    const moment = require('moment-timezone');
+    const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
 
     const tankList = useSelector(state => state.outletReducer.tankList);
     const user = useSelector(state => state.authReducer.user);
@@ -22,11 +37,15 @@ const ListAllTanks = () => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [defaultState, setDefault] = useState(0);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
-    const [list, setList] = useState(null);
+    const [list, setList] = useState({
+        PMS: [],
+        AGO: [],
+        DPK: []
+    });
+    const [supply, setSupply] = useState([]);
     const tankListType = useSelector(state => state.outletReducer.tankListType);
     const [loader, setLoader] = useState(false);
-    console.log(list, 'all')
-
+    
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
             return {id: user._id}
@@ -35,7 +54,34 @@ const ListAllTanks = () => {
         }
     }
 
+    const getPerm = (e) => {
+        if(user.userType === "superAdmin"){
+            return true;
+        }
+        return user.permission?.dailySales[e];
+    }
+
     const getAllProductData = useCallback(() => {
+
+        if(oneStationData !== null){
+            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
+                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
+                setDefault(findID + 1);
+
+                const payload = {
+                    organisationID: resolveUserID().id,
+                    outletID: oneStationData._id
+                }
+
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    dispatch(getAllOutletTanks(data.stations));
+                    setLoader(false);
+                });
+
+                return
+            }
+        }
+
         setLoader(true);
         const payload = {
             organisation: resolveUserID().id, 
@@ -46,7 +92,7 @@ const ListAllTanks = () => {
         }).then(()=>{
             const payload = {
                 organisationID: resolveUserID().id,
-                outletID: "None"
+                outletID: oneStationData === null? "None": oneStationData._id
             }
             OutletService.getAllOutletTanks(payload).then(data => {
                 dispatch(getAllOutletTanks(data.stations));
@@ -62,19 +108,29 @@ const ListAllTanks = () => {
         const AGO = tankList.filter(tank => tank.productType === "AGO");
         const DPK = tankList.filter(tank => tank.productType === "DPK");
 
-        const payload = {
-            PMS: PMS,
-            AGO: AGO,
-            DPK: DPK
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const date = currentDate2.format('YYYY-MM-DD');
+
+        if((today === date) || (currentDate2 === "")){
+            const payload = {
+                PMS: PMS,
+                AGO: AGO,
+                DPK: DPK
+            }
+    
+            setList(payload);
+        }else{
+
+            getAndAnalyzeDailySales(oneStationData, date);
         }
 
-        setList(payload);
-
-    }, [tankList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(()=>{
+        setValue(currentDate2);
         getAllProductData();
-    },[getAllProductData])
+    },[currentDate2, getAllProductData])
 
     useEffect(()=>{
         getTanksLists();
@@ -93,7 +149,27 @@ const ListAllTanks = () => {
             dispatch(getAllOutletTanks(data.stations));
         }).then(()=>{
             setLoader(false);
-        })
+        });
+
+        const PMS = tankList.filter(tank => tank.productType === "PMS");
+        const AGO = tankList.filter(tank => tank.productType === "AGO");
+        const DPK = tankList.filter(tank => tank.productType === "DPK");
+
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const date = currentDate2.format('YYYY-MM-DD');
+
+        if((today === date) || (currentDate2 === "")){
+            const payload = {
+                PMS: PMS,
+                AGO: AGO,
+                DPK: DPK
+            }
+    
+            setList(payload);
+        }else{
+
+            getAndAnalyzeDailySales(item, date);
+        }
     }
 
     const refresh = () => {
@@ -106,7 +182,7 @@ const ListAllTanks = () => {
             dispatch(getAllOutletTanks(data.stations));
         }).then(()=>{
             setLoader(false);
-        })
+        });
     }
 
     const IOSSwitch = styled((props) => (
@@ -192,10 +268,96 @@ const ListAllTanks = () => {
         });
     }
 
+    const getAndAnalyzeDailySales = async(data, value) => {
+        setLoader(true);
+        const salesPayload = {
+            org: resolveUserID().id,
+            outletID: data === null? "None": data._id,
+            date: value,
+            productType: tankListType
+        }
+
+        DailySalesService.getAllTankLevels(salesPayload).then(async data => {
+            setSupply(data.tanks.supply);
+
+            const PMS = data.tanks.tankLevels.filter(tank => tank.productType === "PMS");
+            const AGO = data.tanks.tankLevels.filter(tank => tank.productType === "AGO");
+            const DPK = data.tanks.tankLevels.filter(tank => tank.productType === "DPK");
+
+            const load = {
+                PMS: PMS,
+                AGO: AGO,
+                DPK: DPK
+            }
+
+            setList(load);
+
+            console.log(data, "tank list")
+        });
+    }
+
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
+    }
+
+    const updateDate = (newValue) => {
+        // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
+        setValue(newValue);
+
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
+        dispatch(currentDateValue(newValue));
+        dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+
+        const PMS = tankList.filter(tank => tank.productType === "PMS");
+        const AGO = tankList.filter(tank => tank.productType === "AGO");
+        const DPK = tankList.filter(tank => tank.productType === "DPK");
+        
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        
+        if((today === getDate)){
+            const payload = {
+                PMS: PMS,
+                AGO: AGO,
+                DPK: DPK
+            }
+    
+            setList(payload);
+        }else{
+
+            getAndAnalyzeDailySales(oneStationData, getDate);
+        }
+    }
+
+    const checkSupply = (item) => {
+        const filterSupply = supply.filter(data => item.tankID in data.recipientTanks);
+        const supplyStatus = filterSupply.filter(data => data.priority === "0");
+
+        const totalSupply = supplyStatus.reduce((accum, current) => {
+            return Number(accum) + Number(current.recipientTanks[item.tankID]);
+        }, 0);
+
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const date = currentDate2.format('YYYY-MM-DD');
+
+        if((today === date || currentDate2 === "")){
+            return Number(item.currentLevel);
+
+        }else{
+            
+            return Number(item.afterSales) + totalSupply;
+        }
+    }
+
     return(
         <React.Fragment>
             <div className='listContainer'>
-                <div className='stat'>
+                <div style={{flexDirection: 'row', justifyContent: 'space-between'}} className='stat'>
                     <Select
                         labelId="demo-select-small"
                         id="demo-select-small"
@@ -211,6 +373,17 @@ const ListAllTanks = () => {
                             })  
                         }
                     </Select>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Stack spacing={1}>
+                            <ButtonDatePicker
+                                label={`${
+                                    value == null || "" ? date2 : convertDate(value)
+                                }`}
+                                value={value}
+                                onChange={(newValue) => updateDate(newValue)}
+                            />
+                        </Stack>
+                    </LocalizationProvider>
                 </div>
 
                 <div className='mains'>
@@ -231,6 +404,8 @@ const ListAllTanks = () => {
                         <div className='inner-main'>    
                             {
                                 tankListType === "PMS" &&
+                                (list?.PMS.length === 0?
+                                <div style={cover}>No Tank Record</div>:
                                 list?.PMS?.map((item, index) => {
                                     return(
                                         <div key={index} className='item'>
@@ -244,11 +419,11 @@ const ListAllTanks = () => {
                                                         <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                     </div>
                                                 </div>
-                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.tankCapacity), totalPMS: Number(item.currentLevel), PMSDeadStock: Number(item.deadStockLevel)}} />
+                                                <PMSTank margin={'80px'} data={{PMSTankCapacity: Number(item.totalTankCapacity), totalPMS: Number(checkSupply(item)), PMSDeadStock: 0}} />
                                                 <div className='foot'>
                                                     <div className='tex'>
-                                                        <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.currentLevel)} litres</div>
-                                                        <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
+                                                        <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(checkSupply(item))} litres</div>
+                                                        <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.totalTankCapacity)} litres</div>
                                                     </div>
                                                     <Button sx={{
                                                         width:'70px', 
@@ -268,10 +443,12 @@ const ListAllTanks = () => {
                                             </div>
                                         </div>
                                     )
-                                })
+                                }))
                             }
                             {
                                 tankListType === "AGO" &&
+                                (list?.AGO.length === 0?
+                                <div style={cover}>No Tank Record</div>:
                                 list?.AGO?.map((item, index) => {
                                     return(
                                         <div className='item'>
@@ -285,11 +462,11 @@ const ListAllTanks = () => {
                                                     <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                 </div>
                                             </div>
-                                            <AGOTank margin={'80px'} data={{AGOTankCapacity: Number(item.tankCapacity), totalAGO: Number(item.currentLevel), AGODeadStock: Number(item.deadStockLevel)}} />
+                                            <AGOTank margin={'80px'} data={{AGOTankCapacity: Number(item.totalTankCapacity), totalAGO: Number(item.afterSales), AGODeadStock: 0}} />
                                             <div className='foot'>
                                                 <div className='tex'>
-                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.currentLevel)} litres</div>
-                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.totalTankCapacity)} litres</div>
                                                 </div>
                                                 <Button sx={{
                                                     width:'70px', 
@@ -309,10 +486,12 @@ const ListAllTanks = () => {
                                         </div>
                                         </div>
                                     )
-                                })
+                                }))
                             }
                             {
                                 tankListType === "DPK" &&
+                                (list?.DPK.length === 0?
+                                <div style={cover}>No Tank Record</div>:
                                 list?.DPK?.map((item, index) => {
                                     return(
                                         <div className='item'>
@@ -326,11 +505,11 @@ const ListAllTanks = () => {
                                                     <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
                                                 </div>
                                             </div>
-                                            <DPKTank margin={'80px'} data={{DPKTankCapacity: Number(item.tankCapacity), totalDPK: Number(item.currentLevel), DPKDeadStock: Number(item.deadStockLevel)}} />
+                                            <DPKTank margin={'80px'} data={{DPKTankCapacity: Number(item.totalTankCapacity), totalDPK: Number(item.afterSales), DPKDeadStock: 0}} />
                                             <div className='foot'>
                                                 <div className='tex'>
-                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.currentLevel)} litres</div>
-                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.tankCapacity)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Level: </span> {ApproximateDecimal(item.afterSales)} litres</div>
+                                                    <div><span style={{color:'#07956A'}}>Capacity: </span> {ApproximateDecimal(item.totalTankCapacity)} litres</div>
                                                 </div>
                                                 <Button sx={{
                                                     width:'70px', 
@@ -350,7 +529,7 @@ const ListAllTanks = () => {
                                         </div>
                                         </div>
                                     )
-                                })
+                                }))
                             }
                         </div>
                         
@@ -378,7 +557,7 @@ const menu = {
 
 const selectStyle2 = {
     width:'200px', 
-    height:'35px', 
+    height:'30px', 
     borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
@@ -387,6 +566,18 @@ const selectStyle2 = {
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
     },
+}
+
+const cover = {
+    width:'100px',
+    height: '20px',
+    fontSize:'12px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop:'5px',
+    color:'green',
+    fontWeight: '700'
 }
 
 export default ListAllTanks;

@@ -36,6 +36,10 @@ import SummaryRecord from '../Modals/SummaryRecord';
 import { changeDate, changeStation } from '../../store/actions/records';
 import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
+import ButtonDatePicker from '../common/CustomDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import PendingSales from '../Modals/PendingSales';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -192,8 +196,8 @@ const DailyRecordSales = () => {
     const toString = date.toDateString();
     const [month, day, year] = toString.split(' ');
     const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
 
-    const dateHandle = useRef();
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
@@ -201,8 +205,8 @@ const DailyRecordSales = () => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
-    const [currentDate, setCurrentDate] = useState(date2);
     const [openSummary, setOpenSummary] = useState(false);
+    const [pending, setPending] = useState(false);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -220,37 +224,6 @@ const DailyRecordSales = () => {
     }
 
     const getAllInitialRecords = React.useCallback((list) => {
-
-        if(oneStationData !== null){
-            if((getPerm('0') || getPerm('1') || user.userType === "superAdmin")){
-                const findID = allOutlets.findIndex(data => data._id === oneStationData._id);
-                setDefault(findID + 1);
-
-                const payload = {
-                    outletID: oneStationData._id, 
-                    organisationID: resolveUserID().id
-                }
-        
-                OutletService.getAllStationPumps(payload).then(data => {
-                    dispatch(getAllPumps(data));
-                });
-        
-                OutletService.getAllOutletTanks(payload).then(data => {
-                    const outletTanks = data.stations.map(data => {
-                        const newData = {...data, label: data.tankName, value: data._id, dippingValue: "0"};
-                        return newData;
-                    });
-                    dispatch(getAllOutletTanks(outletTanks));
-                });
-        
-                LPOService.getAllLPO(payload).then((data) => {
-                    dispatch(createLPO(data.lpo.lpo));
-                });
-
-                return
-            }
-        }
-
         const payload = {
             organisation: resolveUserID().id
         }
@@ -306,8 +279,12 @@ const DailyRecordSales = () => {
             });
         }
         dispatch(passRecordSales(list));
-
         getAllInitialRecords(list);
+
+        const pendingTasks = localStorage.getItem('machine');
+        if(pendingTasks){
+            setPending(true);
+        }
     },[getAllInitialRecords, dispatch]);
 
     const nextQuestion = () => {
@@ -350,7 +327,13 @@ const DailyRecordSales = () => {
         let newList = {...linkedData}
 
         if(!getPerm('8') && (newList.page === 6)) return swal("Warning!", "Permission denied", "info");
-        setOpenSummary(true);
+
+        const pendingTasks = localStorage.getItem('machine');
+        if(pendingTasks){
+            setPending(true);
+        }else{
+            setOpenSummary(true);
+        }
     }
 
     const changeMenu = (index, item ) => {
@@ -382,13 +365,22 @@ const DailyRecordSales = () => {
         dispatch(adminOutlet(item));
     }
 
-    const updateDate = (e) => {
+    const updateDate = (newValue) => {
         if(!getPerm('2')) return swal("Warning!", "Permission denied", "info");
-        const date = e.target.value.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setCurrentDate(format);
+        setValue(newValue);
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
 
-        dispatch(changeDate(e.target.value));
+        dispatch(changeDate(getDate));
+    }
+
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
     }
 
     const [pages, setPages] = useState([1, 0, 0, 0, 0, 0]);
@@ -396,6 +388,7 @@ const DailyRecordSales = () => {
     return (
         <div className='salesRecordStyle'>
             {openSummary && <SummaryRecord setPages={setPages} refresh={getAllInitialRecords} clops={setOpen} open={openSummary} close={setOpenSummary} />}
+            {pending && <PendingSales open={pending} close={setPending} />}
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={open}
@@ -445,7 +438,7 @@ const DailyRecordSales = () => {
                 </div>
                 <div>
                     <div style={sales}>
-                        <input onChange={updateDate} ref={dateHandle} style={{
+                        {/* <input onChange={updateDate} ref={dateHandle} style={{
                             width: mediaMatch? '140px': '170px',
                             height:'30px',
                             background:'#054834',
@@ -460,7 +453,18 @@ const DailyRecordSales = () => {
                             border:'none',
                             paddingRight:'10px'
                         }} type="date" />
-                        {isSafari || <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>}
+                        {isSafari || <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>} */}
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Stack spacing={1}>
+                                <ButtonDatePicker
+                                    label={`${
+                                        value == null || "" ? date2 : convertDate(value)
+                                    }`}
+                                    value={value}
+                                    onChange={(newValue) => updateDate(newValue)}
+                                />
+                            </Stack>
+                        </LocalizationProvider>
                     </div>
                 </div>
             </div>

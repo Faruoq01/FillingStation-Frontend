@@ -3,45 +3,21 @@ import ApproximateDecimal from '../common/approx';
 
 const BalanceCF = () => {
 
-    const {balances, balanceCF, supply, sales} = useSelector(state => state.dailySalesReducer.bulkReports);
-
-    const getSales = (type) => {
-        const totalSales = sales.filter(data => data.productType === type).reduce((accum, current) => {
-            return Number(accum) + Number(current.sales);
-        }, 0);
-
-        return totalSales;
-    }
+    const {balances, balanceCF, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
 
     const getInit = (type) => {
 
         const current = type === "PMS"? balances?.pms: type === "AGO"? balances?.ago: balances?.dpk;
         const currentCF = type === "PMS"? balanceCF?.pms: type === "AGO"? balanceCF?.ago: balanceCF?.dpk;
 
-        console.log(current, "brought")
-        console.log(currentCF, "carried")
+        const second = supply.filter(data => data.priority === "0");
 
-        const quantity = supply.filter(data => data.productType === type).reduce((accum, current) => {
+        const quantity = second.filter(data => data.productType === type).reduce((accum, current) => {
             return Number(accum) + Number(current.quantity);
         }, 0);
 
-        const shortage = supply.filter(data => data.productType === type).reduce((accum, current) => {
-            if(current.shortage === "None"){
-                return 0;
-            }else{
-                return Number(accum) + Number(current.quantity);
-            }
-        }, 0);
+        return{CF: currentCF === 0? Number(current.balanceCF) + quantity: Number(currentCF.balanceCF) + quantity}
 
-        const overage = supply.filter(data => data.productType === type).reduce((accum, current) => {
-            if(current.overage === "None"){
-                return 0;
-            }else{
-                return Number(accum) + Number(current.quantity);
-            }
-        }, 0);
-
-        return {quantity: quantity, shortage: shortage, overage: overage, balanceCF: current === 0? currentCF.balanceCF: Number(current.balanceCF) + Number(quantity) - getSales(type) }
     }
 
     const BalanceCF = ({data, type, sn}) => {
@@ -50,7 +26,7 @@ const BalanceCF = () => {
             <div style={{marginTop:'5px'}} className="product_balance_header">
                 <div style={ins} className="cells">{sn}</div>
                 <div style={ins} className="cells">{type} </div>
-                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal( getInit(type).balanceCF )}</div>
+                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal( getInit(type).CF )}</div>
             </div>
         )
     }
@@ -73,7 +49,7 @@ const BalanceCF = () => {
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data === null? "0": ApproximateDecimal(Number(data.balanceCF) + Number(getInit(type).quantity) - Number(getSales(type)))}</div>
+                        <div style={title}>{data === null? "0": ApproximateDecimal( getInit(type).CF )}</div>
                         <div style={label}>Quantity</div>
                     </div>
 

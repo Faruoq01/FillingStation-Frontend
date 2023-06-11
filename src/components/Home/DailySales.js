@@ -17,42 +17,31 @@ import AGODailySales from '../DailySales/AGODailySales';
 import DPKDailySales from '../DailySales/DPKDailySales';
 import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
-import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
 import { bulkReports, currentDateValue, dailySupplies, lpoRecords, overages, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords, storemonthlyBarData, supplies } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
-import { Skeleton } from '@mui/material';
-import { isSafari } from 'react-device-detect';
+import { Skeleton, Stack } from '@mui/material';
 import swal from 'sweetalert';
 import ApproximateDecimal from '../common/approx';
 import OveragesAndShortages from '../DailySales/OveragesAndShortages';
 import { dateRange, setSales } from '../../store/actions/dashboard';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import ButtonDatePicker from '../common/CustomDatePicker';
 
-const mediaMatch = window.matchMedia('(max-width: 450px)');
-
-const months = {
-    '01' : 'Jan',
-    '02': 'Feb',
-    '03': 'Mar',
-    '04': 'Apr',
-    '05': 'May',
-    '06': 'Jun',
-    '07': 'Jul',
-    '08': 'Aug',
-    '09': 'Sep',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec',
-}
+// const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const DailySales = (props) => {
     const moment = require('moment-timezone');
     const date = new Date();
     const toString = date.toDateString();
-    const [month, day, year] = toString.split(' ');
+    const [day, year, month] = toString.split(' ');
     const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
 
     const user = useSelector(state => state.authReducer.user);
+    const dipping = useSelector(state => state.dailySalesReducer.overages);
+    const {balances} = useSelector(state => state.dailySalesReducer.bulkReports);
     const dispatch = useDispatch();
     const history = useHistory();
     const [load, setLoads] = useState(false);
@@ -60,15 +49,13 @@ const DailySales = (props) => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
-    const dateHandle = useRef();
-    const [currentDate, setCurrentDate] = useState(date2);
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
     const payments = useSelector(state => state.dailySalesReducer.payments);
     const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
-
+    console.log(balances, 'balances')
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
             return {id: user._id}
@@ -321,7 +308,7 @@ const DailySales = (props) => {
             selectedDate: selectedDate
         }
 
-        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {console.log(data, "sales")
 
             const salesDataRecord = {
                 sales: data.dailyRecords.sales,
@@ -428,49 +415,102 @@ const DailySales = (props) => {
     },[getAllProductData]);
 
     const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
+
         let totalPMS = 0;
         let PMSTankCapacity = 0;
-        let PMSDeadStock = 0;
         let totalAGO = 0;
         let AGOTankCapacity = 0;
-        let AGODeadStock = 0;
         let totalDPK = 0;
         let DPKTankCapacity = 0;
+        
+        const today = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const getDate = currentDate2 === ""? today: currentDate2.format('YYYY-MM-DD');
+        
+        if(today === getDate){
+
+            totalPMS = pms.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel)
+            }, 0);
+
+            PMSTankCapacity = pms.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalAGO = ago.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel)
+            }, 0);
+
+            AGOTankCapacity = ago.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalDPK = dpk.reduce((accum, current) => {
+                return Number(accum) + Number(current.currentLevel)
+            }, 0);
+
+            DPKTankCapacity = dpk.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+        }else{
+
+            const pmsTanks = dipping.filter(data => data.productType === "PMS");
+            const agoTanks = dipping.filter(data => data.productType === "AGO");
+            const dpkTanks = dipping.filter(data => data.productType === "DPK");
+
+            totalPMS = pmsTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.afterSales)
+            }, 0);
+
+            PMSTankCapacity = pmsTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalAGO = agoTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.afterSales)
+            }, 0);
+
+            AGOTankCapacity = agoTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            totalDPK = dpkTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.afterSales)
+            }, 0);
+
+            DPKTankCapacity = dpkTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.tankCapacity)
+            }, 0);
+
+            if(totalPMS === 0 && balances?.pms !== 0){
+                totalPMS = balances?.pms?.balanceCF;
+                PMSTankCapacity = "totalTankCapacity" in balances?.pms? balances?.pms?.totalTankCapacity:  33000*pmsTanks.length;
+            }
+            
+            if(totalAGO === 0 && balances?.ago !== 0){
+                totalAGO = balances?.ago?.balanceCF;
+                AGOTankCapacity = "totalTankCapacity" in balances?.ago? balances?.ago?.totalTankCapacity: 33000*agoTanks.length
+            }
+            
+            if(totalDPK === 0 && balances?.dpk !== 0){
+                totalDPK = balances?.dpk?.balanceCF
+                DPKTankCapacity = "totalTankCapacity" in balances?.dpk? balances?.dpk?.totalTankCapacity: 33000*dpkTanks.length
+            }
+        }
+
+        let PMSDeadStock = 0;
+        let AGODeadStock = 0;
         let DPKDeadStock = 0;
-
-        if(pms.length !== 0){ 
-            for(let pm of pms){
-                totalPMS = totalPMS + Number(pm.currentLevel);
-                PMSTankCapacity = PMSTankCapacity + Number(pm.tankCapacity);
-                PMSDeadStock = PMSDeadStock + Number(pm.deadStockLevel);
-            } 
-        }   
-
-        if(ago.length !== 0){ 
-            for(let ag of ago){
-                totalAGO = totalAGO + Number(ag.currentLevel);
-                AGOTankCapacity = AGOTankCapacity + Number(ag.tankCapacity);
-                AGODeadStock = AGODeadStock + Number(ag.deadStockLevel);
-            } 
-        }  
-
-        if(dpk.length !== 0){ 
-            for(let dp of dpk){
-                totalDPK = totalDPK + Number(dp.currentLevel);
-                DPKTankCapacity = DPKTankCapacity + Number(dp.tankCapacity);
-                DPKDeadStock = DPKDeadStock + Number(dp.deadStockLevel);
-            } 
-        }  
 
         const payload = {
             totalPMS: totalPMS,
-            PMSTankCapacity: PMSTankCapacity === 0? 33000: PMSTankCapacity,
+            PMSTankCapacity: PMSTankCapacity === 0? totalPMS === 0? 33000: Math.floor(totalPMS*2): PMSTankCapacity,
             PMSDeadStock: PMSDeadStock,
             totalAGO: totalAGO,
-            AGOTankCapacity: AGOTankCapacity === 0? 33000: AGOTankCapacity,
+            AGOTankCapacity: AGOTankCapacity === 0? totalAGO === 0? 33000: Math.floor(totalAGO*2): AGOTankCapacity,
             AGODeadStock: AGODeadStock,
             totalDPK: totalDPK,
-            DPKTankCapacity: DPKTankCapacity === 0? 33000: DPKTankCapacity,
+            DPKTankCapacity: DPKTankCapacity === 0? totalDPK === 0? 33000: Math.floor(totalDPK*2): DPKTankCapacity,
             DPKDeadStock: DPKDeadStock,
         }
 
@@ -484,11 +524,13 @@ const DailySales = (props) => {
 
         const cummulative = getCummulativeVolumePerProduct(PMSList, AGOList, DPKList);
         dispatch(passCummulative(cummulative));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tankList, dispatch]);
 
     useEffect(()=>{
+        setValue(currentDate2);
         getProductTanks();
-    }, [getProductTanks]);
+    }, [currentDate2, getProductTanks]);
 
     const changeMenu = (index, item ) => {
         if(!getPerm('1') && item === null) return swal("Warning!", "Permission denied", "info");
@@ -543,15 +585,26 @@ const DailySales = (props) => {
         history.push('/home/outlets/list');
     }
 
-    const updateDate = (e) => {
-        if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
-        const date = e.target.value.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setCurrentDate(format);
-        dispatch(currentDateValue(e.target.value));
-        getAndAnalyzeDailySales(oneStationData, false, e.target.value);
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
 
-        dispatch(dateRange([new Date(e.target.value), new Date(e.target.value)]));
+        return finalDate;
+    }
+
+    const updateDate = (newValue) => {
+        if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
+        setValue(newValue);
+
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
+        setLoads(true);
+        dispatch(currentDateValue(newValue));
+        getAndAnalyzeDailySales(oneStationData, false, getDate);
+
+        dispatch(dateRange([new Date(getDate), new Date(getDate)]));
     }
 
     const goToSupply = () => {
@@ -572,7 +625,7 @@ const DailySales = (props) => {
     const goToPagesInd = (data) => {
         if(data === 'exp') return history.push('/home/analysis/expenses');
         if(data === 'pay') return history.push('/home/analysis/payments');
-    }
+    }      
     
     return(
         <>
@@ -580,7 +633,7 @@ const DailySales = (props) => {
                 <div className='daily-sales-container'>
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
-                            <div>
+                            <div >
                                 {getPerm('0') &&
                                     <Select
                                         labelId="demo-select-small"
@@ -778,22 +831,18 @@ const DailySales = (props) => {
                         <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
                             <div>
                                 <div style={sales}>
-                                    <input onChange={updateDate} ref={dateHandle} style={{
-                                        width: mediaMatch? '140px': '170px',
-                                        height:'30px',
-                                        background:'#054834',
-                                        fontSize:'12px',
-                                        borderRadius:'0px',
-                                        textTransform:'capitalize',
-                                        display:'flex',
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        color:'#fff',
-                                        outline:'none',
-                                        border:'none',
-                                        paddingRight:'10px'
-                                    }} type="date" />
-                                    {isSafari || <div onClick={()=>{dateHandle.current.showPicker()}} style={cover}>{currentDate}</div>}
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <Stack spacing={1}>
+                                            <ButtonDatePicker
+                                                label={`${
+                                                    value === null || "" ? date2 : convertDate(value)
+                                                }`}
+                                                value={value}
+                                                disabled = {load}
+                                                onChange={(newValue) => updateDate(newValue)}
+                                            />
+                                        </Stack>
+                                    </LocalizationProvider>
                                 </div>
                             </div>
                         </div>
@@ -1057,7 +1106,7 @@ const DailySales = (props) => {
                             <DPKDailySales/>
                         </Route>
                         <Route path='/home/daily-sales/report'>
-                            <ComprehensiveReport getDailySales = {getAndAnalyzeDailySales} station={oneStationData}/>
+                            <ComprehensiveReport cummulate = {getProductTanks} station={oneStationData}/>
                         </Route>
                         <Route path='/home/outlets/list'>
                             <ListAllTanks refresh={getAllProductData}/>
@@ -1089,7 +1138,7 @@ const menu = {
 
 const selectStyle2 = {
     width:'130px', 
-    height:'30px', 
+    height: '30px',
     borderRadius:'0px',
     background: '#F2F1F1B2',
     color:'#000',
@@ -1102,25 +1151,12 @@ const selectStyle2 = {
 
 const sales = {
     width:'100%', 
+    height:'35px',
     display:'flex', 
     flexDirection:'row', 
     justifyContent:'flex-end',
     position: 'relative',
     alignItems:'flex-start',
-}
-
-const cover = {
-    position: 'absolute',
-    width:'100px',
-    height: '20px',
-    background:'#054834',
-    fontSize:'12px',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:'5px',
-    left: '0px',
-    color:'#fff'
 }
 
 export default DailySales;

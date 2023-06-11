@@ -63,7 +63,7 @@ const AddPump = (props) => {
             hostTank: currentTank._id,
             hostTankName: currentTank.tankName,
             productType: productType,
-            totalizerReading: totalizer,
+            totalizerReading: totalizer.replace(/[^0-9.]/g, ''),
             organisationID: currentTank.organisationID,
             outletID: currentTank.outletID
         }

@@ -1,4 +1,4 @@
-import { Button, Skeleton } from "@mui/material";
+import { Button, Skeleton, Stack } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import DashboardService from "../../services/dashboard";
 import {
@@ -15,7 +15,9 @@ import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
-import { isSafari } from "react-device-detect";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import ButtonDatePicker from "./CustomDatePicker";
 
 ChartJS.register(
     CategoryScale,
@@ -26,21 +28,6 @@ ChartJS.register(
     Tooltip,
     Legend
 );
-
-const months = {
-    '01' : 'Jan',
-    '02': 'Feb',
-    '03': 'Mar',
-    '04': 'Apr',
-    '05': 'May',
-    '06': 'Jun',
-    '07': 'Jul',
-    '08': 'Aug',
-    '09': 'Sep',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec',
-}
 
 const labels = [
     'Jan',
@@ -453,17 +440,21 @@ const getAnnualTotals = (day, dataList, years) => {
 }
 
 const DashboardGraph = (props) => {
+    const date = new Date();
+    const toString = date.toDateString();
+    const [month, day, year] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
     const moment = require('moment-timezone');
+    const [value, setValue] = useState(null);
 
     const [weeklyDataSet, setWeeklyDataSet] = useState(weeklyData);
     const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
     const [annualDataSet, setAnnualDataSet] = useState(annualData);
-    const [currentDate, setCurrentDate] = useState();
+    // const [currentDate, setCurrentDate] = useState();
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const user = useSelector(state => state.authReducer.user);
 
     const [currentSelection, setCurrentSelection] = useState(0);
-    const dateHandle = useRef();
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -473,14 +464,13 @@ const DashboardGraph = (props) => {
         }
     }
 
-    const updateDate = async(e) => {
+    const updateDate = async(newValue) => {
+        setValue(newValue);
 
-        const date = e.target.value.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setCurrentDate(format);
-
-        const firstDayOfTheWeek = getLastSunday(e.target.value);
-        const lastDayOfTheWeek = getUpcomingSunday(e.target.value);
+        const getDate = newValue.format('YYYY-MM-DD');
+        
+        const firstDayOfTheWeek = getLastSunday(getDate);
+        const lastDayOfTheWeek = getUpcomingSunday(getDate);
 
         const payload = {
             organisation: resolveUserID().id,
@@ -770,17 +760,19 @@ const DashboardGraph = (props) => {
     }
 
     useEffect(()=>{
-        const date = new Date();
-        const toString = date.toDateString();
-        const [month, day, year] = toString.split(' ');
-        const date2 = `${day} ${month} ${year}`;
-        setCurrentDate(date2);
+        // setCurrentDate(date2);
 
         getAllCurrentWeekData();
     }, [getAllCurrentWeekData]);
 
-    const changeSalesDate = () => {
-        dateHandle.current.showPicker();
+    const convertDate = (newValue) => {
+        const getDate = newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
     }
 
     return(
@@ -794,7 +786,7 @@ const DashboardGraph = (props) => {
                             <Button onClick={()=>{switchGraphTab("month")}} sx={currentSelection === 1? activeButton: inActive}  variant="contained"> Month </Button>
                             <Button onClick={()=>{switchGraphTab("year")}} sx={currentSelection === 2? activeButton: inActive}  variant="contained"> Year </Button>
                         </div>
-                        {!isSafari?
+                        {/* {!isSafari?
                             <div 
                                 style={{
                                     height:'auto', 
@@ -849,7 +841,18 @@ const DashboardGraph = (props) => {
                                     color:'#fff'
                                 }} type="date" />
                             </div>
-                        }
+                        } */}
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Stack spacing={1}>
+                                <ButtonDatePicker
+                                    label={`${
+                                        value == null || "" ? date2 : convertDate(value)
+                                    }`}
+                                    value={value}
+                                    onChange={(newValue) => updateDate(newValue)}
+                                />
+                            </Stack>
+                        </LocalizationProvider>
                     </div>
                     <div className='type'>
                         <div className='single-type'>

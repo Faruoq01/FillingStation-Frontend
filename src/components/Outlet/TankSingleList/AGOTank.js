@@ -8,7 +8,7 @@ const TankComponent = (props) => {
     const fuel = useRef();
 
     useEffect(()=>{
-        createTankCanvas(props.data.totalAGO, props.data.AGOTankCapacity, props.data.AGODeadStock);
+        createTankCanvas(props.data.totalAGO, props.data.AGOTankCapacity, 0);
     }, [props.data.AGODeadStock, props.data.AGOTankCapacity, props.data.totalAGO]);
 
     const createTankCanvas = (level, capacity, deadstock) => {

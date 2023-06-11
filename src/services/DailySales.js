@@ -200,6 +200,38 @@ const DailySalesService = {
         });
     },
 
+    getDippingList: (data) => {
+        return APIs.post('/daily-sales/dipping-list', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    validateSales: (data) => {
+        return APIs.post('/daily-sales/validate-sales', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getAllTankLevels: (data) => {
+        return APIs.post('/daily-sales/tanklevels', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
 }
 
 export default DailySalesService;

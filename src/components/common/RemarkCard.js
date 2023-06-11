@@ -44,7 +44,7 @@ const RemarkCard = (props) => {
                     <Avatar alt="Remy Sharp" src={props.data.image} />
                 }
                 <div className="rmk_content">
-                    <div className="user_rmk">{props.data.name}</div>
+                    <div className="user_rmk">{props.data.name+" ("+ props.data.alias +")"}</div>
                     <div className="content_rmk">{convertTime(props.data.content)}</div>
                     <div className="rmk_date">{convertDate(props.data.createdAt)}.</div>
                 </div>

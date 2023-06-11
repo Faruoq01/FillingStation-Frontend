@@ -7,18 +7,29 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { adminOutlet, getAllStations } from '../../store/actions/outlet';
-import { OutlinedInput } from '@mui/material';
+import { OutlinedInput, Stack } from '@mui/material';
 import RecordPaymentService from '../../services/recordPayment';
 import { allBankPayment, allPosPayment, searchBankPayment, searchPosPayment } from '../../store/actions/recordPayment';
 import config from '../../constants';
 import { ThreeDots } from 'react-loader-spinner';
 import swal from 'sweetalert';
 import DailySalesService from '../../services/DailySales';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { bulkReports, currentDateValue } from '../../store/actions/dailySales';
+import { dateRange } from '../../store/actions/dashboard';
+import ButtonDatePicker from '../common/CustomDatePicker';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 const mobile = window.matchMedia('(max-width: 1150px)');
 
 const Payments = (props) => {
+
+    const date = new Date();
+    const toString = date.toDateString();
+    const [day, year, month] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
+    const [value, setValue] = React.useState(null);
 
     const [setLpo] = React.useState(false);
     const user = useSelector(state => state.authReducer.user);
@@ -243,6 +254,41 @@ const Payments = (props) => {
         });
     }
 
+    const convertDate = (newValue) => {
+        const getDate = newValue === ""? date2: newValue.format('MM/DD/YYYY');
+        const date = new Date(getDate);
+        const toString = date.toDateString();
+        const [day, year, month] = toString.split(' ');
+        const finalDate = `${day} ${month} ${year}`;
+
+        return finalDate;
+    }
+
+    const updateDate = (newValue) => {
+        // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
+        setValue(newValue);
+        
+        const getDate = newValue === ""? date2: newValue.format('YYYY-MM-DD');
+        dispatch(currentDateValue(newValue));
+        getAndAnalyzeDailySales(oneStationData, false, getDate);
+        dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+    }
+
+    const getAndAnalyzeDailySales = (data, status, value) => {
+        const salesPayload = {
+            organisationID: resolveUserID().id,
+            outletID: data._id,
+            onLoad: status,
+            selectedDate: value
+        }
+
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+            dispatch(bulkReports(data.dailyRecords));
+            dispatch(allBankPayment(data.dailyRecords.payments));
+            dispatch(allPosPayment(data.dailyRecords.pospayment));
+        });
+    }
+
     return(
         <React.Fragment>
             <div data-aos="zoom-in-down" style={{marginTop: mobile.matches? "10px": "auto"}} className='paymentsCaontainer'>
@@ -315,7 +361,17 @@ const Payments = (props) => {
                             </div>
                         </div>
                         <div style={{justifyContent: 'flex-end'}} className='butt'>
-                            
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <Stack spacing={1}>
+                                    <ButtonDatePicker
+                                        label={`${
+                                            value == null || "" ? date2 : convertDate(value)
+                                        }`}
+                                        value={value}
+                                        onChange={(newValue) => updateDate(newValue)}
+                                    />
+                                </Stack>
+                            </LocalizationProvider>
                         </div>
                     </div>
 

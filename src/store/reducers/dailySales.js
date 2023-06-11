@@ -36,9 +36,9 @@ const initialState = {
     },
     bulkReports: {
         balances: {
-            pms: null,
-            ago: null,
-            dpk: null
+            pms: 0,
+            ago: 0,
+            dpk: 0
         },
         supply: [],
         sales: [],

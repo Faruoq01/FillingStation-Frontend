@@ -206,7 +206,7 @@ const ProductOrderModal = (props) => {
                                         outline: 'none',
                                         paddingLeft:'10px',
                                     }} placeholder="" 
-                                    type='text'
+                                    type={'number'}
                                     onChange={e => setQuantity(e.target.value)}
                                 />
                             </div>

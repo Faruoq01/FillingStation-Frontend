@@ -19,6 +19,14 @@ const QueryModal = (props) => {
 
     const handleClose = () => props.close(false);
 
+    const resolveUserID = () => {
+        if(user.userType === "superAdmin"){
+            return {id: user._id}
+        }else{
+            return {id: user.organisationID}
+        }
+    }
+
     const submit = () => {
         if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(employeeName === "") return swal("Warning!", "Employee name field cannot be empty", "info");
@@ -31,16 +39,16 @@ const QueryModal = (props) => {
             employeeName: employeeName,
             queryTitle: queryTitle,
             description: description,
-            outletID: oneStationData?.outletID,
-            organisationID: user.organisationID,
+            outletID: oneStationData?._id,
+            organisationID: resolveUserID().id,
         }
 
         QueryService.createQuery(payload).then((data) => {
-            swal("Success", "Query created successfully!", "success");
+            props.refresh();
         }).then(()=>{
             setLoading(false);
-            props.refresh();
             handleClose();
+            swal("Success", "Query created successfully!", "success");
         })
     }
 
@@ -108,7 +116,7 @@ const QueryModal = (props) => {
                             </div>
                        </div>
 
-                        <div style={{marginTop:'10px'}} className='butt'>
+                        <div style={{marginTop:'10px', height: '30px'}} className='butt'>
                             <Button sx={{
                                 width:'100px', 
                                 height:'30px',  
@@ -137,7 +145,6 @@ const QueryModal = (props) => {
                                 />: null
                             }
                         </div>
-                        
                     </div>
                 </div>
         </Modal>
