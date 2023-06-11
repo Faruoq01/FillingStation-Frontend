@@ -65,7 +65,7 @@ const CreateSupply = (props) => {
             organisationID: resolveUserID().id
         }
  
-        IncomingService.getAllIncoming3(income).then((data) => {console.log(data, "incoming")
+        IncomingService.getAllIncoming3(income).then((data) => {
             setIncomingList(data.incoming.incoming);
         });
 
