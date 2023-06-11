@@ -34,7 +34,7 @@ function RightWrapper(props) {
         icon={
           <img
             src={require("../../../../../assets/estation/user.svg").default}
-            style={{ color: "#fff" }}
+            style={{ color: "#fff", width: "100%", height: "100%" }}
           />
         }
         amount="201"
@@ -51,7 +51,7 @@ function RightWrapper(props) {
         icon={
           <img
             src={require("../../../../../assets/estation/users.svg").default}
-            style={{ color: "#fff" }}
+            style={{ color: "#fff", width: "100%", height: "100%" }}
           />
         }
         amount="254"
@@ -120,7 +120,7 @@ function RightWrapper(props) {
           title="Total PMS Dispensed"
         />
       </div> */}
-      {/* <RCard
+      <RCard
         onClick={() => {}}
         arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{
@@ -131,12 +131,12 @@ function RightWrapper(props) {
         icon={
           <img
             src={require("../../../../../assets/estation/assets.svg").default}
-            style={{ color: "#fff" }}
+            style={{ color: "#fff", width: "100%", height: "100%" }}
           />
         }
         amount="NGN 40, 000"
         title="Incoming Orders"
-      /> */}
+      />
     </div>
   );
 }

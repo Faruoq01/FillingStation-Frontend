@@ -6,9 +6,8 @@ import { Circle } from "@mui/icons-material";
 function RCard(props) {
   return (
     <div className="r-card" {...props}>
-      {/* <div className="r-card-top">
-        <div className="r-icon-shade"></div>
-        <div className="r-icon-wrapper">{props.icon}</div>
+      <div className="r-card-top">
+        <div className="r-icon-shade">{props.icon}</div>
         <div className="r-title-wrap">
           <span className="r-card-amount">{props.amount}</span>
           <label className="r-card-title">
@@ -35,7 +34,7 @@ function RCard(props) {
           src={require("../../../../../assets/estation/Arrow.svg").default}
           style={{ color: "#054834", marginBottom: 20 }}
         />
-      </div> */}
+      </div>
     </div>
   );
 }

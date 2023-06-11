@@ -23,12 +23,14 @@ $app_green: #054834;
   padding: 15px;
 
   .r-icon-shade {
-    width: 60px;
-    height: 60px;
-    border-radius: 40px;
-    background: $app_green;
-    opacity: 0.3;
-    position: relative;
+    width: 55px;
+      height: 55px;
+      overflow: hidden;
+      border-radius: 50%;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+    
   }
 
   .r-title-wrap {
@@ -57,15 +59,15 @@ $app_green: #054834;
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 15px;
   line-height: 32px;
-  color: #323232;
+  color: #000;
+  text-align: start;
 }
 
 .r-card-title {
   font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 500;
+ font-size: 12px;
   color: #054834;
 }
 
