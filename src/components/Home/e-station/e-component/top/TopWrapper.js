@@ -20,20 +20,22 @@ function TopWrapper({ disableCard, ...props }) {
   return (
     <div style={{ display: "flex", width: "100%" }}>
       <div className="e-top-wrapper">
-        <div className="date-select">
+        {/* <div className="date-select">
           <AppSelect data={data} />
           <AppDate />
-        </div>
+        </div> */}
         <div
           style={{ display: disableCard ? "none" : null }}
           className="card-wrapper"
         >
           <TopCard
-            arrowStyle={{ left: !mobile ? "30px" : tablet ? "25rem" : "45px" }}
+            arrowStyle={{ left: !mobile ? "0px" : tablet ? "25rem" : "45px" }}
             icon={
               <img
-                src={require("../../img/wallet.svg").default}
-                style={{ color: "#fff", width: 30, height: 30 }}
+                src={
+                  require("./../../../../../assets/estation/wallet.svg").default
+                }
+                style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }
             amount="NGN 530,000"
