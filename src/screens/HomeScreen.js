@@ -70,6 +70,7 @@ import { adminOutlet, getAllStations } from '../store/actions/outlet';
 import OverageList from '../components/DailySales/OverageList';
 import { Badge } from '@mui/material';
 import NotificationDrawer from '../components/common/NotificationDrawer';
+import EStation from '../components/Home/e-station/EStation';
 
 const HomeScreen = () => {
 
@@ -240,6 +241,7 @@ const HomeScreen = () => {
                 '/home/daily-record-sales': 'Record Sales ',
                 '/home/analysis': 'Analysis',
                 '/home/lpo': 'Corporate Sales',
+                '/home/estation': 'E-station',
                 '/home/dashEmp': '← Employee List',
                 '/home/lpo/list': 'LPO',
                 '/home/lpo/company': 'Corporate Company',
@@ -353,11 +355,15 @@ const HomeScreen = () => {
         setOpenRight(!openRight);
     }
 
+    const goToEsales = () => {
+        history.push("/home/estation");
+    }
+
     return(
         <div className='home-container'>
             <div style={{background: user.sideBarMode}} className='side-bar'>
                 <div className='inner-side-bar'>
-                    <img className='home-logo' src={user.image === null? homeLogo: config.BASE_URL+user.image} alt="icon" />
+                    <img onClick={goToEsales} className='home-logo' src={user.image === null? homeLogo: config.BASE_URL+user.image} alt="icon" />
                     <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                     <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                     <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
@@ -381,7 +387,7 @@ const HomeScreen = () => {
             >
                 <div style={{background: user.sideBarMode, display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
                     <div style={{width:'90%'}} className='inner-side-bar'>
-                        <img className='home-logo' src={user.image === null? homeLogo: config.BASE_URL+user.image} alt="icon" />
+                        <img onClick={goToEsales} className='home-logo' src={user.image === null? homeLogo: config.BASE_URL+user.image} alt="icon" />
                         <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                         <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                         <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
@@ -542,6 +548,9 @@ const HomeScreen = () => {
                                 history={history}
                                 activeRoute={activeRoute}
                             />
+                        </Route>
+                        <Route path='/home/estation'>
+                            <EStation activeRoute={activeRoute}/>
                         </Route>
                         <Route path='/home/supply'>
                             <Supply activeRoute={activeRoute}/>

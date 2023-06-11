@@ -50,6 +50,9 @@ function App() {
           <Route path='/home/lpo' component={HomeScreen} />
           <Route path='/home/lpo/list' component={HomeScreen} />
           <Route path='/home/lpo/company' component={HomeScreen} />
+
+          <Route path='/home/estation' component={HomeScreen} />
+
           <Route path='/home/supply' component={HomeScreen} />
           <Route path='/home/supply/create' component={HomeScreen} />
           <Route path='/home/tank' component={HomeScreen} />
