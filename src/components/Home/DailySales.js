@@ -28,7 +28,7 @@ import { dateRange, setSales } from '../../store/actions/dashboard';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ButtonDatePicker from '../common/CustomDatePicker';
-import UpdatePayments from '../Modals/DailySales/payments';
+import UpdatePayments from '../Modals/DailySales/UpdatePayments';
 
 // const mediaMatch = window.matchMedia('(max-width: 450px)');
 
