@@ -36,6 +36,10 @@ const PaymentModal = (props) => {
 
     const handleClose = () => props.close(false);
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const submit = () => { 
         if((typeof(cert) === "string") || (typeof(reciept) === "string")){
             if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
@@ -51,7 +55,7 @@ const PaymentModal = (props) => {
             const payload = {
                 organisationalName: organisation,
                 description: description,
-                amount: amount,
+                amount: removeSpecialCharacters(amount),
                 contactPerson: contact,
                 phone: phone,
                 attachCertificate: cert,
@@ -91,7 +95,7 @@ const PaymentModal = (props) => {
             const formData = new FormData();
             formData.append("organisationalName", organisation);
             formData.append("description", description);
-            formData.append("amount", amount);
+            formData.append("amount", removeSpecialCharacters(amount));
             formData.append("contactPerson", contact);
             formData.append("phone", phone);
             formData.append("attachCertificate", cert);
@@ -222,7 +226,7 @@ const PaymentModal = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
-                                    type="number"
+                                    type="text"
                                     onChange={e => setAmount(e.target.value)}
                                 />
                             </div>

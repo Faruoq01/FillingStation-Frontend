@@ -42,7 +42,11 @@ const AddTank = (props) => {
         }else if(props.tabs === 3){
             setProductType('DPK');
         }
-    }, [props.tabs])
+    }, [props.tabs]);
+
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
 
     const handleAddPump = async() => {
 
@@ -63,10 +67,10 @@ const AddTank = (props) => {
 
         const data = {
             tankName: tankName,
-            tankHeight: tankHeight,
+            tankHeight: removeSpecialCharacters(tankHeight),
             productType: productType,
-            tankCapacity: tankCapacity,
-            deadStockLevel: deadStockLevel,
+            tankCapacity: removeSpecialCharacters(tankCapacity),
+            deadStockLevel: removeSpecialCharacters(deadStockLevel),
             calibrationDate: calibrationDate,
             organisationID: oneStation?.organisation,
             outletID: oneStation?._id,
@@ -74,7 +78,7 @@ const AddTank = (props) => {
             station: oneStation?.outletName,
             previousLevel: "None",
             quantityAdded: "None",
-            currentLevel: currentStock,
+            currentLevel: removeSpecialCharacters(currentStock),
         } 
         
         await dispatch(createTanks(data, setWaiting));
@@ -158,7 +162,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 onChange={e => setTankHeight(e.target.value)}
                             />
                         </div>
@@ -177,7 +181,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 onChange={e => setTankCapacity(e.target.value)}
                             />
                         </div>
@@ -196,7 +200,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
                         </div>
@@ -215,7 +219,7 @@ const AddTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 onChange={e => setDeadStockLevel(e.target.value)}
                             />
                         </div>

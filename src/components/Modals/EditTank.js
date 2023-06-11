@@ -36,6 +36,10 @@ const EditTank = (props) => {
         setProductType(props.data.productType);
     },[props.data.calibrationDate, props.data.currentLevel, props.data.deadStockLevel, props.data.productType, props.data.tankCapacity, props.data.tankHeight, props.data.tankName])
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const handleAddPump = async() => {
 
         if(tankName === "") return swal("Warning!", "Tank name field cannot be empty", "info");
@@ -50,12 +54,12 @@ const EditTank = (props) => {
         const payload = {
             id: props.data._id,
             tankName: tankName,
-            tankHeight: tankHeight,
+            tankHeight: removeSpecialCharacters(tankHeight),
             productType: productType,
-            tankCapacity: tankCapacity,
-            deadStockLevel: deadStockLevel,
+            tankCapacity: removeSpecialCharacters(tankCapacity),
+            deadStockLevel: removeSpecialCharacters(deadStockLevel),
             calibrationDate: calibrationDate,
-            currentLevel: currentStock,
+            currentLevel: removeSpecialCharacters(currentStock),
             organisationID: oneStation?.organisation,
             outletID: oneStation?._id,
         }
@@ -149,7 +153,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 value={tankHeight}
                                 onChange={e => setTankHeight(e.target.value)}
                             />
@@ -169,7 +173,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 value={tankCapacity}
                                 onChange={e => setTankCapacity(e.target.value)}
                             />
@@ -189,7 +193,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type={'number'}
+                                type={'text'}
                                 value={currentStock}
                                 onChange={e => setCurrentStock(e.target.value)}
                             />
@@ -209,7 +213,7 @@ const EditTank = (props) => {
                                         border:'1px solid #777777',
                                     },
                                 }} placeholder="" 
-                                type="number"
+                                type="text"
                                 value={deadStockLevel}
                                 onChange={e => setDeadStockLevel(e.target.value)}
                             />

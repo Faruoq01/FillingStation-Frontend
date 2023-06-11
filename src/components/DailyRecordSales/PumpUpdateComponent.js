@@ -173,6 +173,10 @@ const PumpUpdateComponent = (props) => {
         }
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const setTotalizer = (e, pump, index) => {
         
         if(selectedTanks.length !== 0){
@@ -181,7 +185,7 @@ const PumpUpdateComponent = (props) => {
 
             if(connectedTank.length !== 0){
 
-                const totalizerDiff = Number(e.target.value) - Number(pump.totalizerReading);
+                const totalizerDiff = Number(removeSpecialCharacters(e.target.value)) - Number(pump.totalizerReading);
                 const quantity = Number(connectedTank[0].currentLevel) - Number(connectedTank[0].deadStockLevel);
 
                 if(oneStationData === null){
@@ -202,7 +206,7 @@ const PumpUpdateComponent = (props) => {
                         swal("Warning!", "Reading exceeded tank level", "info");
         
                     }else{
-                        updateTotalizer(e.target.value, totalizerDiff, index, pump);
+                        updateTotalizer(removeSpecialCharacters(e.target.value), totalizerDiff, index, pump);
                     }
                 }
             }else{

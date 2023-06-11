@@ -22,7 +22,6 @@ import PlacesAutocomplete, {
 const CreateFillingStation = (props) => {
 
     const dispatch = useDispatch();
-    const saveButton = useRef();
     const open = useSelector(state => state.outletReducer.openModal);
     const user = useSelector(state => state.authReducer.user);
 
@@ -69,7 +68,6 @@ const CreateFillingStation = (props) => {
         if(longitude === "") return swal("Warning!", "Longitude field cannot be empty", "info");
         if(latitude === "") return swal("Warning!", "latitude field cannot be empty", "info");
         setLoadingSpinner(true);
-        saveButton.current.disabled = true;
 
         const data = {
             outletName: outletName,
@@ -79,20 +77,19 @@ const CreateFillingStation = (props) => {
             alias: alias,
             noOfTanks: "",
             noOfPumps: "",
-            PMSCost: pmsCost,
-            PMSPrice: pmsPrice,
-            AGOCost: agoCost,
-            AGOPrice: agoPrice,
-            DPKCost: dpkCost,
-            DPKPrice: dpkPrice,
+            PMSCost: removeSpecialCharacters(pmsCost),
+            PMSPrice: removeSpecialCharacters(pmsPrice),
+            AGOCost: removeSpecialCharacters(agoCost),
+            AGOPrice: removeSpecialCharacters(agoPrice),
+            DPKCost: removeSpecialCharacters(dpkCost),
+            DPKPrice: removeSpecialCharacters(dpkPrice),
             organisation: resolveUserID().id,
             longitude: longitude,
             latitude: latitude
         }
-
-        await dispatch(createFillingStation(data, saveButton));
+        
+        await dispatch(createFillingStation(data, setLoadingSpinner));
         await dispatch(closeModal(0));
-        setLoadingSpinner(false);
         await props.getStations();
         dispatch(openModal(4));
     }
@@ -121,6 +118,10 @@ const CreateFillingStation = (props) => {
         })
         .catch(error => console.error('Error', error));
     };
+
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
 
     return(
         <Modal
@@ -298,7 +299,8 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
+                                    value={pmsCost}
                                     onChange={e => setPMSCost(e.target.value)}
                                 />
                             </div>
@@ -317,7 +319,8 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
+                                    value={pmsPrice}
                                     onChange={e => setPMSPrice(e.target.value)}
                                 />
                             </div>
@@ -336,7 +339,8 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
+                                    value={agoCost}
                                     onChange={e => setAGOCost(e.target.value)}
                                 />
                             </div>
@@ -355,7 +359,8 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
+                                    value={agoPrice}
                                     onChange={e => setAGOPrice(e.target.value)}
                                 />
                             </div>
@@ -374,7 +379,8 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
+                                    value={dpkCost}
                                     onChange={e => setDPKCost(e.target.value)}
                                 />
                             </div>
@@ -393,7 +399,8 @@ const CreateFillingStation = (props) => {
                                             border:'1px solid #777777',
                                         },
                                     }} placeholder="" 
-                                    type={'number'}
+                                    type={'text'}
+                                    value={dpkPrice}
                                     onChange={e => setDPKPrice(e.target.value)}
                                 />
                             </div>
@@ -447,7 +454,7 @@ const CreateFillingStation = (props) => {
                         </div>
 
                         <div style={{height:'30px'}} className='butt'>
-                            <Button ref={saveButton} sx={{
+                            <Button disabled={loadingSpinner} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',

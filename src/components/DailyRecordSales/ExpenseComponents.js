@@ -68,6 +68,10 @@ const ExpenseComponents = (props) => {
         });
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const addDetailsToList = () => {
         if(oneStationData === null) return swal("Warning!", "please select station", "info");
         if(expenseName === "") return swal("Warning!", "Expense name field should not be empty", "info");
@@ -134,7 +138,7 @@ const ExpenseComponents = (props) => {
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Expense Amount</span>
-                            <input style={{width:'98%'}} value={expenseAmount} onChange={e => setExpenseAmount(e.target.value)} className='lpo-inputs' type={'text'} />
+                            <input style={{width:'98%'}} value={expenseAmount} onChange={e => setExpenseAmount(removeSpecialCharacters(e.target.value))} className='lpo-inputs' type={'text'} />
                         </div>
                     </div>
 

@@ -1,0 +1,88 @@
+$shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
+;
+$ash : #C6C6C6;
+$shadow_white : #E6F5F1;
+$shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
+;
+$app_green: #054834;
+// ========= Each Card at THE TOP========
+.r-card {
+  width: 100%;
+  height: 100px;
+  border-radius: 8px;
+  box-shadow: $shadow;
+  background: $shadow_white;
+  display: flex;
+  cursor: pointer;
+  
+}
+.r-card-top {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+
+  .r-icon-shade {
+    width: 60px;
+    height: 60px;
+    border-radius: 40px;
+    background: $app_green;
+    opacity: 0.3;
+    position: relative;
+  }
+
+  .r-title-wrap {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.r-icon-wrapper {
+  width: 50px;
+  z-index: 1000;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 25px;
+  background: $app_green;
+  position: absolute;
+  margin-top: 5px;
+  margin-left: 5px;
+
+}
+
+.r-card-amount {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 32px;
+  color: #323232;
+}
+
+.r-card-title {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  color: #054834;
+}
+
+.r-card-bottom {
+  align-self: flex-end;
+  position: relative;
+  left: 60px;
+}
+
+@media screen and (max-width:'900') {
+  .r-card {
+      width: 100%;
+      margin-top: 15px;
+    }
+  
+    .r-card-bottom {
+      left: 40px;
+    }
+       
+}

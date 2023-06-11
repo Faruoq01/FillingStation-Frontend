@@ -37,6 +37,10 @@ const ProductOrderModal = (props) => {
         }
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const submit = () => {
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
         if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
@@ -45,18 +49,14 @@ const ProductOrderModal = (props) => {
         if(productType === "") return swal("Warning!", "Product field cannot be empty", "info");
         if(costPerLitre === "") return swal("Warning!", "Cost price field cannot be empty", "info");
         if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
-
-        if(isNaN(Number(quantity))) return swal("Warning!", "Quantity field is not a number", "info");
-        if(isNaN(Number(costPerLitre))) return swal("Warning!", "Cost field is not a number", "info");
-
         setLoading(true);
 
         const payload = {
             dateCreated: dateCreated,
             depot: depot,
             depotAddress: depotAddress,
-            quantity: quantity,
-            costPerLitre: costPerLitre,
+            quantity: removeSpecialCharacters(quantity),
+            costPerLitre: removeSpecialCharacters(costPerLitre),
             productType: productType,
             attachCertificate: uploadFile,
             organizationID: resolveUserID().id
@@ -98,6 +98,10 @@ const ProductOrderModal = (props) => {
     const menuSelection = (e, data) => {
         setDefaults(e);
         setProductType(data);
+    }
+
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
     }
 
     return(
@@ -206,8 +210,8 @@ const ProductOrderModal = (props) => {
                                         outline: 'none',
                                         paddingLeft:'10px',
                                     }} placeholder="" 
-                                    type={'number'}
-                                    onChange={e => setQuantity(e.target.value)}
+                                    type={'text'}
+                                    onChange={e => setQuantity(removeSpecialCharacters(e.target.value))}
                                 />
                             </div>
 
@@ -226,7 +230,7 @@ const ProductOrderModal = (props) => {
                                     }} placeholder="" 
                                     type='text'
                                     value={costPerLitre}
-                                    onChange={e => setCostPerLitre(e.target.value)}
+                                    onChange={e => setCostPerLitre(removeSpecialCharacters(e.target.value))}
                                 />
                             </div>
 
@@ -265,7 +269,7 @@ const ProductOrderModal = (props) => {
                        </div>
 
                         <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                            <Button sx={{
+                            <Button disabled={loading} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',

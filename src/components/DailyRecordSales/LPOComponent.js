@@ -205,8 +205,12 @@ const LPOComponent = (props) => {
         dispatch(updatePayload(tankFromPayload));
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const updateTankWithLPO = (e) => {
-        setQuantity(e.target.value);
+        setQuantity(removeSpecialCharacters(e.target.value));
 
         if(dispensedPump === null){
             setQuantity("");

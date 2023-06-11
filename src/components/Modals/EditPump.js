@@ -27,6 +27,10 @@ const EditPump = (props) => {
 
     const handleClose = () => dispatch(props.close(false));
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const handleOpen = () => {
         if(hostTank === null) return swal("Warning!", "Please select host tank", "info");
         if(pumpName === "") return swal("Warning!", "Pump name field cannot be empty", "info");
@@ -40,7 +44,7 @@ const EditPump = (props) => {
             pumpName: pumpName,
             hostTank: hostTank._id,
             productType: productType,
-            totalizerReading: totalizer,
+            totalizerReading: removeSpecialCharacters(totalizer),
             organisationID: hostTank.organisationID,
             outletID: hostTank.outletID,
             hostTankName: hostTank.tankName,
@@ -174,7 +178,7 @@ const EditPump = (props) => {
                                 },
                             }} placeholder="" 
                             value={totalizer}
-                            type="number"
+                            type="text"
                             onChange={e => setTotalizer(e.target.value)}
                         />
                     </div>

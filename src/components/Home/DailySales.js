@@ -28,6 +28,7 @@ import { dateRange, setSales } from '../../store/actions/dashboard';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ButtonDatePicker from '../common/CustomDatePicker';
+import UpdatePayments from '../Modals/DailySales/UpdatePayments';
 
 // const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -55,7 +56,8 @@ const DailySales = (props) => {
     const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
-    console.log(balances, 'balances')
+    const [payMe, setPayMe] = useState(false);
+
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
             return {id: user._id}
@@ -626,11 +628,16 @@ const DailySales = (props) => {
         if(data === 'exp') return history.push('/home/analysis/expenses');
         if(data === 'pay') return history.push('/home/analysis/payments');
     }      
+
+    const openPayModal = () => {
+        setPayMe(true);
+    }
     
     return(
         <>
             { props.activeRoute.split('/').length === 3 &&
                 <div className='daily-sales-container'>
+                    {payMe && <UpdatePayments open={payMe} close={setPayMe} />}
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
                             <div >
@@ -963,6 +970,7 @@ const DailySales = (props) => {
                                     View in details
                                 </Button>
                             </div>
+                            <div onClick={openPayModal} style={updatePay}>Click here to update payment <span style={{fontSize: '16px'}}>🠒</span></div>
                             <div className='inner-section'>
                                 <div className='inner-content'>
                                     <div className='conts'>
@@ -1157,6 +1165,12 @@ const sales = {
     justifyContent:'flex-end',
     position: 'relative',
     alignItems:'flex-start',
+}
+
+const updatePay = {
+    fontWeight: '500',
+    color: 'green',
+    marginTop: '10px'
 }
 
 export default DailySales;

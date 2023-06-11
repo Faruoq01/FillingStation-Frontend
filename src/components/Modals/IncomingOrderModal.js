@@ -45,6 +45,10 @@ const IncomingOrderModal = (props) => {
 
     const handleClose = () => props.close(false);
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const submit = async() => {
         if(transporter === "") return swal("Warning!", "Transporter cannot be empty", "info");
         if(depotStation === "") return swal("Warning!", "Depot station field cannot be empty", "info");
@@ -106,7 +110,11 @@ const IncomingOrderModal = (props) => {
         setWayBillNo("");
         setDriverName("");
         setPhoneNumber("");
-        swal("Success", "Product order created successfully!", "success");
+        setLoadedQuantity("0");
+        setProductOrderID("");
+        setDefault(0);
+        setVal(1);
+        swal("Success", "Incoming order created successfully!", "success");
         props.refresh();
         handleClose();
     }
@@ -160,12 +168,12 @@ const IncomingOrderModal = (props) => {
         if(findID === -1){
             swal("Warning!", "Please select a field first to add quantity!", "info");
         }else{
-            cloneSelected[findID] = {...cloneSelected[findID], incomingQuantity: e.target.value}
+            cloneSelected[findID] = {...cloneSelected[findID], incomingQuantity: removeSpecialCharacters(e.target.value)}
             setSelected(cloneSelected);
 
             const totalLoadedQuantity = cloneSelected.reduce((accum, current) => {
                 return Number(accum) + Number(current.incomingQuantity);
-            }, 0)
+            }, 0);
     
             setLoadedQuantity(totalLoadedQuantity);
         }
@@ -525,7 +533,7 @@ const IncomingOrderModal = (props) => {
                        </div>
 
                         <div style={{marginTop:'10px', height:'30px'}} className='butt'>
-                            <Button sx={{
+                            <Button disabled={loading} sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',

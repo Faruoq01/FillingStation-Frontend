@@ -1,9 +1,9 @@
 import { Backdrop, Button } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { createIncomingOrder, searchIncoming } from "../../store/actions/incomingOrder";
+import { searchIncoming } from "../../store/actions/incomingOrder";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -11,20 +11,21 @@ import "../../styles/supplystyle.scss";
 import SupplyService from "../../services/supplyService";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
-import { adminOutlet, getAllOutletTanks } from "../../store/actions/outlet";
+import { getAllOutletTanks } from "../../store/actions/outlet";
 import { BallTriangle } from "react-loader-spinner";
+import { useHistory } from "react-router-dom";
 
 const CreateSupply = (props) => {
-
+    const history = useHistory();
     const [selected, setSelected] = useState([]);
     const [menus, setMenus] = useState(false);
     const dispatch = useDispatch();
-    const incomingOrder = useSelector(state => state.incomingOrderReducer.incomingOrder);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
     const [supplyList, setSupplyList] = useState([]);
     const user = useSelector(state => state.authReducer.user);
+    const [incomingList, setIncomingList] = useState([]);
 
     // payload data
     const [transporter, setTransporter] = useState('');
@@ -57,38 +58,39 @@ const CreateSupply = (props) => {
         }
     }
 
-    const getAllIncoming = useCallback(() => {
+    const getAllIncoming = () => {
 
-        if(user.userType !== "superAdmin"){
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-            });
+        const income = {
+            outletID: oneStationData._id,
+            organisationID: resolveUserID().id
+        }
+ 
+        IncomingService.getAllIncoming3(income).then((data) => {
+            setIncomingList(data.incoming.incoming);
+        });
 
-    
-            const income = {
-                outletID: user.outletID,
-                organisationID: resolveUserID().id
-            }
-     
-            IncomingService.getAllIncoming3(income).then((data) => {
-                dispatch(createIncomingOrder(data.incoming.incoming));
-            });
-    
-            OutletService.getAllOutletTanks(income).then(data => {
-                dispatch(getAllOutletTanks(data.stations));
-            });
+        OutletService.getAllOutletTanks(income).then(data => {
+            dispatch(getAllOutletTanks(data.stations));
+        });
+    };
+
+    useEffect(()=>{
+        if(oneStationData === null){
+            history.push("/home/supply")
+        }else{
+            getAllIncoming();
+        }
+
+        return () => {
+            props.refresh();
         }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(()=>{
-        getAllIncoming();
-    }, [getAllIncoming]);
-
     const incomingTanks = (e, data) => {
         const room = Number(data.tankCapacity) - Number(data.currentLevel);
-        let addedQuantity = Number(e.target.value);
+        let addedQuantity = Number(removeSpecialCharacters(e.target.value));
 
         if(addedQuantity > room){
             swal("Warning!", `This tank doesn't have the capacity, can only accommodate ${room} litres extra. `, "info");
@@ -169,6 +171,9 @@ const CreateSupply = (props) => {
             setProductSupply("");
             setSupplyDate("");
             setSelected([]);
+
+            const incomingLeft = incomingList.filter(data => data._id !== selectedIncomingOrders._id);
+            setIncomingList(incomingLeft);
         
         }else{
             swal("Warning!", `Please add quantity to each tank. `, "info");
@@ -207,36 +212,48 @@ const CreateSupply = (props) => {
         }
     }
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const updatedTankSupply = (e) => {
-        setQuantityLoaded(e.target.value);
+        setQuantityLoaded(removeSpecialCharacters(e.target.value));
     }
 
     const saveSupply = () => {
-
-        if(supplyList.length !== 0){
-            setStop(true);
-            const payload = {
-                load: supplyList
-            }
-    
-            SupplyService.createSupply(payload).then(data => {
-                if(data.status === "failed"){
-                    setSupplyList([]);
-                    props.refresh();
-                    return "Supply can only be recorded for today or less."
+        swal({
+            title: "Alert!",
+            text: `Are you sure you want to save this supply?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                
+                if(supplyList.length !== 0){
+                    setStop(true);
+                    const payload = {
+                        load: supplyList
+                    }
+            
+                    SupplyService.createSupply(payload).then(data => {
+                        if(data.status === "failed"){
+                            setSupplyList([]);
+                            swal("Succes!", 'Supply can only be recorded for today or less.', "success");
+                        }else{
+                            setSupplyList([]);
+                            swal("Succes!", 'Supply has been recorded successfully!', "success");
+                        }
+                    }).then(()=>{
+                        setStop(false);
+                        history.push('/home/supply');
+                    });
                 }else{
-                    return "Supply has been recorded successfully!."
+                    swal("Warning!", `You can not submit an empty supply list. `, "info");
                 }
-            }).then((msg)=>{console.log("this line executes")
-                setStop(false);
-                setSupplyList([]);
-                props.refresh();
-                getAllIncoming();
-                swal("Succes!", msg, "success");
-            });
-        }else{
-            swal("Warning!", `You can not submit an empty supply list. `, "info");
-        }
+            }
+        });
     }
 
     return(
@@ -271,7 +288,7 @@ const CreateSupply = (props) => {
                                     <input onChange={(e => searchWayBill(e))} className="searches" type={'text'} placeholder="Search" />
                                     <div className="cons">
                                         {
-                                            incomingOrder.map((data, index) => {
+                                            incomingList.map((data, index) => {
                                                 return(
                                                     <span key={index} onClick={()=>{selectedIncomingOrder(data)}} className="ids">&nbsp;&nbsp;&nbsp;{`${data.wayBillNo}`}</span>
                                                 )

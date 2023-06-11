@@ -2,7 +2,7 @@ import React, {useRef, useEffect} from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import ApproximateDecimal from '../../common/approx';
 
-const TankComponent = (props) => {console.log(props.data, "this is it")
+const TankComponent = (props) => {
 
     const canvas = useRef();
     const fuel = useRef();

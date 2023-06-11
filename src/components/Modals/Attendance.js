@@ -21,6 +21,10 @@ const AttendanceModal = (props) => {
 
     const handleClose = () => props.close(false);
 
+    function removeSpecialCharacters(str) {
+        return str.replace(/[^0-9.]/g, '');
+    }
+
     const submit = () => {
         if(employeeName === "" || employeeName === "Select User") return swal("Warning!", "Employee name field cannot be empty", "info");
         if(workingHour === "") return swal("Warning!", "Working Hour field cannot be empty", "info");
@@ -33,7 +37,7 @@ const AttendanceModal = (props) => {
             id: employeeName._id,
             employeeName: employeeName.staffName,
             timeIn: clockIn,
-            workingHour: workingHour,
+            workingHour: removeSpecialCharacters(workingHour),
             outletID: oneStation?._id,
             organisationID: oneStation?.organisation,
         }
@@ -102,7 +106,7 @@ const AttendanceModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type="number"
+                                    type="text"
                                     onChange={e => setWorkingHour(e.target.value)}
                                 />
                             </div>
