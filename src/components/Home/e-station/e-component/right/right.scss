@@ -5,24 +5,13 @@
 }
 
 .donut-chart{
-  height: 350px;
   width: 100%;
   border-radius: 9px;
   display: flex;
   flex-direction: column;
  
   .donut-chart-wrapper{
-    width: 95%;
-    align-self: center;
-    height: 250px;
-    position: relative;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    border-radius: 9px;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
+   margin-top: 1rem;
   }
 }
 .product-dis {
@@ -43,12 +32,10 @@
 }
  .dou-title {
    font-family: 'Poppins';
-   font-style: normal;
-   font-weight: 600;
+   font-weight: bold;
    margin-left: 10px;
-   font-size: 18px;
-   line-height: 30px;
-   letter-spacing: 0.404212px;
+   font-size: 15px;
+   position: relative;
    color: #066348
  }
 
@@ -56,5 +43,14 @@
   .r-wrapper{
     width: 100%;
     padding: 0px;
+    height: fit-content;
   }
+.donut-chart {
+  // height: fit-content
+
+}
+.donut-chart-wrapper{
+
+}
+  
 }

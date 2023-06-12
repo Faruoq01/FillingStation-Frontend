@@ -15,7 +15,7 @@ function RightWrapper(props) {
     labels: ["PMS", "DPK", "AGO"],
     datasets: [
       {
-        label: "# of Votes",
+        // label: "# of Votes",
         data: [12, 19, 3],
         backgroundColor: ["#399A19", "#35393E", "#FFA010"],
         borderColor: ["#399A19", "#35393E", "#FFA010"],
@@ -58,11 +58,17 @@ function RightWrapper(props) {
         title="Individual Customers"
       />
 
-      {/* <div style={styles(mobile, tablet).doughnutWrap}>
+      <div style={styles(mobile, tablet).doughnutWrap}>
         <div className="donut-chart">
           <label className="dou-title">Product Dispensed</label>
           <div className="donut-chart-wrapper">
-            <Doughnut data={data} />
+            <Doughnut
+              data={data}
+              options={{
+                responsive: true,
+                maintainAspectRatio: true,
+              }}
+            />
           </div>
           <div style={styles(mobile, tablet).iconsWrapper}>
             <DotProduct product="PMS" />
@@ -80,7 +86,7 @@ function RightWrapper(props) {
               src={
                 require("../../../../../assets/estation/pump (1).svg").default
               }
-              style={{ color: "#fff" }}
+              style={{ color: "#fff", width: "100%", height: "100%" }}
             />
           }
           amount="23, 281.00 Liters"
@@ -97,7 +103,12 @@ function RightWrapper(props) {
               src={
                 require("../../../../../assets/estation/pump (1).svg").default
               }
-              style={{ color: "#fff" }}
+              style={{
+                justifySelf: "center",
+                color: "#fff",
+                width: "100%",
+                height: "100%",
+              }}
             />
           }
           amount="23, 281.00 Liters"
@@ -113,20 +124,20 @@ function RightWrapper(props) {
               src={
                 require("../../../../../assets/estation/pump (1).svg").default
               }
-              style={{ color: "#fff" }}
+              style={{ color: "#fff", width: "100%", height: "100%" }}
             />
           }
           amount="23, 281.00 Liters"
           title="Total PMS Dispensed"
         />
-      </div> */}
+      </div>
       <RCard
         onClick={() => {}}
         arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{
           width: "100%",
-          marginTop: "15px",
-          backgroundColor: "white",
+          marginTop: "10px",
+          backgroundColor: "#fff",
         }}
         icon={
           <img
@@ -143,17 +154,24 @@ function RightWrapper(props) {
 
 const styles = (mobile, tablet) => ({
   iconsWrapper: {
+    margin: "1rem",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
   arrowStyle: {
-    left: !mobile ? "45px" : tablet ? "25rem" : "30px",
+    left: !mobile ? "35px" : tablet ? "25rem" : "30px",
     marginBottom: 20,
   },
+  lastCardWrap: {
+    // padding: 10,
+    background: "white",
+    marginTop: "1rem",
+    borderRadius: 9,
+  },
   doughnutWrap: {
-    padding: !mobile ? 10 : 0,
+    padding: 10,
     background: "white",
     marginTop: "1rem",
     borderRadius: 9,

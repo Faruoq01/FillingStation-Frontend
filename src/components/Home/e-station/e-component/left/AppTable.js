@@ -92,13 +92,14 @@ const styles = (mobile, tablet) => ({
     display: "flex",
     flexDirection: "row",
     marginRight: "10px",
-    marginBottom: 10,
+    marginBottom: !mobile ? 10 : 0,
   },
   userName: {
     display: "flex",
     flexDirection: !mobile && "row",
     alignItems: "center",
-    justifyContent: mobile ? "center" : "flex-start",
+    // backgroundColor: "green",
+    // justifyContent: mobile || tablet ? "center" : "flex-start",
     marginLeft: !mobile && "1rem",
   },
 });

@@ -1,7 +1,7 @@
 
 $ash : #C6C6C6;
 $shadow_white : #ffffff;
-$shadow:0px 0px 26px rgba(0, 0, 0, 0.04);;
+$shadow:0px 0px 26px rgba(0, 0, 0, 0.04);
 $app_green:#054834;
 @mixin date-select(){
  
@@ -14,11 +14,7 @@ $app_green:#054834;
 .e-top-wrapper{
   width: 100%;
   padding: 10px 20px 0px 20px;
-  display: flex;
-  flex-direction: column;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
+  
 }
 
 // ============Date and Select wrapper row
@@ -77,9 +73,12 @@ $app_green:#054834;
   cursor: pointer;
   
 }
+.t-card:hover{
+background-color: aquamarine;
+  color: #ffffff;
+}
 .t-card-top{
 flex-direction: row;
-
 display: flex;
 justify-content: space-between;
 padding: 15px;
@@ -113,19 +112,22 @@ padding: 15px;
  }
  .tcard-amount {
 font-weight: bold;
+margin-top: 8px;
   font-size: 15px;
   color: rgb(0, 0, 0);
  }
  .tcard-title{
+  margin-top: 8px;
+  
   font-family: 'Poppins';
    font-size: 11px;
     font-weight: 500;
     color: #054834;
  }
+ 
 .t-card-bottom{
  align-self: flex-end;
  position: relative;
-//  left: 40px;
 }
 
 
@@ -133,16 +135,18 @@ font-weight: bold;
   padding: 3px !important;
 }
 .date-top::-webkit-calendar-picker-indicator{
-
    background-color: #06805B;
     padding: 10px;
     border-radius: 2px;
    
 }
 
-
-
 @media screen and (max-width:'900px') {
+  .e-top-wrapper{
+    margin-top: 2rem;
+    width: 100%;
+    padding: 10px;
+  }
   .wrap-wrap-select_ {
       width: 40%;
       height: 40px;
@@ -159,7 +163,7 @@ font-weight: bold;
                 }
     .t-card {
       width:100%;
-      margin-top: 15px;
+      margin-top: 1rem;
     }
     .t-card-bottom {
 left: 60px;

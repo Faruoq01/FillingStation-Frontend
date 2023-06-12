@@ -56,8 +56,9 @@ $shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
   }
   .button-wrap{
     display: flex;
-    height: 84px;
-    justify-content: flex-end;
+    height: fit-content;
+    flex-direction: column;
+    // justify-content: center;
       width: 100%;
       align-items: flex-end;
     }
@@ -69,5 +70,6 @@ $shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
 
             .button-wrap {
           // display: none;
+          margin: 0px;
         }
         }
