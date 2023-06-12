@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../../../../../styles/estation/rCard.scss";
+import "../../../styles/estation/rCard.scss";
 import { Circle } from "@mui/icons-material";
 
 function RCard(props) {
@@ -31,7 +31,7 @@ function RCard(props) {
       </div>
       <div className="r-card-bottom" style={{ ...props.arrowStyle }}>
         <img
-          src={require("../../../../../assets/estation/Arrow.svg").default}
+          src={require("../../../assets/estation/Arrow.svg").default}
           style={{ color: "#054834", marginBottom: 20 }}
         />
       </div>

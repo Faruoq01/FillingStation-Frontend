@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../../../../styles/estation/top_.scss";
+import "../../../styles/estation/top_.scss";
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 export default function AppDate() {

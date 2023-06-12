@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../../../../../styles/estation/top_.scss";
+import "../../../styles/estation/top_.scss";
 import AppSelect from "./AppSelect";
 import AppDate from "./AppDate";
 import TopCard from "./TopCard";
@@ -32,9 +32,7 @@ function TopWrapper({ disableCard, ...props }) {
             arrowStyle={{ left: !mobile ? "0px" : tablet ? "25rem" : "45px" }}
             icon={
               <img
-                src={
-                  require("./../../../../../assets/estation/wallet.svg").default
-                }
+                src={require("../../../assets/estation/wallet.svg").default}
                 style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }
@@ -47,9 +45,7 @@ function TopWrapper({ disableCard, ...props }) {
             title="Assets"
             icon={
               <img
-                src={
-                  require("./../../../../../assets/estation/assets.svg").default
-                }
+                src={require("../../../assets/estation/assets.svg").default}
                 style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }
@@ -60,9 +56,7 @@ function TopWrapper({ disableCard, ...props }) {
             title="Liability"
             icon={
               <img
-                src={
-                  require("./../../../../../assets/estation/liab.svg").default
-                }
+                src={require("../../../assets/estation/liab.svg").default}
                 style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }
@@ -73,9 +67,7 @@ function TopWrapper({ disableCard, ...props }) {
             title="Sales"
             icon={
               <img
-                src={
-                  require("./../../../../../assets/estation/saless.svg").default
-                }
+                src={require("../../../assets/estation/saless.svg").default}
                 style={{ color: "#fff", width: "100%", height: "100%" }}
               />
             }

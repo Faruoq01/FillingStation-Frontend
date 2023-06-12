@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../../../../../styles/estation/left.scss";
+import "../../../styles/estation/left.scss";
 import ChartWrapper from "./ChartWrapper";
 import TableWrapper from "./TableWrapper";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import LeftWrapper from "../left/LeftWrapper";
 import RightWrapper from "../right/RightWrapper";
-import "../../../../../styles/wrapper.scss";
+import "../../../styles/estation/wrapper.scss";
 
 export default function Wrapper() {
   return (

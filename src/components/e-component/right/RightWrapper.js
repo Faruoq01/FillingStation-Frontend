@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../../../../../styles/estation/right.scss";
+import "../../../styles/estation/right.scss";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
@@ -33,7 +33,7 @@ function RightWrapper(props) {
         style={{ width: "100%", backgroundColor: " #F6FFFF" }}
         icon={
           <img
-            src={require("../../../../../assets/estation/user.svg").default}
+            src={require("../../../assets/estation/user.svg").default}
             style={{ color: "#fff", width: "100%", height: "100%" }}
           />
         }
@@ -50,7 +50,7 @@ function RightWrapper(props) {
         }}
         icon={
           <img
-            src={require("../../../../../assets/estation/users.svg").default}
+            src={require("../../../assets/estation/users.svg").default}
             style={{ color: "#fff", width: "100%", height: "100%" }}
           />
         }
@@ -83,9 +83,7 @@ function RightWrapper(props) {
           onClick={() => {}}
           icon={
             <img
-              src={
-                require("../../../../../assets/estation/pump (1).svg").default
-              }
+              src={require("../../../assets/estation/pump (1).svg").default}
               style={{ color: "#fff", width: "100%", height: "100%" }}
             />
           }
@@ -100,9 +98,7 @@ function RightWrapper(props) {
           onClick={() => {}}
           icon={
             <img
-              src={
-                require("../../../../../assets/estation/pump (1).svg").default
-              }
+              src={require("../../../assets/estation/pump (1).svg").default}
               style={{
                 justifySelf: "center",
                 color: "#fff",
@@ -121,9 +117,7 @@ function RightWrapper(props) {
           onClick={() => {}}
           icon={
             <img
-              src={
-                require("../../../../../assets/estation/pump (1).svg").default
-              }
+              src={require("../../../assets/estation/pump (1).svg").default}
               style={{ color: "#fff", width: "100%", height: "100%" }}
             />
           }
@@ -141,7 +135,7 @@ function RightWrapper(props) {
         }}
         icon={
           <img
-            src={require("../../../../../assets/estation/assets.svg").default}
+            src={require("../../../assets/estation/assets.svg").default}
             style={{ color: "#fff", width: "100%", height: "100%" }}
           />
         }

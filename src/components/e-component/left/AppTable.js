@@ -1,10 +1,10 @@
 import React, { useId } from "react";
-import "../../../../../styles/estation/appTable.scss";
+import "../../../styles/estation/appTable.scss";
 import moment from "moment";
 import CircleIcon from "@mui/icons-material/Circle";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { tableData_E } from "../../data";
+import { tableData_E } from "../../../components/Home/e-station/data";
 import { useMediaQuery } from "@mui/material";
 export default function AppTable() {
   const mobile = useMediaQuery("(max-width:900px)");
@@ -36,8 +36,7 @@ export default function AppTable() {
                   <div style={styles(mobile, tablet).userName}>
                     <img
                       src={
-                        require("../../../../../assets/estation/image.svg")
-                          .default
+                        require("../../../assets/estation/image.svg").default
                       }
                       className="profile-image"
                     />

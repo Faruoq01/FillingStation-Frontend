@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../../../../../styles/estation/top_.scss";
+import "../../../styles/estation/top_.scss";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 
 function TopCard(props) {
@@ -15,7 +15,7 @@ function TopCard(props) {
       </div>
       <div className="t-card-bottom" style={{ ...props.arrowStyle }}>
         <img
-          src={require("../../../../../assets/estation/Arrow.svg").default}
+          src={require("../../../assets/estation/Arrow.svg").default}
           style={{ color: "#054834", marginBottom: 20 }}
         />
       </div>
