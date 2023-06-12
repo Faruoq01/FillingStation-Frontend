@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./top_.scss";
+import "../../../../../styles/estation/top_.scss";
 import AppSelect from "./AppSelect";
 import AppDate from "./AppDate";
 import TopCard from "./TopCard";

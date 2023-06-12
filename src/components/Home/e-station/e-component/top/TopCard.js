@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./top_.scss";
+import "../../../../../styles/estation/top_.scss";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 
 function TopCard(props) {

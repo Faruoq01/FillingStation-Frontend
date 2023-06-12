@@ -1,5 +1,5 @@
 import React, { useId, useState } from "react";
-import "./select_.scss";
+import "../../../../../styles/estation/select_.scss";
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 export default function AppSelect({ data = [] }) {
