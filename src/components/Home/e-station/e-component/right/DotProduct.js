@@ -1,7 +1,7 @@
 import React from "react";
 
 import CircleIcon from "@mui/icons-material/Circle";
-import "./right.scss";
+import "../../../../../styles/right.scss";
 export default function DotProduct({ product, ...props }) {
   return (
     <div

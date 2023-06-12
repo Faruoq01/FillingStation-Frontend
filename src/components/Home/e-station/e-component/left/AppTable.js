@@ -1,5 +1,5 @@
 import React, { useId } from "react";
-import "./appTable.scss";
+import "../../../../../styles/appTable.scss";
 import moment from "moment";
 import CircleIcon from "@mui/icons-material/Circle";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";

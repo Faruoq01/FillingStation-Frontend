@@ -1,5 +1,5 @@
 import React from "react";
-import "./left.scss";
+import "../../../../../styles/left.scss";
 
 export default function ChartWrapper() {
   return (

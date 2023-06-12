@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./right.scss";
+import "../../../../../styles/right.scss";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 

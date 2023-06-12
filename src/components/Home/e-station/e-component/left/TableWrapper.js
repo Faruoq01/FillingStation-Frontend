@@ -1,5 +1,5 @@
 import React from "react";
-import "./left.scss";
+import "../../../../../styles/left.scss";
 import AppTable from "./AppTable";
 
 export default function TableWrapper() {

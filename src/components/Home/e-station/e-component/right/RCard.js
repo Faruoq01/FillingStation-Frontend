@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./rCard.scss";
+import "../../../../../styles/rCard.scss";
 import { Circle } from "@mui/icons-material";
 
 function RCard(props) {
