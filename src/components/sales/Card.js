@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useMediaQuery } from "@mui/material";
-import "./sales.scss";
+import "../../styles/estation/sales.scss";
 const Card = ({ title, subText, uri, style, ...props }) => {
   const mobile = useMediaQuery("(max-width:900px)");
   return (
@@ -9,11 +9,14 @@ const Card = ({ title, subText, uri, style, ...props }) => {
         <img className="img" src={uri} />
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label className="title-text">{title}</label>
-          <label>{subText}</label>
+          <label className="smalle-text">{subText}</label>
         </div>
       </div>
       <div className="image-wrap">
-        <img style={{}} src={require("../img/Arrow.svg").default} />
+        <img
+          style={{}}
+          src={require("../../assets/estation/Arrow.svg").default}
+        />
       </div>
     </div>
   );

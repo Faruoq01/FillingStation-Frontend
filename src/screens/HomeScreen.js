@@ -71,6 +71,7 @@ import OverageList from "../components/DailySales/OverageList";
 import { Badge } from "@mui/material";
 import NotificationDrawer from "../components/common/NotificationDrawer";
 import EStation from "../components/Home/e-station/EStation";
+import EStationSales from "../components/Home/e-station/EStationSales";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -248,6 +249,7 @@ const HomeScreen = () => {
       "/home/analysis": "Analysis",
       "/home/lpo": "Corporate Sales",
       "/home/estation": "E-station",
+      "/home/estation-sales": "Sales",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
@@ -803,6 +805,9 @@ const HomeScreen = () => {
             </Route>
             <Route path="/home/estation">
               <EStation activeRoute={activeRoute} />
+            </Route>
+            <Route path="/home/estation-sales">
+              <EStationSales activeRoute={activeRoute} />
             </Route>
             <Route path="/home/supply">
               <Supply activeRoute={activeRoute} />

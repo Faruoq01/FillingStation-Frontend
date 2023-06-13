@@ -4,6 +4,7 @@ import "../../../styles/estation/top_.scss";
 import AppSelect from "./AppSelect";
 import AppDate from "./AppDate";
 import TopCard from "./TopCard";
+import { useHistory } from "react-router-dom";
 import {
   AccountBalanceWallet,
   Description,
@@ -12,11 +13,14 @@ import {
 } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 
-const data = [];
-
 function TopWrapper({ disableCard, ...props }) {
+  const history = useHistory();
+
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:700px)");
+  const goToSales = () => {
+    history.push("/home/estation-sales");
+  };
   return (
     <div style={{ display: "flex", width: "100%" }}>
       <div className="e-top-wrapper">
@@ -62,6 +66,7 @@ function TopWrapper({ disableCard, ...props }) {
             }
           />
           <TopCard
+            onClick={goToSales}
             arrowStyle={{ left: !mobile ? "0px" : tablet ? "25rem" : "45px" }}
             amount="NGN 350,000"
             title="Sales"
