@@ -121,7 +121,19 @@
  width: 100%;
 }
 
+.table-image{
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #07956A;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 3px;
+}
 @media screen and (max-width:'900px') {
+ 
   .button-sales-pagginator {
     width: 35px;
       height: 35px;
@@ -181,4 +193,13 @@
           justify-content:space-between;
         
         }
+}
+
+@media screen and (width:'800px') {
+  .table-image {
+      width: 30px;
+      height: 30px;
+      border-radius: 100%;
+    }
+
 }

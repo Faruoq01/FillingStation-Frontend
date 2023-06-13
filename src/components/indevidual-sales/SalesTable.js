@@ -90,9 +90,7 @@ const NoteIcon = ({ onClick }) => (
 );
 
 const ProfileImg = ({ onClick, item }) => (
-  <div onClick={onClick} style={{ ...styles().icon, marginRight: 3 }}>
-    <img src={item.image} style={{ width: "100", height: "100%" }} />
-  </div>
+  <img className="table-image" src={item.image} />
 );
 
 const Footer = ({}) => (
@@ -148,16 +146,7 @@ const Pagginator = ({ onClickNext, onClickPrevious }) => (
 );
 
 const styles = (mobile) => ({
-  icon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#07956A",
-    overflow: "hidden",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  icon: {},
   pagginator: {
     display: "flex",
     flexDirection: "row",
