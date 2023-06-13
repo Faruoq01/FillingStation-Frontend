@@ -1,12 +1,12 @@
 import React from "react";
-import "./individual_sale.scss";
+import "../../styles/estation/individual_sale.scss";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
   Note,
 } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
-import { tableData_S } from "../data";
+import { tableData_S } from "../Home/e-station/data";
 import CircleIcon from "@mui/icons-material/Circle";
 
 export default function SalesTable() {
