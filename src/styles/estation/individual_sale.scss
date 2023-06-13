@@ -51,6 +51,7 @@ align-self: center;
   border-collapse: collapse;
   width: 100%;
   margin-top: 10px;
+  text-align: start;
 }
 #sales-table- td,
 #sales-table- th {
@@ -70,7 +71,6 @@ align-self: center;
   // font-weight: bold;
   padding-top: 12px;
   padding-bottom: 12px;
-  text-align: left;
   background-color: #ffffff;
   color: #585858;
 
@@ -93,24 +93,21 @@ align-self: center;
   align-items: center;
 }
 .total-btn{
-  width: 135px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 2px;
     label{
-      font-family: 'Poppins';
         text-align: center;
     }
     
 }
 .button-sales-pagginator{
-  width: 40px;
-  height: 40px;
+  padding: 5px;
   border: none;
   background: #E3E3E3;
   cursor: pointer;
   color: #000000;
+  font-size: 15px;
   margin: 2px;
   border-radius: 10px;
   &:hover{
@@ -127,14 +124,11 @@ align-self: center;
 }
 
 .table-image{
-      width: 30px;
+    width: 30px;
       height: 30px;
+      padding: 0px;
+      margin-right: 5px;
       border-radius: 50%;
-      background-color: #07956A;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       margin-right: 3px;
       cursor: pointer;
 }
@@ -145,8 +139,9 @@ align-self: center;
 
  
   .button-sales-pagginator {
-    width: 35px;
-      height: 35px;
+    // width: 35px;
+    //   height: 30px;
+      font-size: 11px;
   }
   
     .individual-sale-container- {
@@ -158,8 +153,7 @@ align-self: center;
       width: fit-content;
   }
   .total-btn{
-    width: 100px;
-      height: 30px;
+    padding: 5px;
       label{
         font-size: 14px;
       }
