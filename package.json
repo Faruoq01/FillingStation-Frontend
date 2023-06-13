@@ -21,6 +21,7 @@
     "approximate-number": "^2.1.0",
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
+    "caniuse-lite": "^1.0.30001502",
     "chart.js": "^3.9.1",
     "compress-base64": "^1.0.2",
     "date-fns": "^2.29.3",

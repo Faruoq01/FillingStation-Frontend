@@ -19,16 +19,22 @@ import PlacesAutocomplete, {
     getLatLng,
 } from 'react-places-autocomplete';
 import { GoogleApiWrapper } from "google-maps-react";
+import upload from '../../assets/upload.png';
+import axios from 'axios';
+import config from '../../constants';
 
 const CreateFillingStation = (props) => {
 
     const dispatch = useDispatch();
+    const attach = useRef();
     const open = useSelector(state => state.outletReducer.openModal);
     const user = useSelector(state => state.authReducer.user);
 
     const handleClose = () => dispatch(closeModal(0));
     const [defaultState, setDefaultState] = useState(0);
     const [local, setLocal] = useState(0);
+    const [loading2, setLoading2] = useState(0);
+    const [uploadFile, setUpload] = useState('');
     
     const [outletName, setOutletName] = useState('');
     const [state, setState] = useState(states.listOfStates[0].state);
@@ -68,6 +74,7 @@ const CreateFillingStation = (props) => {
         if(alias === "") return swal("Warning!", "Alias field cannot be empty", "info");
         if(longitude === "") return swal("Warning!", "Longitude field cannot be empty", "info");
         if(latitude === "") return swal("Warning!", "latitude field cannot be empty", "info");
+        if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
         setLoadingSpinner(true);
 
         const data = {
@@ -78,6 +85,7 @@ const CreateFillingStation = (props) => {
             alias: alias,
             noOfTanks: "",
             noOfPumps: "",
+            image: uploadFile,
             PMSCost: removeSpecialCharacters(pmsCost),
             PMSPrice: removeSpecialCharacters(pmsPrice),
             AGOCost: removeSpecialCharacters(agoCost),
@@ -122,6 +130,29 @@ const CreateFillingStation = (props) => {
 
     function removeSpecialCharacters(str) {
         return str.replace(/[^0-9.]/g, '');
+    }
+
+    const uploadProductOrders = () => {
+        attach.current.click();
+    }
+
+    const selectedFile = (e) => {
+        let file = e.target.files[0];
+        setLoading2(1);
+        const formData = new FormData();
+        formData.append("file", file);
+        const httpConfig = {
+            headers: {
+                "content-type": "multipart/form-data",
+                "Authorization": "Bearer "+ localStorage.getItem('token'),
+            }
+        };
+        const url = `${config.BASE_URL}/360-station/api/upload`;
+        axios.post(url, formData, httpConfig).then((data) => {
+            setUpload(data.data.path);
+        }).then(()=>{
+            setLoading2(2);
+        });
     }
 
     return(
@@ -453,6 +484,39 @@ const CreateFillingStation = (props) => {
                             />
 
                         </div>
+
+                        <Button sx={{
+                            width:'100%', 
+                            height:'35px',  
+                            background: '#427BBE',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            marginTop:'30px',
+                            marginBottom:'20px',
+                            '&:hover': {
+                                backgroundColor: '#427BBE'
+                            }
+                            }} 
+                            onClick={uploadProductOrders}
+                            variant="contained"> 
+                            <img style={{width:'25px', height:'20px', marginRight:'10px'}} src={upload} alt={'icon'} />
+                            { loading2 === 0 && <div>Attachment</div>}
+                            { loading2 === 1 &&
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            }
+                            { loading2 === 2 && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
+                        </Button>
+
+                        <input onChange={selectedFile} ref={attach} type="file" style={{visibility:'hidden'}} />
 
                         <div style={{height:'30px'}} className='butt'>
                             <Button disabled={loadingSpinner} sx={{
