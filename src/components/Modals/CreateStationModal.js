@@ -512,7 +512,6 @@ const CreateFillingStation = (props) => {
                                 }
                                 { loading2 === 2 && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
                             </Button>
-
                             <input onChange={selectedFile} ref={attach} type="file" style={{visibility:'hidden'}} />
 
                         </div>
