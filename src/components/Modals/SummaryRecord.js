@@ -463,7 +463,7 @@ const SummaryRecord = (props) => {
                                         <div className="other_inner">
                                             <div className='fuel_card_items'>
                                                 <div className='fuel_card_items_left'>
-                                                    <div className='volum'>{data.bankName === null? data.posName: data.bankName}</div>
+                                                    <div className='volum'>{data.bankName === "null"? data.posName: data.bankName}</div>
                                                     <div className='vol_label'>Payment Type</div>
                                                 </div>
                                                 <div className='fuel_card_items_right'>
