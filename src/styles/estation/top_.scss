@@ -1,0 +1,171 @@
+
+$ash : #C6C6C6;
+$shadow_white : #ffffff;
+$shadow:0px 0px 26px rgba(0, 0, 0, 0.04);
+$app_green:#054834;
+@mixin date-select(){
+ 
+  height: 40px;
+  overflow: hidden;
+  background: rgba(248, 255, 253, 0.7);
+  border: 1.5px solid $ash;
+  border-radius: 5px;
+}
+.e-top-wrapper{
+  width: 100%;
+  padding: 10px 20px 0px 20px;
+  
+}
+
+// ============Date and Select wrapper row
+.date-select{
+  display: flex;
+  flex-direction:row;
+  width: 100%;
+  justify-content: space-between;
+}
+.wrap-wrap-select_ {
+  width: 174px;
+  // background-co;lor: #06805B;
+  // overflow: auto;
+  // position: relative
+  cursor: pointer;
+  .select-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 2px;
+      @include date-select();
+    }
+}
+
+// ================Select Component========
+
+
+// ================Date Component ========
+.date-wrapper{
+  @include date-select();
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+
+}
+// ================ Card wrapper ======
+.card-wrapper{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+  justify-content: space-between;
+}
+// ========= Each Card at THE TOP========
+.t-card{
+  width: 240px;
+  height: 115px;
+  background-color: #054834;
+  border-radius: 8px;
+  box-shadow: $shadow;
+  background: $shadow_white;
+  display: flex;
+  cursor: pointer;
+  
+}
+.t-card:hover{
+background-color: aquamarine;
+  color: #ffffff;
+}
+.t-card-top{
+flex-direction: row;
+display: flex;
+justify-content: space-between;
+padding: 15px;
+.icon-shade{
+  width: 55px;
+    height: 55px;
+    overflow: hidden;
+    border-radius: 40px;
+    position: relative;  
+}
+.title-wrap{
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+}
+ .icon-wrapper {
+   width: 50px;
+   z-index: 1000;
+   height: 50px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 25px;
+   background: $app_green;
+   position: absolute;
+   margin-top: 5px;
+   margin-left: 5px;
+  
+ }
+ .tcard-amount {
+font-weight: bold;
+margin-top: 8px;
+  font-size: 15px;
+  color: rgb(0, 0, 0);
+ }
+ .tcard-title{
+  margin-top: 8px;
+  
+  font-family: 'Poppins';
+   font-size: 11px;
+    font-weight: 500;
+    color: #054834;
+ }
+ 
+.t-card-bottom{
+ align-self: flex-end;
+ position: relative;
+}
+
+
+.date-top{
+  padding: 3px !important;
+}
+.date-top::-webkit-calendar-picker-indicator{
+   background-color: #06805B;
+    padding: 10px;
+    border-radius: 2px;
+   
+}
+
+@media screen and (max-width:'900px') {
+  .e-top-wrapper{
+    margin-top: 2rem;
+    width: 100%;
+    padding: 10px;
+  }
+  .wrap-wrap-select_ {
+      width: 40%;
+      height: 40px;
+    }
+  
+  .date-wrapper{
+        width: 40%;
+        height: 40px;
+        }
+  .card-wrapper{
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+                }
+    .t-card {
+      width:100%;
+      margin-top: 1rem;
+    }
+    .t-card-bottom {
+left: 60px;
+    }
+}

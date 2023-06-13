@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
-const Wrapper = lazy(() => import("./e-component/wrapper/Wrapper"));
-const TopWrapper = lazy(() => import("./e-component/top/TopWrapper"));
+const Wrapper = lazy(() => import("../../e-component/wrapper/Wrapper"));
+const TopWrapper = lazy(() => import("../../e-component/top/TopWrapper"));
 
 function EStation() {
   return (
