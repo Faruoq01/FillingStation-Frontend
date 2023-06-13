@@ -84,9 +84,11 @@ export default function SalesTable() {
 }
 
 const NoteIcon = ({ onClick }) => (
-  <div onClick={onClick} style={styles().icon}>
-    <Note style={{ color: "white", fontSize: 18 }} />
-  </div>
+  <img
+    onClick={onClick}
+    className="table-image"
+    src={require("../../assets/estation/ind-edit-icon.svg").default}
+  />
 );
 
 const ProfileImg = ({ onClick, item }) => (

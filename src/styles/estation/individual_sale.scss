@@ -2,6 +2,8 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .i-top-btn{
   height: 40px;
@@ -21,7 +23,8 @@
       
 }
 .wrap-btn-wrap{
-//  padding: 1rem 1rem 1rem 1rem;;
+width: 95%;
+align-self: center;
   height: fit-content;
   // background: #393838;
   flex-direction: row;
@@ -35,7 +38,7 @@
   flex-direction: row;
 }
 .search-{
-  height: 35px;
+  // height: 35px;
   width: 300px;
   border-radius: 5px;
   padding-left: 10px;
@@ -75,11 +78,11 @@
 
 .footer-{
   height: 45px;
-  width: 100%;
-  // background-color: #393838;
+  width: 95%;
+ 
   display: flex;
+  align-self: center;
   justify-content: flex-end;
-  padding-top: 10px;
 }
 .inner-footer-{
   height: 100%;
@@ -118,7 +121,9 @@
 
 }
 .indiv-sale-table-wrapper{
- width: 100%;
+ width: 95%;
+ align-self: center;
+
 }
 
 .table-image{
@@ -131,8 +136,13 @@
       align-items: center;
       justify-content: center;
       margin-right: 3px;
+      cursor: pointer;
 }
+    .i-top-btn {
+      height: 30px;
+    }
 @media screen and (max-width:'900px') {
+
  
   .button-sales-pagginator {
     width: 35px;
@@ -161,6 +171,8 @@
   }
   .i-top-btn {
     // border: 1px solid #393838;
+    // height: 30px;
+    // width:5%;
   }
     .indiv-sale-table-wrapper {
       overflow-y: scroll;
@@ -168,28 +180,26 @@
     }
 
     .wrap-btn-wrap {
-  
+      width: 100%;
+      align-self: center;
      padding: 0px;
      margin: 0px;
      align-items: center;
+     background-color: #06805B;
      justify-content: center;
      flex-direction: column;
-     padding-top: 10px;
-  
-     
     }
     .search-{
-      width: 90%;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      width: 100%;
+      height: 30px;
+      // margin-bottom: 10px;
     }
     .btn-wrap {
       overflow: scroll;
+      width: 100%;
       border-radius: 3px;
       padding: 0px;
       margin: 0px;
-      
-          width: 95%;
           justify-content:space-between;
         
         }
