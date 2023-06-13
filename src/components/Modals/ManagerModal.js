@@ -91,7 +91,7 @@ const ManagerModal = (props) => {
         if(jobTitle === "") return swal("Warning!", "Job title field cannot be empty", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
         if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
-        if(cam === "null" || gall=== "null") return swal("Warning!", "File upload cannot be empty", "info");
+        if(cam === "null" && gall === "null") return swal("Warning!", "File upload cannot be empty", "info");
 
         setLoading(true);
         setLoader(true);
