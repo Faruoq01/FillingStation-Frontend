@@ -1,3 +1,8 @@
+.individual-sale-container-{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
 .i-top-btn{
   height: 40px;
       border: none;
@@ -30,7 +35,7 @@
   flex-direction: row;
 }
 .search-{
-  height: 40px;
+  height: 35px;
   width: 300px;
   border-radius: 5px;
   padding-left: 10px;
@@ -47,12 +52,8 @@
 #sales-table- td,
 #sales-table- th {
   padding: 13px;
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 21px;
-  letter-spacing: 0.404212px;
+  // font-weight: bold;
+  font-size: 11px;
 }
 #sales-table- tr:nth-child(even) {
   background-color: #DBF2F2B2;
@@ -62,19 +63,14 @@
   background-color: #ddd;
 }
 #sales-table- th {
+  font-size: 15px;
+  // font-weight: bold;
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
   background-color: #ffffff;
   color: #585858;
 
-  // text
-  font-family: 'Poppins';
-  font-style: normal;
-  line-height: 26px;
-  letter-spacing: 0.404212px;
-  font-weight: 400;
-  font-size: 16px;
 }
 
 .footer-{
@@ -92,8 +88,6 @@
   justify-content: space-between;
   display: flex;
   align-items: center;
-  
-
 }
 .total-btn{
   width: 135px;
@@ -123,12 +117,19 @@
   }
 
 }
+.indiv-sale-table-wrapper{
+ width: 100%;
+}
 
 @media screen and (max-width:'900px') {
   .button-sales-pagginator {
     width: 35px;
       height: 35px;
   }
+  
+    .individual-sale-container- {
+     margin-top: 5rem;
+    }
   .button-wrap{
     margin: 0px;
       height: fit-content;
@@ -149,6 +150,10 @@
   .i-top-btn {
     // border: 1px solid #393838;
   }
+    .indiv-sale-table-wrapper {
+      overflow-y: scroll;
+      width: 100%;
+    }
 
     .wrap-btn-wrap {
   

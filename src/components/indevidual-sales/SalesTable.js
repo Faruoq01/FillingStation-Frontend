@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "../../styles/estation/individual_sale.scss";
 import {
   KeyboardArrowLeft,
@@ -13,8 +13,8 @@ export default function SalesTable() {
   const mobile = useMediaQuery("(max-width:600px)");
   const tablet = useMediaQuery("(max-width:900px)");
   return (
-    <div>
-      <div style={{ overflow: mobile && "scroll", width: "100%" }}>
+    <Fragment>
+      <div className="indiv-sale-table-wrapper">
         <table id="sales-table-">
           <thead>
             <tr>
@@ -79,7 +79,7 @@ export default function SalesTable() {
         </table>
       </div>
       <Footer />
-    </div>
+    </Fragment>
   );
 }
 

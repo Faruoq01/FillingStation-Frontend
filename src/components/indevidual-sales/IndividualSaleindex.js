@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import TopWrapper from "../e-component/top/TopWrapper";
 import Button from "./Button";
 import "../../styles/estation/individual_sale.scss";
 import { useMediaQuery } from "@mui/material";
@@ -9,7 +8,7 @@ export default function IndividualSaleindex() {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:800px)");
   return (
-    <div style={{ padding: "1rem" }}>
+    <div className="individual-sale-container-">
       <div className="wrap-btn-wrap">
         <div className="btn-wrap">
           <Button
