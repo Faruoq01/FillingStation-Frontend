@@ -18,6 +18,7 @@ import PlacesAutocomplete, {
     geocodeByAddress,
     getLatLng,
 } from 'react-places-autocomplete';
+import { GoogleApiWrapper } from "google-maps-react";
 
 const CreateFillingStation = (props) => {
 
@@ -510,4 +511,7 @@ const mens = {
     fontFamily:'Poppins',
 }
 
-export default CreateFillingStation;
+export default GoogleApiWrapper({
+    apiKey: "AIzaSyDZnZ15rSQS_2CluQE47CY5MRqAHGdUYZY",
+    libraries: ["places"]
+})(CreateFillingStation);

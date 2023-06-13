@@ -25,6 +25,7 @@
     "compress-base64": "^1.0.2",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.6",
+    "google-maps-react": "^2.0.6",
     "html2canvas": "^1.4.1",
     "json-cycle": "^1.5.0",
     "jspdf": "^2.5.1",
