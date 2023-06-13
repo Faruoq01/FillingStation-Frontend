@@ -72,6 +72,7 @@ import { Badge } from "@mui/material";
 import NotificationDrawer from "../components/common/NotificationDrawer";
 import EStation from "../components/Home/e-station/EStation";
 import EStationSales from "../components/Home/e-station/EStationSales";
+import EstationIndividualSales from "../components/Home/e-station/EstationIndividualSales";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -250,6 +251,7 @@ const HomeScreen = () => {
       "/home/lpo": "Corporate Sales",
       "/home/estation": "E-station",
       "/home/estation-sales": "Sales",
+      "/home/estation-individual-sales": "Individual Sales",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
@@ -807,8 +809,12 @@ const HomeScreen = () => {
               <EStation activeRoute={activeRoute} />
             </Route>
             <Route path="/home/estation-sales">
-              <EStationSales activeRoute={activeRoute} />
+              <EStationSales history={history} />
             </Route>
+            <Route path="/home/estation-individual-sales">
+              <EstationIndividualSales history={history} />
+            </Route>
+
             <Route path="/home/supply">
               <Supply activeRoute={activeRoute} />
             </Route>

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import TopWrapper from "../e-component/top/TopWrapper";
 import Button from "./Button";
-import "./individual_sale.scss";
+import "../../styles/estation/individual_sale.scss";
 import { useMediaQuery } from "@mui/material";
 import SalesTable from "./SalesTable";
 
