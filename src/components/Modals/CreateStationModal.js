@@ -483,40 +483,39 @@ const CreateFillingStation = (props) => {
                                 ln={longitude}
                             />
 
+                            <Button sx={{
+                                width:'100%', 
+                                height:'35px',  
+                                background: '#427BBE',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                marginTop:'30px',
+                                '&:hover': {
+                                    backgroundColor: '#427BBE'
+                                }
+                                }} 
+                                onClick={uploadProductOrders}
+                                variant="contained"> 
+                                <img style={{width:'25px', height:'20px', marginRight:'10px'}} src={upload} alt={'icon'} />
+                                { loading2 === 0 && <div>Attachment</div>}
+                                { loading2 === 1 &&
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                }
+                                { loading2 === 2 && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
+                            </Button>
+
+                            <input onChange={selectedFile} ref={attach} type="file" style={{visibility:'hidden'}} />
+
                         </div>
-
-                        <Button sx={{
-                            width:'100%', 
-                            height:'35px',  
-                            background: '#427BBE',
-                            borderRadius: '3px',
-                            fontSize:'10px',
-                            marginTop:'30px',
-                            marginBottom:'20px',
-                            '&:hover': {
-                                backgroundColor: '#427BBE'
-                            }
-                            }} 
-                            onClick={uploadProductOrders}
-                            variant="contained"> 
-                            <img style={{width:'25px', height:'20px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                            { loading2 === 0 && <div>Attachment</div>}
-                            { loading2 === 1 &&
-                                <ThreeDots 
-                                    height="60" 
-                                    width="50" 
-                                    radius="9"
-                                    color="#076146" 
-                                    ariaLabel="three-dots-loading"
-                                    wrapperStyle={{}}
-                                    wrapperClassName=""
-                                    visible={true}
-                                />
-                            }
-                            { loading2 === 2 && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
-                        </Button>
-
-                        <input onChange={selectedFile} ref={attach} type="file" style={{visibility:'hidden'}} />
 
                         <div style={{height:'30px'}} className='butt'>
                             <Button disabled={loadingSpinner} sx={{
