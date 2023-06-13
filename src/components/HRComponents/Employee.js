@@ -24,6 +24,7 @@ import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import EditStaffModal from "../Modals/EditStaffModal";
+import config from '../../constants';
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -660,7 +661,7 @@ const Employee = () => {
                                 height: "35px",
                                 borderRadius: "35px",
                               }}
-                              src={avatar}
+                              src={item.image === null? avatar: config.BASE_URL.concat(item.image)}
                               alt="icon"
                             />
                           </div>

@@ -13,9 +13,11 @@ import { MenuItem, Select } from '@mui/material';
 import { adminOutlet } from '../../store/actions/outlet';
 import AdminUserService from '../../services/adminUsers';
 import { useEffect } from 'react';
+import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import axios from 'axios';
 import config from '../../constants';
+import ReactCamera from './ReactCamera';
 
 const ManagerModal = (props) => {
     const dispatch = useDispatch();
@@ -25,7 +27,9 @@ const ManagerModal = (props) => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const [loading2, setLoading2] = useState(0);
-    const [uploadFile, setUpload] = useState('');
+    const [cam, setCam] = useState("null");
+    const [gall, setGall] = useState("null");
+    const [open, setOpen] = useState('');
     const attach = useRef();
 
     const [staffName, setStaffName] = useState('');
@@ -87,7 +91,7 @@ const ManagerModal = (props) => {
         if(jobTitle === "") return swal("Warning!", "Job title field cannot be empty", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
         if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
-        if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
+        if(cam === "null" || gall=== "null") return swal("Warning!", "File upload cannot be empty", "info");
 
         setLoading(true);
         setLoader(true);
@@ -101,7 +105,7 @@ const ManagerModal = (props) => {
             accountNumber: accountNumber,
             bankName: bankName,
             salary: salary,
-            image: uploadFile,
+            image: cam === "null"? gall: cam,
             dateEmployed: dateEmployed,
             dateOfBirth: dateOfBirth,
             role: roleData,
@@ -176,10 +180,14 @@ const ManagerModal = (props) => {
         };
         const url = `${config.BASE_URL}/360-station/api/upload`;
         axios.post(url, formData, httpConfig).then((data) => {
-            setUpload(data.data.path);
+            setGall(data.data.path);
         }).then(()=>{
             setLoading2(2);
         });
+    }
+
+    const openCamera = () => {
+        setOpen(true);
     }
 
     return(
@@ -191,6 +199,7 @@ const ManagerModal = (props) => {
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
                 <div className='modalContainer2'>
+                    <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
                     <div className='inner'>
                         <div className='head'>
                             <div className='head-text'>Admin Users</div>
@@ -567,10 +576,28 @@ const ManagerModal = (props) => {
                             <Button sx={{
                                 width:'98%', 
                                 height:'35px',  
-                                background: '#427BBE',
+                                background: "green",
                                 borderRadius: '3px',
                                 fontSize:'10px',
                                 marginTop:'30px',
+                                '&:hover': {
+                                    backgroundColor: 'green'
+                                }
+                                }} 
+                                onClick={openCamera}
+                                variant="contained"> 
+                                <img style={{width:'25px', height:'20px', marginRight:'10px'}} src={photo} alt={'icon'} />
+                                { cam === "null" && <div>Take Photo</div>}
+                                { cam !== "null" && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
+                            </Button>
+
+                            <Button sx={{
+                                width:'98%', 
+                                height:'35px',  
+                                background: '#427BBE',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                marginTop:'20px',
                                 '&:hover': {
                                     backgroundColor: '#427BBE'
                                 }
