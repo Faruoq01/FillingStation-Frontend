@@ -40,7 +40,11 @@ export default function AppTable() {
                       }
                       className="profile-image"
                     />
-                    {!mobile && <label>{item.account_name}</label>}
+                    {!mobile && (
+                      <label style={{ fontSize: "11px" }}>
+                        {item.account_name}
+                      </label>
+                    )}
                   </div>
                 </td>
                 <td>
@@ -68,7 +72,7 @@ export default function AppTable() {
         </table>
       </div>
       <div className="button-wrap">
-        <div style={styles().pagginator}>
+        <div style={{ ...styles().pagginator }}>
           <button className="button_">
             <KeyboardArrowLeftIcon />
           </button>
@@ -83,7 +87,6 @@ export default function AppTable() {
 
 const styles = (mobile, tablet) => ({
   tWrap: {
-    maxHeight: mobile && "550px",
     overflow: mobile && "scroll",
     width: "100%",
   },
@@ -97,8 +100,5 @@ const styles = (mobile, tablet) => ({
     display: "flex",
     flexDirection: !mobile && "row",
     alignItems: "center",
-    // backgroundColor: "green",
-    // justifyContent: mobile || tablet ? "center" : "flex-start",
-    marginLeft: !mobile && "1rem",
   },
 });

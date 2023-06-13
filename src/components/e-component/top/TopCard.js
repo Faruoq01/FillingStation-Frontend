@@ -13,7 +13,7 @@ function TopCard(props) {
           <label className="tcard-title">{props.title}</label>
         </div>
       </div>
-      <div className="t-card-bottom" style={{ ...props.arrowStyle }}>
+      <div className="t-card-bottom">
         <img
           src={require("../../../assets/estation/Arrow.svg").default}
           style={{ color: "#054834", marginBottom: 20 }}

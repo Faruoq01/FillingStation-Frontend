@@ -24,7 +24,7 @@ function RightWrapper(props) {
     ],
   };
   const mobile = useMediaQuery("(max-width:900px)");
-  const tablet = useMediaQuery("(min-width:700px)");
+  const tablet = useMediaQuery("(mx-width:1000px)");
   return (
     <div className="r-wrapper">
       <RCard
@@ -155,7 +155,7 @@ const styles = (mobile, tablet) => ({
     justifyContent: "center",
   },
   arrowStyle: {
-    left: !mobile ? "35px" : tablet ? "25rem" : "30px",
+    left: !mobile ? "10px" : tablet ? "20" : "30px",
     marginBottom: 20,
   },
   lastCardWrap: {
@@ -170,7 +170,7 @@ const styles = (mobile, tablet) => ({
     marginTop: "1rem",
     borderRadius: 9,
   },
-  arrowStyle2: { left: !mobile ? "70px" : tablet ? "25rem" : "45px" },
+  arrowStyle2: { left: !mobile ? "40px" : tablet ? "25rem" : "45px" },
 });
 RightWrapper.propTypes = {};
 
