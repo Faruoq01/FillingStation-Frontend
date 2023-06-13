@@ -32,14 +32,14 @@ const PaymentsComponents = (props) => {
     console.log(records, "records")
 
     // payload data
-    const [bankName, setBankName] = useState(null);
-    const [posName, setPosName] = useState(null);
-    const [terminalID, setTerminalID] = useState(null);
-    const [tellerID, setTellerID] = useState(null);
+    const [bankName, setBankName] = useState("");
+    const [posName, setPosName] = useState("");
+    const [terminalID, setTerminalID] = useState("");
+    const [tellerID, setTellerID] = useState("");
     const [amountPaid, setAmountPaid] = useState("");
     const [paymentDate, setPaymentDate] = useState("");
-    const [cam, setCam] = useState(null);
-    const [gall, setGall] = useState(null);
+    const [cam, setCam] = useState("null");
+    const [gall, setGall] = useState("null");
 
     const switchPay = (data) => {
         if(data === "bank") setSelected(false);
@@ -84,13 +84,13 @@ const PaymentsComponents = (props) => {
         if(amountPaid === "") return swal("Warning!", "Amount field should not be empty", "info");
         if(paymentDate === "") return swal("Warning!", "Payment date field should not be empty", "info");
         if(isNaN(Number(amountPaid))) return swal("Warning!", "Amount field is not a number, remove characters like comma", "info");
-        if(cam === null && gall === null) return swal("Warning!", "Please add reciept", "info");
+        if(cam === "null" && gall === "null") return swal("Warning!", "Please add reciept", "info");
 
         const payload = {
-            bankName: bankName === ""? null: bankName,
-            tellerNumber: tellerID,
-            posName: posName === ""? null: posName,
-            terminalID: terminalID,
+            bankName: bankName === ""? "null": bankName,
+            tellerNumber: tellerID === ""? "null": tellerID,
+            posName: posName === ""? "null": posName,
+            terminalID: terminalID === ""? "null": terminalID,
             amountPaid: amountPaid,
             paymentDate: paymentDate,
             camera: cam,
@@ -109,16 +109,16 @@ const PaymentsComponents = (props) => {
         setTerminalID("");
         setAmountPaid("");
         setPaymentDate("");
-        setCam(null);
-        setGall(null);
+        setCam("null");
+        setGall("null");
 
         if(autoCOM !== null){}
     }
 
     const getPayments = () => {
 
-        const payments = records['5'].filter(data => data.bankName !== null);
-        const pospayment = records['5'].filter(data => data.posName !== null);
+        const payments = records['5'].filter(data => data.bankName !== "null");
+        const pospayment = records['5'].filter(data => data.posName !== "null");
 
         const totalExpenses = records['4'].reduce((accum, current) => {
             return Number(accum) + Number(current.expenseAmount.replace(/[^0-9.]/g, ''));
@@ -349,7 +349,7 @@ const PaymentsComponents = (props) => {
                                 }}
                             >
                                 <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
-                                <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
+                                <div>{cam !== "null"? "Image taken":<span>Take photo</span>}</div>
                             </Button>
                         </div>
 
@@ -370,7 +370,7 @@ const PaymentsComponents = (props) => {
                                 }}
                             >
                                 <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                                <div>{typeof(gall) === "string"? "File uploaded":<span>Upload</span>}</div>
+                                <div>{gall !== "null"? "File uploaded":<span>Upload</span>}</div>
                             </Button>
                         </div>
                     </div>
@@ -412,7 +412,7 @@ const PaymentsComponents = (props) => {
                             return(
                                 <div key={index} style={{background: '#fff', marginTop:'5px'}} className="table-head">
                                     <div style={{color:'#000'}} className="col">{index + 1}</div>
-                                    <div style={{color:'#000'}} className="col">{data?.bankName === null? data?.posName: data?.bankName}</div>
+                                    <div style={{color:'#000'}} className="col">{data?.bankName === "null"? data?.posName: data?.bankName}</div>
                                     <div style={{color:'#000'}} className="col">{data?.paymentDate}</div>
                                     <div style={{color:'#000'}} className="col">{data?.amountPaid}</div>
                                     <div style={{color:'#000'}} className="col">
