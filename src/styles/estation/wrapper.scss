@@ -1,0 +1,21 @@
+.wrapper {
+  flex-direction: row;
+  // background-color: cyan;
+  width: 96%;
+  align-self: center;
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  ;
+}
+
+
+@media screen and (max-width:'900px') {
+  .wrapper {
+    flex-direction: column;
+    width: '100%';
+    margin-bottom: 2rem;
+  }
+
+}

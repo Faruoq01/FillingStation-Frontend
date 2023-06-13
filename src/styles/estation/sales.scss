@@ -1,0 +1,92 @@
+.title-text{
+  font-family: 'Poppins', sans-serif;
+  text-align: start;
+  font-weight: bold;
+  font-size: 15px;
+  color: #323232;
+  margin-top: 5px;
+}
+.smalle-text{
+  font-family: 'Poppins', sans-serif;
+  text-align: start;
+  font-size: 12px;
+  color: #054834;
+  margin-top: 5px;
+}
+.card{
+    width: 25%;
+    border-radius: 14px;
+    background: #FEFFFF;
+    display: flex;
+    border-radius: 5px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column 
+  ;cursor: pointer;
+}
+.card:hover{
+  box-shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
+}
+.img{
+  width: 60px;
+      height: 60px;
+      border-radius: 25px;
+      margin-right: 10px;
+}
+.image-wrap{
+  width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      
+}
+.card-text-wrap{
+  display: flex; flex-direction: row; margin-top: 2%
+}
+.e-station-sales{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.card-wrap-sales{
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+  padding-left: 10px;
+ }
+ .e-station-sales{
+
+ }
+
+@media screen and (max-width:'900px') {
+ .card-wrap-sales{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+ }
+ .e-station-sales{
+  align-items: center;
+  width: 95%;
+  align-self: center;
+  margin-top: 4rem;
+
+ }
+ .card-text-wrap{
+  margin-left: 1rem;
+ }
+.card{
+  width:100%;
+  margin-top: 10px;
+   padding: 0rem;
+
+}
+.image-wrap{
+  width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+      img{
+        margin-right: 1rem;
+      }
+}
+}

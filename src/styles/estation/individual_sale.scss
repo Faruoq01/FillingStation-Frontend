@@ -1,0 +1,216 @@
+.individual-sale-container-{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.i-top-btn{
+  height: 40px;
+      border: none;
+      background: white;
+      color: #393838;
+      width: max-content;
+      padding: 0rem 2rem 0rem 2rem;
+      border-radius :5px;
+      font-family: "Nunito";
+      border: 1px solid #393838;
+
+      &:hover {
+          background: #06805B;
+          color: #ffffff;
+        }
+      
+}
+.wrap-btn-wrap{
+width: 95%;
+align-self: center;
+  height: fit-content;
+  // background: #393838;
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+}
+.btn-wrap{
+  width: 36%;
+  justify-content: space-between;
+  display:flex;
+  flex-direction: row;
+}
+.search-{
+  // height: 35px;
+  width: 300px;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  &:focus{
+    outline: none;
+  }
+}
+#sales-table-{
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 10px;
+}
+#sales-table- td,
+#sales-table- th {
+  padding: 13px;
+  // font-weight: bold;
+  font-size: 11px;
+}
+#sales-table- tr:nth-child(even) {
+  background-color: #DBF2F2B2;
+}
+
+#sales-table- tr:hover {
+  background-color: #ddd;
+}
+#sales-table- th {
+  font-size: 15px;
+  // font-weight: bold;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #ffffff;
+  color: #585858;
+
+}
+
+.footer-{
+  height: 45px;
+  width: 95%;
+ 
+  display: flex;
+  align-self: center;
+  justify-content: flex-end;
+}
+.inner-footer-{
+  height: 100%;
+  width: 50%;
+  background-color: #fff;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+}
+.total-btn{
+  width: 135px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    label{
+      font-family: 'Poppins';
+        text-align: center;
+    }
+    
+}
+.button-sales-pagginator{
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: #E3E3E3;
+  cursor: pointer;
+  color: #000000;
+  margin: 2px;
+  border-radius: 10px;
+  &:hover{
+    background: #06805B;
+    color: #ffffff;
+
+  }
+
+}
+.indiv-sale-table-wrapper{
+ width: 95%;
+ align-self: center;
+
+}
+
+.table-image{
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #07956A;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 3px;
+      cursor: pointer;
+}
+    .i-top-btn {
+      height: 30px;
+    }
+@media screen and (max-width:'900px') {
+
+ 
+  .button-sales-pagginator {
+    width: 35px;
+      height: 35px;
+  }
+  
+    .individual-sale-container- {
+     margin-top: 5rem;
+    }
+  .button-wrap{
+    margin: 0px;
+      height: fit-content;
+      width: fit-content;
+  }
+  .total-btn{
+    width: 100px;
+      height: 30px;
+      label{
+        font-size: 14px;
+      }
+  }
+  .inner-footer-{
+  width: 100%;
+  margin: 0px;
+  
+  }
+  .i-top-btn {
+    // border: 1px solid #393838;
+    // height: 30px;
+    // width:5%;
+  }
+    .indiv-sale-table-wrapper {
+      overflow-y: scroll;
+      width: 100%;
+    }
+
+    .wrap-btn-wrap {
+      width: 95%;
+      align-self: center;
+     padding: 0px;
+     margin: 0px;
+     align-items: center;
+    //  background-color: #06805B;
+     justify-content: center;
+
+     flex-direction: column;
+    }
+    .search-{
+      width: 80%;
+      height: 30px;
+      // margin-bottom: 10px;
+    }
+    .btn-wrap {
+      overflow: scroll;
+      width: 100%;
+      border-radius: 3px;
+      padding: 0px;
+      margin: 0px;
+          justify-content:space-between;
+        
+        }
+}
+
+@media screen and (width:'800px') {
+  .table-image {
+      width: 30px;
+      height: 30px;
+      border-radius: 100%;
+    }
+
+}
