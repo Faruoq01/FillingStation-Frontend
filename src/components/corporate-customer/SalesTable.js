@@ -59,7 +59,7 @@ const NoteIcon = ({ onClick }) => (
   <img
     onClick={onClick}
     className="table-image"
-    src={require("../../assets/estation/ind-edit-icon.svg").default}
+    src={require("../../assets/estation/eye-icon.svg").default}
   />
 );
 

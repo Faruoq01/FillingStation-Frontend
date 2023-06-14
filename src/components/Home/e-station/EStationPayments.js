@@ -1,13 +1,12 @@
 import React, { Suspense, lazy } from "react";
 import LazyLoaderScreen from "../../LazyLoaderScreen";
-const CorporateSaleindex = lazy(() =>
-  import("../../corporate-sales/CorporateSaleindex")
+const WalletPaymentListIndex = lazy(() =>
+  import("../../wallet-list/WalletPaymentListIndex")
 );
-
-export default function EStationCorporateSales() {
+export default function EStationPayments() {
   return (
     <Suspense fallback={<LazyLoaderScreen />}>
-      <CorporateSaleindex />
+      <WalletPaymentListIndex />
     </Suspense>
   );
 }

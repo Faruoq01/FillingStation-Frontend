@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import "../../styles/estation/individual_sale.scss";
+import "../../styles/estation/payment.scss";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
@@ -9,39 +9,48 @@ import { useMediaQuery } from "@mui/material";
 import { tableData_S } from "../Home/e-station/data";
 import CircleIcon from "@mui/icons-material/Circle";
 
-export default function SalesTable() {
+export default function WalletPaymentTable() {
   const mobile = useMediaQuery("(max-width:600px)");
   const tablet = useMediaQuery("(max-width:900px)");
   return (
     <Fragment>
       <div className="indiv-sale-table-wrapper">
-        <table id="sales-table-">
+        <table id="payment-table-">
           <thead>
             <tr>
-              {!mobile && <th>S/N</th>}
-              {!mobile && <th>image</th>}
-              {!mobile && <th>Customer Name</th>}
-              <th>Email</th>
-              <th>Address</th>
-              <th>Phone Number</th>
-              <th>State</th>
+              {<th>S/N</th>}
+              {<th>Date</th>}
+              {<th>Time</th>}
+              <th>Amount</th>
+              <th>Account Name</th>
+              <th>Payment Method</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {tableData_S.map((item, index) => (
               <tr key={Math.random()}>
-                {!mobile && <td>{index + 1}</td>}
+                {<td>{index + 1}</td>}
+
+                <td>{"3-20-2022"}</td>
+                <td>{"5:28 am"}</td>
+                <td>{"5,000.00"}</td>
                 <td>
-                  <ProfileImg item={item} />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ProfileImg item={item} />
+                    {!mobile && item.account_name}
+                  </div>
                 </td>
-                <td> {!mobile && item.account_name}</td>
-                <td>{"peter@gmail.com"}</td>
-                <td>{"Ajah Lagos state"}</td>
-                <td>{"07048737699"}</td>
-                <td>{"Lagos"}</td>
+                <td>{"Transfer"}</td>
                 <td>
-                  <NoteIcon onClick={() => {}} />
+                  <NoteIcon red={index + 1 < 4} onClick={() => {}} />
                 </td>
               </tr>
             ))}
@@ -53,11 +62,15 @@ export default function SalesTable() {
   );
 }
 
-const NoteIcon = ({ onClick }) => (
+const NoteIcon = ({ onClick, red }) => (
   <img
     onClick={onClick}
     className="table-image"
-    src={require("../../assets/estation/eye-icon.svg").default}
+    src={
+      require(red
+        ? "../../assets/estation/view-list-icon-red.svg"
+        : "../../assets/estation/view-list-icon-green.svg").default
+    }
   />
 );
 

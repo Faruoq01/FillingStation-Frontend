@@ -64,6 +64,7 @@ function App() {
             path="/home/estation-corporate-customer"
             component={HomeScreen}
           />
+          <Route path="/home/estation-payments" component={HomeScreen} />
           <Route path="/home/estation-sales" component={HomeScreen} />
           <Route
             path="/home/estation-individual-sales"
