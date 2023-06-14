@@ -4,7 +4,7 @@ const IndividualOrderindex = lazy(() =>
   import("../../indevidual-order/IndividualOrderindex")
 );
 
-export default function EStationIndividualOrder() {
+export default function EStationIndividualIncomingOrder() {
   return (
     <Suspense fallback={<LazyLoaderScreen />}>
       <IndividualOrderindex />
