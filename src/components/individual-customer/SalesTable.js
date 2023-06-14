@@ -20,10 +20,9 @@ export default function SalesTable() {
             <tr>
               {!mobile && <th>S/N</th>}
               {!mobile && <th>image</th>}
-              {!mobile && <th>Company Name</th>}
+              {!mobile && <th>Customer Name</th>}
               <th>Email</th>
               <th>Address</th>
-              <th>Contact Person</th>
               <th>Phone Number</th>
               <th>State</th>
               <th>Action</th>
@@ -39,7 +38,6 @@ export default function SalesTable() {
                 <td> {!mobile && item.account_name}</td>
                 <td>{"peter@gmail.com"}</td>
                 <td>{"Ajah Lagos state"}</td>
-                <td>{"Bayo israel"}</td>
                 <td>{"07048737699"}</td>
                 <td>{"Lagos"}</td>
                 <td>
