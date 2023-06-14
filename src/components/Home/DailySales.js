@@ -29,7 +29,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ButtonDatePicker from '../common/CustomDatePicker';
 import UpdatePayments from '../Modals/DailySales/UpdatePayments';
-
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import PaymentModal from '../Modals/PaymentModal';
+import PaymentEditModal from '../Modals/PaymentEditModal';
+import AddPayModal from '../Modals/AddPayModal';
 // const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const DailySales = (props) => {
@@ -637,7 +640,7 @@ const DailySales = (props) => {
         <>
             { props.activeRoute.split('/').length === 3 &&
                 <div className='daily-sales-container'>
-                    {payMe && <UpdatePayments open={payMe} close={setPayMe} />}
+                    {payMe && <AddPayModal open={payMe} close={setPayMe} refresh={getAllProductData} />}
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
                             <div >
@@ -970,7 +973,10 @@ const DailySales = (props) => {
                                     View in details
                                 </Button>
                             </div>
-                            <div onClick={openPayModal} style={updatePay}>Click here to update payment <span style={{fontSize: '16px'}}>🠒</span></div>
+                            <div onClick={openPayModal} style={updatePay}>
+                                <div>Click here to update payment</div>
+                                <ArrowRightAltIcon />
+                            </div>
                             <div className='inner-section'>
                                 <div className='inner-content'>
                                     <div className='conts'>
@@ -1170,7 +1176,11 @@ const sales = {
 const updatePay = {
     fontWeight: '500',
     color: 'green',
-    marginTop: '10px'
+    marginTop: '10px',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    cursor: 'pointer'
 }
 
 export default DailySales;
