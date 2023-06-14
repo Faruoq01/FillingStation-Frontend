@@ -73,6 +73,8 @@ import NotificationDrawer from "../components/common/NotificationDrawer";
 import EStation from "../components/Home/e-station/EStation";
 import EStationSales from "../components/Home/e-station/EStationSales";
 import EstationIndividualSales from "../components/Home/e-station/EstationIndividualSales";
+import EStationCorporateSales from "../components/Home/e-station/EStationCorporateSales";
+import CorporateCustomerindex from "../components/corporate-customer/CorporateCustomerindex";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -252,6 +254,8 @@ const HomeScreen = () => {
       "/home/estation": "E-station",
       "/home/estation-sales": "Sales",
       "/home/estation-individual-sales": "Individual Sales",
+      "/home/estation-corporate-sales": "Corporate Sales",
+      "/home/estation-corporate-customer": "Corporate Customer",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
@@ -813,6 +817,12 @@ const HomeScreen = () => {
             </Route>
             <Route path="/home/estation-individual-sales">
               <EstationIndividualSales history={history} />
+            </Route>
+            <Route path="/home/estation-corporate-sales">
+              <EStationCorporateSales history={history} />
+            </Route>
+            <Route path="/home/estation-corporate-customer">
+              <CorporateCustomerindex history={history} />
             </Route>
 
             <Route path="/home/supply">

@@ -95,6 +95,8 @@ align-self: center;
 }
 .total-btn{
   padding: 5px;
+  font-size: 15px;
+  width: max-content;
   border-radius: 5px;
   margin: 2px;
     label{
@@ -136,12 +138,11 @@ align-self: center;
     .i-top-btn {
       height: 30px;
     }
-@media screen and (max-width:'900px') {
+@media screen and (max-width:1000px)  {
 
  
   .button-sales-pagginator {
-    // width: 35px;
-    //   height: 30px;
+  
       font-size: 11px;
   }
   
@@ -156,7 +157,7 @@ align-self: center;
   .total-btn{
     padding: 5px;
       label{
-        font-size: 14px;
+        font-size: 11px;
       }
   }
   .inner-footer-{
@@ -199,13 +200,4 @@ align-self: center;
           justify-content:space-between;
         
         }
-}
-
-@media screen and (width:'800px') {
-  .table-image {
-      width: 30px;
-      height: 30px;
-      border-radius: 100%;
-    }
-
 }
