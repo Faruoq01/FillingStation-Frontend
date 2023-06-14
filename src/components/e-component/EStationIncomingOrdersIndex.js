@@ -4,24 +4,24 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const EStationIncomingOrdersIndex = ({}) => {
   const navigation = useHistory();
-  const goToIndividualSales = () => {
-    // navigation.push("/home/estation-individual-sales");
+  const goToIndividualOrder = () => {
+    navigation.push("/home/estation-individual-orders");
   };
-  const goToCorporateSales = () => {
-    // navigation.push("/home/estation-corporate-sales");
+  const goToCorporateOrder = () => {
+    // navigation.push("/home/estation-corporate-orders");
   };
   return (
     <div className="e-station-sales">
       <div className="card-wrap-sales">
         <Card
-          onClick={goToIndividualSales}
+          onClick={goToIndividualOrder}
           uri={require("../../assets/estation/cop.svg").default}
           style={{ marginRight: 10 }}
           title="NGN 16200.00"
           subText=" Individual Incoming Order"
         />
         <Card
-          onClick={goToCorporateSales}
+          onClick={goToCorporateOrder}
           uri={require("../../assets/estation/ind.svg").default}
           title="NGN 13200.00"
           subText="Corporate Incoming Order"
