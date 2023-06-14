@@ -11,11 +11,7 @@ export default function IndividualSaleindex() {
     <div className="individual-sale-container-">
       <div className="wrap-btn-wrap">
         <div className="btn-wrap">
-          <Button
-            style={{ backgroundColor: "#06805B", color: "white", border: 0 }}
-          >
-            {mobile ? "All" : "All Products"}
-          </Button>
+          <Button style={{}}>{"All Products"}</Button>
           <Button style={{ marginRight: 5, marginLeft: 5 }}>PMS</Button>
           <Button style={{ marginRight: 5 }}>AGO</Button>
           <Button>DPK</Button>
