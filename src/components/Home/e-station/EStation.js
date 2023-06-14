@@ -1,11 +1,12 @@
 import React, { Suspense, lazy } from "react";
+import LazyLoaderScreen from "../../LazyLoaderScreen";
 const Wrapper = lazy(() => import("../../e-component/wrapper/Wrapper"));
 const TopWrapper = lazy(() => import("../../e-component/top/TopWrapper"));
 
 function EStation() {
   return (
     <div style={styles.container}>
-      <Suspense fallback={<div style={styles.loader}>Loading ...</div>}>
+      <Suspense fallback={<LazyLoaderScreen />}>
         <TopWrapper />
         <Wrapper />
       </Suspense>
@@ -20,13 +21,6 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     flex: 1,
-  },
-  loader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100vw",
-    height: "100vh",
   },
 };
 

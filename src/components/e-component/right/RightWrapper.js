@@ -7,10 +7,12 @@ import { Doughnut } from "react-chartjs-2";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import RCard from "./RCard";
 import DotProduct from "./DotProduct";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 function RightWrapper(props) {
   ChartJS.register(ArcElement, Tooltip, Legend);
   ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
   ChartJS.overrides["doughnut"].plugins.legend.display = false;
+  const navigation = useHistory();
   const data = {
     labels: ["PMS", "DPK", "AGO"],
     datasets: [
@@ -24,11 +26,20 @@ function RightWrapper(props) {
     ],
   };
   const mobile = useMediaQuery("(max-width:900px)");
-  const tablet = useMediaQuery("(min-width:700px)");
+  const tablet = useMediaQuery("(mx-width:1000px)");
+  const goToCorporateCustomerPage = () => {
+    navigation.push("/home/estation-corporate-customer");
+  };
+  const goToIndividualCustomerPage = () => {
+    navigation.push("/home/estation-individual-customer");
+  };
+  const goToIncomingOrders = () => {
+    navigation.push("/home/estation-incoming-orders");
+  };
   return (
     <div className="r-wrapper">
       <RCard
-        onClick={() => {}}
+        onClick={goToCorporateCustomerPage}
         arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{ width: "100%", backgroundColor: " #F6FFFF" }}
         icon={
@@ -41,7 +52,7 @@ function RightWrapper(props) {
         title="Corporate Customers"
       />
       <RCard
-        onClick={() => {}}
+        onClick={goToIndividualCustomerPage}
         arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{
           width: "100%",
@@ -126,7 +137,7 @@ function RightWrapper(props) {
         />
       </div>
       <RCard
-        onClick={() => {}}
+        onClick={goToIncomingOrders}
         arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{
           width: "100%",
@@ -155,7 +166,7 @@ const styles = (mobile, tablet) => ({
     justifyContent: "center",
   },
   arrowStyle: {
-    left: !mobile ? "35px" : tablet ? "25rem" : "30px",
+    left: !mobile ? "10px" : tablet ? "20" : "30px",
     marginBottom: 20,
   },
   lastCardWrap: {
@@ -170,7 +181,7 @@ const styles = (mobile, tablet) => ({
     marginTop: "1rem",
     borderRadius: 9,
   },
-  arrowStyle2: { left: !mobile ? "70px" : tablet ? "25rem" : "45px" },
+  arrowStyle2: { left: !mobile ? "40px" : tablet ? "25rem" : "45px" },
 });
 RightWrapper.propTypes = {};
 

@@ -4,19 +4,16 @@ $shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
 #app-table{
   border-collapse: collapse;
   width: 100%;
-  font-family: $font;
     font-style: normal;
     font-weight: 400;
-    text-align: center;
+    text-align: start;
 }
 #app-table tr:nth-child(even) {
   background-color: #EDFFFA;
 }
 #app-table td,
 #app-table th {
-  font-family: $font;
-  font-size: 12px;
-    text-align: center;
+  font-size: 11px;
     padding: 5px;
 }
 
@@ -26,7 +23,6 @@ $shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
 #app-table th{
   padding-top: 12px;
     padding-bottom: 12px;
-    text-align: center;
     background-color: #ffffff;
     color: #585858;
 }

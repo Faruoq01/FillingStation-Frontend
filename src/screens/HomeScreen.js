@@ -73,6 +73,13 @@ import NotificationDrawer from "../components/common/NotificationDrawer";
 import EStation from "../components/Home/e-station/EStation";
 import EStationSales from "../components/Home/e-station/EStationSales";
 import EstationIndividualSales from "../components/Home/e-station/EstationIndividualSales";
+import EStationCorporateSales from "../components/Home/e-station/EStationCorporateSales";
+import CorporateCustomer from "../components/Home/CorporateCustomer";
+import IndividualCustomer from "../components/Home/IndividualCustomer";
+import EStationPayments from "../components/Home/e-station/EStationPayments";
+import EStationIncomingOrders from "../components/Home/e-station/EStationIncomingOrders";
+import EStationIndividualIncomingOrder from "../components/Home/e-station/EStationIndividualIncomingOrder";
+import EStationCorporateIncomingOrder from "../components/Home/e-station/EStationCorporateIncomingOrder";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -252,6 +259,13 @@ const HomeScreen = () => {
       "/home/estation": "E-station",
       "/home/estation-sales": "Sales",
       "/home/estation-individual-sales": "Individual Sales",
+      "/home/estation-corporate-sales": "Corporate Sales",
+      "/home/estation-corporate-customer": "Corporate Customer",
+      "/home/estation-individual-customer": "Individual Customer",
+      "/home/estation-incoming-orders": "Incoming Order",
+      "/home/estation-individual-orders": "Individual Incoming Order",
+      "/home/estation-corporate-orders": "Corporate Incoming Order",
+      "/home/estation-payments": "Payments",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
@@ -814,12 +828,36 @@ const HomeScreen = () => {
             <Route path="/home/estation-individual-sales">
               <EstationIndividualSales history={history} />
             </Route>
+            <Route path="/home/estation-corporate-sales">
+              <EStationCorporateSales history={history} />
+            </Route>
+            <Route path="/home/estation-corporate-customer">
+              <CorporateCustomer history={history} />
+            </Route>
+            <Route path="/home/estation-individual-customer">
+              <IndividualCustomer history={history} />
+            </Route>
+            <Route path="/home/estation-incoming-orders">
+              <EStationIncomingOrders history={history} />
+            </Route>
+            <Route path="/home/estation-payments">
+              <EStationPayments history={history} />
+            </Route>
 
             <Route path="/home/supply">
               <Supply activeRoute={activeRoute} />
             </Route>
             <Route path="/home/daily-record-sales">
               <DailyRecordSales history={history} />
+            </Route>
+            <Route path="/home/estation-individual-orders">
+              <EStationIndividualIncomingOrder history={history} />
+            </Route>
+            <Route path="/home/estation-individual-orders">
+              <EStationIndividualIncomingOrder history={history} />
+            </Route>
+            <Route path="/home/estation-corporate-orders">
+              <EStationCorporateIncomingOrder />
             </Route>
             <Route path="/home/regulatory">
               <Regulatory />
@@ -836,6 +874,7 @@ const HomeScreen = () => {
             <Route path="/home/pump-list">
               <StationPumps />
             </Route>
+
             <Route path="/home/overage">
               <OverageList />
             </Route>

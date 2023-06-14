@@ -2,9 +2,9 @@ import React, { Fragment } from "react";
 import Button from "./Button";
 import "../../styles/estation/individual_sale.scss";
 import { useMediaQuery } from "@mui/material";
-import SalesTable from "./SalesTable";
+import CorporateIncomningOrderTable from "./CorporateIncomningOrderTable";
 
-export default function IndividualSaleindex() {
+export default function CorporateIncomningOrderindex() {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:800px)");
   return (
@@ -23,7 +23,7 @@ export default function IndividualSaleindex() {
           placeholder="Search"
         ></input>
       </div>
-      <SalesTable />
+      <CorporateIncomningOrderTable />
     </div>
   );
 }

@@ -40,6 +40,10 @@ function App() {
           <Route path="/home/daily-record-sales" component={HomeScreen} />
           <Route path="/home/daily-record-sales/lpo" component={HomeScreen} />
           <Route
+            path="/home/estation-corporate-orders"
+            component={HomeScreen}
+          />
+          <Route
             path="/home/daily-record-sales/expenses"
             component={HomeScreen}
           />
@@ -47,6 +51,7 @@ function App() {
             path="/home/daily-record-sales/payment"
             component={HomeScreen}
           />
+          <Route path="/home/estation-incoming-orders" component={HomeScreen} />
           <Route
             path="/home/daily-record-sales/dipping"
             component={HomeScreen}
@@ -59,9 +64,19 @@ function App() {
           <Route path="/home/lpo/list" component={HomeScreen} />
           <Route path="/home/lpo/company" component={HomeScreen} />
           <Route path="/home/estation" component={HomeScreen} />
+          <Route path="/home/estation-corporate-sales" component={HomeScreen} />
+          <Route
+            path="/home/estation-corporate-customer"
+            component={HomeScreen}
+          />
+          <Route path="/home/estation-payments" component={HomeScreen} />
           <Route path="/home/estation-sales" component={HomeScreen} />
           <Route
             path="/home/estation-individual-sales"
+            component={HomeScreen}
+          />
+          <Route
+            path="/home/estation-individual-customer"
             component={HomeScreen}
           />
 

@@ -19,15 +19,12 @@ export default function SalesTable() {
           <thead>
             <tr>
               {!mobile && <th>S/N</th>}
-              {!mobile && <th>Date</th>}
-              {!mobile && <th>Time</th>}
-              <th>Account Name</th>
-              <th>Vehicle No</th>
-              <th>Product</th>
-              <th>Litres</th>
-              <th>Amount</th>
-              {!mobile && <th>Station</th>}
-              {!mobile && <th>Attendant</th>}
+              {!mobile && <th>image</th>}
+              {!mobile && <th>Customer Name</th>}
+              <th>Email</th>
+              <th>Address</th>
+              <th>Phone Number</th>
+              <th>State</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -35,40 +32,14 @@ export default function SalesTable() {
             {tableData_S.map((item, index) => (
               <tr key={Math.random()}>
                 {!mobile && <td>{index + 1}</td>}
-                {!mobile && <td>{item.date}</td>}
-                {!mobile && <td>{item.time}</td>}
                 <td>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "start",
-                    }}
-                  >
-                    <ProfileImg item={item} />
-                    {!mobile && item.account_name}
-                  </div>
+                  <ProfileImg item={item} />
                 </td>
-                <td>{item.vehicle_no}</td>
-                <td>
-                  <CircleIcon
-                    style={{
-                      fontSize: 8,
-                      marginRight: 5,
-                      color:
-                        item.product == "DPK"
-                          ? "#35393E"
-                          : item.product == "PMS"
-                          ? "#399A19"
-                          : "#FFA010",
-                    }}
-                  />
-                  {item.product}
-                </td>
-                <td>{item.liters}</td>
-                <td>{item.price}</td>
-                {!mobile && <td>{item.station}</td>}
-                {!mobile && <td>{item.attendant}</td>}
+                <td> {!mobile && item.account_name}</td>
+                <td>{"peter@gmail.com"}</td>
+                <td>{"Ajah Lagos state"}</td>
+                <td>{"07048737699"}</td>
+                <td>{"Lagos"}</td>
                 <td>
                   <NoteIcon onClick={() => {}} />
                 </td>
@@ -86,7 +57,7 @@ const NoteIcon = ({ onClick }) => (
   <img
     onClick={onClick}
     className="table-image"
-    src={require("../../assets/estation/ind-edit-icon.svg").default}
+    src={require("../../assets/estation/eye-icon.svg").default}
   />
 );
 
@@ -97,7 +68,7 @@ const ProfileImg = ({ onClick, item }) => (
 const Footer = ({}) => (
   <div className="footer-">
     <div className="inner-footer-">
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      {/* <div style={{ display: "flex", flexDirection: "row" }}>
         <Button
           style={{
             border: "1px solid #06805B",
@@ -113,7 +84,7 @@ const Footer = ({}) => (
           }}
           data="NGN 245000.00"
         />
-      </div>
+      </div> */}
       <Pagginator
         onClickNext={() => {
           alert("prtrt");

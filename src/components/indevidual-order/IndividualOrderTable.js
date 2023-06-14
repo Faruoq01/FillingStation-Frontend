@@ -9,7 +9,7 @@ import { useMediaQuery } from "@mui/material";
 import { tableData_S } from "../Home/e-station/data";
 import CircleIcon from "@mui/icons-material/Circle";
 
-export default function SalesTable() {
+export default function IndividualOrderTable() {
   const mobile = useMediaQuery("(max-width:600px)");
   const tablet = useMediaQuery("(max-width:900px)");
   return (
@@ -23,11 +23,11 @@ export default function SalesTable() {
               {!mobile && <th>Time</th>}
               <th>Account Name</th>
               <th>Vehicle No</th>
+              <th>Order No</th>
               <th>Product</th>
               <th>Litres</th>
               <th>Amount</th>
               {!mobile && <th>Station</th>}
-              {!mobile && <th>Attendant</th>}
               <th>Action</th>
             </tr>
           </thead>
@@ -43,6 +43,7 @@ export default function SalesTable() {
                       display: "flex",
                       flexDirection: "row",
                       justifyContent: "start",
+                      alignItems: "center",
                     }}
                   >
                     <ProfileImg item={item} />
@@ -50,6 +51,7 @@ export default function SalesTable() {
                   </div>
                 </td>
                 <td>{item.vehicle_no}</td>
+                {<td>2356</td>}
                 <td>
                   <CircleIcon
                     style={{
@@ -68,7 +70,7 @@ export default function SalesTable() {
                 <td>{item.liters}</td>
                 <td>{item.price}</td>
                 {!mobile && <td>{item.station}</td>}
-                {!mobile && <td>{item.attendant}</td>}
+
                 <td>
                   <NoteIcon onClick={() => {}} />
                 </td>
@@ -86,7 +88,7 @@ const NoteIcon = ({ onClick }) => (
   <img
     onClick={onClick}
     className="table-image"
-    src={require("../../assets/estation/ind-edit-icon.svg").default}
+    src={require("../../assets/estation/message-icon.svg").default}
   />
 );
 

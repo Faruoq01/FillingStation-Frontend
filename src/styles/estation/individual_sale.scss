@@ -10,8 +10,9 @@
       border: none;
       background: white;
       color: #393838;
-      width: max-content;
-      padding: 0rem 2rem 0rem 2rem;
+      width: 25%;
+      
+      // padding: 0rem 2rem 0rem 2rem;
       border-radius :5px;
       font-family: "Nunito";
       border: 1px solid #393838;
@@ -51,6 +52,7 @@ align-self: center;
   border-collapse: collapse;
   width: 100%;
   margin-top: 10px;
+  text-align: start;
 }
 #sales-table- td,
 #sales-table- th {
@@ -66,11 +68,11 @@ align-self: center;
   background-color: #ddd;
 }
 #sales-table- th {
-  font-size: 15px;
-  // font-weight: bold;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: start;
   padding-top: 12px;
   padding-bottom: 12px;
-  text-align: left;
   background-color: #ffffff;
   color: #585858;
 
@@ -93,24 +95,23 @@ align-self: center;
   align-items: center;
 }
 .total-btn{
-  width: 135px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  padding: 5px;
+  font-size: 15px;
+  width: max-content;
+  border-radius: 5px;
+  margin: 2px;
     label{
-      font-family: 'Poppins';
         text-align: center;
     }
     
 }
 .button-sales-pagginator{
-  width: 40px;
-  height: 40px;
+  padding: 5px;
   border: none;
   background: #E3E3E3;
   cursor: pointer;
   color: #000000;
+  font-size: 15px;
   margin: 2px;
   border-radius: 10px;
   &:hover{
@@ -127,26 +128,23 @@ align-self: center;
 }
 
 .table-image{
-      width: 30px;
+    width: 30px;
       height: 30px;
+      padding: 0px;
+      margin-right: 5px;
       border-radius: 50%;
-      background-color: #07956A;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       margin-right: 3px;
       cursor: pointer;
 }
     .i-top-btn {
       height: 30px;
     }
-@media screen and (max-width:'900px') {
+@media screen and (max-width:1000px)  {
 
  
   .button-sales-pagginator {
-    width: 35px;
-      height: 35px;
+  
+      font-size: 11px;
   }
   
     .individual-sale-container- {
@@ -158,10 +156,9 @@ align-self: center;
       width: fit-content;
   }
   .total-btn{
-    width: 100px;
-      height: 30px;
+    padding: 5px;
       label{
-        font-size: 14px;
+        font-size: 11px;
       }
   }
   .inner-footer-{
@@ -204,13 +201,4 @@ align-self: center;
           justify-content:space-between;
         
         }
-}
-
-@media screen and (width:'800px') {
-  .table-image {
-      width: 30px;
-      height: 30px;
-      border-radius: 100%;
-    }
-
 }

@@ -2,6 +2,7 @@
   width: 35%;
   height: 500px;
   // background-color: red;
+    position: relative;
 }
 
 .donut-chart{
@@ -12,6 +13,9 @@
  
   .donut-chart-wrapper{
    margin-top: 1rem;
+   width: 150px;
+   height: 150px;
+   align-self: center;
   }
 }
 .product-dis {
@@ -39,7 +43,7 @@
    color: #066348
  }
 
-@media screen and (max-width:'900px') {
+@media screen and (max-width:1000px) {
   .r-wrapper{
     width: 100%;
     padding: 0px;

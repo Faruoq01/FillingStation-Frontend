@@ -1,22 +1,17 @@
 import React, { Fragment } from "react";
-import TopWrapper from "../e-component/top/TopWrapper";
 import Button from "./Button";
-import "./individual_sale.scss";
+import "../../styles/estation/individual_sale.scss";
 import { useMediaQuery } from "@mui/material";
 import SalesTable from "./SalesTable";
 
-export default function CorporateSalesIndex() {
+export default function CorporateSaleindex() {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:800px)");
   return (
-    <div style={{ padding: "1rem" }}>
+    <div className="individual-sale-container-">
       <div className="wrap-btn-wrap">
         <div className="btn-wrap">
-          <Button
-            style={{ backgroundColor: "#06805B", color: "white", border: 0 }}
-          >
-            {mobile ? "All" : "All Products"}
-          </Button>
+          <Button style={{}}>{"All Products"}</Button>
           <Button style={{ marginRight: 5, marginLeft: 5 }}>PMS</Button>
           <Button style={{ marginRight: 5 }}>AGO</Button>
           <Button>DPK</Button>
@@ -26,6 +21,7 @@ export default function CorporateSalesIndex() {
           type="text"
           id="fname"
           placeholder="Search"
+          style={{ border: "1.5px solid #C6C6C6", height: 30 }}
         ></input>
       </div>
       <SalesTable />

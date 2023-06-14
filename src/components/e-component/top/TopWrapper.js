@@ -14,13 +14,17 @@ import {
 import { useMediaQuery } from "@mui/material";
 
 function TopWrapper({ disableCard, ...props }) {
-  const history = useHistory();
+  const navigation = useHistory();
 
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:700px)");
   const goToSales = () => {
-    history.push("/home/estation-sales");
+    navigation.push("/home/estation-sales");
   };
+  const goToPayments = () => {
+    navigation.push("/home/estation-payments");
+  };
+
   return (
     <div style={{ display: "flex", width: "100%" }}>
       <div className="e-top-wrapper">
@@ -33,6 +37,7 @@ function TopWrapper({ disableCard, ...props }) {
           className="card-wrapper"
         >
           <TopCard
+            onClick={goToPayments}
             arrowStyle={{ left: !mobile ? "0px" : tablet ? "25rem" : "45px" }}
             icon={
               <img

@@ -2,9 +2,9 @@ import React, { Fragment } from "react";
 import Button from "./Button";
 import "../../styles/estation/individual_sale.scss";
 import { useMediaQuery } from "@mui/material";
-import SalesTable from "./SalesTable";
+import SalesTable from "./IndividualOrderTable";
 
-export default function IndividualSaleindex() {
+export default function IndividualOrderindex() {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:800px)");
   return (
