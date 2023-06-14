@@ -21,7 +21,11 @@ export default function WalletPaymentListIndex() {
             type="text"
             id="fname"
             placeholder="Search"
-            style={{ height: 30, border: "1.5px solid #C6C6C6" }}
+            style={{
+              height: 30,
+              border: "1.5px solid #C6C6C6",
+              cursor: "pointer",
+            }}
           />
           <Button
             styles={{
@@ -29,6 +33,7 @@ export default function WalletPaymentListIndex() {
               height: 30,
               backgroundColor: "#0F88F2",
               color: "white",
+              cursor: "pointer",
             }}
           >
             Register
