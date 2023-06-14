@@ -47,7 +47,7 @@ function App() {
             path="/home/daily-record-sales/payment"
             component={HomeScreen}
           />
-          <Route path="/home/estation-incoming-sales" component={HomeScreen} />
+          <Route path="/home/estation-incoming-orders" component={HomeScreen} />
           <Route
             path="/home/daily-record-sales/dipping"
             component={HomeScreen}

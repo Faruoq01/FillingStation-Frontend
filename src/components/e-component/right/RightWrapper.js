@@ -33,6 +33,9 @@ function RightWrapper(props) {
   const goToIndividualCustomerPage = () => {
     navigation.push("/home/estation-individual-customer");
   };
+  const goToIncomingOrders = () => {
+    navigation.push("/home/estation-incoming-orders");
+  };
   return (
     <div className="r-wrapper">
       <RCard
@@ -134,7 +137,7 @@ function RightWrapper(props) {
         />
       </div>
       <RCard
-        onClick={() => {}}
+        onClick={goToIncomingOrders}
         arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{
           width: "100%",
