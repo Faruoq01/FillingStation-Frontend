@@ -40,6 +40,10 @@ function App() {
           <Route path="/home/daily-record-sales" component={HomeScreen} />
           <Route path="/home/daily-record-sales/lpo" component={HomeScreen} />
           <Route
+            path="/home/estation-corporate-orders"
+            component={HomeScreen}
+          />
+          <Route
             path="/home/daily-record-sales/expenses"
             component={HomeScreen}
           />

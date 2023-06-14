@@ -79,6 +79,7 @@ import IndividualCustomer from "../components/Home/IndividualCustomer";
 import EStationPayments from "../components/Home/e-station/EStationPayments";
 import EStationIncomingOrders from "../components/Home/e-station/EStationIncomingOrders";
 import EStationIndividualIncomingOrder from "../components/Home/e-station/EStationIndividualIncomingOrder";
+import EStationCorporateIncomingOrder from "../components/Home/e-station/EStationCorporateIncomingOrder";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -263,7 +264,7 @@ const HomeScreen = () => {
       "/home/estation-individual-customer": "Individual Customer",
       "/home/estation-incoming-orders": "Incoming Order",
       "/home/estation-individual-orders": "Individual Incoming Order",
-      "/home/estation-corporate-orders": "Corporate Order",
+      "/home/estation-corporate-orders": "Corporate Incoming Order",
       "/home/estation-payments": "Payments",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
@@ -852,6 +853,12 @@ const HomeScreen = () => {
             <Route path="/home/estation-individual-orders">
               <EStationIndividualIncomingOrder history={history} />
             </Route>
+            <Route path="/home/estation-individual-orders">
+              <EStationIndividualIncomingOrder history={history} />
+            </Route>
+            <Route path="/home/estation-corporate-orders">
+              <EStationCorporateIncomingOrder />
+            </Route>
             <Route path="/home/regulatory">
               <Regulatory />
             </Route>
@@ -867,6 +874,7 @@ const HomeScreen = () => {
             <Route path="/home/pump-list">
               <StationPumps />
             </Route>
+
             <Route path="/home/overage">
               <OverageList />
             </Route>

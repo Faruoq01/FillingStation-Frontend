@@ -8,7 +8,7 @@ const EStationIncomingOrdersIndex = ({}) => {
     navigation.push("/home/estation-individual-orders");
   };
   const goToCorporateOrder = () => {
-    // navigation.push("/home/estation-corporate-orders");
+    navigation.push("/home/estation-corporate-orders");
   };
   return (
     <div className="e-station-sales">
