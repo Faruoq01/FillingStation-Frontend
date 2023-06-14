@@ -80,23 +80,6 @@ const ProfileImg = ({ onClick, item }) => (
 
 const Footer = ({}) => (
   <div className="footer-">
-    {/* <div style={{ display: "flex", flexDirection: "row" }}>
-        <Button
-          style={{
-            border: "1px solid #06805B",
-            background: "#06805B",
-            color: "white",
-          }}
-        />
-        <Button
-          style={{
-            background: "#EFFFFA",
-            color: "#515151",
-            border: "1px solid #515151",
-          }}
-          data="NGN 245000.00"
-        />
-      </div> */}
     <Pagginator
       onClickNext={() => {
         alert("prtrt");
