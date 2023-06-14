@@ -4,6 +4,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  
 }
 
 .i-top-btn {
@@ -116,7 +117,7 @@
 .footer- {
   height: 45px;
   width: 95%;
-
+background-color: transparent;
   display: flex;
   align-self: center;
   justify-content: flex-end;
@@ -194,6 +195,7 @@
 
   .individual-sale-container- {
     margin-top: 5rem;
+    width: 95%;
   }
 
   .button-wrap {

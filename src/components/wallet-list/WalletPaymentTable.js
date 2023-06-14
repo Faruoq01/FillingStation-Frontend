@@ -80,8 +80,7 @@ const ProfileImg = ({ onClick, item }) => (
 
 const Footer = ({}) => (
   <div className="footer-">
-    <div className="inner-footer-">
-      {/* <div style={{ display: "flex", flexDirection: "row" }}>
+    {/* <div style={{ display: "flex", flexDirection: "row" }}>
         <Button
           style={{
             border: "1px solid #06805B",
@@ -98,13 +97,12 @@ const Footer = ({}) => (
           data="NGN 245000.00"
         />
       </div> */}
-      <Pagginator
-        onClickNext={() => {
-          alert("prtrt");
-        }}
-        onClickPrevious={() => {}}
-      />
-    </div>
+    <Pagginator
+      onClickNext={() => {
+        alert("prtrt");
+      }}
+      onClickPrevious={() => {}}
+    />
   </div>
 );
 const Button = ({ style, data = "Total Amount", ...props }) => (
