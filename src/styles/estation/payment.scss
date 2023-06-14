@@ -89,29 +89,25 @@
   text-align: start;
   padding-top: 12px;
   padding-bottom: 12px;
-  // background-color: #ffffff;
   background-color: #525252;
   color: #fff;
  
 
 }
-// #payment-table- thead{
-// background-color: #525252;
-//   border-radius: 5px;
-// }
+
 #payment-table- th:first-child {
-  border-radius: 10px 0 0 10px;
+  border-radius: 5px 0 0 5px;
 }
 
 #payment-table- th:last-child {
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 5px 5px 0;
 }
 #payment-table- td:first-child {
-  border-radius: 10px 0 0 10px;
+  border-radius: 5px 0 0 5px;
 }
 
 #payment-table- td:last-child {
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 5px 5px 0;
 }
 
 .footer- {

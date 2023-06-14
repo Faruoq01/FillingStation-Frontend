@@ -77,6 +77,7 @@ import EStationCorporateSales from "../components/Home/e-station/EStationCorpora
 import CorporateCustomer from "../components/Home/CorporateCustomer";
 import IndividualCustomer from "../components/Home/IndividualCustomer";
 import EStationPayments from "../components/Home/e-station/EStationPayments";
+import EStationIncomingSales from "../components/Home/e-station/EStationIncomingSales";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -259,6 +260,7 @@ const HomeScreen = () => {
       "/home/estation-corporate-sales": "Corporate Sales",
       "/home/estation-corporate-customer": "Corporate Customer",
       "/home/estation-individual-customer": "Individual Customer",
+      "/home/estation-incoming-sales": "Incoming Sales",
       "/home/estation-payments": "Payments",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
@@ -830,6 +832,9 @@ const HomeScreen = () => {
             </Route>
             <Route path="/home/estation-individual-customer">
               <IndividualCustomer history={history} />
+            </Route>
+            <Route path="/home/estation-incoming-sales">
+              <EStationIncomingSales history={history} />
             </Route>
             <Route path="/home/estation-payments">
               <EStationPayments history={history} />

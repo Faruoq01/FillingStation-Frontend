@@ -1,5 +1,5 @@
-import "../../../styles/estation/sales.scss";
-import Card from "../../sales/Card";
+import "../../styles/estation/sales.scss";
+import Card from "../sales/Card";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const EStationSalesIndex = ({}) => {
@@ -15,14 +15,14 @@ const EStationSalesIndex = ({}) => {
       <div className="card-wrap-sales">
         <Card
           onClick={goToIndividualSales}
-          uri={require("../../../assets/estation/cop.svg").default}
+          uri={require("../../assets/estation/cop.svg").default}
           style={{ marginRight: 10 }}
           title="NGN 220, 000"
           subText="Total Individual Sales"
         />
         <Card
           onClick={goToCorporateSales}
-          uri={require("../../../assets/estation/ind.svg").default}
+          uri={require("../../assets/estation/ind.svg").default}
           title="NGN 130, 000"
           subText="Total Corporate Sales"
         />

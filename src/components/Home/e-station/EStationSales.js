@@ -1,6 +1,8 @@
 import React, { Suspense, lazy } from "react";
 import LazyLoaderScreen from "../../LazyLoaderScreen";
-const EStationSalesIndex = lazy(() => import("./EStationSalesIndex"));
+const EStationSalesIndex = lazy(() =>
+  import("../../e-component/EStationSalesIndex")
+);
 
 export default function EStationSales() {
   return (
