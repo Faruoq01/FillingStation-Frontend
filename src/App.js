@@ -69,6 +69,10 @@ function App() {
             path="/home/estation-individual-sales"
             component={HomeScreen}
           />
+          <Route
+            path="/home/estation-individual-customer"
+            component={HomeScreen}
+          />
 
           <Route path="/home/supply" component={HomeScreen} />
           <Route path="/home/supply/create" component={HomeScreen} />

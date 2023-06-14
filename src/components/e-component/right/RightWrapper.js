@@ -31,7 +31,7 @@ function RightWrapper(props) {
     navigation.push("/home/estation-corporate-customer");
   };
   const goToIndividualCustomerPage = () => {
-    // navigation.push("/home/estation-corporate-customer");
+    navigation.push("/home/estation-individual-customer");
   };
   return (
     <div className="r-wrapper">
