@@ -220,13 +220,13 @@ background-color: transparent;
   .reciept-img{
     height: 80%;
     width: 95%;
-    background: #06805B;
+    // background: #06805B;
     display: flex;
     align-self: center;
 
     margin-top: 5%;
     img{
-      object-fit: cover;
+      object-fit: contain;
       width: 100%;
       height: 100%;
     }
@@ -237,7 +237,7 @@ background-color: transparent;
     width: 95%;
     margin-top: 1%;
     flex-direction: row;
-    
+   
     .footer-btn-p{
       cursor: pointer;
       padding: 1%;
