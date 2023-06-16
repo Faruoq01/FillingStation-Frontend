@@ -16,7 +16,6 @@ const EStationSalesIndex = ({}) => {
         <Card
           onClick={goToIndividualSales}
           uri={require("../../assets/estation/cop.svg").default}
-          style={{ marginRight: 10 }}
           title="NGN 220, 000"
           subText="Total Individual Sales"
         />
