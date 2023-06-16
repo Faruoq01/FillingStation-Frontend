@@ -10,8 +10,7 @@ import { eStationSinglePaymentAction } from "../../store/actions/payment";
 import EStationCreatePaymentModal from "../Modals/EStationCreatePaymentModal";
 
 export default function WalletPaymentListIndex() {
-  const mobile = useMediaQuery("(max-width:900px)");
-  const tablet = useMediaQuery("(min-width:800px)");
+  const mobile = useMediaQuery("(max-width:1000px)");
   const [receiptModal, setReceiptModal] = useState(false);
   const [createPaymentModal, setCreatePaymentModal] = useState(false);
   const dispatch = useDispatch();

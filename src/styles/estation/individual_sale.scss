@@ -31,12 +31,14 @@ align-self: center;
   flex-direction: row;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1%;
 }
 .btn-wrap{
   width: 36%;
   justify-content: space-between;
   display:flex;
   flex-direction: row;
+  align-self: center;
 }
 .search-{
   // height: 35px;
@@ -44,6 +46,8 @@ align-self: center;
   border-radius: 5px;
   padding-left: 10px;
   padding-right: 10px;
+  border: 1px solid#E3E3E3;
+  padding: 2px;
   &:focus{
     outline: none;
   }
@@ -188,12 +192,13 @@ align-self: center;
      flex-direction: column;
     }
     .search-{
-      width: 80%;
-      height: 30px;
-      // margin-bottom: 10px;
+      width: 97%;
+      // height: 20%;
+      margin-top: 5px;
+      padding: 3px;
+      
     }
     .btn-wrap {
-      overflow: scroll;
       width: 100%;
       border-radius: 3px;
       padding: 0px;

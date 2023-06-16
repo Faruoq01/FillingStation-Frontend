@@ -79,6 +79,9 @@ const EStationCreatePaymentModal = (props) => {
   );
 };
 
+const customDropdown = ({ data }) => <div>{}</div>;
+const data = {};
+
 const CustomTextInput = (props) => (
   <Fragment>
     <label>{props.title}</label>

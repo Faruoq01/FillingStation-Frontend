@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import "../../styles/estation/payment.scss";
 import {
   KeyboardArrowLeft,
@@ -10,60 +10,93 @@ import { tableData_S } from "../Home/e-station/data";
 import CircleIcon from "@mui/icons-material/Circle";
 
 export default function WalletPaymentTable({ handleViewReciept }) {
-  const mobile = useMediaQuery("(max-width:600px)");
+  const mobile = useMediaQuery("(max-width:1000px)");
   const tablet = useMediaQuery("(max-width:900px)");
+  const [mobileCardColor, setMobileCardColor] = useState(false);
   return (
     <Fragment>
-      <div className="indiv-sale-table-wrapper">
-        <table id="payment-table-">
-          <thead>
-            <tr>
-              {<th>S/N</th>}
-              {<th>Date</th>}
-              {<th>Time</th>}
-              <th>Amount</th>
-              <th>Account Name</th>
-              <th>Payment Method</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData_S.map((item, index) => (
-              <tr key={Math.random()}>
-                {<td>{index + 1}</td>}
-
-                <td>{"3-20-2022"}</td>
-                <td>{"5:28 am"}</td>
-                <td>{"5,000.00"}</td>
-                <td>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "start",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ProfileImg item={item} />
-                    {!mobile && item.account_name}
-                  </div>
-                </td>
-                <td>{"Transfer"}</td>
-                <td>
-                  <NoteIcon
-                    red={index + 1 < 4}
-                    onClick={() => handleViewReciept(item)}
-                  />
-                </td>
+      {mobile ? (
+        <div className="mobile-table-wrapper">
+          <CardMain mobileCardColor={mobileCardColor} />
+        </div>
+      ) : (
+        <div className="indiv-sale-table-wrapper">
+          <table id="payment-table-">
+            <thead>
+              <tr>
+                {<th>S/N</th>}
+                {<th>Date</th>}
+                {<th>Time</th>}
+                <th>Amount</th>
+                <th>Account Name</th>
+                <th>Payment Method</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {tableData_S.map((item, index) => (
+                <tr key={Math.random()}>
+                  {<td>{index + 1}</td>}
+
+                  <td>{"3-20-2022"}</td>
+                  <td>{"5:28 am"}</td>
+                  <td>{"5,000.00"}</td>
+                  <td>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "start",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ProfileImg item={item} />
+                      {!mobile && item.account_name}
+                    </div>
+                  </td>
+                  <td>{"Transfer"}</td>
+                  <td>
+                    <NoteIcon
+                      red={index + 1 < 4}
+                      onClick={() => handleViewReciept(item)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       <Footer />
     </Fragment>
   );
 }
+
+const CardMain = ({ ...props }) => {
+  const [showTwo, setShowTwo] = useState(false);
+  const handleShowMore = () => setShowTwo(!showTwo);
+  return (
+    <div
+      onClick={handleShowMore}
+      style={{
+        backgroundColor: showTwo ? "#E7F2EF" : "#F4F4F4",
+        height: showTwo && 100,
+      }}
+      className="card-wrap"
+    >
+      {Array(8)
+        .fill(6)
+        .map((item, index) => {
+          showTwo ? (
+            index == 0 ||
+            (index == 1 && <InnerCardItems key={Math.random()} item={item} />)
+          ) : (
+            <InnerCardItems key={Math.random()} item={item} />
+          );
+        })}
+    </div>
+  );
+};
 
 const NoteIcon = ({ onClick, red }) => (
   <img
@@ -110,6 +143,19 @@ const Pagginator = ({ onClickNext, onClickPrevious }) => (
       <button onClick={onClickNext} className="button-sales-pagginator">
         <KeyboardArrowRight />
       </button>
+    </div>
+  </div>
+);
+const InnerCardItems = ({ ...props }) => (
+  <div className="row-item-">
+    <div className="item-">
+      <label>Amasco Karu</label>
+      <label>Staion Name</label>
+    </div>
+
+    <div className="item-">
+      <label>Amasco Karu</label>
+      <label>Staion Name</label>
     </div>
   </div>
 );
