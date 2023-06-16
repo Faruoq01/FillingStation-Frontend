@@ -7,16 +7,20 @@ import Button from "./Button";
 import EStationPaymentReceiptModal from "../Modals/EStationPaymentReceiptModal";
 import { useDispatch } from "react-redux";
 import { eStationSinglePaymentAction } from "../../store/actions/payment";
+import EStationCreatePaymentModal from "../Modals/EStationCreatePaymentModal";
 
 export default function WalletPaymentListIndex() {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:800px)");
   const [receiptModal, setReceiptModal] = useState(false);
+  const [createPaymentModal, setCreatePaymentModal] = useState(false);
   const dispatch = useDispatch();
   const handleViewReciept = (data) => {
-    // dispatch(eStationSinglePaymentAction(data));
-    console.log(data);
+    dispatch(eStationSinglePaymentAction(data));
     setReceiptModal(true);
+  };
+  const openCreatePaymentModal = () => {
+    setCreatePaymentModal(true);
   };
   return (
     <Fragment>
@@ -39,6 +43,7 @@ export default function WalletPaymentListIndex() {
               }}
             />
             <Button
+              onClick={openCreatePaymentModal}
               styles={{
                 marginLeft: 2,
                 height: 30,
@@ -47,7 +52,7 @@ export default function WalletPaymentListIndex() {
                 cursor: "pointer",
               }}
             >
-              Register
+              Register Payment
             </Button>
           </div>
         </div>
@@ -56,6 +61,10 @@ export default function WalletPaymentListIndex() {
       <EStationPaymentReceiptModal
         open={receiptModal}
         close={setReceiptModal}
+      />
+      <EStationCreatePaymentModal
+        open={createPaymentModal}
+        close={setCreatePaymentModal}
       />
     </Fragment>
   );
