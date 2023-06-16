@@ -642,7 +642,7 @@ const Supply = (props) => {
                                 <EditIcon
                                   style={{
                                     ...styles.icons,
-                                    backgroundColor: "tomato",
+                                     backgroundColor: "#054835",
                                   }}
                                   onClick={() => {
                                     dispatch(singleSupply(data));

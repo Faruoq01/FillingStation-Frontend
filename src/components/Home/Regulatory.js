@@ -650,7 +650,7 @@ const Regulatory = () => {
                               <EditIcon
                                 style={{
                                   ...styles.icons,
-                                  backgroundColor: "tomato",
+                                  backgroundColor: "#054835",
                                 }}
                                 onClick={() => {
                                   dispatch(singlePaymentAction(item));

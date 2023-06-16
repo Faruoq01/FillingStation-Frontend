@@ -561,7 +561,7 @@ const IncomingOrder = () => {
                               <EditIcon
                                 style={{
                                   ...styles.icons,
-                                  backgroundColor: "tomato",
+                                  backgroundColor: "#054835",
                                 }}
                                 onClick={() => {
                                   dispatch(singleIncomingOrderRecord(data));
