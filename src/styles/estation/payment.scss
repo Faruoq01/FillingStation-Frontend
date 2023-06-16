@@ -184,9 +184,97 @@ background-color: transparent;
     .input-wrapp-payment {
      align-items: center;}
 
+    //  ================ reciept modal ===================
+.e-station-reciept-modal{
+  height:100%;
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  position: absolute;
+  right:0;
+  .cancel-confirm{
+    align-self: center;
+    width: 95%;
+    height: fit-content;
+    margin-top: 5%;
+    // background-color: #06805B;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .title-label-{
+      color: #06805B;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .icon-m-close{
+      color: #717070;
+      cursor: pointer;
+      &:hover{
+        background: #E3E3E3;
+        border-radius: 50%;
+      }
+    }
+
+  }
+  .reciept-img{
+    height: 80%;
+    width: 95%;
+    background: #06805B;
+    display: flex;
+    align-self: center;
+
+    margin-top: 5%;
+    img{
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .footer-section-p{
+    display: flex;
+    align-self: center;
+    width: 95%;
+    margin-top: 1%;
+    flex-direction: row;
+    
+    .footer-btn-p{
+      cursor: pointer;
+      padding: 1%;
+      border: 1px solid #E3E3E3;
+      border-radius: 5px;
+      &:last-child {
+          margin-left: 2%;
+        }
+      &:hover{
+        background: #06805B;
+        color: white;
+        border: none;
+      }
+    }
+  }
+}
+    // close
+
 
 @media screen and (max-width:1000px) {
-
+.e-station-reciept-modal {
+    width: 100%;
+    padding: 0%;
+    .cancel-confirm {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .title-label- {
+          color: #06805B;
+          font-size: 15px;
+          font-weight: bold;
+        }
+    
+      }
+  }
 
   .button-sales-pagginator {
 

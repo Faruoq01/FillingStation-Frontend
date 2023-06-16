@@ -9,7 +9,7 @@ import { useMediaQuery } from "@mui/material";
 import { tableData_S } from "../Home/e-station/data";
 import CircleIcon from "@mui/icons-material/Circle";
 
-export default function WalletPaymentTable() {
+export default function WalletPaymentTable({ handleViewReciept }) {
   const mobile = useMediaQuery("(max-width:600px)");
   const tablet = useMediaQuery("(max-width:900px)");
   return (
@@ -50,7 +50,10 @@ export default function WalletPaymentTable() {
                 </td>
                 <td>{"Transfer"}</td>
                 <td>
-                  <NoteIcon red={index + 1 < 4} onClick={() => {}} />
+                  <NoteIcon
+                    red={index + 1 < 4}
+                    onClick={() => handleViewReciept(item)}
+                  />
                 </td>
               </tr>
             ))}
