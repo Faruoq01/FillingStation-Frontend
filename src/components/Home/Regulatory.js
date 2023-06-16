@@ -643,14 +643,12 @@ const Regulatory = () => {
                             </a>
                           </div>
                           <div className="column">
-                            <div
-                              style={{ justifyContent: "space-around" }}
-                              className="actions"
-                            >
+                            <div style={{}} className="actions">
                               <EditIcon
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "#054835",
+                                  marginRight: "3px",
                                 }}
                                 onClick={() => {
                                   dispatch(singlePaymentAction(item));

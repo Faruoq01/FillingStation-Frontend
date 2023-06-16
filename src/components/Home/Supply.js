@@ -635,14 +635,12 @@ const Supply = (props) => {
                             <div className="column">{data.shortage}</div>
                             <div className="column">{data.overage}</div>
                             <div className="column">
-                              <div
-                                style={{ justifyContent: "space-around" }}
-                                className="actions"
-                              >
+                              <div style={{}} className="actions">
                                 <EditIcon
                                   style={{
                                     ...styles.icons,
-                                     backgroundColor: "#054835",
+                                    backgroundColor: "#054835",
+                                    marginRight: "3px",
                                   }}
                                   onClick={() => {
                                     dispatch(singleSupply(data));

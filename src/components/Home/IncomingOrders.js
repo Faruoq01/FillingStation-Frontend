@@ -554,14 +554,12 @@ const IncomingOrder = () => {
                           <div className="column">{data.wayBillNo}</div>
                           <div className="column">{data.deliveryStatus}</div>
                           <div className="column">
-                            <div
-                              style={{ justifyContent: "space-around" }}
-                              className="actions"
-                            >
+                            <div style={{}} className="actions">
                               <EditIcon
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "#054835",
+                                  marginRight: "3px",
                                 }}
                                 onClick={() => {
                                   dispatch(singleIncomingOrderRecord(data));

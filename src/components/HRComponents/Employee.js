@@ -671,10 +671,7 @@ const Employee = () => {
                           <div className="column">{item.dateEmployed}</div>
                           <div className="column">{item.role}</div>
                           <div className="column">
-                            <div
-                              style={{ justifyContent: "space-between" }}
-                              className="actions"
-                            >
+                            <div style={{}} className="actions">
                               <img
                                 onClick={() => {
                                   openEmployee(item);
@@ -686,6 +683,7 @@ const Employee = () => {
                               <EditIcon
                                 style={{
                                   ...styles.icons,
+                                  marginRight: "3px",
                                   backgroundColor: "#054835",
                                 }}
                                 onClick={() => {
