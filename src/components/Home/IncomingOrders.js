@@ -559,7 +559,7 @@ const IncomingOrder = () => {
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "#054835",
-                                  marginRight: "3px",
+                                  // marginRight: "3px",
                                 }}
                                 onClick={() => {
                                   dispatch(singleIncomingOrderRecord(data));
