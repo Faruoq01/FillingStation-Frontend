@@ -17,7 +17,11 @@ export default function WalletPaymentTable({ handleViewReciept }) {
     <Fragment>
       {mobile ? (
         <div className="mobile-table-wrapper">
-          <CardMain mobileCardColor={mobileCardColor} />
+          {Array(8)
+            .fill(0)
+            .map((item, index) => (
+              <CardMain key={Math.random()} mobileCardColor={mobileCardColor} />
+            ))}
         </div>
       ) : (
         <div className="indiv-sale-table-wrapper">
@@ -80,7 +84,6 @@ const CardMain = ({ ...props }) => {
       onClick={handleShowMore}
       style={{
         backgroundColor: showTwo ? "#E7F2EF" : "#F4F4F4",
-        height: !showTwo && 100,
       }}
       className="card-wrap"
     >

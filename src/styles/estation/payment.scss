@@ -336,22 +336,24 @@ background-color: transparent;
         padding: 5px;
         align-self: center;
         margin-top: 1rem;
-          margin-bottom: 1rem;
         .row-item-{
-          &:first-child{
-            margin-top: 0rem;
-          }
+          margin-top: 1rem;
           width: 100%;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
           &:first-child{
             margin-bottom: 0px;
+            margin-top: 0rem;
           }
+                     &:last-child {
+                       margin-bottom: 0px;
+                       
+                     }
           .item-{
-            margin-bottom: 1rem;
+           
             &:last-child{
-              align-items: end;
+              // align-items: end;
               margin-bottom: 0rem;
             }
             display: flex;
