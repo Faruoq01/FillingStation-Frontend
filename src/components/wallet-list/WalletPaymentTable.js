@@ -80,19 +80,19 @@ const CardMain = ({ ...props }) => {
       onClick={handleShowMore}
       style={{
         backgroundColor: showTwo ? "#E7F2EF" : "#F4F4F4",
-        height: showTwo && 100,
+        height: !showTwo && 100,
       }}
       className="card-wrap"
     >
       {Array(8)
         .fill(6)
         .map((item, index) => {
-          showTwo ? (
-            index == 0 ||
-            (index == 1 && <InnerCardItems key={Math.random()} item={item} />)
-          ) : (
-            <InnerCardItems key={Math.random()} item={item} />
-          );
+          if (!showTwo) {
+            if (index === 0 || index === 1)
+              return <InnerCardItems key={Math.random()} item={item} />;
+          } else {
+            return <InnerCardItems key={Math.random()} item={item} />;
+          }
         })}
     </div>
   );
