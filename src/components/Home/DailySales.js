@@ -127,12 +127,12 @@ const DailySales = (props) => {
             }, 0);
 
             const pmsTotalDetails = {
-                totalDifference: pmsSales - pmsLpoSales + pmsRTSales,
+                totalDifference: pmsSales - pmsRTSales,
                 totalLpo: pmsLpoSales,
                 totalrt: pmsRTSales,
-                amount: pmsPrice - pmsLPOPrice + pmsRTPrice,
+                amount: pmsPrice - pmsRTPrice,
                 lpoAmount: pmsLPOPrice,
-                noLpoAmount: pmsPrice - pmsLPOPrice - pmsRTPrice,
+                noLpoAmount: pmsPrice - pmsRTPrice,
             }
 
             return pmsTotalDetails;
@@ -172,12 +172,12 @@ const DailySales = (props) => {
             }, 0);
 
             const agoTotalDetails = {
-                totalDifference: agoSales - agoLpoSales + agoRTSales,
+                totalDifference: agoSales - agoRTSales,
                 totalLpo: agoLpoSales,
                 totalrt: agoRTSales,
-                amount: agoPrice - agoLPOPrice + agoRTPrice,
+                amount: agoPrice - agoRTPrice,
                 lpoAmount: agoLPOPrice,
-                noLpoAmount: agoPrice - agoLPOPrice - agoRTPrice,
+                noLpoAmount: agoPrice - agoRTPrice,
             }
 
             return agoTotalDetails;
@@ -217,12 +217,12 @@ const DailySales = (props) => {
             }, 0);
 
             const dpkTotalDetails = {
-                totalDifference: dpkSales - dpkLpoSales + dpkRTSales,
+                totalDifference: dpkSales - dpkRTSales,
                 totalLpo: dpkLpoSales,
                 totalrt: dpkRTSales,
-                amount: dpkPrice - dpkLPOPrice + dpkRTPrice,
+                amount: dpkPrice - dpkRTPrice,
                 lpoAmount: dpkLPOPrice,
-                noLpoAmount: dpkPrice - dpkLPOPrice - dpkRTPrice
+                noLpoAmount: dpkPrice - dpkRTPrice
             }
 
             return dpkTotalDetails;
