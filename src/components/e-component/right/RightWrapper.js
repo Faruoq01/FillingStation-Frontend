@@ -166,11 +166,9 @@ const styles = (mobile, tablet) => ({
     justifyContent: "center",
   },
   arrowStyle: {
-    left: !mobile ? "10px" : tablet ? "20" : "30px",
-    marginBottom: 20,
+    marginBottom: "4%",
   },
   lastCardWrap: {
-    // padding: 10,
     background: "white",
     marginTop: "1rem",
     borderRadius: 9,
@@ -181,7 +179,6 @@ const styles = (mobile, tablet) => ({
     marginTop: "1rem",
     borderRadius: 9,
   },
-  arrowStyle2: { left: !mobile ? "40px" : tablet ? "25rem" : "45px" },
 });
 RightWrapper.propTypes = {};
 

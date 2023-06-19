@@ -4,6 +4,7 @@ import {
   RECEIPT,
   SEARCH_PAYMENT,
   SINGLE_PAYMENT,
+  E_STATIOPN_SINGLE_PAYMENT,
 } from "../types";
 
 export const createPayment = (params) => (dispatch) => {
@@ -24,4 +25,7 @@ export const searchPayment = (params) => (dispatch) => {
 
 export const singlePaymentAction = (params) => (dispatch) => {
   dispatch({ type: SINGLE_PAYMENT, payload: params });
+};
+export const eStationSinglePaymentAction = (params) => (dispatch) => {
+  dispatch({ type: E_STATIOPN_SINGLE_PAYMENT, payload: params });
 };

@@ -5,6 +5,7 @@ import {
   SEARCH_PAYMENT,
   LOGOUT,
   SINGLE_PAYMENT,
+  E_STATIOPN_SINGLE_PAYMENT,
 } from "../types";
 
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
   receipt: {},
   searchData: [],
   singlePayment: {},
+  eStationSinglePayment: {},
 };
 
 const paymentReducer = (state = initialState, action) => {
@@ -31,6 +33,12 @@ const paymentReducer = (state = initialState, action) => {
       return {
         ...state,
         receipt: payload,
+      };
+    }
+    case E_STATIOPN_SINGLE_PAYMENT: {
+      return {
+        ...state,
+        eStationSinglePayment: payload,
       };
     }
 
