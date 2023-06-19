@@ -33,6 +33,7 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import PaymentModal from '../Modals/PaymentModal';
 import PaymentEditModal from '../Modals/PaymentEditModal';
 import AddPayModal from '../Modals/AddPayModal';
+import { updatePayload } from '../../store/actions/records';
 // const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const DailySales = (props) => {
@@ -416,8 +417,19 @@ const DailySales = (props) => {
     }, []);
 
     useEffect(()=>{
+        let loads = {
+            '1': [],
+            '2': [],
+            '3': [],
+            '4': [],
+            '5': [],
+            '6': [],
+            '7': [],
+            '8': [],
+        };
+        dispatch(updatePayload(loads));
         getAllProductData();
-    },[getAllProductData]);
+    },[dispatch, getAllProductData]);
 
     const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
 
