@@ -1037,18 +1037,36 @@ const DailySales = (props) => {
                                 </Button>
                             </div>
                             <div className='inner-section'>
-                                <div className='inner-content'>
+                                <div style={{height: '110px', paddingBottom: '10px'}} className='inner-content'>
                                     <div className='conts'>
                                         <div className='row-count'>
-                                            <div style={{fontSize:'13px', fontWeight:'bold'}} className='item-count'>Total LPO (Ltrs)</div>
-                                            <div style={{fontSize:'13px', fontWeight:'bold'}} className='item-count'>Total Amount</div>
+                                            <div style={{fontSize:'13px', fontWeight:'bold'}} className='item-count'>LPO (Ltrs)</div>
+                                            <div style={{fontSize:'13px', fontWeight:'bold'}} className='item-count'>Amount</div>
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                {ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0")} Litres
+                                                PMS: {ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo): "0")} 
                                             </div>
                                             <div className='item-count'>
-                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0")}
+                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount): "0")}
+                                            </div>
+                                        </div>
+
+                                        <div className='row-count'>
+                                            <div className='item-count'>
+                                                AGO: {ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo): "0")}
+                                            </div>
+                                            <div className='item-count'>
+                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount): "0")}
+                                            </div>
+                                        </div>
+
+                                        <div className='row-count'>
+                                            <div className='item-count'>
+                                                DPK: {ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo): "0")} 
+                                            </div>
+                                            <div className='item-count'>
+                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount): "0")}
                                             </div>
                                         </div>
                                     </div>
