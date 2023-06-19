@@ -25,8 +25,6 @@ const BankPayment = () => {
     const selectedPumps = useSelector(state => state.recordsReducer.selectedPumps);
 
     const [bankName, setBankName] = useState("");
-    const [posName, setPosName] = useState("");
-    const [terminalID, setTerminalID] = useState("");
     const [tellerID, setTellerID] = useState("");
     const [amountPaid, setAmountPaid] = useState("");
     const [paymentDate, setPaymentDate] = useState("");
@@ -66,18 +64,16 @@ const BankPayment = () => {
 
     const addDetailsToList = () => {
         if(oneStationData === null) return swal("Warning!", "please select station", "info");
-        if(bankName === "" && posName === "") return swal("Warning!", "Please add bank or pos name", "info");
-        if(tellerID === "" && terminalID === "") return swal("Warning!", "Please add teller or terminal ID", "info");
+        if(bankName === "") return swal("Warning!", "Please add bank or pos name", "info");
+        if(tellerID === "") return swal("Warning!", "Please add teller or terminal ID", "info");
         if(amountPaid === "") return swal("Warning!", "Amount field should not be empty", "info");
         if(paymentDate === "") return swal("Warning!", "Payment date field should not be empty", "info");
         if(isNaN(Number(amountPaid))) return swal("Warning!", "Amount field is not a number, remove characters like comma", "info");
         if(cam === "null" && gall === "null") return swal("Warning!", "Please add reciept", "info");
 
         const payload = {
-            bankName: bankName === ""? "null": bankName,
-            tellerNumber: tellerID === ""? "null": tellerID,
-            posName: posName === ""? "null": posName,
-            terminalID: terminalID === ""? "null": terminalID,
+            bankName: bankName,
+            tellerNumber: tellerID,
             amountPaid: amountPaid,
             paymentDate: paymentDate,
             camera: cam,
@@ -92,8 +88,6 @@ const BankPayment = () => {
 
         setBankName("");
         setTellerID("");
-        setPosName("");
-        setTerminalID("");
         setAmountPaid("");
         setPaymentDate("");
         setCam("null");
@@ -104,14 +98,19 @@ const BankPayment = () => {
 
     const getPayments = () => {
 
-        const payments = records['5'].filter(data => data.bankName !== "null");
+        const bank = records['5'];
+        const pos = records['6'];
 
         const totalExpenses = records['4'].reduce((accum, current) => {
-            return Number(accum) + Number(current.expenseAmount.replace(/[^0-9.]/g, ''));
+            return Number(accum) + Number(current.expenseAmount);
         }, 0);
 
-        const totalBankPayment = payments.reduce((accum, current) => {
-            return Number(accum) + Number(current.amountPaid.replace(/[^0-9.]/g, ''));
+        const totalBankPayment = bank.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid);
+        }, 0);
+
+        const totalPosPayment = pos.reduce((accum, current) => {
+            return Number(accum) + Number(current.amountPaid);
         }, 0);
 
 
@@ -167,7 +166,7 @@ const BankPayment = () => {
         const totalLpoSales = totalLpoPMS + totalLpoAGO + totalLpoDPK;
         const totalRT = pmsRT + agoRT + dpkRT;
         const netToBank = (totalSales - totalLpoSales - totalRT) - totalExpenses;
-        const totalPayments = totalBankPayment;
+        const totalPayments = totalBankPayment + totalPosPayment;
 
         const payment = {
             totalSales: totalSales - totalRT,
@@ -350,7 +349,7 @@ const BankPayment = () => {
                 <div className='lpo-right'>
                     <div className="table-head">
                         <div className="col">S/N</div>
-                        <div className="col">Bank/POS</div>
+                        <div className="col">Bank</div>
                         <div className="col">Date</div>
                         <div className="col">Amount</div>
                         <div className="col">Action</div>
@@ -363,7 +362,7 @@ const BankPayment = () => {
                             return(
                                 <div key={index} style={{background: '#fff', marginTop:'5px'}} className="table-head">
                                     <div style={{color:'#000'}} className="col">{index + 1}</div>
-                                    <div style={{color:'#000'}} className="col">{data?.bankName === "null"? data?.posName: data?.bankName}</div>
+                                    <div style={{color:'#000'}} className="col">{data?.bankName}</div>
                                     <div style={{color:'#000'}} className="col">{data?.paymentDate}</div>
                                     <div style={{color:'#000'}} className="col">{data?.amountPaid}</div>
                                     <div style={{color:'#000'}} className="col">

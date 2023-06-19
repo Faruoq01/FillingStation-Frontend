@@ -252,7 +252,7 @@ const SummaryRecord = (props) => {
 
         const tankFromPayload = {...records};
         tankFromPayload['1'] = updatedTanks;
-        tankFromPayload['7'] = updatedTankList;
+        tankFromPayload['8'] = updatedTankList;
         dispatch(updatePayload(tankFromPayload));
     };
 
@@ -451,7 +451,7 @@ const SummaryRecord = (props) => {
                     <div className='tank_label'>
                         <div style={conts}>
                             <div style={nums}>5</div>
-                            <div style={texts}>Payments</div>
+                            <div style={texts}>Bank Payments</div>
                         </div>
 
                         {
@@ -463,7 +463,7 @@ const SummaryRecord = (props) => {
                                         <div className="other_inner">
                                             <div className='fuel_card_items'>
                                                 <div className='fuel_card_items_left'>
-                                                    <div className='volum'>{data.bankName === "null"? data.posName: data.bankName}</div>
+                                                    <div className='volum'>{data.bankName}</div>
                                                     <div className='vol_label'>Payment Type</div>
                                                 </div>
                                                 <div className='fuel_card_items_right'>
@@ -481,13 +481,43 @@ const SummaryRecord = (props) => {
                     <div className='tank_label'>
                         <div style={conts}>
                             <div style={nums}>6</div>
-                            <div style={texts}>Dipping</div>
+                            <div style={texts}>POS Payments</div>
                         </div>
 
                         {
                             records['6']?.length === 0?
                             <div style={men}>No records</div>:
                             records['6']?.map((data, index) => {
+                                return(
+                                    <div className="other_label">
+                                        <div className="other_inner">
+                                            <div className='fuel_card_items'>
+                                                <div className='fuel_card_items_left'>
+                                                    <div className='volum'>{data.posName}</div>
+                                                    <div className='vol_label'>Payment Type</div>
+                                                </div>
+                                                <div className='fuel_card_items_right'>
+                                                    <div className='volum'> NGN {ApproximateDecimal(data.amountPaid)}</div>
+                                                    <div className='vol_label'>Amount Paid</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+
+                    <div className='tank_label'>
+                        <div style={conts}>
+                            <div style={nums}>7</div>
+                            <div style={texts}>Dipping</div>
+                        </div>
+
+                        {
+                            records['7']?.length === 0?
+                            <div style={men}>No records</div>:
+                            records['7']?.map((data, index) => {
                                 return(
                                     <div className="other_label">
                                         <div className="other_inner">
