@@ -40,7 +40,6 @@ function RightWrapper(props) {
     <div className="r-wrapper">
       <RCard
         onClick={goToCorporateCustomerPage}
-        arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{ width: "100%", backgroundColor: " #F6FFFF" }}
         icon={
           <img
@@ -138,10 +137,10 @@ function RightWrapper(props) {
       </div>
       <RCard
         onClick={goToIncomingOrders}
-        arrowStyle={styles(mobile, tablet).arrowStyle2}
+        arrowStyle={{ marginRight: "1%" }}
         style={{
-          width: "100%",
-          marginTop: "10px",
+          // width: "100%",
+          // marginTop: "10px",
           backgroundColor: "#fff",
         }}
         icon={

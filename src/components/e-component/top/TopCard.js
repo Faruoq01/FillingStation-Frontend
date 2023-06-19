@@ -16,7 +16,11 @@ function TopCard(props) {
       <div className="t-card-bottom">
         <img
           src={require("../../../assets/estation/Arrow.svg").default}
-          style={{ color: "#054834", marginBottom: 20 }}
+          style={{
+            color: "#054834",
+            width: 25,
+            height: 25,
+          }}
         />
       </div>
     </div>

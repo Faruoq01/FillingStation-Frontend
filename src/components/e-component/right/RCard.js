@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "../../../styles/estation/rCard.scss";
 import { Circle } from "@mui/icons-material";
 
-function RCard(props) {
+function RCard({ ...props }) {
   return (
     <div className="r-card" {...props}>
       <div className="r-card-top">
@@ -29,10 +29,10 @@ function RCard(props) {
           </label>
         </div>
       </div>
-      <div className="r-card-bottom" style={{ ...props.arrowStyle }}>
+      <div className="r-card-bottom-" style={{ ...props.arrowStyle }}>
         <img
           src={require("../../../assets/estation/Arrow.svg").default}
-          style={{ color: "#054834", marginBottom: 20 }}
+          style={{ color: "#054834" }}
         />
       </div>
     </div>
