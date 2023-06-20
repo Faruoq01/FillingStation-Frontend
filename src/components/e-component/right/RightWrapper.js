@@ -140,7 +140,7 @@ function RightWrapper(props) {
         arrowStyle={{ marginRight: "1%" }}
         style={{
           // width: "100%",
-          // marginTop: "10px",
+          marginTop: "10px",
           backgroundColor: "#fff",
         }}
         icon={
