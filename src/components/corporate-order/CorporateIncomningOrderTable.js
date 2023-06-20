@@ -122,7 +122,6 @@ const Footer = ({}) => (
           style={{
             background: "#EFFFFA",
             color: "#515151",
-            border: "1px solid #515151",
           }}
           data="NGN 245000.00"
         />

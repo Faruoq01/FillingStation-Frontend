@@ -86,9 +86,7 @@
 }
 #payment-table- td,
 #payment-table- th {
-  padding: 5px;
-  
- 
+  padding: 8px;
   font-size: 11px;
 }
 
@@ -147,7 +145,7 @@
   padding: 5px;
   font-size: 15px;
   width: max-content;
-  border-radius: 5px;
+  border-radius: 3px;
   margin: 2px;
   label {
     text-align: center;
@@ -157,8 +155,8 @@
 .button-sales-pagginator {
   padding: 2px;
   border: none;
-  width: 30px;
-  height: 30px;
+width: 25px;
+  height: 25px;
   background: #E3E3E3;
   display: flex;
   flex-direction: column;
@@ -167,7 +165,7 @@
   cursor: pointer;
   color: #000000;
   // margin: 2px;
-  border-radius: 5px;
+  border-radius: 3px;
 
   &:hover {
     background: #06805B;
@@ -208,7 +206,6 @@
     width: 95%;
     height: fit-content;
     margin-top: 5%;
-    // background-color: #06805B;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -445,7 +442,7 @@
   }
 
   .i-top-btn {
-    // border: 1px solid #393838;
+    border: 1px solid #C6C6C6;
     // height: 30px;
     // width:5%;
   }
