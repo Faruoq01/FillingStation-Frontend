@@ -6,6 +6,8 @@ import CorporateCustomer from "../CorporateCustomer";
 import IndividualCustomer from "../IndividualCustomer";
 import EStationSales from "./EStationSales";
 import EstationIndividualSales from "./EstationIndividualSales";
+import EStationCorporateSales from "./EStationCorporateSales";
+import EStationIncomingOrders from "./EStationIncomingOrders";
 
 const Wrapper = lazy(() => import("../../e-component/wrapper/Wrapper"));
 const TopWrapper = lazy(() => import("../../e-component/top/TopWrapper"));
@@ -35,10 +37,16 @@ function EStation({ ...props }) {
                 <IndividualCustomer />
               </Route>
               <Route path="/home/estation/sales">
-                <EStationSales />
+                <EStationSales activeRoute={props.activeRoute} />
               </Route>
               <Route path="/home/estation/sales/individual">
                 <EstationIndividualSales />
+              </Route>
+              <Route path="/home/estation/sales/corporate">
+                <EStationCorporateSales />
+              </Route>
+              <Route path="/home/estation/orders/incoming">
+                <EStationIncomingOrders activeRoute={props.activeRoute} />
               </Route>
             </Switch>
           </div>

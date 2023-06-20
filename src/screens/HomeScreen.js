@@ -259,11 +259,11 @@ const HomeScreen = () => {
       "/home/estation": "E-station",
       "/home/estation/sales": "Sales",
       "/home/estation/sales/individual": "Individual Sales",
-      "/home/estation-corporate-sales": "Corporate Sales",
+      "/home/estation/sales/corporate": "Corporate Sales",
       "/home/estation/corporate/customer": "Corporate Customer",
       "/home/estation/individual/customer": "Individual Customer",
-      "/home/estation-incoming-orders": "Incoming Order",
-      "/home/estation-individual-orders": "Individual Incoming Order",
+      "/home/estation/orders/incoming": "Incoming Order",
+      "/home/estation/orders/incoming/individual": "Individual Incoming Order",
       "/home/estation-corporate-orders": "Corporate Incoming Order",
       "/home/estation/payments": "Payments",
       "/home/dashEmp": "← Employee List",
@@ -306,8 +306,6 @@ const HomeScreen = () => {
   useEffect(() => {
     setActiveRoute(history.location.pathname);
     setName(routes[history.location.pathname]);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const goBackToPreviousPage = () => {
@@ -822,28 +820,10 @@ const HomeScreen = () => {
             <Route path="/home/estation">
               <EStation activeRoute={activeRoute} />
             </Route>
-            {/* <Route path="/home/estation-sales">
-              <EStationSales history={history} />
-            </Route> */}
-            {/* <Route path="/home/estation-individual-sales">
-              <EstationIndividualSales history={history} />
-            </Route> */}
-            <Route path="/home/estation-corporate-sales">
-              <EStationCorporateSales history={history} />
-            </Route>
-            {/* <Route path="/home/estation-corporate-customer">
-              <CorporateCustomer history={history} />
-            </Route> */}
-            {/* <Route path="/home/estation-individual-customer">
-              <IndividualCustomer history={history} />
-            </Route> */}
-            <Route path="/home/estation-incoming-orders">
-              <EStationIncomingOrders history={history} />
-            </Route>
-            {/* <Route path="/home/estation-payments">
-              <EStationPayments />
-            </Route> */}
 
+            {/* <Route path="/home/estation-incoming-orders">
+              <EStationIncomingOrders history={history} />
+            </Route> */}
             <Route path="/home/supply">
               <Supply activeRoute={activeRoute} />
             </Route>
@@ -853,9 +833,9 @@ const HomeScreen = () => {
             <Route path="/home/estation-individual-orders">
               <EStationIndividualIncomingOrder history={history} />
             </Route>
-            <Route path="/home/estation-individual-orders">
+            {/* <Route path="/home/estation-individual-orders">
               <EStationIndividualIncomingOrder history={history} />
-            </Route>
+            </Route> */}
             <Route path="/home/estation-corporate-orders">
               <EStationCorporateIncomingOrder />
             </Route>
