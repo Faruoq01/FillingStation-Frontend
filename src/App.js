@@ -76,7 +76,7 @@ function App() {
             component={HomeScreen}
           />
           <Route
-            path="/home/estation-individual-customer"
+            path="/home/estation/individual/customer"
             component={HomeScreen}
           />
 

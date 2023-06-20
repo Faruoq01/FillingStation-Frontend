@@ -260,8 +260,8 @@ const HomeScreen = () => {
       "/home/estation-sales": "Sales",
       "/home/estation-individual-sales": "Individual Sales",
       "/home/estation-corporate-sales": "Corporate Sales",
-      "/home/estation-corporate-customer": "Corporate Customer",
-      "/home/estation-individual-customer": "Individual Customer",
+      "/home/estation/corporate/customer": "Corporate Customer",
+      "/home/estation/individual/customer": "Individual Customer",
       "/home/estation-incoming-orders": "Incoming Order",
       "/home/estation-individual-orders": "Individual Incoming Order",
       "/home/estation-corporate-orders": "Corporate Incoming Order",
@@ -834,9 +834,9 @@ const HomeScreen = () => {
             {/* <Route path="/home/estation-corporate-customer">
               <CorporateCustomer history={history} />
             </Route> */}
-            <Route path="/home/estation-individual-customer">
+            {/* <Route path="/home/estation-individual-customer">
               <IndividualCustomer history={history} />
-            </Route>
+            </Route> */}
             <Route path="/home/estation-incoming-orders">
               <EStationIncomingOrders history={history} />
             </Route>

@@ -3,6 +3,7 @@ import LazyLoaderScreen from "../../LazyLoaderScreen";
 import { Switch, Route } from "react-router-dom";
 import EStationPayments from "./EStationPayments";
 import CorporateCustomer from "../CorporateCustomer";
+import IndividualCustomer from "../IndividualCustomer";
 
 const Wrapper = lazy(() => import("../../e-component/wrapper/Wrapper"));
 const TopWrapper = lazy(() => import("../../e-component/top/TopWrapper"));
@@ -18,21 +19,23 @@ function EStation({ ...props }) {
           </div>
         </Suspense>
       )}
-      {props.activeRoute.split("/").length === 4 ||
-        (props.activeRoute.split("/").length === 5 && (
-          <Suspense fallback={<LazyLoaderScreen />}>
-            <div style={styles.contain}>
-              <Switch>
-                <Route path="/home/estation/payments">
-                  <EStationPayments />
-                </Route>
-                <Route path="/home/estation/corporate/customer">
-                  <CorporateCustomer />
-                </Route>
-              </Switch>
-            </div>
-          </Suspense>
-        ))}
+      {props.activeRoute.split("/").length > 3 && (
+        <Suspense fallback={<LazyLoaderScreen />}>
+          <div style={styles.contain}>
+            <Switch>
+              <Route path="/home/estation/payments">
+                <EStationPayments />
+              </Route>
+              <Route path="/home/estation/corporate/customer">
+                <CorporateCustomer />
+              </Route>
+              <Route path="/home/estation/individual/customer">
+                <IndividualCustomer />
+              </Route>
+            </Switch>
+          </div>
+        </Suspense>
+      )}
     </Fragment>
   );
 }

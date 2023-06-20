@@ -31,7 +31,7 @@ function RightWrapper(props) {
     navigation.push("/home/estation/corporate/customer");
   };
   const goToIndividualCustomerPage = () => {
-    navigation.push("/home/estation-individual-customer");
+    navigation.push("/home/estation/individual/customer");
   };
   const goToIncomingOrders = () => {
     navigation.push("/home/estation-incoming-orders");
