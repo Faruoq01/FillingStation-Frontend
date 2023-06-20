@@ -15,80 +15,78 @@ export default function WalletPaymentTable({ handleViewReciept }) {
   const [mobileCardColor, setMobileCardColor] = useState(false);
   return (
     <Fragment>
-      {mobile ? (
-        <div className="mobile-table-wrapper">
-          {Array(8)
-            .fill(0)
-            .map((item, index) => (
-              <CardMain key={Math.random()} mobileCardColor={mobileCardColor} />
-            ))}
-        </div>
-      ) : (
-        <div className="indiv-sale-table-wrapper">
-          <table id="payment-table-">
-            <thead>
-              <tr>
-                {<th>S/N</th>}
-                {<th>Date</th>}
-                {<th>Time</th>}
-                <th>Amount</th>
-                <th>Account Name</th>
-                <th>Payment Method</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData_S.map((item, index) => (
-                <tr key={Math.random()}>
-                  {
-                    <td>
-                      {index + 1 < 10 && "0"}
-                      {index + 1}
-                    </td>
-                  }
-
-                  <td>{"3-20-2022"}</td>
-                  <td>{"5:28 am"}</td>
-                  <td>{"5,000.00"}</td>
+      {/* {mobile ? ( */}
+      {/* <div className="mobile-table-wrapper">
+        {Array(8)
+          .fill(0)
+          .map((item, index) => (
+            <CardMain key={Math.random()} mobileCardColor={mobileCardColor} />
+          ))}
+      </div> */}
+      {/* ) : ( */}
+      <div className="indiv-sale-table-wrapper">
+        <table id="payment-table-">
+          <thead>
+            <tr>
+              {<th>S/N</th>}
+              {<th>Date</th>}
+              {!mobile && <th>Time</th>}
+              <th>Amount</th>
+              <th>Account Name</th>
+              <th>Payment Method</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableData_S.map((item, index) => (
+              <tr key={Math.random()}>
+                {
                   <td>
+                    {index + 1 < 10 && "0"}
+                    {index + 1}
+                  </td>
+                }
+
+                <td>{!mobile ? "3-20-2022" : "Jun 20th, 23"}</td>
+                {!mobile && <td>{"5:28 am"}</td>}
+                <td>{"5,000.00"}</td>
+                <td>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <div
                       style={{
                         display: "flex",
-                        flexDirection: "column",
-                        width: "100%",
-                        // background: "#133",
-                        justifyContent: "center",
+                        flexDirection: "row",
+                        width: "50%",
+                        justifyContent: "start",
                         alignItems: "center",
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          // background: "green",
-                          width: "50%",
-                          justifyContent: "start",
-                          alignItems: "center",
-                        }}
-                      >
-                        <ProfileImg item={item} />
-                        {!mobile && item.account_name}
-                      </div>
+                      <ProfileImg item={item} />
+                      {!mobile && item.account_name}
                     </div>
-                  </td>
-                  <td>{"Transfer"}</td>
-                  <td>
-                    <NoteIcon
-                      red={index + 1 < 4}
-                      onClick={() => handleViewReciept(item)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                  </div>
+                </td>
+                <td>{"Transfer"}</td>
+                <td>
+                  <NoteIcon
+                    red={index + 1 < 4}
+                    onClick={() => handleViewReciept(item)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {/* )} */}
       <Footer />
     </Fragment>
   );
