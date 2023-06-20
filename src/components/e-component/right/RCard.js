@@ -32,7 +32,7 @@ function RCard({ ...props }) {
       <div className="r-card-bottom-" style={{ ...props.arrowStyle }}>
         <img
           src={require("../../../assets/estation/Arrow.svg").default}
-          style={{ color: "#054834" }}
+          style={{ color: "#054834", width: 25, height: 25 }}
         />
       </div>
     </div>
