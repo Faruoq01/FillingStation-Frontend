@@ -45,7 +45,7 @@ function EStation({ ...props }) {
               <Route path="/home/estation/sales/corporate">
                 <EStationCorporateSales />
               </Route>
-              <Route path="/home/estation/orders/incoming">
+              <Route path="/home/estation/orders">
                 <EStationIncomingOrders activeRoute={props.activeRoute} />
               </Route>
             </Switch>

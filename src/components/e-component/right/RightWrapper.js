@@ -34,7 +34,7 @@ function RightWrapper(props) {
     navigation.push("/home/estation/individual/customer");
   };
   const goToIncomingOrders = () => {
-    navigation.push("/home/estation/orders/incoming");
+    navigation.push("/home/estation/orders");
   };
   return (
     <div className="r-wrapper">

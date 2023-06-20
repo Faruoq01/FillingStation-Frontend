@@ -39,21 +39,13 @@ function App() {
           <Route path="/home/product-orders" component={HomeScreen} />
           <Route path="/home/daily-record-sales" component={HomeScreen} />
           <Route path="/home/daily-record-sales/lpo" component={HomeScreen} />
-          <Route
-            path="/home/estation-corporate-orders"
-            component={HomeScreen}
-          />
+
           <Route
             path="/home/daily-record-sales/expenses"
             component={HomeScreen}
           />
           <Route
             path="/home/daily-record-sales/payment"
-            component={HomeScreen}
-          />
-          <Route path="/home/estation/orders/incoming" component={HomeScreen} />
-          <Route
-            path="/home/estation/orders/incoming/individual"
             component={HomeScreen}
           />
           <Route
@@ -83,7 +75,6 @@ function App() {
             path="/home/estation/individual/customer"
             component={HomeScreen}
           />
-
           <Route path="/home/supply" component={HomeScreen} />
           <Route path="/home/supply/create" component={HomeScreen} />
           <Route path="/home/tank" component={HomeScreen} />
