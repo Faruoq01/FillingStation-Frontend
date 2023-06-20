@@ -4,6 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import EStationPayments from "./EStationPayments";
 import CorporateCustomer from "../CorporateCustomer";
 import IndividualCustomer from "../IndividualCustomer";
+import EStationSales from "./EStationSales";
 
 const Wrapper = lazy(() => import("../../e-component/wrapper/Wrapper"));
 const TopWrapper = lazy(() => import("../../e-component/top/TopWrapper"));
@@ -31,6 +32,9 @@ function EStation({ ...props }) {
               </Route>
               <Route path="/home/estation/individual/customer">
                 <IndividualCustomer />
+              </Route>
+              <Route path="/home/estation/sales">
+                <EStationSales />
               </Route>
             </Switch>
           </div>

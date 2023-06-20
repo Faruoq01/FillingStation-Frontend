@@ -70,7 +70,7 @@ function App() {
             component={HomeScreen}
           />
           <Route path="/home/estation/payments" component={HomeScreen} />
-          <Route path="/home/estation-sales" component={HomeScreen} />
+          <Route path="/home/estation/sales" component={HomeScreen} />
           <Route
             path="/home/estation-individual-sales"
             component={HomeScreen}

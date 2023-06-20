@@ -257,7 +257,7 @@ const HomeScreen = () => {
       "/home/analysis": "Analysis",
       "/home/lpo": "Corporate Sales",
       "/home/estation": "E-station",
-      "/home/estation-sales": "Sales",
+      "/home/estation/sales": "Sales",
       "/home/estation-individual-sales": "Individual Sales",
       "/home/estation-corporate-sales": "Corporate Sales",
       "/home/estation/corporate/customer": "Corporate Customer",
@@ -822,9 +822,9 @@ const HomeScreen = () => {
             <Route path="/home/estation">
               <EStation activeRoute={activeRoute} />
             </Route>
-            <Route path="/home/estation-sales">
+            {/* <Route path="/home/estation-sales">
               <EStationSales history={history} />
-            </Route>
+            </Route> */}
             <Route path="/home/estation-individual-sales">
               <EstationIndividualSales history={history} />
             </Route>
