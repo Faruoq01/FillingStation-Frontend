@@ -15,7 +15,9 @@
       // padding: 0rem 2rem 0rem 2rem;
       border-radius :5px;
       font-family: "Nunito";
-      border: 1px solid #393838;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid #C6C6C6;
 
       &:hover {
           background: #06805B;
@@ -55,7 +57,7 @@ align-self: center;
 #sales-table-{
   border-collapse: collapse;
   width: 100%;
-  text-align: center;
+  text-align: start;
 }
 #sales-table- td,
 #sales-table- th {
@@ -70,7 +72,8 @@ padding: 8px;
   background-color: #ddd;
 }
 #sales-table- th {
-  text-align: center;
+  // text-align: center;
+  text-align: start;
   font-size: 12px;
   // font-weight: bold;
   padding-top: 12px;
@@ -97,6 +100,7 @@ padding: 8px;
   align-items: center;
 }
 .total-btn{
+  border:0px;
   padding: 5px;
   font-size: 15px;
   width: max-content;

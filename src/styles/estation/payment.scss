@@ -17,7 +17,9 @@
   width: max-content;
   border-radius: 5px;
   font-family: "Nunito";
-  border: 1px solid #393838;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #C6C6C6;
 
   &:hover {
     background: #06805B;
@@ -88,6 +90,7 @@
 #payment-table- th {
   padding: 8px;
   font-size: 11px;
+
 }
 
 #payment-table- tr {
@@ -142,6 +145,7 @@
   align-items: center;
 }
 .total-btn {
+  border:0px;
   padding: 5px;
   font-size: 15px;
   width: max-content;
@@ -442,9 +446,10 @@ width: 25px;
   }
 
   .i-top-btn {
-    border: 1px solid #C6C6C6;
+    // border: 1px solid #C6C6C6;
     // height: 30px;
     // width:5%;
+
   }
 
   .indiv-sale-table-wrapper {

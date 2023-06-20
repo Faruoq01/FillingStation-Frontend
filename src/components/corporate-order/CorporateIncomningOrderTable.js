@@ -41,10 +41,10 @@ export default function CorporateIncomningOrderTable() {
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "center",
+                      flexDirection: "row",
+                      justifyContent: "start",
                       width: "100%",
                       alignItems: "center",
-                      // background: "#133",
                     }}
                   >
                     <div
@@ -52,7 +52,7 @@ export default function CorporateIncomningOrderTable() {
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "start",
-                        width: "60%",
+                        // width: "50%",
                         alignItems: "center",
                       }}
                     >
@@ -122,6 +122,7 @@ const Footer = ({}) => (
           style={{
             background: "#EFFFFA",
             color: "#515151",
+            boder: 0,
           }}
           data="NGN 245000.00"
         />
@@ -135,8 +136,8 @@ const Footer = ({}) => (
     </div>
   </div>
 );
-const Button = ({ style, data = "Total Amount", ...props }) => (
-  <div style={style} className="total-btn" {...props}>
+const Button = ({ data = "Total Amount", ...props }) => (
+  <div className="total-btn" {...props}>
     <label>{data}</label>
   </div>
 );
