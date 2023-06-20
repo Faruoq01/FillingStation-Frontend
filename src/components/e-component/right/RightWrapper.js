@@ -28,7 +28,7 @@ function RightWrapper(props) {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(mx-width:1000px)");
   const goToCorporateCustomerPage = () => {
-    navigation.push("/home/estation-corporate-customer");
+    navigation.push("/home/estation/corporate/customer");
   };
   const goToIndividualCustomerPage = () => {
     navigation.push("/home/estation-individual-customer");

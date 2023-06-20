@@ -831,9 +831,9 @@ const HomeScreen = () => {
             <Route path="/home/estation-corporate-sales">
               <EStationCorporateSales history={history} />
             </Route>
-            <Route path="/home/estation-corporate-customer">
+            {/* <Route path="/home/estation-corporate-customer">
               <CorporateCustomer history={history} />
-            </Route>
+            </Route> */}
             <Route path="/home/estation-individual-customer">
               <IndividualCustomer history={history} />
             </Route>
