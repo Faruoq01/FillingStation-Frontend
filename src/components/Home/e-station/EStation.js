@@ -70,9 +70,11 @@ const styles = {
   },
   contain: {
     width: "100%",
+    height: "100%",
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
+    flex: 1,
+    // flexDirection: "row",
+    // justifyContent: "center",
   },
 };
 
