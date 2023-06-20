@@ -46,7 +46,6 @@ export default function WalletPaymentTable({ handleViewReciept }) {
                     {index + 1}
                   </td>
                 }
-
                 <td>{!mobile ? "3-20-2022" : "Jun 20th, 23"}</td>
                 {!mobile && <td>{"5:28 am"}</td>}
                 <td>{"5,000.00"}</td>
