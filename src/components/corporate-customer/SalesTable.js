@@ -8,8 +8,9 @@ import {
 import { useMediaQuery } from "@mui/material";
 import { tableData_S } from "../Home/e-station/data";
 import CircleIcon from "@mui/icons-material/Circle";
-
+import { useHistory } from "react-router-dom";
 export default function SalesTable() {
+  const navigation = useHistory();
   const mobile = useMediaQuery("(max-width:600px)");
   const tablet = useMediaQuery("(max-width:900px)");
   return (
@@ -43,7 +44,13 @@ export default function SalesTable() {
                 <td>{"07048737699"}</td>
                 <td>{"Lagos"}</td>
                 <td>
-                  <NoteIcon onClick={() => {}} />
+                  <NoteIcon
+                    onClick={() => {
+                      navigation.push(
+                        "/home/estation/customer/individual-corporate/airbnb"
+                      );
+                    }}
+                  />
                 </td>
               </tr>
             ))}

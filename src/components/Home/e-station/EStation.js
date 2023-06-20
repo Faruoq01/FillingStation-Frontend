@@ -31,10 +31,13 @@ function EStation({ ...props }) {
                 <EStationPayments />
               </Route>
               <Route path="/home/estation/corporate/customer">
-                <CorporateCustomer />
+                <CorporateCustomer activeRoute={props.activeRoute} />
               </Route>
-              <Route path="/home/estation/individual/customer">
-                <IndividualCustomer />
+              <Route
+                activeRoute={props.activeRoute}
+                path="/home/estation/individual/customer"
+              >
+                <IndividualCustomer activeRoute={props.activeRoute} />
               </Route>
               <Route path="/home/estation/sales">
                 <EStationSales activeRoute={props.activeRoute} />

@@ -257,6 +257,7 @@ const HomeScreen = () => {
       "/home/estation/individual/customer": "Individual Customer",
       "/home/estation/orders": "Incoming Order",
       "/home/estation/orders/incoming-individual": "Individual Incoming Order",
+      "/home/estation/customer/individual-corporate/airbnb": "Air BnB Total ",
       "/home/estation/orders/incoming-corporate": "Corporate Incoming Order",
       "/home/estation/payments": "Payments",
       "/home/dashEmp": "← Employee List",
@@ -710,7 +711,7 @@ const HomeScreen = () => {
             className="left-lobe"
           >
             {(activeRoute.split("/").length === 4 ||
-              activeRoute.split("/").length === 5) && (
+              activeRoute.split("/").length >= 5) && (
               <img
                 onClick={goBackToPreviousPage}
                 style={{ width: "30px", height: "25px", marginRight: "10px" }}
