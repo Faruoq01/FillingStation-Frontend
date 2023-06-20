@@ -45,13 +45,13 @@ align-self: center;
   align-self: center;
 }
 .search-{
-  // height: 35px;
+  height: 25pxpx;
   width: 300px;
-  border-radius: 5px;
+  border-radius: 3px;
   padding-left: 10px;
   padding-right: 10px;
   border: 1px solid#E3E3E3;
-  padding: 2px;
+ 
   &:focus{
     outline: none;
   }
@@ -86,20 +86,21 @@ padding: 8px;
 }
 
 .footer-{
-  height: 45px;
-  width: 95%;
- 
+  height: fit-content;
+  width: 100%;
+ display: flex;
+ align-items: center;
   display: flex;
   align-self: center;
-  justify-content: flex-end;
+  justify-content: center;
+ 
 }
 .inner-footer-{
-  height: 100%;
-  width: 50%;
-  background-color: #fff;
-  justify-content: space-between;
+  height: fit-content;
+  width: 95%;
+ margin-top: 1rem;
+  justify-content: flex-end;
   display: flex;
-  align-items: center;
 }
 .total-btn{
   border:0px;
