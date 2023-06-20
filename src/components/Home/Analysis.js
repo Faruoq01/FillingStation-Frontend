@@ -297,29 +297,8 @@ const Analysis = (props) => {
             return Number(accum) + Number(current.sales)*Number(current.DPKSellingPrice) - Number(current.sales)*Number(current.DPKCostPrice);
         }, 0);
 
-        /*#################################################
-            Overages/Shortages records for each product
-        ##################################################*/
-
-        const pmsOverageList = dipping.filter(data => data.productType === "PMS");
-        const agoOverageList = dipping.filter(data => data.productType === "AGO");
-        const dpkOverageList = dipping.filter(data => data.productType === "DPK");
-
-        const pmsOverage = pmsOverageList.reduce((accum, current) => {
-            return Number(accum) + Number(current.dipping) - Number(current.afterSales);
-        }, 0);
-
-        const agoOverage = agoOverageList.reduce((accum, current) => {
-            return Number(accum) + Number(current.dipping) - Number(current.afterSales);
-        }, 0);
-
-        const dpkOverage = dpkOverageList.reduce((accum, current) => {
-            return Number(accum) + Number(current.dipping) - Number(current.afterSales);
-        }, 0);
-
-
         const totalSales = pmsSales + agoSales + dpkSales;
-        const netVareince = pmsOverage + agoOverage + dpkOverage;
+        const netVareince = Variences().pmsSales + Variences().agoSales + Variences().dpkSales;
 
         return totalSales + netVareince - calculateExpenses();
     }

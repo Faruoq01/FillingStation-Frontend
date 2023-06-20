@@ -11,6 +11,7 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardService from '../../services/dashboard';
 import { overageType, overages } from '../../store/actions/dailySales';
 import { dateRange } from '../../store/actions/dashboard';
+import ApproximateDecimal from '../common/approx';
 
 const OverageList = () => {
 
@@ -318,9 +319,9 @@ const OverageList = () => {
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{data.createdAt}</div>
-                                        <div className='column'>{Number(data.afterSales) + getSupply(data.tankID).second}</div>
+                                        <div className='column'>{ApproximateDecimal(Number(data.afterSales) + getSupply(data.tankID).second)}</div>
                                         <div className='column'>{data.dipping}</div>
-                                        <div className='column'>{Number(data.dipping) - (Number(data.afterSales) + getSupply(data.tankID).second)}</div>
+                                        <div className='column'>{ApproximateDecimal(Number(data.dipping) - (Number(data.afterSales) + getSupply(data.tankID).second))}</div>
                                         <div className='column'>
                                             <span style={status(data) === "Shortage"? short2: short}>{status(data)}</span>
                                         </div>
