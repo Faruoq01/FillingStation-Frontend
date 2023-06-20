@@ -1,10 +1,11 @@
 .individual-sale-container- {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: transparent;
+  align-items: center;
+  flex: 1;
+  background-color: #F0F9F7;
+  .tb-inner-payment {
+      width: 96%;
+      height: 100%;
+    }
   
 }
 
@@ -13,8 +14,6 @@
   border: none;
   color: #393838;
   width: max-content;
-
-  // padding: 0rem 2rem 0rem 2rem;
   border-radius: 5px;
   font-family: "Nunito";
   border: 1px solid #393838;
@@ -27,7 +26,7 @@
 }
 
 .wrap-btn-wrap {
-  width: 95%;
+  width: 100%;
   align-self: center;
   height: fit-content;
   flex-direction: row;
@@ -44,17 +43,28 @@
 }
 .input-wrapp-payment{
   display: flex;
+  height: 25px;
   flex-direction: row;
   margin-bottom: 5px;
-  
+  // background-color: pink;
+  Button {
+      cursor: pointer;
+      background-color: #0F88F2;
+      color: white;
+      margin-left: 5px;
+      border: 0px;
+      height: 100%;
+    }
 }
 
 .search- {
-  // height: 35px;
   width: 300px;
   border-radius: 5px;
   padding-left: 10px;
+  height: 100%;
   padding-right: 10px;
+
+  border: 1.5px solid #C6C6C6;
 
   &:focus {
     outline: none;
@@ -64,25 +74,26 @@
 #payment-table- {
   border-collapse: separate;
     border-spacing: 0 5px;
-  // border-collapse: collapse;
   width: 100%;
-  margin-top: 10px;
-  text-align: start;
-  align-items: center;
+  text-align: center;
 }
 #payment-table- td{
-  margin-top: 1rem;
+  // margin-top: 1rem;
+
 
 
 }
 #payment-table- td,
 #payment-table- th {
-  padding: 13px;
+  padding: 5px;
+  
+ 
   font-size: 11px;
 }
 
 #payment-table- tr {
-  background-color: #fff;
+  background-color: #F8FFFD;
+  
 }
 
 #payment-table- tr:hover {
@@ -92,7 +103,7 @@
 #payment-table- th {
   font-size: 12px;
   font-weight: bold;
-  text-align: start;
+  text-align: center;
   padding-top: 12px;
   padding-bottom: 12px;
   background-color: #525252;
@@ -116,11 +127,10 @@
 }
 
 .footer- {
-  height: 45px;
-  width: 95%;
-background-color: transparent;
+  width: 100%;
+  height: fit-content;
+    // background-color: #0F88F2;
   display: flex;
-  align-self: center;
   justify-content: flex-end;
 }
 
@@ -147,14 +157,19 @@ background-color: transparent;
 }
 
 .button-sales-pagginator {
-  padding: 5px;
+  padding: 2px;
   border: none;
+  width: 30px;
+  height: 30px;
   background: #E3E3E3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   color: #000000;
-  font-size: 15px;
-  margin: 2px;
-  border-radius: 10px;
+  // margin: 2px;
+  border-radius: 5px;
 
   &:hover {
     background: #06805B;
@@ -165,24 +180,19 @@ background-color: transparent;
 }
 
 .indiv-sale-table-wrapper {
-  width: 95%;
-  align-self: center;
-  padding: 0rem 1rem 0rem 1rem;
-  background-color: #F0F9F7;
-
+  width: 100%;
 }
 
 .table-image {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   padding: 0px;
   margin-right: 5px;
   border-radius: 50%;
   margin-right: 3px;
   cursor: pointer;
 }
-    .input-wrapp-payment {
-     align-items: center;}
+   
 
     //  ================ reciept modal ===================
 .e-station-reciept-modal{
@@ -296,7 +306,7 @@ background-color: transparent;
   .footer-section-p{
     display: flex;
     align-self: center;
-    width: 95%;
+    width: 100%;
     margin-top: 1%;
     flex-direction: row;
    
@@ -381,9 +391,12 @@ background-color: transparent;
     }
 
     // =========close=======
+ .button-wrap- {
+   margin: 0px;
 
+ }
 
-@media screen and (max-width:1000px) {
+@media screen and (max-width:1150px) {
   
 .e-station-reciept-modal {
     width: 100%;
@@ -405,7 +418,7 @@ background-color: transparent;
 
   .button-sales-pagginator {
 
-    font-size: 11px;
+    // font-size: 11px;
   }
 
   .individual-sale-container- {
@@ -413,10 +426,9 @@ background-color: transparent;
     width: 95%;
   }
 
-  .button-wrap {
+  .button-wrap-{
     margin: 0px;
-    height: fit-content;
-    width: fit-content;
+   
   }
 
   .total-btn {
@@ -430,6 +442,7 @@ background-color: transparent;
   .inner-footer- {
     width: 100%;
     margin: 0px;
+
 
   }
 
@@ -445,13 +458,16 @@ background-color: transparent;
   }
 
   .wrap-btn-wrap {
-    width: 95%;
+    width: 100%;
     align-self: center;
-    padding: 0px;
-    margin: 0px;
+    position: relative;
+    margin-bottom: 1rem;
+   height: fit-content;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    justify-content: start;
+   
   }
 
   .search- {
@@ -464,11 +480,13 @@ background-color: transparent;
   .input-wrapp-payment{
     Button{
       width: 80%;
+      margin: 0px;
+      width: max-content;
     }
     width: 100%;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
+    height: fit-content;
     
   }
 }

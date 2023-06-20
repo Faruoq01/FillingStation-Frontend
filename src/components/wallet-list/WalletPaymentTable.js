@@ -40,7 +40,12 @@ export default function WalletPaymentTable({ handleViewReciept }) {
             <tbody>
               {tableData_S.map((item, index) => (
                 <tr key={Math.random()}>
-                  {<td>{index + 1}</td>}
+                  {
+                    <td>
+                      {index + 1 < 10 && "0"}
+                      {index + 1}
+                    </td>
+                  }
 
                   <td>{"3-20-2022"}</td>
                   <td>{"5:28 am"}</td>
@@ -49,13 +54,26 @@ export default function WalletPaymentTable({ handleViewReciept }) {
                     <div
                       style={{
                         display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "start",
+                        flexDirection: "column",
+                        width: "100%",
+                        // background: "#133",
+                        justifyContent: "center",
                         alignItems: "center",
                       }}
                     >
-                      <ProfileImg item={item} />
-                      {!mobile && item.account_name}
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          // background: "green",
+                          width: "50%",
+                          justifyContent: "start",
+                          alignItems: "center",
+                        }}
+                      >
+                        <ProfileImg item={item} />
+                        {!mobile && item.account_name}
+                      </div>
                     </div>
                   </td>
                   <td>{"Transfer"}</td>
@@ -121,7 +139,7 @@ const Footer = ({}) => (
   <div className="footer-">
     <Pagginator
       onClickNext={() => {
-        alert("prtrt");
+        // alert("prtrt");
       }}
       onClickPrevious={() => {}}
     />
@@ -134,7 +152,7 @@ const Button = ({ style, data = "Total Amount", ...props }) => (
 );
 
 const Pagginator = ({ onClickNext, onClickPrevious }) => (
-  <div className="button-wrap">
+  <div className="button-wrap-">
     <div style={styles().pagginator}>
       <button
         onClick={onClickPrevious}

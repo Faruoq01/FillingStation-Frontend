@@ -24,39 +24,27 @@ export default function WalletPaymentListIndex() {
   return (
     <Fragment>
       <div className="individual-sale-container-">
-        <div className="wrap-btn-wrap">
-          <div className="btn-wrap-">
-            <Button>Individual</Button>
-            <Button style={{ marginLeft: 5 }}>Corporate</Button>
+        <div className="tb-inner-payment">
+          <div className="wrap-btn-wrap">
+            <div className="btn-wrap-">
+              <Button>Individual</Button>
+              <Button style={{ marginLeft: 5 }}>Corporate</Button>
+            </div>
+            <div className="input-wrapp-payment">
+              <input
+                className="search-"
+                type="text"
+                id="fname"
+                placeholder="Search"
+                style={{}}
+              />
+              <Button onClick={openCreatePaymentModal}>Register Payment</Button>
+            </div>
           </div>
-          <div className="input-wrapp-payment">
-            <input
-              className="search-"
-              type="text"
-              id="fname"
-              placeholder="Search"
-              style={{
-                height: 30,
-                border: "1.5px solid #C6C6C6",
-                cursor: "pointer",
-              }}
-            />
-            <Button
-              onClick={openCreatePaymentModal}
-              styles={{
-                marginLeft: 2,
-                height: 30,
-                backgroundColor: "#0F88F2",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              Register Payment
-            </Button>
-          </div>
+          <WalletPaymentTable handleViewReciept={handleViewReciept} />
         </div>
-        <WalletPaymentTable handleViewReciept={handleViewReciept} />
       </div>
+
       <EStationPaymentReceiptModal
         open={receiptModal}
         close={setReceiptModal}
