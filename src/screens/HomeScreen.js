@@ -265,7 +265,7 @@ const HomeScreen = () => {
       "/home/estation-incoming-orders": "Incoming Order",
       "/home/estation-individual-orders": "Individual Incoming Order",
       "/home/estation-corporate-orders": "Corporate Incoming Order",
-      "/home/estation-payments": "Payments",
+      "/home/estation/payments": "Payments",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
@@ -840,9 +840,9 @@ const HomeScreen = () => {
             <Route path="/home/estation-incoming-orders">
               <EStationIncomingOrders history={history} />
             </Route>
-            <Route path="/home/estation-payments">
-              <EStationPayments history={history} />
-            </Route>
+            {/* <Route path="/home/estation-payments">
+              <EStationPayments />
+            </Route> */}
 
             <Route path="/home/supply">
               <Supply activeRoute={activeRoute} />

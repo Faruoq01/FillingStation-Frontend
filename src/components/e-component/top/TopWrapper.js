@@ -22,7 +22,7 @@ function TopWrapper({ disableCard, ...props }) {
     navigation.push("/home/estation-sales");
   };
   const goToPayments = () => {
-    navigation.push("/home/estation-payments");
+    navigation.push("/home/estation/payments");
   };
 
   return (

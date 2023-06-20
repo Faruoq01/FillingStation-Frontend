@@ -8,8 +8,9 @@ import EStationPaymentReceiptModal from "../Modals/EStationPaymentReceiptModal";
 import { useDispatch } from "react-redux";
 import { eStationSinglePaymentAction } from "../../store/actions/payment";
 import EStationCreatePaymentModal from "../Modals/EStationCreatePaymentModal";
+import EStationPayments from "../Home/e-station/EStationPayments";
 
-export default function WalletPaymentListIndex() {
+export default function WalletPaymentListIndex({ ...props }) {
   const mobile = useMediaQuery("(max-width:1000px)");
   const [receiptModal, setReceiptModal] = useState(false);
   const [createPaymentModal, setCreatePaymentModal] = useState(false);
