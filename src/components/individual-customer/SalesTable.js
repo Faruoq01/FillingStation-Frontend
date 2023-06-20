@@ -1,13 +1,8 @@
 import React, { Fragment } from "react";
 import "../../styles/estation/individual_sale.scss";
-import {
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  Note,
-} from "@mui/icons-material";
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import { tableData_S } from "../Home/e-station/data";
-import CircleIcon from "@mui/icons-material/Circle";
 import { useHistory } from "react-router-dom";
 
 export default function SalesTable() {
