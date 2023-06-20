@@ -55,13 +55,11 @@ align-self: center;
 #sales-table-{
   border-collapse: collapse;
   width: 100%;
-  margin-top: 10px;
-  text-align: start;
+  text-align: center;
 }
 #sales-table- td,
 #sales-table- th {
-  padding: 13px;
-  // font-weight: bold;
+padding: 5px;
   font-size: 11px;
 }
 #sales-table- tr:nth-child(even) {
@@ -72,9 +70,9 @@ align-self: center;
   background-color: #ddd;
 }
 #sales-table- th {
+  text-align: center;
   font-size: 12px;
-  font-weight: bold;
-  text-align: start;
+  // font-weight: bold;
   padding-top: 12px;
   padding-bottom: 12px;
   background-color: #ffffff;
@@ -109,16 +107,22 @@ align-self: center;
     }
     
 }
-.button-sales-pagginator{
-  padding: 5px;
+.button-sales-pagginator {
+  padding: 2px;
   border: none;
+  width: 30px;
+  height: 30px;
   background: #E3E3E3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   color: #000000;
-  font-size: 15px;
-  margin: 2px;
-  border-radius: 10px;
-  &:hover{
+  // margin: 2px;
+  border-radius: 3px;
+
+  &:hover {
     background: #06805B;
     color: #ffffff;
 
@@ -132,8 +136,8 @@ align-self: center;
 }
 
 .table-image{
-    width: 30px;
-      height: 30px;
+    width: 25px;
+      height: 25px;
       padding: 0px;
       margin-right: 5px;
       border-radius: 50%;

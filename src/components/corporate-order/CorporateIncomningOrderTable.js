@@ -41,13 +41,24 @@ export default function CorporateIncomningOrderTable() {
                   <div
                     style={{
                       display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "start",
+                      justifyContent: "center",
+                      width: "100%",
                       alignItems: "center",
+                      // background: "#133",
                     }}
                   >
-                    <ProfileImg item={item} />
-                    {!mobile && item.account_name}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "start",
+                        width: "60%",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ProfileImg item={item} />
+                      {!mobile && item.account_name}
+                    </div>
                   </div>
                 </td>
                 <td>{item.vehicle_no}</td>
