@@ -229,7 +229,7 @@ width: 25px;
 
   }
   .reciept-img{
-    height: 80%;
+    height: 82%;
     width: 95%;
     // background: #06805B;
     display: flex;
@@ -306,22 +306,28 @@ width: 25px;
     display: flex;
     align-self: center;
     width: 100%;
-    margin-top: 1%;
+    // margin-top: 1%;
+    padding-left: 2rem;
+    // background-color: cyan;
     flex-direction: row;
    
     .footer-btn-p{
       cursor: pointer;
-      padding: 1%;
+      height: max-content;
+      width: 20%;
+      height: 28px;
       border: 1px solid #E3E3E3;
       border-radius: 5px;
       &:last-child {
           margin-left: 2%;
         }
-      &:hover{
-        background: #06805B;
-        color: white;
-        border: none;
-      }
+                &:first-child {
+                  margin-left: 2%;
+                  background: #06805B;
+                    border: none;
+                    color: white;
+                }
+     
     }
   }
 }
