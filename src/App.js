@@ -72,7 +72,7 @@ function App() {
           <Route path="/home/estation/payments" component={HomeScreen} />
           <Route path="/home/estation/sales" component={HomeScreen} />
           <Route
-            path="/home/estation-individual-sales"
+            path="/home/estation/sales/individual"
             component={HomeScreen}
           />
           <Route

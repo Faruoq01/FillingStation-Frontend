@@ -5,6 +5,7 @@ import EStationPayments from "./EStationPayments";
 import CorporateCustomer from "../CorporateCustomer";
 import IndividualCustomer from "../IndividualCustomer";
 import EStationSales from "./EStationSales";
+import EstationIndividualSales from "./EstationIndividualSales";
 
 const Wrapper = lazy(() => import("../../e-component/wrapper/Wrapper"));
 const TopWrapper = lazy(() => import("../../e-component/top/TopWrapper"));
@@ -35,6 +36,9 @@ function EStation({ ...props }) {
               </Route>
               <Route path="/home/estation/sales">
                 <EStationSales />
+              </Route>
+              <Route path="/home/estation/sales/individual">
+                <EstationIndividualSales />
               </Route>
             </Switch>
           </div>
