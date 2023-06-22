@@ -142,6 +142,11 @@ font-weight: 500;
                 height: 100px;
                 border-radius: 3px;
                 background: rgba(211, 240, 231, 0.60);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
                 .left-card-inner{
                   width: 90%;
                   height: 60%;
@@ -159,7 +164,6 @@ font-weight: 500;
               background: #FFF;
               margin-left: 10px;
                 box-shadow: 0px 0px 26px 0px rgba(0, 0, 0, 0.04);
-
             }
   }
  
