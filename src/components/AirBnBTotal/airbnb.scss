@@ -103,7 +103,7 @@ font-weight: 500;
       &:first-child{  
         
         height: max-content;
-            width: 25%;
+            width: 28%;
             display: flex;
             flex-direction: column;
             border-radius: 5px;
@@ -119,6 +119,7 @@ font-weight: 500;
           align-items: center;
           justify-content: center;
           flex-direction: column;
+          
             label {
                 color: #066348;
                 font-size: 15px;
@@ -135,6 +136,7 @@ font-weight: 500;
                 align-items: center;
                 justify-content: center;
                 display: flex;
+                margin-bottom: 10px;
               }
             
               .left-card {
@@ -146,11 +148,36 @@ font-weight: 500;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                position: relative;
                 .left-card-inner{
-                  width: 90%;
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                  width: 95%;
                   height: 60%;
-                  background: #054834;
+                  // background: pink;
+                  .img-txt-wraper{
+                      display: flex;
+                      flex-direction: row;
+                      align-items: center;
+                      flex-grow: 1;
+                     
+                      span {
+                          color: #323232;
+                          font-size: 15px;
+                          font-weight: 700;
+                         
+                        }
+                      
+                        label {
+                          color: #054834;
+                          margin-top: 10px;
+                          font-size: 12px;
+                          font-weight: 500;
+                          align-items: center;
+                            justify-content: center;
+
+                        }
+                  }
                 }
               }
 
@@ -162,7 +189,7 @@ font-weight: 500;
               border-radius: 5px;
               flex-grow: 1;
               background: #FFF;
-              margin-left: 10px;
+              margin-left: 1rem;
                 box-shadow: 0px 0px 26px 0px rgba(0, 0, 0, 0.04);
             }
   }

@@ -66,7 +66,22 @@ export default function AirBnBTotalIndex() {
                   }}
                 />
               </div>
-              <SmallCardLeft />
+              <SmallCardLeft
+                title="Total PMS Dispensed"
+                amount="NGN 12, 500.00"
+                icon={require("../../assets/estation/pump (1).svg").default}
+              />
+              <SmallCardLeft
+                style={{ marginTop: "10px", marginBottom: "10px" }}
+                title="Total PMS Dispensed"
+                amount="NGN 12, 500.00"
+                icon={require("../../assets/estation/pump (1).svg").default}
+              />
+              <SmallCardLeft
+                title="Total PMS Dispensed"
+                amount="NGN 12, 500.00"
+                icon={require("../../assets/estation/pump (1).svg").default}
+              />
             </div>
           </div>
           <div className="body-card">right</div>
