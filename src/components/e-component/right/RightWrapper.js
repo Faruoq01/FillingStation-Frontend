@@ -11,7 +11,8 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom";
 function RightWrapper(props) {
   ChartJS.register(ArcElement, Tooltip, Legend);
   ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
-  ChartJS.overrides["doughnut"].plugins.legend.display = false;
+  ChartJS.overrides.doughnut.plugins.legend.labels.usePointStyle = true;
+  ChartJS.overrides.doughnut.plugins.legend.labels.pointStyle = "circle";
   const navigation = useHistory();
   const data = {
     labels: ["PMS", "DPK", "AGO"],
@@ -80,11 +81,11 @@ function RightWrapper(props) {
               }}
             />
           </div>
-          <div style={styles(mobile, tablet).iconsWrapper}>
+          {/* <div style={styles(mobile, tablet).iconsWrapper}>
             <DotProduct product="PMS" />
             <DotProduct product="AGO" />
             <DotProduct product="DPK" />
-          </div>
+          </div> */}
         </div>
         <RCard
           dot

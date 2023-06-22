@@ -7,30 +7,9 @@ const IndividualCustomerindex = lazy(() =>
 );
 
 export default function IndividualCustomer({ ...props }) {
-  if (props.activeRoute.split("/").length === 5)
-    return (
-      <Suspense fallback={<LazyLoaderScreen />}>
-        <IndividualCustomerindex />
-      </Suspense>
-    );
-
-  if (props.activeRoute.split("/").length >= 5)
-    return (
-      <div style={styles.contain}>
-        <Switch>
-          <Route path="/home/estation/customer/individual-corporate/airbnb">
-            <AirBnBTotal activeRoute={props.activeRoute} />
-          </Route>
-        </Switch>
-      </div>
-    );
+  return (
+    <Suspense fallback={<LazyLoaderScreen />}>
+      <IndividualCustomerindex />
+    </Suspense>
+  );
 }
-
-const styles = {
-  contain: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-};

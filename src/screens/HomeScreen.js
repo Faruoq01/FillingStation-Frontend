@@ -73,6 +73,7 @@ import NotificationDrawer from "../components/common/NotificationDrawer";
 import EStation from "../components/Home/e-station/EStation";
 
 import EStationIndividualIncomingOrder from "../components/Home/e-station/EStationIndividualIncomingOrder";
+import AirBnBTotal from "../components/Home/e-station/AirBnBTotal";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -257,7 +258,7 @@ const HomeScreen = () => {
       "/home/estation/individual/customer": "Individual Customer",
       "/home/estation/orders": "Incoming Order",
       "/home/estation/orders/incoming-individual": "Individual Incoming Order",
-      "/home/estation/customer/individual-corporate/airbnb": "Air BnB Total ",
+      "/home/estation/airbnb": "Air BnB Total ",
       "/home/estation/orders/incoming-corporate": "Corporate Incoming Order",
       "/home/estation/payments": "Payments",
       "/home/dashEmp": "← Employee List",
@@ -798,6 +799,9 @@ const HomeScreen = () => {
             </Route>
             <Route path="/home/inc-orders">
               <IncomingOrders />
+            </Route>
+            <Route path="/home/estation/airbnb">
+              <AirBnBTotal history={history} activeRoute={activeRoute} />
             </Route>
             <Route path="/home/outlets">
               <Outlets history={history} activeRoute={activeRoute} />

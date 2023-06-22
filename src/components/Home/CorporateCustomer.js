@@ -9,22 +9,9 @@ const CorporateCustomerindex = lazy(() =>
 export default function CorporateCustomer({ ...props }) {
   return (
     <Fragment>
-      {props.activeRoute.split("/").length === 5 && (
-        <Suspense fallback={<LazyLoaderScreen />}>
-          <CorporateCustomerindex />
-        </Suspense>
-      )}
-      {props.activeRoute.split("/").length > 5 && (
-        <Suspense fallback={<LazyLoaderScreen />}>
-          <div style={styles.contain}>
-            <Switch>
-              <Route path="/home/estation/customer/individual-corporate/airbnb">
-                <AirBnBTotal />
-              </Route>
-            </Switch>
-          </div>
-        </Suspense>
-      )}
+      <Suspense fallback={<LazyLoaderScreen />}>
+        <CorporateCustomerindex />
+      </Suspense>
     </Fragment>
   );
 }
