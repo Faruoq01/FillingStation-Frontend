@@ -55,17 +55,19 @@ export default function AirBnBTotalIndex() {
 
         <div className="airbnb-body-wrapper">
           <div className="body-card">
-            <label>Product Dispensed</label>
-            <div className="chart-wrap">
-              <Doughnut
-                data={data}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: true,
-                }}
-              />
+            <div className="wraper">
+              <label>Product Dispensed</label>
+              <div className="chart-wrap">
+                <Doughnut
+                  data={data}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: true,
+                  }}
+                />
+              </div>
+              <SmallCardLeft />
             </div>
-            <SmallCardLeft />
           </div>
           <div className="body-card">right</div>
         </div>
