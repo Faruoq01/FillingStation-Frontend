@@ -40,9 +40,7 @@ export default function SalesTable() {
                 <td>
                   <NoteIcon
                     onClick={() => {
-                      navigation.push(
-                        "/home/estation/customer/individual-corporate/airbnb"
-                      );
+                      navigation.push("/home/estation/airbnb");
                     }}
                   />
                 </td>

@@ -1,7 +1,7 @@
 import React from "react";
 import "./airbnb.scss";
-import CircleIcon from "@mui/icons-material/Circle";
-export default function SmallCardLeft({ ...props }) {
+import IconCircle from "@mui/icons-material/Circle";
+export default function SmallCardLeft({ dotColor, ...props }) {
   return (
     <div style={{ ...props.style }} className="left-card">
       <div className="left-card-inner">
@@ -19,8 +19,14 @@ export default function SmallCardLeft({ ...props }) {
           >
             <span>{props.amount}</span>
             <label>
-              <CircleIcon color="green" fontSize="15" />
-              {props?.title}
+              <IconCircle
+                style={{
+                  color: dotColor ?? "pink",
+                  marginTop: 2,
+                }}
+                fontSize="15"
+              />
+              <label style={{ marginLeft: 2 }}> {props?.title}</label>
             </label>
           </div>
         </div>

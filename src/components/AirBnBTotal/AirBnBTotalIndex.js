@@ -6,6 +6,8 @@ import AirBnBTopCardWithSwitch from "./AirBnBTopCardWithSwitch";
 import DotProduct from "../e-component/right/DotProduct";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import SmallCardLeft from "./SmallCardLeft";
+import { Button } from "@mui/material";
+import AirbnbTable from "./AirbnbTable";
 const data = {
   labels: ["PMS", "DPK", "AGO"],
   datasets: [
@@ -51,7 +53,7 @@ export default function AirBnBTotalIndex() {
             icon={require("../../assets/estation/enable.svg").default}
           />
         </div>
-        {/* =========================body section============= */}
+        {/* =====================body section============= */}
 
         <div className="airbnb-body-wrapper">
           <div className="body-card">
@@ -66,25 +68,49 @@ export default function AirBnBTotalIndex() {
                   }}
                 />
               </div>
+
               <SmallCardLeft
+                dotColor="#399A19"
+                type="PMS"
                 title="Total PMS Dispensed"
-                amount="NGN 12, 500.00"
+                amount="23,281.00 Liters"
                 icon={require("../../assets/estation/pump (1).svg").default}
               />
               <SmallCardLeft
+                dotColor="#35393E"
+                type="DPK"
                 style={{ marginTop: "10px", marginBottom: "10px" }}
-                title="Total PMS Dispensed"
-                amount="NGN 12, 500.00"
+                title="Total DPK Dispensed"
+                amount="23,281.00 Liters"
                 icon={require("../../assets/estation/pump (1).svg").default}
               />
               <SmallCardLeft
-                title="Total PMS Dispensed"
-                amount="NGN 12, 500.00"
+                dotColor="#FFA010"
+                title="Total AGO Dispensed"
+                amount="23,281.00 Liters"
+                type="AGO"
                 icon={require("../../assets/estation/pump (1).svg").default}
               />
             </div>
           </div>
-          <div className="body-card">right</div>
+          <div className="body-card">
+            <div className="wraper-right">
+              <div className="top-">
+                <label>Expenses</label>
+                <Button
+                  style={{ height: "35px", background: "#EDFFFA" }}
+                  variant="contained"
+                >
+                  <img
+                    style={{ width: 20, height: 20 }}
+                    src={require("../../assets/estation/menu.svg").default}
+                  />
+                  <label style={{ fontSize: 15, marginLeft: 5 }}>View</label>
+                </Button>
+              </div>
+              <AirbnbTable />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -93,14 +119,14 @@ export default function AirBnBTotalIndex() {
 
 const styles = {
   contain: {
-    height: "fit-content",
+    // height: "100vh",
     width: "100%",
     display: "flex",
     paddingTop: "10px",
-
     flexDirection: "row",
     justifyContent: "center",
     background: " #F0F9F7",
+    paddingBottom: "1rem",
   },
   inner: {
     display: "flex",
