@@ -21,7 +21,6 @@ const data = {
   ],
 };
 ChartJS.register(ArcElement, Tooltip, Legend);
-// ChartJS.overrides.doughnut.aspectRatio = 2;
 ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
 ChartJS.overrides.doughnut.plugins.legend.labels.usePointStyle = true;
 ChartJS.overrides.doughnut.plugins.legend.labels.pointStyle = "circle";

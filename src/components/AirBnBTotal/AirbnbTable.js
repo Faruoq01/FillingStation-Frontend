@@ -1,5 +1,6 @@
 import React from "react";
 import "./airbnb.scss";
+import { Circle } from "@mui/icons-material";
 
 export default function AirbnbTable() {
   return (
@@ -26,7 +27,12 @@ export default function AirbnbTable() {
                 <td>{index + 1 > 9 ? index + 1 : `0${index + 1}`}</td>
                 <td>12 Oct 2022</td>
                 <td>02:30 AM</td>
-                <td>PMS</td>
+                <td>
+                  <Circle
+                    style={{ color: "#1B6602", fontSize: 10, marginRight: 4 }}
+                  />
+                  <label>PMS</label>
+                </td>
                 <td>20.5</td>
                 <td>12.00</td>
                 <td>123.00</td>
