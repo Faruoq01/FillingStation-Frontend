@@ -526,9 +526,7 @@ const HomeScreen = () => {
             <img
               onClick={goToEsales}
               className="home-logo"
-              src={
-                user.image === null ? homeLogo : config.BASE_URL + user.image
-              }
+              src={homeLogo}
               alt="icon"
             />
             <SideItems
@@ -729,6 +727,42 @@ const HomeScreen = () => {
               {name === "Human Resources" ? "" : getStationDetails()}
             </span>
           </div>
+          {/* {oneStationData !== null &&
+            <div style={prices}>
+              <div style={products}>
+                <div style={main}>
+                  <div style={{
+                    width: '15px',
+                    height: '15px',
+                    borderRadius: '15px',
+                    background: '#399A19',
+                    marginRight: '5px',
+                  }}></div>
+                  <div>PMS: N{oneStationData?.PMSSellingPrice}</div>
+                </div>
+                <div style={main}>
+                  <div style={{
+                    width: '15px',
+                    height: '15px',
+                    borderRadius: '15px',
+                    background: '#FFA010',
+                    marginRight: '5px',
+                  }}></div>
+                  <div>AGO: N535</div>
+                </div>
+                <div style={main}>
+                  <div style={{
+                    width: '15px',
+                    height: '15px',
+                    borderRadius: '15px',
+                    background: '#35393E',
+                    marginRight: '5px',
+                  }}></div>
+                  <div>DPK: N535</div>
+                </div>
+              </div>
+            </div>
+          } */}
           <div className="right-lobe">
             <div className="search-icon">
               <input
@@ -872,5 +906,28 @@ const inner = {
   flexDirection: "column",
   alignItems: "center",
 };
+
+const prices = {
+  width: '100%',
+  height:'100%',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+}
+
+const products = {
+  display: 'flex',
+  flexDirection: 'row'
+}
+
+const main = {
+  marginRight: '15px',
+  fontFamily: 'Poppins',
+  fontSize: '12px',
+  fontWeight: 'bold',
+  display: 'flex',
+  flexDirection: 'row'
+}
 
 export default withRouter(HomeScreen);
