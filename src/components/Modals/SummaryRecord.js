@@ -316,7 +316,7 @@ const SummaryRecord = (props) => {
                         localStorage.removeItem('machine');
                         setMachine(null);
                         handleClose();
-                        history.push('/home/daily-sales')
+                        // history.push('/home/daily-sales')
                         swal("Success!", "Record saved successfully!", "success");
 
                     }
