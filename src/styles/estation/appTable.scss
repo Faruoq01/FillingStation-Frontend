@@ -4,7 +4,6 @@ $shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
 #app-table{
   border-collapse: collapse;
   width: 100%;
-  
     text-align: start;
 }
 #app-table tr:nth-child(even) {
@@ -12,7 +11,7 @@ $shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
 }
 #app-table td,
 #app-table th {
-  font-size: 11px;
+  font-size: 10px;
     padding: 5px;
     text-align: start;
 }
@@ -21,46 +20,50 @@ $shadow: 0px 0px 26px rgba(0, 0, 0, 0.04);
   background-color: #ddd;
 }
 #app-table th{
-  padding-top: 12px;
+  // padding-top: 12px;
     padding-bottom: 12px;
     background-color: #ffffff;
     color: #585858;
 }
 .profile-image{
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   padding: 0px;
   margin-right: 5px;
   border-radius: 50%;
   background-color: aquamarine;
 }
-.button_{
-    width: 40px;
-      height: 40px;
-      border: none;
-      background:#06805B;
-      cursor: pointer;
-      color: #ffffff;
-      margin: 2px;
-      border-radius: 10px;
-      box-shadow: $shadow;
-      
+.button_ {
+  padding: 2px;
+  border: none;
+  width: 25px;
+  height: 25px;
+  background: #E3E3E3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #000000;
+  border-radius: 3px;
+  &:first-child{
+    margin-right: 2px;
   }
-  .button_:hover {
-    background-color: "#06805B";
-    color: #06805B;
-  }
+}
+
+.button_:hover {
+  background: #EDFFFA;
+  color: #06805B;
+}
   .button-wrap{
     display: flex;
     height: fit-content;
     flex-direction: column;
-    // justify-content: center;
       width: 100%;
       align-items: flex-end;
     }
         @media screen and (max-width:"900px") {
           #app-table{
-            // display: none;
           }
 
 

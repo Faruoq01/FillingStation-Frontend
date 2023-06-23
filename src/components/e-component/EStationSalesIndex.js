@@ -5,10 +5,10 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 const EStationSalesIndex = ({}) => {
   const navigation = useHistory();
   const goToIndividualSales = () => {
-    navigation.push("/home/estation-individual-sales");
+    navigation.push("/home/estation/sales/individual");
   };
   const goToCorporateSales = () => {
-    navigation.push("/home/estation-corporate-sales");
+    navigation.push("/home/estation/sales/corporate");
   };
   return (
     <div className="e-station-sales">
