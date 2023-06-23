@@ -8,8 +8,9 @@ import EStationPaymentReceiptModal from "../Modals/EStationPaymentReceiptModal";
 import { useDispatch } from "react-redux";
 import { eStationSinglePaymentAction } from "../../store/actions/payment";
 import EStationCreatePaymentModal from "../Modals/EStationCreatePaymentModal";
+import EStationPayments from "../Home/e-station/EStationPayments";
 
-export default function WalletPaymentListIndex() {
+export default function WalletPaymentListIndex({ ...props }) {
   const mobile = useMediaQuery("(max-width:1000px)");
   const [receiptModal, setReceiptModal] = useState(false);
   const [createPaymentModal, setCreatePaymentModal] = useState(false);
@@ -24,39 +25,27 @@ export default function WalletPaymentListIndex() {
   return (
     <Fragment>
       <div className="individual-sale-container-">
-        <div className="wrap-btn-wrap">
-          <div className="btn-wrap-">
-            <Button>Individual</Button>
-            <Button style={{ marginLeft: 5 }}>Corporate</Button>
+        <div className="tb-inner-payment">
+          <div className="wrap-btn-wrap">
+            <div className="btn-wrap-">
+              <Button>Individual</Button>
+              <Button style={{ marginLeft: 5 }}>Corporate</Button>
+            </div>
+            <div className="input-wrapp-payment">
+              <input
+                className="search-"
+                type="text"
+                id="fname"
+                placeholder="Search"
+                style={{}}
+              />
+              <Button onClick={openCreatePaymentModal}>Register Payment</Button>
+            </div>
           </div>
-          <div className="input-wrapp-payment">
-            <input
-              className="search-"
-              type="text"
-              id="fname"
-              placeholder="Search"
-              style={{
-                height: 30,
-                border: "1.5px solid #C6C6C6",
-                cursor: "pointer",
-              }}
-            />
-            <Button
-              onClick={openCreatePaymentModal}
-              styles={{
-                marginLeft: 2,
-                height: 30,
-                backgroundColor: "#0F88F2",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              Register Payment
-            </Button>
-          </div>
+          <WalletPaymentTable handleViewReciept={handleViewReciept} />
         </div>
-        <WalletPaymentTable handleViewReciept={handleViewReciept} />
       </div>
+
       <EStationPaymentReceiptModal
         open={receiptModal}
         close={setReceiptModal}

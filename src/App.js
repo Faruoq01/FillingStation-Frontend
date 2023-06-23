@@ -36,22 +36,20 @@ function App() {
           <Route path="/home/outlets/sales" component={HomeScreen} />
           <Route path="/home/outlets/sales/list" component={HomeScreen} />
           <Route path="/home/analysis/payments" component={HomeScreen} />
+
           <Route path="/home/product-orders" component={HomeScreen} />
           <Route path="/home/daily-record-sales" component={HomeScreen} />
           <Route path="/home/daily-record-sales/lpo" component={HomeScreen} />
-          <Route
-            path="/home/estation-corporate-orders"
-            component={HomeScreen}
-          />
+
           <Route
             path="/home/daily-record-sales/expenses"
             component={HomeScreen}
           />
+          <Route path="/home/estation/airbnb" component={HomeScreen} />
           <Route
             path="/home/daily-record-sales/payment"
             component={HomeScreen}
           />
-          <Route path="/home/estation-incoming-orders" component={HomeScreen} />
           <Route
             path="/home/daily-record-sales/dipping"
             component={HomeScreen}
@@ -66,20 +64,19 @@ function App() {
           <Route path="/home/estation" component={HomeScreen} />
           <Route path="/home/estation-corporate-sales" component={HomeScreen} />
           <Route
-            path="/home/estation-corporate-customer"
+            path="/home/estation/corporate/customer"
             component={HomeScreen}
           />
-          <Route path="/home/estation-payments" component={HomeScreen} />
-          <Route path="/home/estation-sales" component={HomeScreen} />
+          <Route path="/home/estation/payments" component={HomeScreen} />
+          <Route path="/home/estation/sales" component={HomeScreen} />
           <Route
-            path="/home/estation-individual-sales"
+            path="/home/estation/sales/individual"
             component={HomeScreen}
           />
           <Route
-            path="/home/estation-individual-customer"
+            path="/home/estation/individual/customer"
             component={HomeScreen}
           />
-
           <Route path="/home/supply" component={HomeScreen} />
           <Route path="/home/supply/create" component={HomeScreen} />
           <Route path="/home/tank" component={HomeScreen} />

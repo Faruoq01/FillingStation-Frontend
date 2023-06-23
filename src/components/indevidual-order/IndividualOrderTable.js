@@ -41,13 +41,24 @@ export default function IndividualOrderTable() {
                   <div
                     style={{
                       display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "start",
+                      flexDirection: "column",
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
-                    <ProfileImg item={item} />
-                    {!mobile && item.account_name}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "start",
+                        width: "100%",
+                        alignItems: "center",
+                        // background: "cyan",
+                      }}
+                    >
+                      <ProfileImg item={item} />
+                      {!mobile && item.account_name}
+                    </div>
                   </div>
                 </td>
                 <td>{item.vehicle_no}</td>
@@ -111,7 +122,7 @@ const Footer = ({}) => (
           style={{
             background: "#EFFFFA",
             color: "#515151",
-            border: "1px solid #515151",
+            boder: 0,
           }}
           data="NGN 245000.00"
         />

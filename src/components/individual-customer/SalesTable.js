@@ -1,15 +1,12 @@
 import React, { Fragment } from "react";
 import "../../styles/estation/individual_sale.scss";
-import {
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  Note,
-} from "@mui/icons-material";
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import { tableData_S } from "../Home/e-station/data";
-import CircleIcon from "@mui/icons-material/Circle";
+import { useHistory } from "react-router-dom";
 
 export default function SalesTable() {
+  const navigation = useHistory();
   const mobile = useMediaQuery("(max-width:600px)");
   const tablet = useMediaQuery("(max-width:900px)");
   return (
@@ -41,7 +38,11 @@ export default function SalesTable() {
                 <td>{"07048737699"}</td>
                 <td>{"Lagos"}</td>
                 <td>
-                  <NoteIcon onClick={() => {}} />
+                  <NoteIcon
+                    onClick={() => {
+                      navigation.push("/home/estation/airbnb");
+                    }}
+                  />
                 </td>
               </tr>
             ))}
@@ -68,23 +69,6 @@ const ProfileImg = ({ onClick, item }) => (
 const Footer = ({}) => (
   <div className="footer-">
     <div className="inner-footer-">
-      {/* <div style={{ display: "flex", flexDirection: "row" }}>
-        <Button
-          style={{
-            border: "1px solid #06805B",
-            background: "#06805B",
-            color: "white",
-          }}
-        />
-        <Button
-          style={{
-            background: "#EFFFFA",
-            color: "#515151",
-            border: "1px solid #515151",
-          }}
-          data="NGN 245000.00"
-        />
-      </div> */}
       <Pagginator
         onClickNext={() => {
           alert("prtrt");

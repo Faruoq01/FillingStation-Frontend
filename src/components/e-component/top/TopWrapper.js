@@ -19,10 +19,10 @@ function TopWrapper({ disableCard, ...props }) {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(min-width:700px)");
   const goToSales = () => {
-    navigation.push("/home/estation-sales");
+    navigation.push("/home/estation/sales");
   };
   const goToPayments = () => {
-    navigation.push("/home/estation-payments");
+    navigation.push("/home/estation/payments");
   };
 
   return (

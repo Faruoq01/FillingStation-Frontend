@@ -11,7 +11,8 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom";
 function RightWrapper(props) {
   ChartJS.register(ArcElement, Tooltip, Legend);
   ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
-  ChartJS.overrides["doughnut"].plugins.legend.display = false;
+  ChartJS.overrides.doughnut.plugins.legend.labels.usePointStyle = true;
+  ChartJS.overrides.doughnut.plugins.legend.labels.pointStyle = "circle";
   const navigation = useHistory();
   const data = {
     labels: ["PMS", "DPK", "AGO"],
@@ -28,19 +29,18 @@ function RightWrapper(props) {
   const mobile = useMediaQuery("(max-width:900px)");
   const tablet = useMediaQuery("(mx-width:1000px)");
   const goToCorporateCustomerPage = () => {
-    navigation.push("/home/estation-corporate-customer");
+    navigation.push("/home/estation/corporate/customer");
   };
   const goToIndividualCustomerPage = () => {
-    navigation.push("/home/estation-individual-customer");
+    navigation.push("/home/estation/individual/customer");
   };
   const goToIncomingOrders = () => {
-    navigation.push("/home/estation-incoming-orders");
+    navigation.push("/home/estation/orders");
   };
   return (
     <div className="r-wrapper">
       <RCard
         onClick={goToCorporateCustomerPage}
-        arrowStyle={styles(mobile, tablet).arrowStyle2}
         style={{ width: "100%", backgroundColor: " #F6FFFF" }}
         icon={
           <img
@@ -81,11 +81,11 @@ function RightWrapper(props) {
               }}
             />
           </div>
-          <div style={styles(mobile, tablet).iconsWrapper}>
+          {/* <div style={styles(mobile, tablet).iconsWrapper}>
             <DotProduct product="PMS" />
             <DotProduct product="AGO" />
             <DotProduct product="DPK" />
-          </div>
+          </div> */}
         </div>
         <RCard
           dot
@@ -138,9 +138,9 @@ function RightWrapper(props) {
       </div>
       <RCard
         onClick={goToIncomingOrders}
-        arrowStyle={styles(mobile, tablet).arrowStyle2}
+        arrowStyle={{ marginRight: "1%" }}
         style={{
-          width: "100%",
+          // width: "100%",
           marginTop: "10px",
           backgroundColor: "#fff",
         }}
