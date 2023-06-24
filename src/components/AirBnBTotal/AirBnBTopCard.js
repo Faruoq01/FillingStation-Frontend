@@ -1,5 +1,5 @@
 import React from "react";
-import "./airbnb.scss";
+import "../../styles/estation/airbnb.scss";
 export default function AirBnBTopCard({ ...props }) {
   return (
     <div className="airbnb-card-top">
