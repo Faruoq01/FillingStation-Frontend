@@ -16,6 +16,7 @@ export default function AttendanceTable() {
     >
       <div className="tool-section">
         <div
+          className="att-table-wrap"
           style={{
             width: "98%",
             display: "flex",

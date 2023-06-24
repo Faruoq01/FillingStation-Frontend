@@ -45,7 +45,7 @@ export default function AttendenceHeader() {
             className="icon-menu"
           />
         )}
-        <div className={`card-items- ${dropdownStatus && "dis-none"}`}>
+        <div className={`card-items- ${!dropdownStatus && "dis-none"}`}>
           <div className="wrap-wrap-dropdown">
             <div className="row-item">
               <span>Welcome, Oluwasegun &#128075;</span>

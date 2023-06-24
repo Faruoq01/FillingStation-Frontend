@@ -176,7 +176,7 @@ height: fit-content
    // airbnb-card-top-sub
    .airbnb-card-top-sub {
      display: flex;
-
+position: relative;
      width: 100% !important;
 
      // background-color: aqua;
@@ -297,7 +297,7 @@ height: fit-content
              padding-top: 1rem;padding-bottom: 1rem;
             width: 100%;
              position: absolute;
-            
+            box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
             background: white;
             border-radius: 5px;
             z-index: 999;
@@ -342,11 +342,26 @@ height: fit-content
         }
                 
       }
-        .att-table-wrapper{
+        
           .att-table-wrapper{
             overflow: scroll;
+            width: 100%;
           }
-        }    
-  
+          .card-section{
+            flex-direction: column;
+
+          }
     }
+
+        .attendant-card-top {
+          &:last-child {
+            margin-left: 0rem;
+            margin-top: 1rem;
+          }
+    
+          &:first-child {
+            margin-right: 0rem;
+            margin-bottom: 1rem;
+          }
+        }
 }
