@@ -16,16 +16,17 @@ export default function AttendenceHeader() {
       </div>
       <div className="right-item ">
         <img
-          style={{ marginRight: 3 }}
+          style={{ marginRight: 10, height: 30 }}
           src={require("../../assets/attendance/date.svg").default}
         />
         <img
-          style={{ marginRight: 3 }}
+          style={{ marginRight: 10, height: 30 }}
           src={require("../../assets/attendance/notification.svg").default}
         />
-        <span>Hi, Olayimika </span>
+        <span style={{ marginRight: 10 }}>Hi, Olayimika </span>
         <img
-          src={require("../../assets/attendance/notification.svg").default}
+          style={{ width: 30, height: 30, objectFit: "contain" }}
+          src={require("../../assets/attendance/user-icon.png")}
         />
       </div>
       <div className="menu-icon-wrap">
