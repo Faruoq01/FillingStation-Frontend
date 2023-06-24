@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import Homepage from "./components/LandingPage/Home";
 import Connection from "./screens/Connection";
 import CustomerLPO from "./screens/LPOCustomers";
+import AttendanceModule from "./screens/AttendanceModule";
 
 function App() {
   useEffect(() => {
@@ -90,6 +91,7 @@ function App() {
           <Route path="/home/hr/recruitment" component={HomeScreen} />
           <Route path="/home/hr/attendance" component={HomeScreen} />
           <Route path="/login" component={LoginScreen} />
+          <Route path="/attendance" component={AttendanceModule} />
           <Route path="/lpo-customers" component={CustomerLPO} />
           <Route path="/connection" component={Connection} />
           <Route render={() => <h1>404 page not found</h1>} />
