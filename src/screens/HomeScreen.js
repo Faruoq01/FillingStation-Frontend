@@ -301,7 +301,7 @@ const HomeScreen = () => {
   useEffect(() => {
     setActiveRoute(history.location.pathname);
     setName(routes[history.location.pathname]);
-  }, []);
+  }, [history.location.pathname, routes]);
 
   const goBackToPreviousPage = () => {
     history.goBack();

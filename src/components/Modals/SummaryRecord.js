@@ -14,6 +14,7 @@ import ApproximateDecimal from '../common/approx';
 import SalesMachine from '../../modules/salesMachine';
 import { ThreeDots } from 'react-loader-spinner';
 import DailySalesService from '../../services/DailySales';
+import SalesService from '../../services/sales';
 
 const FuelCard = (props) => {
 
@@ -276,54 +277,33 @@ const SummaryRecord = (props) => {
         if(currentDate === null) return swal("Warning!", "Please select date!", "info");
         setLoading(true);
 
-        const payload = {
+        const settings = {
             currentDate: currentDate,
-            outletID: oneStationData._id,
-            org: oneStationData.organisation
         }
 
-        let data = await DailySalesService.validateSales(payload);
+        const payload = [
+            SalesService.pumpUpdate({...settings, label: "sales", sales: records['1']}),
+            SalesService.returnToTank({...settings, label: "rt", rt: records['2']}),
+            SalesService.lpo({...settings, label: "esales", lpo: records['3']}),
+            SalesService.expenses({...settings, label: "expenses", expenses: records['4']}),
+            SalesService.bankPayment({...settings, label: "bankpayments", bankpayments: records['5']}),
+            SalesService.posPayment({...settings, label: "pospayments", pospayments: records['6']}),
+            SalesService.dipping({...settings, label: "dipping", dipping: records['7']}),
+            SalesService.tankLevels({...settings, label: "tankLevels", tankLevels: records['8']}),
+            SalesService.balanceCF({...settings, label: "balanceCF", balanceCF: records['1']}),
+        ]
 
-        if(data.status === 'exist'){
-            setMachine(null);
-            localStorage.removeItem('machine');
+        Promise.allSettled(payload)
+        .then(results => {
+            console.log(results, "fullfilled");
             handleClose();
             history.push('/home/daily-sales')
-            swal("Error!", "Today's record has already been submitted!", "error");
-
-        }else{
-
-            machine.onStateChange(({label, mch, error}) => {
-                if(error){
-                    const info = {
-                        date: currentDate,
-                        data: mch.data,
-                        label: label,
-                        error: error,
-                        org: oneStationData.organisation, 
-                        outletID: oneStationData._id
-                    }
-
-                    setMachine(new SalesMachine(records));
-                    localStorage.setItem('machine', Buffer.from(JSON.stringify(info)).toString('base64'));
-                    handleClose();
-                    swal("Error!", "Ooops there is an error but your data is not lost refresh and try again or contact admin!", "error");
-
-                }else{
-                    setProgress(label);
-                    if(label === 'done'){
-                        setLoading(false);
-                        localStorage.removeItem('machine');
-                        setMachine(null);
-                        handleClose();
-                        // history.push('/home/daily-sales')
-                        swal("Success!", "Record saved successfully!", "success");
-
-                    }
-                }
-            });
-            machine.start();
-        }
+            swal("Success!", "Record saved successfully!", "success");
+        })
+        .catch(error => {
+            // Handle any other errors that may occur
+            console.log(error, "form catch");
+        });
     }
 
     const getBackground = (type) => {
@@ -541,7 +521,7 @@ const SummaryRecord = (props) => {
 
                 <div style={{...add, justifyContent:'space-between'}}>
                     <div style={{marginLeft: '10px'}}>
-                        {loading && <div style={prog}>{progress}</div>}
+                        {/* {loading && <div style={prog}>{progress}</div>} */}
                         {loading?
                             <ThreeDots 
                                 height="30" 
