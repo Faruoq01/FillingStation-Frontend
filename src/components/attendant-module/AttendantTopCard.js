@@ -1,5 +1,5 @@
 import React from "react";
-import "./attendance.scss";
+import "../../styles/attendant/attendance.scss";
 export default function AttendantTopCard({ ...props }) {
   return (
     <div className="attendant-card-top">

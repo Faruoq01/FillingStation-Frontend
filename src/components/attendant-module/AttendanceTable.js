@@ -1,5 +1,5 @@
 import React from "react";
-import "./attendance.scss";
+import "../../styles/attendant/attendance.scss";
 import { Circle } from "@mui/icons-material";
 import Dropdown from "./Dropdown";
 

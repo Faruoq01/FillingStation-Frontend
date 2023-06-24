@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./attendance.scss";
+import "../../styles/attendant/attendance.scss";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 

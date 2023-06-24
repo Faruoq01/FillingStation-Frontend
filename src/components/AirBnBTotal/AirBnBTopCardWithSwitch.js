@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./airbnb.scss";
+import "../../styles/estation/airbnb.scss";
 import { Switch } from "@mui/material";
 export default function AirBnBTopCardWithSwitch({ ...props }) {
   const [switchState, setSwitchState] = useState(false);

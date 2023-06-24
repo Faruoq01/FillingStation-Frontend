@@ -1,5 +1,5 @@
 import React from "react";
-import "./attendance.scss";
+import "../../styles/attendant/attendance.scss";
 import AttendenceHeader from "./AttendenceHeader";
 import AttendanceTable from "./AttendanceTable";
 import AttendantTopCard from "./AttendantTopCard";

@@ -1,5 +1,5 @@
 import React from "react";
-import "./airbnb.scss";
+import "../../styles/estation/airbnb.scss";
 import IconCircle from "@mui/icons-material/Circle";
 export default function SmallCardLeft({ dotColor, ...props }) {
   return (
