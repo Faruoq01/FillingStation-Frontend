@@ -1,9 +1,6 @@
 import React from "react";
+import AttendanceModuleLayout from "../components/attendant-module/AttendanceModuleLayout";
 
 export default function AttendanceModule() {
-  return (
-    <div style={{ height: "100vh", background: "gray", width: "100%" }}>
-      AttendanceModule
-    </div>
-  );
+  return <AttendanceModuleLayout />;
 }
