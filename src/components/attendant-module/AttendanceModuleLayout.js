@@ -19,7 +19,12 @@ export default function AttendanceModuleLayout({ ...props }) {
               <AttendantTopCard
                 icon={require("../../assets/estation/pump (1).svg").default}
               />
-              <AttendantTopSpecialCard chip />
+              <AttendantTopSpecialCard
+                onClickChip={() => {
+                  props.setModalStatus(!props.modalStatus);
+                }}
+                chip
+              />
             </div>
             <AttendanceTable />
           </div>

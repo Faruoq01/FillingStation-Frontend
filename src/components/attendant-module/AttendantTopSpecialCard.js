@@ -2,7 +2,7 @@ import React from "react";
 import "../../styles/attendant/attendance.scss";
 export default function AttendantTopSpecialCard({ ...props }) {
   return (
-    <div className="attendant-card-top">
+    <div className="attendant-card-top" {...props}>
       <div className="airbnb-card-top-sub">
         {/* <img src={props.icon} alt="walet" /> */}
         <div className="txt-wrap">
@@ -36,8 +36,14 @@ export default function AttendantTopSpecialCard({ ...props }) {
       </div>
       <div className="airbnb-card-top-sub">
         {props.chip && (
-          <div className="below_">
-            <label for="Register Payment">{"-"}Sell Product</label>
+          <div
+            className="below_"
+            onClick={props.onClickChip}
+            style={{ cursor: "pointer" }}
+          >
+            <label style={{ cursor: "pointer" }} for="Register Payment">
+              {"-"}Sell Product
+            </label>
           </div>
         )}
       </div>

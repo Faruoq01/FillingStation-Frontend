@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import Homepage from "./components/LandingPage/Home";
 import Connection from "./screens/Connection";
 import CustomerLPO from "./screens/LPOCustomers";
-import AttendanceModule from "./screens/AttendanceModule";
+import AttendanceModule from "./screens/AttendantModule";
 
 function App() {
   useEffect(() => {
