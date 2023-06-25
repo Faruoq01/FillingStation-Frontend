@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
 import "../../styles/attendant/attendance.scss";
 import CloseIcon from "@mui/icons-material/Close";
@@ -11,7 +11,12 @@ import FormLabel from "@mui/material/FormLabel";
 // import Chart from "react-apexcharts";
 
 const AttendantSellModal = (props) => {
-  const handleClose = () => props.close(false);
+  const [componentsState, setComponentState] = useState(1);
+  const handleClose = () => {
+    setComponentState(1);
+    props.close(false);
+  };
+
   return (
     <Modal
       open={props.open}
@@ -32,20 +37,51 @@ const AttendantSellModal = (props) => {
             <div className="text-image">
               <div className="progress-left">{/* PROGRESS BAR LEFT */}</div>
               <div className="text-area">
-                <span>Receive Order</span>
-                <label>Receive Customers Order</label>
+                {componentsState == 1 ? (
+                  <>
+                    <span>Receive Order</span>
+                    <label>Receive Customers Order</label>
+                  </>
+                ) : componentsState == 2 ? (
+                  <>
+                    <span>Confirm Order</span>
+                    <label>Confirm Customers Order</label>
+                  </>
+                ) : componentsState == 3 ? (
+                  <>
+                    <span>Dispense Order</span>
+                    <label>Dispense Customers Order</label>
+                  </>
+                ) : (
+                  <>
+                    <span>Receive Order</span>
+                    <label>Receive Customers Order</label>
+                  </>
+                )}
               </div>
             </div>
             {/* Component1 */}
-            {/* <Component1 handleClose={handleClose} /> */}
+            {componentsState === 1 && (
+              <Component1
+                setComponentState={setComponentState}
+                handleClose={handleClose}
+              />
+            )}
             {/* Component1 */}
 
             {/* component2 */}
-            {/* <Component2 handleClose={handleClose} /> */}
+            {componentsState === 2 && (
+              <Component2
+                setComponentState={setComponentState}
+                handleClose={handleClose}
+              />
+            )}
             {/* Compont2 close */}
 
             {/* component3 */}
-            <Component3 />
+            {componentsState === 3 && (
+              <Component3 setComponentState={setComponentState} />
+            )}
             {/* Component3 close */}
           </div>
         </div>
@@ -54,7 +90,7 @@ const AttendantSellModal = (props) => {
   );
 };
 
-const Component3 = ({ handleClose, ...props }) => {
+const Component3 = ({ handleClose, setComponentState, ...props }) => {
   const [radioState, setRadioState] = useState(true);
   return (
     <div className="component3">
@@ -119,6 +155,7 @@ const Component3 = ({ handleClose, ...props }) => {
             Cancle
           </Button>
           <Button
+            onClick={() => setComponentState(4)}
             style={{ background: "#1B6602", marginLeft: "1rem" }}
             variant="contained"
           >
@@ -130,7 +167,7 @@ const Component3 = ({ handleClose, ...props }) => {
   );
 };
 
-const Component2 = ({ handleClose, ...props }) => {
+const Component2 = ({ handleClose, setComponentState, ...props }) => {
   return (
     <div className="component2-wraper">
       <div className="profile-details-area">
@@ -195,6 +232,7 @@ const Component2 = ({ handleClose, ...props }) => {
           Cancle
         </Button>
         <Button
+          onClick={() => setComponentState(3)}
           style={{ background: "#1B6602", marginLeft: "1rem" }}
           variant="contained"
         >
@@ -205,7 +243,7 @@ const Component2 = ({ handleClose, ...props }) => {
   );
 };
 
-const Component1 = ({ handleClose, ...props }) => {
+const Component1 = ({ handleClose, setComponentState, ...props }) => {
   return (
     <div className="input-wrapper">
       <CustomInput
@@ -240,6 +278,7 @@ const Component1 = ({ handleClose, ...props }) => {
           Cancle
         </Button>
         <Button
+          onClick={() => setComponentState(2)}
           style={{ background: "#1B6602", marginLeft: "1rem" }}
           variant="contained"
         >
