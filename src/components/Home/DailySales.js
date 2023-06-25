@@ -1066,19 +1066,19 @@ const DailySales = (props) => {
 
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                AGO: {ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo): "0")}
+                                                AGO: {ApproximateDecimal(dailySales.hasOwnProperty("AGO")? Number(dailySales.AGO.total.totalLpo): "0")}
                                             </div>
                                             <div className='item-count'>
-                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount): "0")}
+                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("AGO")?  Number(dailySales.AGO.total.lpoAmount): "0")}
                                             </div>
                                         </div>
 
                                         <div className='row-count'>
                                             <div className='item-count'>
-                                                DPK: {ApproximateDecimal(dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo): "0")} 
+                                                DPK: {ApproximateDecimal(dailySales.hasOwnProperty("DPK")? Number(dailySales.DPK.total.totalLpo): "0")} 
                                             </div>
                                             <div className='item-count'>
-                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount): "0")}
+                                                NGN {ApproximateDecimal(dailySales.hasOwnProperty("DPK")?  Number(dailySales.DPK.total.lpoAmount): "0")}
                                             </div>
                                         </div>
                                     </div>

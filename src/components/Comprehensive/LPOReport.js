@@ -7,6 +7,7 @@ import swal from 'sweetalert';
 import { useState } from 'react';
 import UpdateLPO from '../Modals/DailySales/lpo';
 import ApproximateDecimal from '../common/approx';
+import APIs from '../../services/api';
 
 const LPOReport = () => {
 
@@ -62,7 +63,7 @@ const LPOReport = () => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                DailySalesService.deleteSales({id: data._id, type:'lpo'}).then(data => {
+                APIs.post("/sales/delete/lpo", {id: data._id}).then(data => {
                     getAndAnalyzeDailySales();
                 }).then(()=>{
                     swal("Success", "Record deleted successfully", "success");

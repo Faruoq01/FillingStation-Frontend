@@ -27,6 +27,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { dateRange } from '../../store/actions/dashboard';
+import TankLevels from '../Comprehensive/TankLevels';
 
 const ComprehensiveReport = (props) => {
     const moment = require('moment-timezone');
@@ -371,6 +372,21 @@ const ComprehensiveReport = (props) => {
                     <div className="first_top_layer">
                         <div className="back_layer">
                             <div onClick={() => setCollapsible(8)} className="back_icon">
+                                <img style={{width:'20px', height:'16px'}} src={tank} alt="icon" />
+                            </div>
+                        </div>
+                        <div className="topic_name">Tank Levels After Sale</div>
+                    </div>
+
+                    <div className="first_mid_layer">
+                        {collapsible === 8 && <TankLevels />}
+                    </div>
+                </div>
+
+                <div className="first_layer">
+                    <div className="first_top_layer">
+                        <div className="back_layer">
+                            <div onClick={() => setCollapsible(9)} className="back_icon">
                                 <AssessmentIcon sx={{width:'25px', height:'20px', color:'#fff'}} />
                             </div>
                         </div>
@@ -378,7 +394,7 @@ const ComprehensiveReport = (props) => {
                     </div>
 
                     <div style={{borderLeft:'none'}} className="first_mid_layer">
-                        {collapsible === 8 && <ReportConfirmation />}
+                        {collapsible === 9 && <ReportConfirmation />}
                     </div>
                 </div>
             </div>
@@ -393,20 +409,6 @@ const sales = {
     justifyContent:'flex-end',
     position: 'relative',
     alignItems:'flex-start',
-}
-
-const cover = {
-    position: 'absolute',
-    width:'100px',
-    height: '20px',
-    background:'#054834',
-    fontSize:'12px',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:'5px',
-    left: '0px',
-    color:'#fff'
 }
 
 export default ComprehensiveReport;

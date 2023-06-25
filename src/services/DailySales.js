@@ -25,7 +25,7 @@ const DailySalesService = {
     },
 
     deleteSales: (data) => {
-        return APIs.post('/daily-sales/delete', data)
+        return APIs.post('/sales/delete/pumpUpdate', data)
         .then(({data}) => {
             return data;
         })

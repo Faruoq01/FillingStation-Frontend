@@ -197,6 +197,7 @@ const LPOComponent = (props) => {
         setCam(null);
         setTruckNo("");
         setQuantity("");
+        dispensedPump(null);
     }
 
     const deleteFromList = (index) => {

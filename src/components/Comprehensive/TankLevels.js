@@ -4,14 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import swal from 'sweetalert';
 import DailySalesService from '../../services/DailySales';
 import { bulkReports } from '../../store/actions/dailySales';
+import UpdateDipping from '../Modals/DailySales/Dipping';
 import { useState } from 'react';
-import UpdateReturnToTank from '../Modals/DailySales/returnToTank';
 import ApproximateDecimal from '../common/approx';
 import APIs from '../../services/api';
 
-const ReturnToTank = () => { 
+const TankLevels = () => {
 
-    const {rtVolumes} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const {tankLevels} = useSelector(state => state.dailySalesReducer.bulkReports);
+
     const dispatch = useDispatch();
     const currentDate = useSelector(state => state.dailySalesReducer.currentDate);
     const user = useSelector(state => state.authReducer.user);
@@ -35,21 +36,9 @@ const ReturnToTank = () => {
         return user.permission?.dailySales[e];
     }
 
-    const rate = (data) => {
-        if(data.productType === "PMS") return data.PMSPrice;
-        if(data.productType === "AGO") return data.AGOPrice;
-        if(data.productType === "DPK") return data.DPKPrice;
-    }
-
-    const amount = (data, type) => {
-        if(type === "PMS") return data.PMSPrice*data.rtLitre;
-        if(type === "AGO") return data.AGOPrice*data.rtLitre;
-        if(type === "DPK") return data.DPKPrice*data.rtLitre;
-    }
-
     const updateRecord = (data) => {
-        setOpenEdit(true);
-        setOneRecord(data);
+        // setOpenEdit(true);
+        // setOneRecord(data);
     }
 
     const deleteRecord = (data) => {
@@ -62,7 +51,7 @@ const ReturnToTank = () => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                APIs.post("/sales/delete/rt", {id: data._id}).then(data => {
+                APIs.post("/sales/delete/tankLevels", {id: data._id}).then(data => {
                     getAndAnalyzeDailySales();
                 }).then(()=>{
                     swal("Success", "Record deleted successfully", "success");
@@ -84,70 +73,55 @@ const ReturnToTank = () => {
         });
     }
 
-    const RTRows = ({data}) => {
+    const DippingRow = (props) => {
+
         return(
             <div style={{marginTop:'5px'}} className="product_balance_header">
-                <div style={ins} className="cells">{data.pumpName}</div>
-                <div style={ins} className="cells">{data.tankName}</div>
-                <div style={ins} className="cells">{data.productType}</div>
-                <div style={ins} className="cells">{ApproximateDecimal(data.rtLitre)}</div>
-                <div style={ins} className="cells">{rate(data)}</div>
-                <div style={ins} className="cells">{ApproximateDecimal(amount(data, data.productType))}</div>
-                {getPerm('13') &&
+                <div style={ins} className="cells">{props.index + 1}</div>
+                <div style={ins} className="cells">{props.data.tankName}</div>
+                <div style={ins} className="cells">{props.data.productType}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(Number(props.data.currentLevel))}</div>
+                <div style={ins} className="cells">{ApproximateDecimal(props.data.afterSales)}</div>
+                {getPerm('17') &&
                     <div style={ins} className="cells">
-                        <img onClick={()=>{updateRecord(data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
-                        <img onClick={()=>{deleteRecord(data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
+                        <img onClick={()=>{updateRecord(props.data)}} style={{width:'20px', height:'20px', marginRight:'10px'}} src={edit} alt="icon" />
+                        <img onClick={()=>{deleteRecord(props.data)}} style={{width:'20px', height:'20px'}} src={del} alt="icon" />
                     </div>
                 }
             </div>
         )
     }
 
-    const MobileRTRows = ({data}) => {
+    const MobileDippingRow = ({data}) => {
         return(
             <div className='supply_card'>
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.pumpName}</div>
-                        <div style={label}>Pump Name</div>
+                        <div style={title}>{data.tankName}</div>
+                        <div style={label}>Tank Name</div>
                     </div>
 
                     <div style={{width:'100%'}}>
-                    <div style={title}>{data.tankName}</div>
-                        <div style={label}>Tank Name</div>
+                        <div style={title}>{data.productType}</div>
+                        <div style={label}>Product</div>
                     </div>
                 </div>
     
                 <div style={rows}>
                     <div style={{width:'100%'}}>
-                        <div style={title}>{data.productType}</div>
-                        <div style={label}>Product</div>
+                        <div style={title}>{ApproximateDecimal(Number(data.currentLevel))}</div>
+                        <div style={label}>Previous Level</div>
                     </div>
 
                     <div style={{width:'100%'}}>
-                    <div style={title}>{ApproximateDecimal(data.rtLitre)}</div>
-                        <div style={label}>Litre Qty</div>
+                    <div style={title}>{ApproximateDecimal(data.afterSales)}</div>
+                        <div style={label}>After sale</div>
                     </div>
                 </div>
 
                 <div style={rows}>
-                    <div style={{width:'100%'}}>
-                        <div style={title}>{rate(data)}</div>
-                        <div style={label}>Rate</div>
-                    </div>
-
-                    <div style={{width:'100%'}}>
-                        <div style={title}>{ApproximateDecimal(amount(data, data.productType))}</div>
-                        <div style={label}>Amount</div>
-                    </div>
-                </div>
-
-                <div style={rows}>
-                    <div style={{width:'100%'}}>
-                        <div style={title}></div>
-                        <div style={label}></div>
-                    </div>
+                    <div style={{width:'100%'}}></div>
 
                     <div style={{width:'100%'}}>
                         <div style={title}>
@@ -167,24 +141,23 @@ const ReturnToTank = () => {
 
     return(
         <div style={{width:'100%'}}>
-            <div className="initial_balance_container">
-                {openEdit && <UpdateReturnToTank data={oneRecord} open={openEdit} close={setOpenEdit} />}
+             <div className="initial_balance_container">
+                {openEdit && <UpdateDipping data={oneRecord} open={openEdit} close={setOpenEdit} />}
                 <div className="product_balance_header">
-                    <div className="cells">Pump Name</div>
+                    <div className="cells">S/N</div>
                     <div className="cells">Tank Name</div>
                     <div className="cells">Product</div>
-                    <div className="cells">Quantity</div>
-                    <div className="cells">Rate</div>
-                    <div className="cells">Amount</div>
-                    {getPerm('13') && <div className="cells">Action</div>}
+                    <div className="cells">current Level</div>
+                    <div className="cells">After sales</div>
+                    {getPerm('17') && <div className="cells">Action</div>}
                 </div>
 
                 {
-                    rtVolumes?.length === 0?
-                    <div>No records</div>:
-                    rtVolumes.map((item, index) => {
+                    tankLevels.length === 0?
+                    <div>No records </div>:
+                    tankLevels.map((item, index) => {
                         return(
-                            <RTRows key={index} data={item} />
+                            <DippingRow key={index} data={item} index={index} />
                         )
                     })
                 }
@@ -193,17 +166,17 @@ const ReturnToTank = () => {
             <div className="initial_balance_container_mobile">
                 {/* Supply records */}
                 <div className='mobile_header'>
-                    &nbsp;&nbsp;&nbsp; Return to tank
+                    &nbsp;&nbsp;&nbsp; Dipping
                 </div>
                 <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
                     <div className='sups'>
                         <div className='slide'>
                             {
-                                rtVolumes?.length === 0?
-                                <div>No records</div>:
-                                rtVolumes.map((item, index) => {
+                                tankLevels.length === 0?
+                                <div>No records </div>:
+                                tankLevels.map((item, index) => {
                                     return(
-                                        <MobileRTRows key={index} data={item} />
+                                        <MobileDippingRow key={index} data={item} index={index} />
                                     )
                                 })
                             }
@@ -245,4 +218,4 @@ const label = {
     color:'#07956A'
 }
 
-export default ReturnToTank;
+export default TankLevels;

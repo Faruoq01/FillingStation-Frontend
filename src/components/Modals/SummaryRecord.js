@@ -282,20 +282,20 @@ const SummaryRecord = (props) => {
         }
 
         const payload = [
-            SalesService.pumpUpdate({...settings, label: "sales", sales: records['1']}),
-            SalesService.returnToTank({...settings, label: "rt", rt: records['2']}),
-            SalesService.lpo({...settings, label: "esales", lpo: records['3']}),
-            SalesService.expenses({...settings, label: "expenses", expenses: records['4']}),
-            SalesService.bankPayment({...settings, label: "bankpayments", bankpayments: records['5']}),
-            SalesService.posPayment({...settings, label: "pospayments", pospayments: records['6']}),
-            SalesService.dipping({...settings, label: "dipping", dipping: records['7']}),
-            SalesService.tankLevels({...settings, label: "tankLevels", tankLevels: records['8']}),
-            SalesService.balanceCF({...settings, label: "balanceCF", balanceCF: records['1']}),
+            SalesService.pumpUpdate({...settings, station: oneStationData, sales: records['1']}),
+            SalesService.returnToTank({...settings, station: oneStationData, rt: records['2']}),
+            SalesService.lpo({...settings, station: oneStationData, lpo: records['3']}),
+            SalesService.expenses({...settings, station: oneStationData, expenses: records['4']}),
+            SalesService.bankPayment({...settings, station: oneStationData, bankpayments: records['5']}),
+            SalesService.posPayment({...settings, station: oneStationData, pospayments: records['6']}),
+            SalesService.dipping({...settings, station: oneStationData, dipping: records['7']}),
+            SalesService.tankLevels({...settings, station: oneStationData, tankLevels: records['8']}),
+            SalesService.balanceCF({...settings, station: oneStationData, balanceCF: records['1']}),
         ]
 
         Promise.allSettled(payload)
         .then(results => {
-            console.log(results, "fullfilled");
+            // console.log(results, "fullfilled");
             handleClose();
             history.push('/home/daily-sales')
             swal("Success!", "Record saved successfully!", "success");
@@ -535,7 +535,7 @@ const SummaryRecord = (props) => {
                             />: null
                         }
                     </div>
-                    <Button disabled={stop} sx={{
+                    <Button disabled={loading} sx={{
                         width:'100px', 
                         height:'30px',  
                         background: '#427BBE',

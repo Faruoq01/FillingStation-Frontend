@@ -43,7 +43,8 @@ const initialState = {
         supply: [],
         sales: [],
         expenses: [],
-        dipping: []
+        dipping: [],
+        tankLevels: []
     },
     linkedData: { page: 1 },
     balanceBF: {},
