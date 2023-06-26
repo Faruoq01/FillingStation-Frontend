@@ -28,6 +28,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { dateRange } from '../../store/actions/dashboard';
 import TankLevels from '../Comprehensive/TankLevels';
+import swal from 'sweetalert';
+import SalesService from '../../services/sales';
 
 const ComprehensiveReport = (props) => {
     const moment = require('moment-timezone');
@@ -202,6 +204,41 @@ const ComprehensiveReport = (props) => {
         
     }
 
+    const resetAllRecords = () => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to delete all record?, this will erase all records on the current selected date only.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                
+                SalesService.deleteAllRecords({date: currentDate2.format('YYYY-MM-DD'), station: oneStationData})
+                .then(data => {
+                    refresh();
+                }).then(()=>{
+                    setLoad(false);
+                    swal("Success", "Record deleted successfully", "success");
+                });
+            }
+        });
+    }
+
+    const refresh = () => {
+        const salesPayload = {
+            organisationID: resolveUserID().id,
+            outletID: oneStationData._id,
+            onLoad: currentDate2 === ""? true: false,
+            selectedDate: currentDate2.format('YYYY-MM-DD')
+        }
+
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
+            dispatch(bulkReports(data.dailyRecords));
+        });
+    }
+
     return(
         <div className="comprehensive_container">
             <div className="reportings">
@@ -230,9 +267,28 @@ const ComprehensiveReport = (props) => {
                         sx={{
                             width:'100px',
                             height:'30px',
-                            background:'tomato',
+                            background:'blue',
                             fontSize:'12px',
                             marginLeft:'10px',
+                            marginRight: '10px',
+                            borderRadius:"0px",
+                            textTransform:'capitalize',
+                            '&:hover': {
+                                backgroundColor: 'blue'
+                            }
+                        }}
+                        onClick={resetAllRecords}
+                    >
+                        Reset
+                    </Button>
+
+                    <Button 
+                        variant="contained" 
+                        sx={{
+                            width:'100px',
+                            height:'30px',
+                            background:'tomato',
+                            fontSize:'12px',
                             marginRight: '20px',
                             borderRadius:"0px",
                             textTransform:'capitalize',

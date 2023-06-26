@@ -36,6 +36,10 @@ const SalesService = {
 
     tankLevels: (data) => {
         return APIs.post('/sales/tankLevels', data);
+    },
+
+    deleteAllRecords: (data) => {
+        return APIs.post('/sales/delete/deleteAll', data);
     }
 }
 
