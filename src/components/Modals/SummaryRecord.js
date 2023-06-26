@@ -15,6 +15,7 @@ import SalesMachine from '../../modules/salesMachine';
 import { ThreeDots } from 'react-loader-spinner';
 import DailySalesService from '../../services/DailySales';
 import SalesService from '../../services/sales';
+import { salesStatus } from '../../store/actions/dailySales';
 
 const FuelCard = (props) => {
 
@@ -287,10 +288,9 @@ const SummaryRecord = (props) => {
 
         Promise.allSettled(payload)
         .then(results => {
-            // console.log(results, "fullfilled");
+            dispatch(salesStatus(results));
             handleClose();
-            history.push('/home/daily-sales')
-            swal("Success!", "Record saved successfully!", "success");
+            history.push('/home/daily-sales');
         })
         .catch(error => {
             // Handle any other errors that may occur

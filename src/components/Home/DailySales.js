@@ -34,6 +34,7 @@ import PaymentModal from '../Modals/PaymentModal';
 import PaymentEditModal from '../Modals/PaymentEditModal';
 import AddPayModal from '../Modals/AddPayModal';
 import { updatePayload } from '../../store/actions/records';
+import SalesSuccess from '../Modals/SalesSuccess';
 // const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const DailySales = (props) => {
@@ -61,6 +62,7 @@ const DailySales = (props) => {
     const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
     const currentDate2 = useSelector(state => state.dailySalesReducer.currentDate);
     const [payMe, setPayMe] = useState(false);
+    const salesStatus = useSelector(state => state.dailySalesReducer.salesStatus);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -653,6 +655,7 @@ const DailySales = (props) => {
             { props.activeRoute.split('/').length === 3 &&
                 <div className='daily-sales-container'>
                     {payMe && <AddPayModal open={payMe} close={setPayMe} refresh={getAllProductData} />}
+                    {salesStatus.length > 0 && <SalesSuccess open={salesStatus.length > 0} />}
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
                             <div >
