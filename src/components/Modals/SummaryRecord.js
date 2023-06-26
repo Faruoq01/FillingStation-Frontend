@@ -167,11 +167,7 @@ const ReturnToTank = (props) => {
 }
 
 const SummaryRecord = (props) => {
-    const { Buffer } = require('buffer');
-
     const records = useSelector(state => state.recordsReducer.load);
-    const [machine, setMachine] = useState(null);
-    const [progress, setProgress] = useState('Loading...');
     const [loading, setLoading] = useState(false);
     
     const handleClose = () => props.close(false);
@@ -182,7 +178,6 @@ const SummaryRecord = (props) => {
     const currentDate = useSelector(state => state.recordsReducer.currentDate);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const tankList = useSelector(state => state.outletReducer.tankList);
-    const [stop, setStop] = useState(false);
     console.log(records, "summary")
     // console.log(selectedPumps, "Pumps")
     // console.log(selectedTanks, "Tanks")
@@ -204,8 +199,16 @@ const SummaryRecord = (props) => {
             return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
         }, 0);
 
+        const salesRT = allPumps.reduce((accum, current) => {
+            return Number(accum) + Number(current.RTlitre);
+        }, 0);
+
         const productSales = allProductPumps.reduce((accum, current) => {
             return Number(accum) + Number(current.newTotalizer) - Number(current.totalizerReading);
+        }, 0);
+
+        const productSalesRT = allProductPumps.reduce((accum, current) => {
+            return Number(accum) + Number(current.RTlitre);
         }, 0);
 
         const finalUpdate = {
@@ -213,11 +216,11 @@ const SummaryRecord = (props) => {
             pumps: allPumps,
             totalSales: sales,
             productSales: productSales,
-            afterSales: Number(tank.currentLevel) - sales,
+            afterSales: Number(tank.currentLevel) - sales + salesRT,
             outlet: oneStationData,
             totalTankLevel: totalTankLevel,
             totalTankCapacity: totalTankCapacity,
-            balanceCF: totalTankLevel - productSales,
+            balanceCF: totalTankLevel - productSales + productSalesRT,
         }
 
         return finalUpdate;
@@ -261,17 +264,6 @@ const SummaryRecord = (props) => {
         updateAllTanks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(()=>{
-        const createMachine = new SalesMachine({
-            load: records, 
-            date: currentDate,
-            outletID: oneStationData._id,
-            org: oneStationData.organisation
-        });
-        
-        setMachine(createMachine);
-    }, [currentDate, oneStationData._id, oneStationData.organisation, records])
 
     const saveRecordSales = async() => {
         if(currentDate === null) return swal("Warning!", "Please select date!", "info");
