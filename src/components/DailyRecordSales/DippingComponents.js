@@ -167,7 +167,11 @@ const DippingComponents = (props) => {
                 return Number(accum) + Number(current.sales);
             }, 0);
 
-            const levelAfterSales = Number(item.currentLevel) - totalSales;
+            const totalSalesRT = connectedPumps.reduce((accum, current) => {
+                return Number(accum) + Number(current.RTlitre);
+            }, 0);
+
+            const levelAfterSales = Number(item.currentLevel) - totalSales + totalSalesRT;
             let clonedDPK = {...item};
             clonedDPK = {...clonedDPK, dippingValue: removeSpecialCharacters(e.target.value), afterSales: levelAfterSales};
             const newDPKList = [...dpk]

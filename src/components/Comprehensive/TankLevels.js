@@ -147,7 +147,7 @@ const TankLevels = () => {
                     <div className="cells">S/N</div>
                     <div className="cells">Tank Name</div>
                     <div className="cells">Product</div>
-                    <div className="cells">current Level</div>
+                    <div className="cells">Before sales</div>
                     <div className="cells">After sales</div>
                     {getPerm('17') && <div className="cells">Action</div>}
                 </div>

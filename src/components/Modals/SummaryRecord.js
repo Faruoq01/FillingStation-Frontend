@@ -290,7 +290,8 @@ const SummaryRecord = (props) => {
         .then(results => {
             dispatch(salesStatus(results));
             handleClose();
-            history.push('/home/daily-sales');
+            history.push('/home/daily-sales')
+            swal("Success!", "Record saved successfully!", "success");
         })
         .catch(error => {
             // Handle any other errors that may occur

@@ -80,7 +80,7 @@ const ProductBalance = (props) => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                DailySalesService.deleteSales({record: data, type:'sales'}).then(data => {
+                DailySalesService.deleteSales({record: data, station: oneStationData}).then(data => {
                     getAndAnalyzeDailySales();
                 }).then(()=>{
                     swal("Success", "Record deleted successfully", "success");
