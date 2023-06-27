@@ -482,7 +482,46 @@ const CreateFillingStation = (props) => {
                                 lt={latitude}
                                 ln={longitude}
                             />
-
+                            {/* 'openingHour': req.body.openingHour,
+                        'closingHour': req.body.closingHour,
+                        'startWeekday': req.body.startWeekday,
+                        'endWeekday': req.body.endWeekday, */}
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>Latitude</div>
+                                <div style={flat}>
+                                    <OutlinedInput 
+                                        disabled
+                                        sx={{
+                                            width:'48%',
+                                            height: '35px', 
+                                            marginTop:'5px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="" 
+                                        value={latitude}
+                                    />
+                                    <OutlinedInput 
+                                        disabled
+                                        sx={{
+                                            width:'48%',
+                                            height: '35px', 
+                                            marginTop:'5px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="" 
+                                        value={latitude}
+                                    />
+                                </div>
+                            </div>
+                            
                             <Button sx={{
                                 width:'100%', 
                                 height:'35px',  
@@ -550,6 +589,11 @@ const CreateFillingStation = (props) => {
                 </div>
         </Modal>
     )
+}
+
+const flat = {
+    display: 'flex',
+    flexDirection: 'row',
 }
 
 const menu = {
