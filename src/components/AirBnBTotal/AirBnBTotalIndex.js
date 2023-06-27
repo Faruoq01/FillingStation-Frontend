@@ -1,5 +1,5 @@
 import React from "react";
-import "./airbnb.scss";
+import "../../styles/estation/airbnb.scss";
 import AirBnBTopCard from "./AirBnBTopCard";
 import { Doughnut } from "react-chartjs-2";
 import AirBnBTopCardWithSwitch from "./AirBnBTopCardWithSwitch";

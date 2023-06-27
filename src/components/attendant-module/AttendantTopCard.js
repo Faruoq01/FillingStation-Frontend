@@ -1,8 +1,8 @@
 import React from "react";
-import "../../styles/estation/airbnb.scss";
-export default function AirBnBTopCard({ ...props }) {
+import "../../styles/attendant/attendance.scss";
+export default function AttendantTopCard({ ...props }) {
   return (
-    <div className="airbnb-card-top">
+    <div className="attendant-card-top" {...props}>
       <div className="airbnb-card-top-sub">
         <img src={props.icon} alt="walet" />
         <div className="txt-wrap">

@@ -1,5 +1,5 @@
 import React from "react";
-import "./airbnb.scss";
+import "../../styles/estation/airbnb.scss";
 import { Circle } from "@mui/icons-material";
 
 export default function AirbnbTable() {
