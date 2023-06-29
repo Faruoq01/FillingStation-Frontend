@@ -329,7 +329,7 @@ const Expenses = () => {
                             <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                    <div style={{width: mediaMatch.matches? '100%': 'auto'}} className='input-cont2'>
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '100px', 
                             height:'30px',  
@@ -338,11 +338,28 @@ const Expenses = () => {
                             fontSize:'10px',
                             display: mediaMatch.matches && 'none',
                             marginTop: mediaMatch.matches? '10px': '0px',
+                            marginRight: '10px',
                             '&:hover': {
                                 backgroundColor: '#58A0DF'
                             }
                             }}  variant="contained"> History
                         </Button>
+                        {/* <Button sx={{
+                            width: mediaMatch.matches? '100%': '120px', 
+                            height:'30px',  
+                            background: 'green',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            marginRight: '10px',
+                            '&:hover': {
+                                backgroundColor: 'green'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Add Expenses
+                        </Button> */}
                         <Button sx={{
                             width: mediaMatch.matches? '100%': '80px', 
                             height:'30px',  

@@ -4,11 +4,21 @@ import ApproximateDecimal from '../common/approx';
 
 const InitialBalance = () => {
 
-    const {balances, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
+    const {balances, supply, sales} = useSelector(state => state.dailySalesReducer.bulkReports);
     
     const getInit = (props) => {
+        let initialBalance = 0;
         const current = props.type === "PMS"? balances?.pms: props.type === "AGO"? balances?.ago: balances?.dpk;
-        
+        const salesDayOne = sales.filter(data => data.productType === props.type);
+
+        const totalSales  = salesDayOne.reduce((accum, current) => {
+            return Number(accum) + Number(current.sales);
+        }, 0);
+
+        if(salesDayOne.length > 0){
+            initialBalance = Number(salesDayOne[0].balanceCF) + totalSales;
+        }
+
         const quantity = supply.filter(data => data.productType === props.type).reduce((accum, current) => {
             return Number(accum) + Number(current.quantity);
         }, 0);
@@ -29,7 +39,7 @@ const InitialBalance = () => {
             }
         }, 0);
 
-        return {quantity: quantity, shortage: shortage, overage: overage, balance: current === 0? "0": Number(current?.balanceCF)};
+        return {quantity: quantity, shortage: shortage, overage: overage, balance: current === 0? initialBalance: Number(current?.balanceCF)};
     }
 
     const InitialRows = (props) => {
