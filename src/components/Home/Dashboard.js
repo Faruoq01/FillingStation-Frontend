@@ -123,6 +123,11 @@ const Dashboard = (props) => {
     const [defaultState, setDefault] = useState(0);
     const [load, setLoad] = useState(false);
     const [product, setProduct] = useState('PMS');
+    const [topStationsList, setTopStationsList] = useState({
+        topPMS: [],
+        topAGO: [],
+        topDPK: []
+    })
     const [productState, setProductState] = useState(0);
     // const [value, setValue] = React.useState([new Date(), new Date()]);
     const updatedDate = useSelector(state => state.dashboardReducer.dateRange);
@@ -144,134 +149,9 @@ const Dashboard = (props) => {
     }
 
     const getTopStations = () => {
-
-        const stations = dashboardRecords?.station;
-        const sales = dashboardRecords?.salesList;
-
-        const stationSales = new Map();
-        const stationDetails = new Map();
-        const salesDetails = new Map();
-        const totalBeforeSales = new Map();
-
-        if(stations){
-            for(let station of stations){
-                const filteredCurrentStationSales = sales.filter(data => data.outletID === station._id);
-                stationSales.set(station._id, filteredCurrentStationSales);
-                stationDetails.set(station._id, station);
-            }
-    
-            for(let station of stations){
-                const oneData = stationSales.get(station._id);
-    
-                const pms = oneData.filter(data => data.productType === "PMS").reduce((accum, current) => {
-                    return Number(accum) + Number(current.sales);
-                }, 0);
-    
-                const ago = oneData.filter(data => data.productType === "AGO").reduce((accum, current) => {
-                    return Number(accum) + Number(current.sales);
-                }, 0);
-    
-                const dpk = oneData.filter(data => data.productType === "DPK").reduce((accum, current) => {
-                    return Number(accum) + Number(current.sales);
-                }, 0);
-    
-                const summary = {
-                    pms: pms,
-                    ago: ago,
-                    dpk: dpk
-                }
-    
-                salesDetails.set(station._id, summary);
-
-                //////////////////////////////////////////////////////
-                const pmsBeforeSales = oneData.filter(data => data.productType === "PMS").reduce((accum, current) => {
-                    return Number(accum) + Number(current.beforeSales);
-                }, 0);
-
-                const agoBeforeSales = oneData.filter(data => data.productType === "AGO").reduce((accum, current) => {
-                    return Number(accum) + Number(current.beforeSales);
-                }, 0);
-
-                const dpkBeforeSales = oneData.filter(data => data.productType === "DPK").reduce((accum, current) => {
-                    return Number(accum) + Number(current.beforeSales);
-                }, 0);
-
-                const summary2 = {
-                    pmsBeforeSales: pmsBeforeSales,
-                    agoBeforeSales: agoBeforeSales,
-                    dpkBeforeSales: dpkBeforeSales
-                }
-
-                totalBeforeSales.set(station._id, summary2);
-            }
-    
-            // const totalSales = Array.from(salesDetails.entries());
-
-            // let sortedSales = [];
-
-            // if(product === "PMS"){
-            //     sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-            //         return Number(sales1.pms) - Number(sales2.pms);
-            //     });
-
-            // }else if(product === "AGO"){
-            //     sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-            //         return Number(sales1.ago) - Number(sales2.ago);
-            //     });
-
-            // }else if(product === "DPK"){
-            //     sortedSales = totalSales.sort(([id1, sales1], [id2, sales2]) => {
-            //         return Number(sales1.dpk) - Number(sales2.dpk);
-            //     });
-                
-            // }
-
-            return {
-                first: {
-                    station: {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-                    sales: {pms: 0, ago: 0, dpk: 0},
-                    beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
-                },
-    
-                second: {
-                    station: {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-                    sales: {pms: 0, ago: 0, dpk: 0},
-                    beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
-                }
-            }
-
-            // if(totalSales.length === 0){
-            //     return {
-            //         first: {
-            //             station: {outletName: "Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-            //             sales: {pms: 0, ago: 0, dpk: 0},
-            //             beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
-            //         },
-        
-            //         second: {
-            //             station: {outletName: "Second Top rated station, ", alias: "selling", noOfPumps: 0, noOfTanks: 0},
-            //             sales: {pms: 0, ago: 0, dpk: 0},
-            //             beforeSales: {pmsBeforeSales: 0, agoBeforeSales: 0, dpkBeforeSales: 0}
-            //         }
-            //     }
-            // }
-            // eslint-disable-next-line no-unused-vars
-            // const [first, second, ...tops] = sortedSales.reverse();
-    
-            // return {
-            //     first: {
-            //         station: stationDetails?.get(first[0]),
-            //         sales: first[1],
-            //         beforeSales: totalBeforeSales?.get(first[0])
-            //     },
-    
-            //     second: {
-            //         station: stationDetails?.get(second[0]),
-            //         sales: second[1],
-            //         beforeSales: totalBeforeSales?.get(second[0])
-            //     }
-            // }
-        }
+        if(product === 'PMS') return topStationsList.topPMS;
+        if(product === 'AGO') return topStationsList.topAGO;
+        if(product === 'DPK') return topStationsList.topDPK;
     }
 
     const collectAndAnalyseData = (data) => {
@@ -337,6 +217,7 @@ const Dashboard = (props) => {
                     dispatch(overages(data[1].dipping));
                     dispatch(setSales(data[1].sales));
                     dispatch(supplies(data[1].supply));
+                    setTopStationsList(data[1].topStations);
 
                     // sales record
                     const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -385,6 +266,7 @@ const Dashboard = (props) => {
                 dispatch(overages(data[1].dipping));
                 dispatch(setSales(data[1].sales));
                 dispatch(supplies(data[1].supply));
+                setTopStationsList(data[1].topStations);
 
                 // sales record
                 const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -432,13 +314,14 @@ const Dashboard = (props) => {
             tomorrow: formatTwo
         }
 
-        Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {
+        Promise.all([attendanceData(), salesDataRecord(payload)]).then(data => {console.log(data)
             // employee details
             dispatch(dashEmployees(data[0].employees));
             collectAndAnalyseData(data[0]);
             dispatch(overages(data[1].dipping));
             dispatch(setSales(data[1].sales));
             dispatch(supplies(data[1].supply));
+            setTopStationsList(data[1].topStations);
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -629,7 +512,7 @@ const Dashboard = (props) => {
         return details;
     }
 
-    const onChangeRange = (date) => {console.log(date, "hello")
+    const onChangeRange = (date) => {
         setLoad(true);
 
         const formatOne = moment(new Date(date[0])).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
@@ -650,6 +533,7 @@ const Dashboard = (props) => {
             dispatch(overages(data[1].dipping));
             dispatch(setSales(data[1].sales));
             dispatch(supplies(data[1].supply));
+            setTopStationsList(data[1].topStations);
 
             // sales details
             const evaluatedDashboard = collectAndEvaluateDashboard(data[1]);
@@ -659,11 +543,55 @@ const Dashboard = (props) => {
         });
     }
 
-    const getProgress = (sales, before) => {
-        if(before === 0){
-            return 0
-        }else{
-            return sales/before * 100
+    const getProgress = (item) => {
+        if(product === "PMS"){
+            if(item.pmsSum === 0){
+                return 0
+            }else{
+                return item.pmsSum/(item.pmsLevel + item.pmsSum) * 100
+            }
+        }
+
+        if(product === "AGO"){
+            if(item.agoSum === 0){
+                return 0
+            }else{
+                return item.agoSum/(item.agoLevel + item.agoSum) * 100
+            }
+        }
+
+        if(product === "DPK"){
+            if(item.dpkSum === 0){
+                return 0
+            }else{
+                return item.dpkSum/(item.dpkLevel + item.dpkSum) * 100
+            }
+        }
+    }
+
+    const getTopStationLevels = (item) => {
+        if(product === "PMS"){
+            if(item.pmsSum === 0){
+                return 0
+            }else{
+                return item.pmsSum
+            }
+        }
+
+        if(product === "AGO"){
+            if(item.agoSum === 0){
+                return 0
+            }else{
+                return item.agoSum
+            }
+        }
+
+        if(product === "DPK"){
+            if(item.dpkSum === 0){
+                return 0
+            }else{
+                return item.dpkSum
+            }
         }
     }
 
@@ -938,91 +866,69 @@ const Dashboard = (props) => {
                                 {load?
                                     <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={300} />:
                                     <>
-                                        <div className='station-content'>
-                                            <div className='inner-stat'>
-                                                <div className='inner-header'>{getTopStations()?.first?.station?.outletName+" "+ getTopStations()?.first?.station?.alias}</div>
-                                                <div className='station-slider'>
-                                                    <div className='slideName'>
-                                                        <div className='pms'>PMS</div>
-                                                        <div style={{width:'100%'}}>
-                                                            <ProgressBar bgColor={"#399A19"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.first?.sales?.pms, getTopStations()?.first?.beforeSales?.pmsBeforeSales)} />
+                                        {
+                                            getTopStations().map((item, index) => {
+                                                return(
+                                                    <div key={index} className='station-content'>
+                                                        <div className='inner-stat'>
+                                                            <div className='inner-header'>{item.name}</div>
+                                                            <div className='station-slider'>
+                                                                <div className='slideName'>
+                                                                    <div className='pms'>PMS</div>
+                                                                    <div style={{width:'100%'}}>
+                                                                        <ProgressBar 
+                                                                            bgColor={"#399A19"} 
+                                                                            isLabelVisible={false} 
+                                                                            height={'8px'} 
+                                                                            className="wrapper" 
+                                                                            completed={getProgress(item)} />
+                                                                    </div>
+                                                                </div>
+                                                                <div className='slideQty'>{approx(getTopStationLevels(item))} Ltr</div>
+                                                            </div>
+                                                            <div className='station-slider'>
+                                                                <div className='slideName'>
+                                                                    <div className='pms'>AGO</div>
+                                                                    <div style={{width:'100%'}}>
+                                                                        <ProgressBar 
+                                                                            bgColor={"#FFA010"} 
+                                                                            isLabelVisible={false} 
+                                                                            height={'8px'} 
+                                                                            className="wrapper" 
+                                                                            completed={getProgress(item)} />
+                                                                    </div>
+                                                                </div>
+                                                                <div className='slideQty'>{approx(getTopStationLevels(item))} Ltr</div>
+                                                            </div>
+                                                            <div className='station-slider'>
+                                                                <div className='slideName'>
+                                                                    <div className='pms'>DPK</div>
+                                                                    <div style={{width:'100%'}}>
+                                                                        <ProgressBar 
+                                                                            bgColor={"#35393E"} 
+                                                                            isLabelVisible={false} 
+                                                                            height={'8px'} 
+                                                                            className="wrapper" 
+                                                                            completed={getProgress(item)} />
+                                                                    </div>
+                                                                </div>
+                                                                <div className='slideQty'>{approx(getTopStationLevels(item))} Ltr</div>
+                                                            </div>
+                                                            <div className='butom'>
+                                                                <div className='pump-cont'>
+                                                                    <div style={{fontSize:'12px'}}>No of Pump</div>
+                                                                    <div className='amount'>{0}</div>
+                                                                </div>
+                                                                <div style={{marginLeft:'20px'}} className='pump-cont'>
+                                                                    <div style={{fontSize:'12px'}}>No of Pump</div>
+                                                                    <div className='amount'>{0}</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div className='slideQty'>{approx(getTopStations()?.first?.sales?.pms)} Ltr</div>
-                                                </div>
-                                                <div className='station-slider'>
-                                                    <div className='slideName'>
-                                                        <div className='pms'>AGO</div>
-                                                        <div style={{width:'100%'}}>
-                                                            <ProgressBar bgColor={"#FFA010"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.first?.sales?.ago, getTopStations()?.first?.beforeSales?.agoBeforeSales)} />
-                                                        </div>
-                                                    </div>
-                                                    <div className='slideQty'>{approx(getTopStations()?.first?.sales?.ago)} Ltr</div>
-                                                </div>
-                                                <div className='station-slider'>
-                                                    <div className='slideName'>
-                                                        <div className='pms'>DPK</div>
-                                                        <div style={{width:'100%'}}>
-                                                            <ProgressBar bgColor={"#35393E"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.first?.sales?.dpk, getTopStations()?.first?.beforeSales?.dpkBeforeSales)} />
-                                                        </div>
-                                                    </div>
-                                                    <div className='slideQty'>{approx(getTopStations()?.first?.sales?.dpk)} Ltr</div>
-                                                </div>
-                                                <div className='butom'>
-                                                    <div className='pump-cont'>
-                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
-                                                        <div className='amount'>{getTopStations()?.first?.station?.noOfPumps}</div>
-                                                    </div>
-                                                    <div style={{marginLeft:'20px'}} className='pump-cont'>
-                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
-                                                        <div className='amount'>{getTopStations()?.first?.station?.noOfTanks}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className='station-content'>
-                                            <div className='inner-stat'>
-                                                <div className='inner-header'>{getTopStations()?.second?.station?.outletName+" "+ getTopStations()?.second?.station?.alias}</div>
-                                                <div className='station-slider'>
-                                                    <div className='slideName'>
-                                                        <div className='pms'>PMS</div>
-                                                        <div style={{width:'100%'}}>
-                                                            <ProgressBar bgColor={"#399A19"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.second?.sales?.pms, getTopStations()?.second?.beforeSales?.pmsBeforeSales)} />
-                                                        </div>
-                                                    </div>
-                                                    <div className='slideQty'>{approx(getTopStations()?.second?.sales?.pms)} Ltr</div>
-                                                </div>
-                                                <div className='station-slider'>
-                                                    <div className='slideName'>
-                                                        <div className='pms'>AGO</div>
-                                                        <div style={{width:'100%'}}>
-                                                            <ProgressBar bgColor={"#FFA010"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.second?.sales?.ago, getTopStations()?.second?.beforeSales?.agoBeforeSales)} />
-                                                        </div>
-                                                    </div>
-                                                    <div className='slideQty'>{approx(getTopStations()?.second?.sales?.ago)} Ltr</div>
-                                                </div>
-                                                <div className='station-slider'>
-                                                    <div className='slideName'>
-                                                        <div className='pms'>DPK</div>
-                                                        <div style={{width:'100%'}}>
-                                                            <ProgressBar bgColor={"#35393E"} isLabelVisible={false} height={'8px'} className="wrapper" completed={getProgress(getTopStations()?.second?.sales?.dpk, getTopStations()?.second?.beforeSales?.dpkBeforeSales)} />
-                                                        </div>
-                                                    </div>
-                                                    <div className='slideQty'>{approx(getTopStations()?.second?.sales?.dpk)} Ltr</div>
-                                                </div>
-                                                <div className='butom'>
-                                                    <div className='pump-cont'>
-                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
-                                                        <div className='amount'>{getTopStations()?.second?.station?.noOfPumps}</div>
-                                                    </div>
-                                                    <div style={{marginLeft:'20px'}} className='pump-cont'>
-                                                        <div style={{fontSize:'12px'}}>No of Pump</div>
-                                                        <div className='amount'>{getTopStations()?.second?.station?.noOfTanks}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                )
+                                            })
+                                        }
                                     </>
                                 }
                             </div>
