@@ -67,8 +67,8 @@ const ProfileImg = ({ onClick, item }) => (
 );
 
 const Footer = ({}) => (
-  <div className="footer-">
-    <div className="inner-footer-">
+  <div style={{ backgroundColor: "transparent" }} className="footer-">
+    <div className="inner-footer-" style={{ backgroundColor: "transparent" }}>
       <Pagginator
         onClickNext={() => {
           alert("prtrt");
