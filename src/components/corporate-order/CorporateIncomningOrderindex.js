@@ -15,6 +15,7 @@ export default function CorporateIncomningOrderindex() {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
+          paddingTop: "1rem",
         }}
       >
         <div style={{ width: "95%", height: "100%" }}>
