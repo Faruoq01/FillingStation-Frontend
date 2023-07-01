@@ -25,7 +25,12 @@ export default function WalletPaymentListIndex({ ...props }) {
   };
   return (
     <Fragment>
-      <div className="individual-sale-container-">
+      <div
+        className="individual-sale-container-"
+        style={{
+          paddingTop: "1rem",
+        }}
+      >
         <div className="tb-inner-payment">
           <div className="wrap-btn-wrap">
             <div className="btn-wrap-">
