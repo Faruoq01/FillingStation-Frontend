@@ -109,7 +109,7 @@ const ProfileImg = ({ onClick, item }) => (
 
 const Footer = ({}) => (
   <div className="footer-">
-    <div className="inner-footer-">
+    <div className="inner-footer-" style={{ backgroundColor: "transparent" }}>
       <div style={{ display: "flex", flexDirection: "row" }}>
         <Button
           style={{
