@@ -13,6 +13,16 @@
     }
 }
 
+.middleDiv{
+    .printContainer{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        margin-top: 10px;
+    }
+}
+
 .middleDiv::-webkit-scrollbar {
     width: 8px; 
 }

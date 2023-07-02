@@ -5,6 +5,9 @@ import { Button } from "@mui/material";
 import SortIcon from "@mui/icons-material/Sort";
 
 export default function Profile({ ...props }) {
+  const openModal = () => {
+    props.modal(true);
+  };
   return (
     <div className="airbnb-card-top">
       <div className="airbnb-card-top-sub">
@@ -15,7 +18,7 @@ export default function Profile({ ...props }) {
         </div>
       </div>
       <div className="airbnb-card-top-sub">
-        <Button sx={paymentButton}>
+        <Button onClick={openModal} sx={paymentButton}>
           <SortIcon sx={size} />
           <div>View Transactions</div>
         </Button>

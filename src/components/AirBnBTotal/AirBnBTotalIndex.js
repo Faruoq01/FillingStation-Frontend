@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../styles/estation/airbnb.scss";
 import AirBnBTopCard from "./AirBnBTopCard";
 import { Doughnut } from "react-chartjs-2";
@@ -7,6 +7,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import SmallCardLeft from "./SmallCardLeft";
 import AirbnbTable from "./AirbnbTable";
 import Profile from "./Profile";
+import Transactions from "../Modals/Transactions";
 const data = {
   labels: ["PMS", "DPK", "AGO"],
   datasets: [
@@ -25,14 +26,19 @@ ChartJS.overrides.doughnut.plugins.legend.labels.usePointStyle = true;
 ChartJS.overrides.doughnut.plugins.legend.labels.pointStyle = "circle";
 
 export default function AirBnBTotalIndex() {
+  const [transactions, setTransactions] = useState(false);
   return (
     <div style={styles.contain}>
+      {transactions && (
+        <Transactions open={transactions} close={setTransactions} />
+      )}
       <div style={styles.inner}>
         <div className="airbnb-top-wrapper">
           <Profile
             name={"Chijoke Peter"}
             position={"Station Manager"}
             icon={require("../../assets/estation/pump (1).svg").default}
+            modal={setTransactions}
           />
           <AirBnBTopCard
             amount={"20,000"}
