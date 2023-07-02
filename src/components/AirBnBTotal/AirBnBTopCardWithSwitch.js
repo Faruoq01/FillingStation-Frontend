@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../../styles/estation/airbnb.scss";
-import { Switch } from "@mui/material";
+import { Button, Switch } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+
 export default function AirBnBTopCardWithSwitch({ ...props }) {
   const [switchState, setSwitchState] = useState(false);
   return (
@@ -10,12 +12,36 @@ export default function AirBnBTopCardWithSwitch({ ...props }) {
         <div className="txt-wrap">
           <span>{switchState ? props.amount : "NGN *******"}</span>
           <div className="switch-txt">
-            <label>Wallet Balance</label>
+            <label>Account Balance</label>
             <Switch onChange={() => setSwitchState(!switchState)} />
           </div>
         </div>
       </div>
-      <div className="airbnb-card-top-sub"></div>
+      <div className="airbnb-card-top-sub">
+        <Button sx={paymentButton}>
+          <AddIcon sx={size} />
+          <div>Register Payment</div>
+        </Button>
+      </div>
     </div>
   );
 }
+
+const size = {
+  width: "20px",
+  height: "20px",
+  marginRight: "5px",
+};
+
+const paymentButton = {
+  width: "150px",
+  height: "35px",
+  background: "#f7f7f7",
+  textTransform: "capitalize",
+  color: "#000",
+  fontSize: "12px",
+  marginTop: "10px",
+  "&:hover": {
+    background: "#f7f7f7",
+  },
+};

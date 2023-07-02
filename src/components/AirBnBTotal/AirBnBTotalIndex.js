@@ -3,11 +3,10 @@ import "../../styles/estation/airbnb.scss";
 import AirBnBTopCard from "./AirBnBTopCard";
 import { Doughnut } from "react-chartjs-2";
 import AirBnBTopCardWithSwitch from "./AirBnBTopCardWithSwitch";
-import DotProduct from "../e-component/right/DotProduct";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import SmallCardLeft from "./SmallCardLeft";
-import { Button } from "@mui/material";
 import AirbnbTable from "./AirbnbTable";
+import Profile from "./Profile";
 const data = {
   labels: ["PMS", "DPK", "AGO"],
   datasets: [
@@ -30,20 +29,16 @@ export default function AirBnBTotalIndex() {
     <div style={styles.contain}>
       <div style={styles.inner}>
         <div className="airbnb-top-wrapper">
-          {Array(2)
-            .fill(0)
-            .map((_, index) => (
-              <AirBnBTopCard
-                amount={index == 1 ? "NGN 12,450.00" : "NGN 20,000.00"}
-                title={index == 1 ? "Total Expenses" : "Account Balance"}
-                icon={
-                  index == 0
-                    ? require("../../assets/estation/wallet.svg").default
-                    : require("../../assets/estation/pump (1).svg").default
-                }
-                chip={index == 0 ?? false}
-              />
-            ))}
+          <Profile
+            name={"Chijoke Peter"}
+            position={"Station Manager"}
+            icon={require("../../assets/estation/pump (1).svg").default}
+          />
+          <AirBnBTopCard
+            amount={"20,000"}
+            title={"Total Expenses"}
+            icon={require("../../assets/estation/pump (1).svg").default}
+          />
           <AirBnBTopCardWithSwitch
             amount="NGN 12, 500.00"
             Enable
@@ -96,16 +91,7 @@ export default function AirBnBTotalIndex() {
             <div className="wraper-right">
               <div className="top-">
                 <label>Expenses</label>
-                <Button
-                  style={{ height: "35px", background: "#EDFFFA" }}
-                  variant="contained"
-                >
-                  <img
-                    style={{ width: 20, height: 20 }}
-                    src={require("../../assets/estation/menu.svg").default}
-                  />
-                  <label style={{ fontSize: 15, marginLeft: 5 }}>View</label>
-                </Button>
+                <div></div>
               </div>
               <AirbnbTable />
             </div>

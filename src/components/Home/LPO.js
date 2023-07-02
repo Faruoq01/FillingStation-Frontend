@@ -87,14 +87,6 @@ const LPO = (props) => {
     getAllLPOData();
   }, [getAllLPOData]);
 
-  const LPOCompanies = () => {
-    setActiveButton(true);
-  };
-
-  const dispensed = () => {
-    setActiveButton(false);
-  };
-
   const refresh = () => {
     setLoading(true);
     const payload = {
@@ -146,7 +138,7 @@ const LPO = (props) => {
   const openLPOSales = (data) => {
     if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
     dispatch(singleLPORecord(data));
-    props.history.push("/home/lpo/list");
+    props.history.push("/home/estation/airbnb");
   };
 
   const createPrice = (data) => {
@@ -166,10 +158,6 @@ const LPO = (props) => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
     dispatch(singleLPORecord(data));
     setPriceModal(true);
-  };
-
-  const openLPOCompany = () => {
-    history.push("/home/lpo/company");
   };
 
   const goToHistory = () => {
@@ -211,8 +199,7 @@ const LPO = (props) => {
                     ...selectStyle2,
                     backgroundColor: "#06805B",
                     color: "#fff",
-                  }}
-                >
+                  }}>
                   <MenuItem value={10}>Action</MenuItem>
                   <MenuItem onClick={openModal} value={20}>
                     Register LPO
@@ -259,8 +246,7 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={openModal}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   Register LPO
                 </Button>
@@ -269,7 +255,7 @@ const LPO = (props) => {
 
             <div style={{ marginTop: "20px" }} className="search2">
               <div className="lpo-butt">
-                <Button
+                {/* <Button
                   sx={{
                     width: "120px",
                     height: "30px",
@@ -305,15 +291,14 @@ const LPO = (props) => {
                 >
                   {" "}
                   LPO Companies
-                </Button>
+                </Button> */}
               </div>
               <div
                 style={{
                   width: mediaMatch.matches ? "100%" : "330px",
                   alignItems: "center",
                 }}
-                className="input-cont2"
-              >
+                className="input-cont2">
                 <Select
                   labelId="demo-select-small"
                   id="demo-select-small"
@@ -323,8 +308,7 @@ const LPO = (props) => {
                     width: "130px",
                     height: "32px",
                     display: mediaMatch.matches && "none",
-                  }}
-                >
+                  }}>
                   <MenuItem style={menu} value={10}>
                     Show entries
                   </MenuItem>
@@ -333,8 +317,7 @@ const LPO = (props) => {
                       entriesMenu(20, 15);
                     }}
                     style={menu}
-                    value={20}
-                  >
+                    value={20}>
                     15 entries
                   </MenuItem>
                   <MenuItem
@@ -342,8 +325,7 @@ const LPO = (props) => {
                       entriesMenu(30, 30);
                     }}
                     style={menu}
-                    value={30}
-                  >
+                    value={30}>
                     30 entries
                   </MenuItem>
                   <MenuItem
@@ -351,8 +333,7 @@ const LPO = (props) => {
                       entriesMenu(40, 100);
                     }}
                     style={menu}
-                    value={40}
-                  >
+                    value={40}>
                     100 entries
                   </MenuItem>
                 </Select>
@@ -370,8 +351,7 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={goToHistory}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   History
                 </Button>
@@ -389,15 +369,186 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={printReport}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   Print
                 </Button>
               </div>
             </div>
 
-            {!activeButton ? (
+            {mobile.matches ? (
+              !loading ? (
+                lpos.length === 0 ? (
+                  <div style={place}>No data</div>
+                ) : (
+                  lpos.map((item, index) => {
+                    return (
+                      <div key={index} className="mobile-table-container">
+                        <div className="inner-container">
+                          <div className="row">
+                            <div className="left-text">
+                              <div className="heads">{item.companyName}</div>
+                              <div className="foots">Company Name</div>
+                            </div>
+                            <div className="right-text">
+                              <div className="heads">
+                                {item.personOfContact}
+                              </div>
+                              <div className="foots">Person of Contact</div>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="left-text">
+                              <div className="heads">{item.initialBalance}</div>
+                              <div className="foots">Initial Balance</div>
+                            </div>
+                            <div className="right-text">
+                              <div className="heads">{item.currentBalance}</div>
+                              <div className="foots">Current Balance</div>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="left-text">
+                              {/* <div className="heads">{item.currentDPK}</div>
+                              <div className="foots">DPK Dispensed</div> */}
+                            </div>
+                            <div className="right-text">
+                              <div className="column">
+                                <img
+                                  onClick={() => {
+                                    openLPOSales(item);
+                                  }}
+                                  style={{ width: "28px", height: "28px" }}
+                                  src={eyes}
+                                  alt="icon"
+                                />
+                                <img
+                                  onClick={() => {
+                                    createPrice(item);
+                                  }}
+                                  style={{
+                                    width: "28px",
+                                    height: "28px",
+                                    marginLeft: "10px",
+                                  }}
+                                  src={edit2}
+                                  alt="icon"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )
+              ) : (
+                <div style={load}>
+                  <ThreeDots
+                    height="60"
+                    width="50"
+                    radius="9"
+                    color="#076146"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClassName=""
+                    visible={true}
+                  />
+                </div>
+              )
+            ) : (
+              <div style={{ marginTop: "10px" }} className="table-container">
+                <div className="table-head">
+                  <div className="column">S/N</div>
+                  <div className="column">Company Name</div>
+                  <div className="column">Address</div>
+                  <div className="column">Person of Contact</div>
+                  <div className="column">Initial Balance</div>
+                  <div className="column">Credit Balance</div>
+                  <div className="column">Payment Structure</div>
+                  <div className="column">Actions</div>
+                </div>
+
+                <div className="row-container">
+                  {!loading ? (
+                    lpos.length === 0 ? (
+                      <div style={place}>No LPO Data </div>
+                    ) : (
+                      lpos.map((data, index) => {
+                        return (
+                          <div className="table-head2">
+                            <div className="column">{index + 1}</div>
+                            <div className="column">{data.companyName}</div>
+                            <div className="column">{data.address}</div>
+                            <div className="column">{data.personOfContact}</div>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                              }}
+                              className="column">
+                              {data.initialBalance}
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                              }}
+                              className="column">
+                              {data.currentBalance}
+                            </div>
+                            <div className="column">
+                              {data.paymentStructure}
+                            </div>
+                            <div className="column">
+                              <img
+                                onClick={() => {
+                                  openLPOSales(data);
+                                }}
+                                style={{ width: "28px", height: "28px" }}
+                                src={eyes}
+                                alt="icon"
+                              />
+                              <img
+                                onClick={() => {
+                                  createPrice(data);
+                                }}
+                                style={{
+                                  width: "28px",
+                                  height: "28px",
+                                  marginLeft: "10px",
+                                }}
+                                src={edit2}
+                                alt="icon"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    )
+                  ) : (
+                    <div style={load}>
+                      <ThreeDots
+                        height="60"
+                        width="50"
+                        radius="9"
+                        color="#076146"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* {!activeButton ? (
               mobile.matches ? (
                 !loading ? (
                   lpos.length === 0 ? (
@@ -514,12 +665,10 @@ const LPO = (props) => {
                                   flexDirection: "column",
                                   alignItems: "center",
                                 }}
-                                className="column"
-                              >
+                                className="column">
                                 {data.currentPMS}
                                 <span
-                                  style={{ color: "green", fontSize: "12px" }}
-                                >
+                                  style={{ color: "green", fontSize: "12px" }}>
                                   {data.PMSRate === "pending"
                                     ? "N 0. 000"
                                     : "NGN " +
@@ -535,12 +684,10 @@ const LPO = (props) => {
                                   flexDirection: "column",
                                   alignItems: "center",
                                 }}
-                                className="column"
-                              >
+                                className="column">
                                 {data.currentAGO}
                                 <span
-                                  style={{ color: "green", fontSize: "12px" }}
-                                >
+                                  style={{ color: "green", fontSize: "12px" }}>
                                   {data.AGORate === "pending"
                                     ? "N 0. 000"
                                     : "NGN " +
@@ -556,12 +703,10 @@ const LPO = (props) => {
                                   flexDirection: "column",
                                   alignItems: "center",
                                 }}
-                                className="column"
-                              >
+                                className="column">
                                 {data.currentDPK}
                                 <span
-                                  style={{ color: "green", fontSize: "12px" }}
-                                >
+                                  style={{ color: "green", fontSize: "12px" }}>
                                   {data.DPKRate === "pending"
                                     ? "N 0. 000"
                                     : "NGN " +
@@ -752,7 +897,7 @@ const LPO = (props) => {
                   )}
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className="footer">
               <div style={{ fontSize: "12px" }}>

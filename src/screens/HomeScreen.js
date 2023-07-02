@@ -258,7 +258,7 @@ const HomeScreen = () => {
       "/home/estation/individual/customer": "Individual Customer",
       "/home/estation/orders": "Incoming Order",
       "/home/estation/orders/incoming-individual": "Individual Incoming Order",
-      "/home/estation/airbnb": "Air BnB Total ",
+      "/home/estation/airbnb": "Corporate Customer ",
       "/home/estation/orders/incoming-corporate": "Corporate Incoming Order",
       "/home/estation/payments": "Payments",
       "/home/dashEmp": "← Employee List",
@@ -315,8 +315,7 @@ const HomeScreen = () => {
             setNames(props.name);
           }}
           style={{ marginTop: props.marginT }}
-          className="item-container"
-        >
+          className="item-container">
           {activeRoute.split("/")[2] === props.link.split("/")[2] ? (
             <div className="side-item">
               <div className="side-focus">
@@ -338,8 +337,7 @@ const HomeScreen = () => {
                     alt="icon"
                   />
                   <div
-                    style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}
-                  >
+                    style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}>
                     {props.name}
                   </div>
                 </div>
@@ -520,8 +518,7 @@ const HomeScreen = () => {
             flexDirection: "row",
             justifyContent: "flex-end",
           }}
-          className="side-bar"
-        >
+          className="side-bar">
           <div style={{ width: "90%" }} className="inner-side-bar">
             <img
               onClick={goToEsales}
@@ -628,13 +625,11 @@ const HomeScreen = () => {
 
       <div
         style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
-        className="main-content"
-      >
+        className="main-content">
         <div className="mobile-bar">
           <AppBar
             sx={{ background: "#06805B", zIndex: "50" }}
-            position="absolute"
-          >
+            position="absolute">
             <Toolbar>
               <IconButton
                 size="large"
@@ -642,8 +637,7 @@ const HomeScreen = () => {
                 color="inherit"
                 aria-label="menu"
                 sx={{ mr: 2 }}
-                onClick={toggleDrawer}
-              >
+                onClick={toggleDrawer}>
                 <MenuIcon />
               </IconButton>
               <span style={roots}>{name}</span>
@@ -653,8 +647,7 @@ const HomeScreen = () => {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
-                  sx={{ marginRight: "0px" }}
-                >
+                  sx={{ marginRight: "0px" }}>
                   <img
                     style={{ width: "35px", height: "35px" }}
                     src={search}
@@ -667,8 +660,7 @@ const HomeScreen = () => {
                   color="inherit"
                   aria-label="menu"
                   sx={{ marginRight: "0px" }}
-                  onClick={openTheRightDrawer}
-                >
+                  onClick={openTheRightDrawer}>
                   {user.noteCount === "0" || (
                     <Badge badgeContent={user.noteCount} color="error">
                       <img
@@ -692,8 +684,7 @@ const HomeScreen = () => {
                   color="inherit"
                   aria-label="menu"
                   sx={{ marginRight: "0px" }}
-                  onClick={switchDarkMode}
-                >
+                  onClick={switchDarkMode}>
                   <img
                     style={{ width: "35px", height: "35px" }}
                     src={user.isDark ? dark : switchT}
@@ -707,8 +698,7 @@ const HomeScreen = () => {
         <div className="top-bar-menu">
           <div
             style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}
-            className="left-lobe"
-          >
+            className="left-lobe">
             {(activeRoute.split("/").length === 4 ||
               activeRoute.split("/").length >= 5) && (
               <img
@@ -721,8 +711,7 @@ const HomeScreen = () => {
             <span
               onClick={() => {
                 navigateBack(name);
-              }}
-            >
+              }}>
               {name?.concat(" ")}{" "}
               {name === "Human Resources" ? "" : getStationDetails()}
             </span>
@@ -782,8 +771,7 @@ const HomeScreen = () => {
               color="inherit"
               aria-label="menu"
               sx={{ marginRight: "0px" }}
-              onClick={openTheRightDrawer}
-            >
+              onClick={openTheRightDrawer}>
               {user.noteCount === "0" || (
                 <Badge badgeContent={user.noteCount} color="error">
                   <img
@@ -807,8 +795,7 @@ const HomeScreen = () => {
               color="inherit"
               aria-label="menu"
               sx={{ marginRight: "0px" }}
-              onClick={switchDarkMode}
-            >
+              onClick={switchDarkMode}>
               <img
                 style={{ width: "35px", height: "35px" }}
                 src={user.isDark ? dark : switchT}
@@ -907,27 +894,27 @@ const inner = {
   alignItems: "center",
 };
 
-const prices = {
-  width: '100%',
-  height:'100%',
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-}
+// const prices = {
+//   width: "100%",
+//   height: "100%",
+//   display: "flex",
+//   flexDirection: "row",
+//   alignItems: "center",
+//   justifyContent: "center",
+// };
 
-const products = {
-  display: 'flex',
-  flexDirection: 'row'
-}
+// const products = {
+//   display: "flex",
+//   flexDirection: "row",
+// };
 
-const main = {
-  marginRight: '15px',
-  fontFamily: 'Poppins',
-  fontSize: '12px',
-  fontWeight: 'bold',
-  display: 'flex',
-  flexDirection: 'row'
-}
+// const main = {
+//   marginRight: "15px",
+//   fontFamily: "Poppins",
+//   fontSize: "12px",
+//   fontWeight: "bold",
+//   display: "flex",
+//   flexDirection: "row",
+// };
 
 export default withRouter(HomeScreen);
