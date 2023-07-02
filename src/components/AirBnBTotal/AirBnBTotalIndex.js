@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/estation/airbnb.scss";
 import AirBnBTopCard from "./AirBnBTopCard";
 import { Doughnut } from "react-chartjs-2";
@@ -8,6 +8,9 @@ import SmallCardLeft from "./SmallCardLeft";
 import AirbnbTable from "./AirbnbTable";
 import Profile from "./Profile";
 import Transactions from "../Modals/Transactions";
+import CreditBalance from "../Modals/CreditLPO";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useSelector } from "react-redux";
 const data = {
   labels: ["PMS", "DPK", "AGO"],
   datasets: [
@@ -27,11 +30,24 @@ ChartJS.overrides.doughnut.plugins.legend.labels.pointStyle = "circle";
 
 export default function AirBnBTotalIndex() {
   const [transactions, setTransactions] = useState(false);
+  const [credit, setCredit] = useState(false);
+  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const history = useHistory();
+
+  useEffect(() => {
+    return () => {
+      if (typeof singleLPO._id === "undefined") {
+        history.push("/home/lpo");
+      }
+    };
+  });
+
   return (
     <div style={styles.contain}>
       {transactions && (
         <Transactions open={transactions} close={setTransactions} />
       )}
+      {credit && <CreditBalance open={credit} close={setCredit} />}
       <div style={styles.inner}>
         <div className="airbnb-top-wrapper">
           <Profile
@@ -50,6 +66,7 @@ export default function AirBnBTotalIndex() {
             Enable
             Credit
             Facility
+            modal={setCredit}
             icon={require("../../assets/estation/enable.svg").default}
           />
         </div>

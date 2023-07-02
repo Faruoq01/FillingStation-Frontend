@@ -18,7 +18,6 @@ import LPOReport from "../Reports/LpoReport";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import CompanyLPO from "../LPO/company";
-import LPORateAndEditOptions from "../Modals/LPOEditOptions";
 import LPOEditOptions from "../Modals/LPOEditOptions";
 import LPOModalEdit from "../Modals/LPOModalEdit";
 
@@ -35,14 +34,13 @@ const LPO = (props) => {
   const oneStationData = useSelector(
     (state) => state.outletReducer.adminOutlet
   );
-  const [activeButton, setActiveButton] = useState(false);
+  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
   const [total, setTotal] = useState(0);
   const [prints, setPrints] = useState(false);
   const [priceModal, setPriceModal] = useState(false);
-  const [editProductModal, setEditProductModal] = useState(false);
   const [editOptionModal, setEditOptionsModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -400,19 +398,8 @@ const LPO = (props) => {
 
                           <div className="row">
                             <div className="left-text">
-                              <div className="heads">{item.initialBalance}</div>
-                              <div className="foots">Initial Balance</div>
-                            </div>
-                            <div className="right-text">
                               <div className="heads">{item.currentBalance}</div>
                               <div className="foots">Current Balance</div>
-                            </div>
-                          </div>
-
-                          <div className="row">
-                            <div className="left-text">
-                              {/* <div className="heads">{item.currentDPK}</div>
-                              <div className="foots">DPK Dispensed</div> */}
                             </div>
                             <div className="right-text">
                               <div className="column">
@@ -465,8 +452,7 @@ const LPO = (props) => {
                   <div className="column">Company Name</div>
                   <div className="column">Address</div>
                   <div className="column">Person of Contact</div>
-                  <div className="column">Initial Balance</div>
-                  <div className="column">Credit Balance</div>
+                  <div className="column">Current Balance</div>
                   <div className="column">Payment Structure</div>
                   <div className="column">Actions</div>
                 </div>
@@ -483,15 +469,6 @@ const LPO = (props) => {
                             <div className="column">{data.companyName}</div>
                             <div className="column">{data.address}</div>
                             <div className="column">{data.personOfContact}</div>
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                              }}
-                              className="column">
-                              {data.initialBalance}
-                            </div>
                             <div
                               style={{
                                 display: "flex",

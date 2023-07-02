@@ -5,6 +5,10 @@ import AddIcon from "@mui/icons-material/Add";
 
 export default function AirBnBTopCardWithSwitch({ ...props }) {
   const [switchState, setSwitchState] = useState(false);
+
+  const openCreditModal = () => {
+    props.modal(true);
+  };
   return (
     <div className="airbnb-card-top">
       <div className="airbnb-card-top-sub">
@@ -18,7 +22,7 @@ export default function AirBnBTopCardWithSwitch({ ...props }) {
         </div>
       </div>
       <div className="airbnb-card-top-sub">
-        <Button sx={paymentButton}>
+        <Button onClick={openCreditModal} sx={paymentButton}>
           <AddIcon sx={size} />
           <div>Register Payment</div>
         </Button>

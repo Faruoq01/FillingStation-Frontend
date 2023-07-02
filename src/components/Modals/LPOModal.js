@@ -17,7 +17,6 @@ const LPOModal = (props) => {
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
   const [personOfContact, setPersonOfContact] = useState("");
-  const [initialBalance, setInitialBalance] = useState("");
   const [currentBalance, setCurrentBalance] = useState("");
   const [PMSRate, setPMSRate] = useState("");
   const [AGORate, setAGORate] = useState("");
@@ -46,8 +45,6 @@ const LPOModal = (props) => {
       return swal("Warning!", "Address field cannot be empty", "info");
     if (personOfContact === "")
       return swal("Warning!", "Contact field cannot be empty", "info");
-    if (initialBalance === "")
-      return swal("Warning!", "Initial balance field cannot be empty", "info");
     if (currentBalance === "")
       return swal("Warning!", "Current balance field cannot be empty", "info");
     if (PMSRate === "")
@@ -65,7 +62,6 @@ const LPOModal = (props) => {
       address: address,
       personOfContact: personOfContact,
       contactPhone: contactPhone,
-      initialBalance: removeSpecialCharacters(initialBalance),
       currentBalance: removeSpecialCharacters(currentBalance),
       PMSRate: removeSpecialCharacters(PMSRate),
       AGORate: removeSpecialCharacters(AGORate),
@@ -176,25 +172,6 @@ const LPOModal = (props) => {
                 placeholder=""
                 type="text"
                 onChange={(e) => setContactPhone(e.target.value)}
-              />
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Initial Balance</div>
-              <input
-                style={{
-                  width: "96%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  border: "1px solid #777777",
-                  fontSize: "12px",
-                  outline: "none",
-                  paddingLeft: "5px",
-                }}
-                placeholder=""
-                type={"text"}
-                onChange={(e) => setInitialBalance(e.target.value)}
               />
             </div>
 

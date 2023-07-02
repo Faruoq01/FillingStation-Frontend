@@ -8,6 +8,71 @@ import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Stack } from "@mui/material";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+
+const data = [
+  {
+    id: 1,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 2,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 3,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 4,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 5,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 6,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 7,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 8,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 9,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+  {
+    id: 10,
+    credit: "20000",
+    debit: "0",
+    balance: "100000",
+  },
+];
 
 const Transactions = (props) => {
   const date = new Date();
@@ -16,14 +81,7 @@ const Transactions = (props) => {
   const date2 = `${day} ${month} ${year}`;
   const [value, setValue] = React.useState(null);
 
-  const [loading, setLoading] = useState(false);
-  const [employeeName, setEmployeeName] = useState("");
-  const [queryTitle, setQueryTitle] = useState("");
-  const [description, setDescription] = useState("");
-
   const handleClose = () => props.close(false);
-
-  const submit = () => {};
 
   const convertDate = (newValue) => {
     const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
@@ -47,7 +105,9 @@ const Transactions = (props) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div style={{ height: "auto" }} className="modalContainer2">
+      <div
+        style={{ height: "auto", background: "#f7f7f7" }}
+        className="modalContainer2">
         <div style={{ height: "auto", margin: "20px" }} className="inner">
           <div className="head">
             <div className="head-text">All Transactions</div>
@@ -74,39 +134,45 @@ const Transactions = (props) => {
                 </Stack>
               </LocalizationProvider>
             </div>
+
+            <div className="table-credit">
+              <div className="table-credit-head">
+                <div>Date</div>
+                <div>Credit</div>
+                <div>Debit</div>
+                <div>Balance</div>
+              </div>
+
+              {data.length === 0 ? (
+                <div>No records</div>
+              ) : (
+                data.map((item, index) => {
+                  return (
+                    <div
+                      style={{
+                        background: index % 2 === 0 ? "#fff" : "#EAF8F8",
+                      }}
+                      className="table-credit-row">
+                      <div>{index + 1}</div>
+                      <div>{item.credit}</div>
+                      <div>{item.debit}</div>
+                      <div>{item.balance}</div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
 
           <div style={{ marginTop: "10px" }} className="butt">
-            <Button
-              sx={{
-                width: "100px",
-                height: "30px",
-                background: "#427BBE",
-                borderRadius: "3px",
-                fontSize: "10px",
-                marginTop: "0px",
-                "&:hover": {
-                  backgroundColor: "#427BBE",
-                },
-              }}
-              onClick={submit}
-              variant="contained">
-              {" "}
-              Save
-            </Button>
-
-            {loading ? (
-              <ThreeDots
-                height="60"
-                width="50"
-                radius="9"
-                color="#076146"
-                ariaLabel="three-dots-loading"
-                wrapperStyle={{}}
-                wrapperClassName=""
-                visible={true}
-              />
-            ) : null}
+            <div className="nav__">
+              <ChevronLeftIcon />
+              <div>Prev</div>
+            </div>
+            <div className="nav__">
+              <div>Next</div>
+              <KeyboardArrowRightIcon />
+            </div>
           </div>
         </div>
       </div>
@@ -116,7 +182,7 @@ const Transactions = (props) => {
 
 const inner = {
   width: "100%",
-  height: "340px",
+  height: "500px",
 };
 
 const print = {
