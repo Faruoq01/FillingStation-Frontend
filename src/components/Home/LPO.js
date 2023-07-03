@@ -34,7 +34,6 @@ const LPO = (props) => {
   const oneStationData = useSelector(
     (state) => state.outletReducer.adminOutlet
   );
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);

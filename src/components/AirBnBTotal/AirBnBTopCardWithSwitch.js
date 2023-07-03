@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import "../../styles/estation/airbnb.scss";
 import { Button, Switch } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../common/approx";
 
 export default function AirBnBTopCardWithSwitch({ ...props }) {
   const [switchState, setSwitchState] = useState(false);
+  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
 
   const openCreditModal = () => {
     props.modal(true);
@@ -14,7 +17,11 @@ export default function AirBnBTopCardWithSwitch({ ...props }) {
       <div className="airbnb-card-top-sub">
         <img src={props.icon} alt="walet" />
         <div className="txt-wrap">
-          <span>{switchState ? props.amount : "NGN *******"}</span>
+          <span>
+            {switchState
+              ? `NGN ${ApproximateDecimal(singleLPO.currentBalance)}`
+              : `NGN *******`}
+          </span>
           <div className="switch-txt">
             <label>Account Balance</label>
             <Switch onChange={() => setSwitchState(!switchState)} />

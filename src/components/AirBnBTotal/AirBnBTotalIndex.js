@@ -10,19 +10,14 @@ import Profile from "./Profile";
 import Transactions from "../Modals/Transactions";
 import CreditBalance from "../Modals/CreditLPO";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { useSelector } from "react-redux";
-const data = {
-  labels: ["PMS", "DPK", "AGO"],
-  datasets: [
-    {
-      // label: "# of Votes",
-      data: [12, 19, 3],
-      backgroundColor: ["#399A19", "#35393E", "#FFA010"],
-      borderColor: ["#399A19", "#35393E", "#FFA010"],
-      borderWidth: 0.5,
-    },
-  ],
-};
+import { useDispatch, useSelector } from "react-redux";
+import { useCallback } from "react";
+import LPOService from "../../services/lpo";
+import { createLPOSales } from "../../store/actions/lpo";
+import DateRangePicker from "@wojtekmaj/react-daterange-picker";
+import moment from "moment";
+import { dateRange } from "../../store/actions/dashboard";
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
 ChartJS.overrides.doughnut.plugins.legend.labels.usePointStyle = true;
@@ -32,15 +27,95 @@ export default function AirBnBTotalIndex() {
   const [transactions, setTransactions] = useState(false);
   const [credit, setCredit] = useState(false);
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const lpos = useSelector((state) => state.lpoReducer.lpoSales);
   const history = useHistory();
+  const dispatch = useDispatch();
+  const updatedDate = useSelector((state) => state.dashboardReducer.dateRange);
+
+  const getAllLPOData = useCallback(() => {
+    const formatOne = moment(new Date(updatedDate[0]))
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+    const formatTwo = moment(new Date(updatedDate[1]))
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+
+    const payload = {
+      skip: 0,
+      limit: 30,
+      lpoID: singleLPO?._id,
+      organisationID: singleLPO?.organizationID,
+      startDate: formatOne,
+      endDate: formatTwo,
+    };
+
+    LPOService.getAllLPOSales(payload).then((data) => {
+      dispatch(createLPOSales(data.lpo.lpo));
+    });
+  }, [updatedDate, singleLPO?._id, singleLPO?.organizationID, dispatch]);
 
   useEffect(() => {
+    getAllLPOData();
     return () => {
       if (typeof singleLPO._id === "undefined") {
         history.push("/home/lpo");
       }
     };
-  });
+  }, [getAllLPOData, history, singleLPO._id]);
+
+  const onChangeRange = (date) => {
+    const formatOne = moment(new Date(date[0]))
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+    const formatTwo = moment(new Date(date[1]))
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+    dispatch(dateRange([new Date(formatOne), new Date(formatTwo)]));
+
+    const payload = {
+      skip: 0,
+      limit: 30,
+      lpoID: singleLPO?._id,
+      organisationID: singleLPO?.organizationID,
+      startDate: formatOne,
+      endDate: formatTwo,
+    };
+
+    LPOService.getAllLPOSales(payload).then((data) => {
+      dispatch(createLPOSales(data.lpo.lpo));
+    });
+  };
+
+  const PieChartData = () => {
+    const pms = lpos.filter((data) => data.productType === "PMS");
+    const ago = lpos.filter((data) => data.productType === "AGO");
+    const dpk = lpos.filter((data) => data.productType === "DPK");
+
+    const pmsSales = pms.reduce((accum, current) => {
+      return Number(accum) + Number(current.lpoLitre);
+    }, 0);
+
+    const agoSales = ago.reduce((accum, current) => {
+      return Number(accum) + Number(current.lpoLitre);
+    }, 0);
+
+    const dpkSales = dpk.reduce((accum, current) => {
+      return Number(accum) + Number(current.lpoLitre);
+    }, 0);
+
+    return {
+      labels: ["PMS", "DPK", "AGO"],
+      datasets: [
+        {
+          // label: "# of Votes",
+          data: [pmsSales, agoSales, dpkSales],
+          backgroundColor: ["#399A19", "#35393E", "#FFA010"],
+          borderColor: ["#399A19", "#35393E", "#FFA010"],
+          borderWidth: 0.5,
+        },
+      ],
+    };
+  };
 
   return (
     <div style={styles.contain}>
@@ -49,6 +124,9 @@ export default function AirBnBTotalIndex() {
       )}
       {credit && <CreditBalance open={credit} close={setCredit} />}
       <div style={styles.inner}>
+        <div className="range-picker-date">
+          <DateRangePicker onChange={onChangeRange} value={updatedDate} />
+        </div>
         <div className="airbnb-top-wrapper">
           <Profile
             name={"Chijoke Peter"}
@@ -78,7 +156,7 @@ export default function AirBnBTotalIndex() {
               <label>Product Dispensed</label>
               <div className="chart-wrap">
                 <Doughnut
-                  data={data}
+                  data={PieChartData()}
                   options={{
                     responsive: true,
                     maintainAspectRatio: true,
