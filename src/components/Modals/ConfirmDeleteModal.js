@@ -10,7 +10,7 @@ const ConfirmDeleteModal = (props) => {
 
   return (
     <Modal
-      open={true}
+      open={props?.open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
