@@ -10,6 +10,7 @@ import Homepage from "./components/LandingPage/Home";
 import Connection from "./screens/Connection";
 import CustomerLPO from "./screens/LPOCustomers";
 import AttendanceModule from "./screens/AttendantModule";
+import Transactions from "./components/Home/Transactions";
 
 function App() {
   useEffect(() => {
@@ -90,6 +91,7 @@ function App() {
           <Route path="/home/hr/query" component={HomeScreen} />
           <Route path="/home/hr/recruitment" component={HomeScreen} />
           <Route path="/home/hr/attendance" component={HomeScreen} />
+          <Route path="/home/transactions" component={Transactions} />
           <Route path="/login" component={LoginScreen} />
           <Route path="/attendance" component={AttendanceModule} />
           <Route path="/lpo-customers" component={CustomerLPO} />

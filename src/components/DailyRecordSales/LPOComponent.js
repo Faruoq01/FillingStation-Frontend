@@ -225,7 +225,44 @@ const LPOComponent = (props) => {
   }
 
   const updateTankWithLPO = (e) => {
-    setQuantity(removeSpecialCharacters(e.target.value));
+    const tankFromPayload = { ...records };
+    const currentLPOs = tankFromPayload["3"];
+
+    const pmsList = currentLPOs.filter((data) => data.productType === "PMS");
+    const agoList = currentLPOs.filter((data) => data.productType === "AGO");
+    const dpkList = currentLPOs.filter((data) => data.productType === "DPK");
+
+    const pmsTotalLPOs = pmsList.reduce((accum, current) => {
+      return Number(accum) + Number(current.lpoLitre) * Number(current.PMSRate);
+    }, 0);
+    const agoTotalLPOs = agoList.reduce((accum, current) => {
+      return Number(accum) + Number(current.lpoLitre) * Number(current.AGORate);
+    }, 0);
+    const dpkTotalLPOs = dpkList.reduce((accum, current) => {
+      return Number(accum) + Number(current.lpoLitre) * Number(current.DPKRate);
+    }, 0);
+    const currentRate =
+      productType === "PMS"
+        ? Number(removeSpecialCharacters(e.target.value)) *
+          oneStationData.PMSPrice
+        : productType === "AGO"
+        ? Number(removeSpecialCharacters(e.target.value)) *
+          oneStationData.AGOPrice
+        : productType === "DPK"
+        ? Number(removeSpecialCharacters(e.target.value)) *
+          oneStationData.DPKPrice
+        : 0;
+
+    const combinedTotal =
+      pmsTotalLPOs + agoTotalLPOs + dpkTotalLPOs + currentRate;
+    const accountBalance = Number(dispenseLpo.currentBalance);
+
+    if (combinedTotal > accountBalance)
+      return swal(
+        "Warning!",
+        "This account does not have sufficient balance!",
+        "info"
+      );
 
     if (dispensedPump === null) {
       setQuantity("");
@@ -239,6 +276,8 @@ const LPOComponent = (props) => {
       if (tankID === -1) {
         setQuantity("");
         swal("Warning!", "This selected pump has not been used", "info");
+      } else {
+        setQuantity(removeSpecialCharacters(e.target.value));
       }
     }
   };

@@ -3,18 +3,24 @@ import "../../styles/estation/airbnb.scss";
 import { Avatar } from "@mui/material";
 import { Button } from "@mui/material";
 import SortIcon from "@mui/icons-material/Sort";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function Profile({ ...props }) {
+  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const history = useHistory();
+
   const openModal = () => {
-    props.modal(true);
+    history.push("/home/transactions");
   };
+
   return (
     <div className="airbnb-card-top">
       <div className="airbnb-card-top-sub">
         <Avatar />
         <div className="txt-wrap">
-          <span>{props.name}</span>
-          <label>{props.position}</label>
+          <span>{singleLPO.companyName}</span>
+          <label>{singleLPO.personOfContact}</label>
         </div>
       </div>
       <div className="airbnb-card-top-sub">

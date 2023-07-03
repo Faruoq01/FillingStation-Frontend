@@ -74,6 +74,7 @@ import EStation from "../components/Home/e-station/EStation";
 
 import EStationIndividualIncomingOrder from "../components/Home/e-station/EStationIndividualIncomingOrder";
 import AirBnBTotal from "../components/Home/e-station/AirBnBTotal";
+import Transactions from "../components/Home/Transactions";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -264,6 +265,7 @@ const HomeScreen = () => {
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
+      "/home/transactions": "Transaction History",
       "/home/product-orders": "Product Orders",
       "/home/inc-orders": "Incoming Orders",
       "/home/supply": "Supply",
@@ -871,6 +873,9 @@ const HomeScreen = () => {
             </Route>
             <Route path="/home/history">
               <HistoryPage />
+            </Route>
+            <Route path="/home/transactions">
+              <Transactions />
             </Route>
           </Switch>
         </div>
