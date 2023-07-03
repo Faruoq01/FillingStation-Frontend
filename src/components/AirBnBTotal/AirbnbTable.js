@@ -3,10 +3,8 @@ import "../../styles/estation/airbnb.scss";
 import { Circle } from "@mui/icons-material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback } from "react";
 import LPOService from "../../services/lpo";
 import { createLPOSales } from "../../store/actions/lpo";
-import { useEffect } from "react";
 
 export default function AirbnbTable() {
   const [skip, setSkip] = useState(0);
@@ -93,7 +91,7 @@ export default function AirbnbTable() {
                 <td>{getPrice(item)}</td>
                 <td>{getAmount(item)}</td>
                 <td>{item.station}</td>
-                <td>Aina Ojo</td>
+                <td>{item.truckNo}</td>
               </tr>
             ))
           )}

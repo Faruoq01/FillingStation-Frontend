@@ -20,6 +20,7 @@ import { ThreeDots } from "react-loader-spinner";
 import CompanyLPO from "../LPO/company";
 import LPOEditOptions from "../Modals/LPOEditOptions";
 import LPOModalEdit from "../Modals/LPOModalEdit";
+import ApproximateDecimal from "../common/approx";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -475,7 +476,7 @@ const LPO = (props) => {
                                 alignItems: "center",
                               }}
                               className="column">
-                              {data.currentBalance}
+                              {ApproximateDecimal(data.currentBalance)}
                             </div>
                             <div className="column">
                               {data.paymentStructure}

@@ -3,18 +3,8 @@ import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import TankUpdateModal from "../Modals/TankUpdateModal";
-import { useDispatch, useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
-import {
-  adminOutlet,
-  getAllOutletTanks,
-  getAllStations,
-  searchTanks,
-} from "../../store/actions/outlet";
+import { useSelector } from "react-redux";
 import PrintTankUpdate from "../Reports/PrintTankUpdate";
-import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
 import { useHistory } from "react-router-dom";
@@ -22,6 +12,8 @@ import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Stack } from "@mui/material";
+import APIs from "../../services/api";
+import moment from "moment";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -33,16 +25,8 @@ const Transactions = () => {
   const date2 = `${day} ${month} ${year}`;
   const [value, setValue] = React.useState(null);
 
-  const [open, setOpen] = useState(false);
-  const [defaultState, setDefault] = useState(0);
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.user);
   const tankList = useSelector((state) => state.outletReducer.tankList);
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const [tanks] = useState([]);
+  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -50,29 +34,39 @@ const Transactions = () => {
   const [prints, setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const [creditData, setCreditData] = useState([]);
 
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
+  const getAllCreditData = useCallback(() => {
+    setLoading(true);
+    const currentDate = moment().format("YYYY-MM-DD").split()[0];
 
-  const getTankData = useCallback(() => {
-    // setLoading(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const payload = {
+      skip: skip * limit,
+      limit: limit,
+      organizationID: singleLPO?.organizationID,
+      startDate: currentDate,
+    };
+
+    APIs.post("/lpo/allCreditRecord", payload)
+      .then((data) => {
+        setCreditData(data.data.credit.credit);
+        setTotal(data.data.credit.count);
+      })
+      .then(() => {
+        setLoading(false);
+      });
+  }, [limit, singleLPO?.organizationID, skip]);
 
   useEffect(() => {
-    getTankData();
-  }, [getTankData]);
+    getAllCreditData();
+    return () => {
+      if (typeof singleLPO._id === "undefined") {
+        history.push("/home/lpo");
+      }
+    };
+  }, [getAllCreditData, history, singleLPO._id]);
 
   const refresh = () => {
-    // setLoading(true);
-  };
-
-  const changeMenu = (index, item) => {
     // setLoading(true);
   };
 
@@ -113,6 +107,24 @@ const Transactions = () => {
   const updateDate = (newValue) => {
     // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
     setValue(newValue);
+    setLoading(true);
+    const currentDate = newValue.format("YYYY-MM-DD");
+
+    const payload = {
+      skip: skip * limit,
+      limit: limit,
+      organizationID: singleLPO?.organizationID,
+      startDate: currentDate,
+    };
+
+    APIs.post("/lpo/allCreditRecord", payload)
+      .then((data) => {
+        setCreditData(data.data.credit.credit);
+        setTotal(data.data.credit.count);
+      })
+      .then(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -196,10 +208,10 @@ const Transactions = () => {
 
         {mobile.matches ? (
           !loading ? (
-            tankList.length === 0 ? (
+            creditData.length === 0 ? (
               <div style={place}>No data</div>
             ) : (
-              tankList.map((item, index) => {
+              creditData.map((item, index) => {
                 return (
                   <div key={index} className="mobile-table-container">
                     <div className="inner-container">
@@ -258,19 +270,21 @@ const Transactions = () => {
 
             <div className="row-container">
               {!loading ? (
-                tankList.length === 0 ? (
+                creditData.length === 0 ? (
                   <div style={place}>No tank updates</div>
                 ) : (
-                  tankList.map((data, index) => {
+                  creditData.map((data, index) => {
                     return (
                       <div key={index} className="table-head2">
                         <div className="column">{index + 1}</div>
-                        <div className="column">{data.dateUpdated}</div>
-                        <div className="column">{data.tankName}</div>
-                        <div className="column">{data.productType}</div>
-                        <div className="column">{data.station}</div>
+                        <div className="column">{data.createdAt}</div>
+                        <div className="column">{data.credit}</div>
+                        <div className="column">{data.debit}</div>
+                        <div className="column">
+                          {ApproximateDecimal(data.balance)}
+                        </div>
                         <div style={{ width: "130%" }} className="column">
-                          {ApproximateDecimal(data.previousLevel)}
+                          {data.description}
                         </div>
                       </div>
                     );

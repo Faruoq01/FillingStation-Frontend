@@ -194,7 +194,7 @@ const LPOComponent = (props) => {
       tank: tank,
       PMSRate: oneStationData?.PMSPrice,
       AGORate: oneStationData?.AGOPrice,
-      DPKRate: oneStationData?.AGOPrice,
+      DPKRate: oneStationData?.DPKPrice,
       PMSCost: oneStationData?.PMSCost,
       AGOCost: oneStationData?.AGOCost,
       DPKCost: oneStationData?.DPKCost,
