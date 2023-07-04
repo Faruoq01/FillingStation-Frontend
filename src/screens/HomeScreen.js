@@ -265,7 +265,7 @@ const HomeScreen = () => {
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
-      "/home/transactions": "Transaction History",
+      "/home/transactions": "← Transaction History",
       "/home/product-orders": "Product Orders",
       "/home/inc-orders": "Incoming Orders",
       "/home/supply": "Supply",

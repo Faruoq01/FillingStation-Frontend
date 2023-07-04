@@ -374,3 +374,43 @@ font-weight: 500;
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.nav-Table{
+  width: 100%;
+  height: 35px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+
+  .nav-cont{
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+
+    .prev-nav{
+      width: 40px;
+      height: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(211, 240, 231, 0.60);
+      border: 1px solid #000;
+      font-size: 12px;
+    }
+
+    .nums{
+      width: 20px;
+      height: 25px;
+      background: #054834;
+      color: #fff;
+      border: 1px solid #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

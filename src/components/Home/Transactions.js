@@ -64,24 +64,46 @@ const Transactions = () => {
         history.push("/home/lpo");
       }
     };
-  }, [getAllCreditData, history, singleLPO._id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const refresh = () => {
-    // setLoading(true);
+  const refresh = (skip) => {
+    if (skip < 0) return;
+    setLoading(true);
+    const currentDate =
+      value === null
+        ? moment().format("YYYY-MM-DD").split()[0]
+        : value.format("YYYY-MM-DD");
+
+    const payload = {
+      skip: skip * limit,
+      limit: limit,
+      organizationID: singleLPO?.organizationID,
+      startDate: currentDate,
+    };
+
+    APIs.post("/lpo/allCreditRecord", payload)
+      .then((data) => {
+        setCreditData(data.data.credit.credit);
+        setTotal(data.data.credit.count);
+      })
+      .then(() => {
+        setLoading(false);
+      });
   };
 
   const nextPage = () => {
     if (!(skip < 0)) {
       setSkip((prev) => prev + 1);
     }
-    refresh();
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
     if (!(skip <= 0)) {
       setSkip((prev) => prev - 1);
     }
-    refresh();
+    refresh(skip - 1);
   };
 
   const entriesMenu = (value, limit) => {

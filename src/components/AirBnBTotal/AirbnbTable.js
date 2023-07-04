@@ -5,26 +5,35 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LPOService from "../../services/lpo";
 import { createLPOSales } from "../../store/actions/lpo";
+import moment from "moment";
 
 export default function AirbnbTable() {
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(15);
-  const [total, setTotal] = useState(0);
+  const [limit] = useState(15);
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const lpos = useSelector((state) => state.lpoReducer.lpoSales);
+  const updatedDate = useSelector((state) => state.dashboardReducer.dateRange);
   const dispatch = useDispatch();
 
   const refresh = (skip) => {
+    if (skip < 0) return;
+    const formatOne = moment(new Date(updatedDate[0]))
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+    const formatTwo = moment(new Date(updatedDate[1]))
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+
     const payload = {
       skip: skip * limit,
       limit: limit,
       lpoID: singleLPO?._id,
-      outletID: singleLPO?.outletID,
       organisationID: singleLPO?.organizationID,
+      startDate: formatOne,
+      endDate: formatTwo,
     };
 
     LPOService.getAllLPOSales(payload).then((data) => {
-      setTotal(data.lpo.count);
       dispatch(createLPOSales(data.lpo.lpo));
     });
   };
@@ -97,6 +106,17 @@ export default function AirbnbTable() {
           )}
         </tbody>
       </table>
+      <div className="nav-Table">
+        <div className="nav-cont">
+          <div onClick={prevPage} className="prev-nav">
+            Prev
+          </div>
+          <div className="nums">{skip + 1}</div>
+          <div onClick={nextPage} className="prev-nav">
+            Next
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
