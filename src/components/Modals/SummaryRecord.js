@@ -384,14 +384,15 @@ const SummaryRecord = (props) => {
 
     const result = APIs.post("/sales/validateSales", {
       date: currentDate,
+      organizationID: oneStationData.organisation,
+      outletID: oneStationData._id,
     }).then((data) => {
       return data.data;
     });
 
     if (result) {
       handleClose();
-      history.push("/home/daily-sales");
-      swal("Error!", "Record has been saved for this day!", "error");
+      swal("Error!", "Record has been saved for this day already!", "error");
     } else {
       const settings = {
         currentDate: currentDate,
