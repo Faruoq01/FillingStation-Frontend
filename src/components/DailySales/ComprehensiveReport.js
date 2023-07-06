@@ -36,6 +36,7 @@ import { dateRange } from "../../store/actions/dashboard";
 import TankLevels from "../Comprehensive/TankLevels";
 import swal from "sweetalert";
 import SalesService from "../../services/sales";
+import APIs from "../../services/api";
 
 const ComprehensiveReport = (props) => {
   const moment = require("moment-timezone");
@@ -220,19 +221,40 @@ const ComprehensiveReport = (props) => {
       icon: "warning",
       buttons: true,
       dangerMode: true,
-    }).then((willDelete) => {
+    }).then(async (willDelete) => {
       if (willDelete) {
-        SalesService.deleteAllRecords({
-          date: currentDate2.format("YYYY-MM-DD"),
-          station: oneStationData,
-        })
-          .then((data) => {
-            refresh();
+        const getDate =
+          currentDate2 === ""
+            ? moment().format("YYYY-MM-DD").split()[0]
+            : currentDate2.format("YYYY-MM-DD");
+
+        const status = await APIs.post("/sales/delete/checkStatus", {
+          org: resolveUserID().id,
+          outletID: oneStationData._id,
+          date: getDate,
+        }).then((data) => {
+          return data.data.data;
+        });
+
+        if (status) {
+          swal(
+            "Error!",
+            "You can only delete from latest record as balance calculations depends on it!",
+            "error"
+          );
+        } else {
+          SalesService.deleteAllRecords({
+            date: getDate,
+            station: oneStationData,
           })
-          .then(() => {
-            setLoad(false);
-            swal("Success", "Record deleted successfully", "success");
-          });
+            .then((data) => {
+              refresh();
+            })
+            .then(() => {
+              setLoad(false);
+              swal("Success", "Record deleted successfully", "success");
+            });
+        }
       }
     });
   };

@@ -45,6 +45,7 @@ const Transactions = () => {
       limit: limit,
       organizationID: singleLPO?.organizationID,
       startDate: currentDate,
+      lpoID: singleLPO._id,
     };
 
     APIs.post("/lpo/allCreditRecord", payload)
@@ -55,7 +56,7 @@ const Transactions = () => {
       .then(() => {
         setLoading(false);
       });
-  }, [limit, singleLPO?.organizationID, skip]);
+  }, [limit, singleLPO._id, singleLPO?.organizationID, skip]);
 
   useEffect(() => {
     getAllCreditData();
@@ -80,6 +81,7 @@ const Transactions = () => {
       limit: limit,
       organizationID: singleLPO?.organizationID,
       startDate: currentDate,
+      lpoID: singleLPO._id,
     };
 
     APIs.post("/lpo/allCreditRecord", payload)
@@ -137,6 +139,7 @@ const Transactions = () => {
       limit: limit,
       organizationID: singleLPO?.organizationID,
       startDate: currentDate,
+      lpoID: singleLPO._id,
     };
 
     APIs.post("/lpo/allCreditRecord", payload)

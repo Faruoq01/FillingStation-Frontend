@@ -24,7 +24,6 @@ ChartJS.overrides.doughnut.plugins.legend.labels.usePointStyle = true;
 ChartJS.overrides.doughnut.plugins.legend.labels.pointStyle = "circle";
 
 export default function AirBnBTotalIndex() {
-  const [transactions, setTransactions] = useState(false);
   const [credit, setCredit] = useState(false);
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const lpos = useSelector((state) => state.lpoReducer.lpoSales);
@@ -119,9 +118,6 @@ export default function AirBnBTotalIndex() {
 
   return (
     <div style={styles.contain}>
-      {transactions && (
-        <Transactions open={transactions} close={setTransactions} />
-      )}
       {credit && <CreditBalance open={credit} close={setCredit} />}
       <div style={styles.inner}>
         <div className="range-picker-date">
@@ -131,8 +127,8 @@ export default function AirBnBTotalIndex() {
           <Profile
             name={"Chijoke Peter"}
             position={"Station Manager"}
-            icon={require("../../assets/estation/pump (1).svg").default}
-            modal={setTransactions}
+            icon={require("../../assets/estation/enable.svg").default}
+            modal={setCredit}
           />
           <AirBnBTopCard
             amount={"20,000"}
@@ -144,7 +140,6 @@ export default function AirBnBTotalIndex() {
             Enable
             Credit
             Facility
-            modal={setCredit}
             icon={require("../../assets/estation/enable.svg").default}
           />
         </div>

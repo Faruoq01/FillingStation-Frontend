@@ -49,6 +49,7 @@ const LPOComponent = (props) => {
   const [dispensedPump, setDispensedPump] = useState(null);
   const [truckNo, setTruckNo] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [balanceTracker, setBalanceTracker] = useState("");
 
   const getPMSPump = useCallback(() => {
     const newList = [...selectedPumps];
@@ -158,6 +159,25 @@ const LPOComponent = (props) => {
     });
   };
 
+  const getProductDetails = () => {
+    switch (productType) {
+      case "PMS": {
+        return Number(oneStationData.PMSPrice);
+      }
+
+      case "AGO": {
+        return Number(oneStationData.AGOPrice);
+      }
+
+      case "DPK": {
+        return Number(oneStationData.DPKPrice);
+      }
+
+      default: {
+      }
+    }
+  };
+
   const addDetailsToList = () => {
     if (oneStationData === null)
       return swal("Warning!", "please select station", "info");
@@ -182,11 +202,24 @@ const LPOComponent = (props) => {
       (data) => data._id === dispensedPump.hostTank
     )[0];
 
+    let balance = 0;
+    if (balanceTracker === "") {
+      balance =
+        Number(dispenseLpo.currentBalance) -
+        Number(quantity) * getProductDetails();
+      setBalanceTracker(balance);
+    } else {
+      balance = balanceTracker - Number(quantity) * getProductDetails();
+      setBalanceTracker(balance);
+    }
+
     const payload = {
       accountName: dispenseLpo.companyName,
       productType: productType,
       truckNo: truckNo,
       lpoLitre: quantity,
+      balance: balance,
+      debit: Number(quantity) * getProductDetails(),
       camera: cam,
       gallery: gall,
       lpoID: dispenseLpo._id,
@@ -256,13 +289,19 @@ const LPOComponent = (props) => {
     const combinedTotal =
       pmsTotalLPOs + agoTotalLPOs + dpkTotalLPOs + currentRate;
     const accountBalance = Number(dispenseLpo.currentBalance);
+    const creditBalance = Number(dispenseLpo.creditBalance);
 
-    if (combinedTotal > accountBalance)
-      return swal(
-        "Warning!",
-        "This account does not have sufficient balance!",
-        "info"
-      );
+    if (combinedTotal > accountBalance) {
+      if (accountBalance < 0) {
+        if (Math.abs(accountBalance) > creditBalance) {
+          return swal(
+            "Warning!",
+            "This account does not have sufficient balance!",
+            "info"
+          );
+        }
+      }
+    }
 
     if (dispensedPump === null) {
       setQuantity("");

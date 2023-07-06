@@ -18,6 +18,7 @@ const LPOModal = (props) => {
   const [address, setAddress] = useState("");
   const [personOfContact, setPersonOfContact] = useState("");
   const [currentBalance, setCurrentBalance] = useState("");
+  const [creditBalance, setCreditBalance] = useState("");
   const [PMSRate, setPMSRate] = useState("");
   const [AGORate, setAGORate] = useState("");
   const [DPKRate, setDPKRate] = useState("");
@@ -55,6 +56,8 @@ const LPOModal = (props) => {
       return swal("Warning!", "DPK rate field cannot be empty", "info");
     if (contactPhone === "")
       return swal("Warning!", "Contact phone field cannot be empty", "info");
+    if (creditBalance === "")
+      return swal("Warning!", "Credit balance field cannot be empty", "info");
     setLoader(true);
 
     const payload = {
@@ -63,6 +66,7 @@ const LPOModal = (props) => {
       personOfContact: personOfContact,
       contactPhone: contactPhone,
       currentBalance: removeSpecialCharacters(currentBalance),
+      creditBalance: removeSpecialCharacters(creditBalance),
       PMSRate: removeSpecialCharacters(PMSRate),
       AGORate: removeSpecialCharacters(AGORate),
       DPKRate: removeSpecialCharacters(DPKRate),
@@ -191,6 +195,25 @@ const LPOModal = (props) => {
                 placeholder=""
                 type={"text"}
                 onChange={(e) => setCurrentBalance(e.target.value)}
+              />
+            </div>
+
+            <div className="inputs">
+              <div className="head-text2">Credit Balance</div>
+              <input
+                style={{
+                  width: "96%",
+                  height: "35px",
+                  marginTop: "5px",
+                  background: "#EEF2F1",
+                  border: "1px solid #777777",
+                  fontSize: "12px",
+                  outline: "none",
+                  paddingLeft: "5px",
+                }}
+                placeholder=""
+                type={"text"}
+                onChange={(e) => setCreditBalance(e.target.value)}
               />
             </div>
 

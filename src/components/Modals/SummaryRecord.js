@@ -357,18 +357,40 @@ const SummaryRecord = (props) => {
       return update;
     });
 
+    /*############# Creating tank levels ##################*/
     const updatedSet = [...updatedTanks];
     let tankSet = [...tankList];
-
     for (let tank of updatedSet) {
       tankSet = tankSet.filter((data) => data._id !== tank._id);
     }
-
     const updatedTankList = [...updatedSet, ...tankSet];
-
     const tankFromPayload = { ...records };
+
+    /*############# Creating credit balances ###############*/
+    const lpoCopy = [...records["3"]];
+    const debitList = lpoCopy.map((data) => {
+      return {
+        debit: data.debit,
+        lpoID: data.lpoID,
+        quantity: data.lpoLitre,
+        productType: data.productType,
+        org: data.organizationID,
+        truckNo: data.truckNo,
+      };
+    });
+
+    const groupedObject = debitList.reduce((result, item) => {
+      const { lpoID } = item;
+      if (!result[lpoID]) {
+        result[lpoID] = [];
+      }
+      result[lpoID].push(item);
+      return result;
+    }, {});
+
     tankFromPayload["1"] = updatedTanks;
     tankFromPayload["8"] = updatedTankList;
+    tankFromPayload["9"] = groupedObject;
     dispatch(updatePayload(tankFromPayload));
   };
 
@@ -382,12 +404,12 @@ const SummaryRecord = (props) => {
       return swal("Warning!", "Please select date!", "info");
     setLoading(true);
 
-    const result = APIs.post("/sales/validateSales", {
+    const result = await APIs.post("/sales/validateSales", {
       date: currentDate,
       organizationID: oneStationData.organisation,
       outletID: oneStationData._id,
     }).then((data) => {
-      return data.data;
+      return data.data.data;
     });
 
     if (result) {
@@ -437,6 +459,11 @@ const SummaryRecord = (props) => {
           ...settings,
           station: oneStationData,
           tankLevels: records["8"],
+        }),
+        SalesService.creditBalance({
+          ...settings,
+          station: oneStationData,
+          debits: records["9"],
         }),
         SalesService.balanceCF({
           ...settings,
