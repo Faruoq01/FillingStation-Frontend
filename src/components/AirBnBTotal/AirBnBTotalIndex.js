@@ -214,6 +214,6 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    width: "95%",
   },
 };

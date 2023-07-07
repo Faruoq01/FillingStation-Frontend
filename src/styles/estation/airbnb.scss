@@ -7,7 +7,6 @@ $app_green: #054834;
   flex-direction: row;
   width: 96%;
   justify-content: space-between;
-
   // .arbnb-card-top
   .airbnb-card-top{
     padding: 1rem;
@@ -272,9 +271,16 @@ font-weight: 500;
   color: #585858;
   
 }
-@media screen and (max-width:1200px) {
+@media screen and (max-width:1000px) {
+
+  .range-picker-date {
+    background-color: #066348;
+  
+      margin-top: 20rem;
+  
+    }
   .airbnb-top-wrapper {
-    margin-top: 5rem;
+    // margin-top: 5rem;
       flex-direction: column;
       justify-content: center;
       padding: 19px 14px 27px 21px;
@@ -282,7 +288,7 @@ font-weight: 500;
       .airbnb-card-top {
         &:last-child {
           margin-left: 0rem;
-          margin-top: 1rem;
+          // margin-top: 1rem;
           
 
         }
@@ -363,6 +369,7 @@ font-weight: 500;
                 .tb-wraper{
                   overflow-y: scroll;
                 }
+      
 
 }
 
