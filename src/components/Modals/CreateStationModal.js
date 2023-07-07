@@ -22,6 +22,19 @@ import { GoogleApiWrapper } from "google-maps-react";
 import upload from '../../assets/upload.png';
 import axios from 'axios';
 import config from '../../constants';
+import AddIcon from '@mui/icons-material/Add';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { IconButton } from '@mui/material';
+
+const days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+]
 
 const CreateFillingStation = (props) => {
 
@@ -50,6 +63,12 @@ const CreateFillingStation = (props) => {
     const [loadingSpinner, setLoadingSpinner] = useState(false);
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
+    const [openingHour, setOpeningHour] = useState('');
+    const [closingHour, setClosingHour] = useState('');
+    const [startWeekDay, setStartWeekday] = useState(0);
+    const [endWeekday, setEndWeekday] = useState(4);
+    const [amenities, setAmenities] = useState([]);
+    const [phone, setPhone] = useState([]);
 
     const resolveUserID = () => {
         if(user.userType === "superAdmin"){
@@ -74,6 +93,12 @@ const CreateFillingStation = (props) => {
         if(alias === "") return swal("Warning!", "Alias field cannot be empty", "info");
         if(longitude === "") return swal("Warning!", "Longitude field cannot be empty", "info");
         if(latitude === "") return swal("Warning!", "latitude field cannot be empty", "info");
+        if(openingHour === "") return swal("Warning!", "Opening hour field cannot be empty", "info");
+        if(closingHour === "") return swal("Warning!", "Closing hour field cannot be empty", "info");
+        if(startWeekDay === "") return swal("Warning!", "Start week day field cannot be empty", "info");
+        if(endWeekday === "") return swal("Warning!", "End week day field cannot be empty", "info");
+        if(amenities.length === 0) return swal("Warning!", "Amenities field cannot be empty", "info");
+        if(phone.length === 0) return swal("Warning!", "Phone contact field cannot be empty", "info");
         if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
         setLoadingSpinner(true);
 
@@ -93,8 +118,14 @@ const CreateFillingStation = (props) => {
             DPKCost: removeSpecialCharacters(dpkCost),
             DPKPrice: removeSpecialCharacters(dpkPrice),
             organisation: resolveUserID().id,
-            longitude: longitude,
-            latitude: latitude
+            longitude: removeSpecialCharacters(String(longitude)),
+            latitude: removeSpecialCharacters(String(latitude)),
+            openingHour: openingHour,
+            closingHour: closingHour,
+            startWeekday: days[startWeekDay],
+            endWeekday: days[endWeekday],
+            amenities: amenities,
+            phone: phone
         }
         
         await dispatch(createFillingStation(data, setLoadingSpinner));
@@ -155,6 +186,36 @@ const CreateFillingStation = (props) => {
         });
     }
 
+    const createAmenities = () => {
+        setAmenities(prev => [...prev, {name: ""}]);
+    }
+
+    const removeAmenities = (pos) => {
+        const copy = amenities.filter((data, index) => index !== pos);
+        setAmenities(copy);
+    }
+
+    const amenitiesInput = (e, index) => {
+        const copy = [...amenities];
+        copy[index].name = e.target.value;
+        setAmenities(copy);
+    }
+
+    const createContact = () => {
+        setPhone(prev => [...prev, {phone: ""}]);
+    }
+
+    const removeContact = (pos) => {
+        const copy = phone.filter((data, index) => index !== pos);
+        setPhone(copy);
+    }
+
+    const contactInput = (e, index) => {
+        const copy = [...phone];
+        copy[index].phone = e.target.value;
+        setPhone(copy);
+    }
+
     return(
         <Modal
             open={open === 1}
@@ -170,7 +231,7 @@ const CreateFillingStation = (props) => {
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
-                        <div style={{width:'100%', height:'480px', overflowX:'hidden', overflowY:'scroll'}}>
+                        <div style={{width:'100%', height:'480px', paddingRight: '5px', overflowX:'hidden', overflowY:'scroll'}}>
                             <div className='inputs'>
                                 <div className='head-text2'>Outlet Name</div>
                                 <OutlinedInput 
@@ -440,7 +501,6 @@ const CreateFillingStation = (props) => {
                             <div style={{marginTop:'15px'}} className='inputs'>
                                 <div className='head-text2'>Longitude</div>
                                 <OutlinedInput 
-                                    disabled
                                     sx={{
                                         width:'100%',
                                         height: '35px', 
@@ -459,7 +519,6 @@ const CreateFillingStation = (props) => {
                             <div style={{marginTop:'15px'}} className='inputs'>
                                 <div className='head-text2'>Latitude</div>
                                 <OutlinedInput 
-                                    disabled
                                     sx={{
                                         width:'100%',
                                         height: '35px', 
@@ -482,7 +541,175 @@ const CreateFillingStation = (props) => {
                                 lt={latitude}
                                 ln={longitude}
                             />
+                            
+                            <div style={{marginTop:'25px'}} className='inputs'>
+                                <div className='head-text2'>Working Hours</div>
+                                <div style={flat}>
+                                    <OutlinedInput 
+                                        sx={{
+                                            width:'48%',
+                                            height: '35px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="opening" 
+                                        type={'time'}
+                                        value={openingHour}
+                                        onChange={e => setOpeningHour(e.target.value)}
+                                    />
+                                    <OutlinedInput 
+                                        sx={{
+                                            width:'48%',
+                                            height: '35px',  
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="closing" 
+                                        type={'time'}
+                                        value={closingHour}
+                                        onChange={e => setClosingHour(e.target.value)}
+                                    />
+                                </div>
 
+                                <div style={{...flat, marginTop: '10px'}}>
+                                    <Select 
+                                        sx={{
+                                            width:'48.5%',
+                                            height: '35px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="opening" 
+                                        value={startWeekDay}
+                                        // onChange={e => setOpeningHour(e.target.value)}
+                                    >
+                                        {
+                                            days.map((item, index) => {
+                                                return(
+                                                    <MenuItem 
+                                                        onClick={e => {setStartWeekday(index)}}  
+                                                        key={index} 
+                                                        style={menu} 
+                                                        value={index}>
+                                                            {item}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                    <Select 
+                                        sx={{
+                                            width:'48.5%',
+                                            height: '35px', 
+                                            background:'#EEF2F1', 
+                                            fontSize:'12px',
+                                            borderRadius:'0px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
+                                        }} placeholder="opening" 
+                                        value={endWeekday}
+                                    >
+                                        {
+                                            days.map((item, index) => {
+                                                return(
+                                                    <MenuItem 
+                                                        onClick={e => {setEndWeekday(index)}} 
+                                                        key={index} 
+                                                        style={menu} 
+                                                        value={index}>
+                                                            {item}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                </div>
+                            </div>
+
+                            <div style={{marginTop:'25px'}} className='inputs'>
+                                <div className='head-text2'>Amenities</div>
+                                <Button onClick={createAmenities} sx={amenitiesButton}>
+                                    <AddIcon />
+                                    <div>Click here to add amenities</div>
+                                </Button>
+
+                                {
+                                    amenities.map((item, index) => {
+                                        return(
+                                            <div style={ops}>
+                                                <OutlinedInput 
+                                                    key={index}
+                                                    sx={{
+                                                        width:'100%',
+                                                        height: '35px',  
+                                                        background:'#EEF2F1', 
+                                                        fontSize:'12px',
+                                                        borderRadius:'0px',
+                                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                            border:'1px solid #777777',
+                                                        },
+                                                    }} placeholder="Enter amenities e.g lubricants, bars, spare parts etc" 
+                                                    value={item.name}
+                                                    onChange={e => {amenitiesInput(e, index)}}
+                                                />
+                                                <div>
+                                                    <IconButton>
+                                                        <CancelIcon onClick={()=>{removeAmenities(index)}} sx={{color: 'red'}} />
+                                                    </IconButton>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+
+                            <div style={{marginTop:'25px'}} className='inputs'>
+                                <div className='head-text2'>Phone Contact Numbers</div>
+                                <Button onClick={createContact} sx={amenitiesButton}>
+                                    <AddIcon />
+                                    <div>Click here to add phone contacts</div>
+                                </Button>
+
+                                {
+                                    phone.map((item, index) => {
+                                        return(
+                                            <div style={ops}>
+                                                <OutlinedInput 
+                                                    key={index}
+                                                    sx={{
+                                                        width:'100%',
+                                                        height: '35px',  
+                                                        background:'#EEF2F1', 
+                                                        fontSize:'12px',
+                                                        borderRadius:'0px',
+                                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                            border:'1px solid #777777',
+                                                        },
+                                                    }} placeholder="Enter phone number" 
+                                                    value={item.phone}
+                                                    onChange={e => {contactInput(e, index)}}
+                                                />
+                                                <div>
+                                                    <IconButton>
+                                                        <CancelIcon onClick={()=>{removeContact(index)}} sx={{color: 'red'}} />
+                                                    </IconButton>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                            
                             <Button sx={{
                                 width:'100%', 
                                 height:'35px',  
@@ -512,7 +739,6 @@ const CreateFillingStation = (props) => {
                                 }
                                 { loading2 === 2 && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
                             </Button>
-
                             <input onChange={selectedFile} ref={attach} type="file" style={{visibility:'hidden'}} />
 
                         </div>
@@ -551,6 +777,36 @@ const CreateFillingStation = (props) => {
                 </div>
         </Modal>
     )
+}
+
+const ops = {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '8px'
+}
+
+const amenitiesButton = {
+    width: '100%',
+    height: '35px',
+    marginTop: '10px',
+    background: '#f7f7f7',
+    border: '1px dashed #888888',
+    color: '#888888',
+    textTransform: 'capitalize',
+    fontSize: '12px',
+    '&hover':{
+        background: '#f7f7f7',
+    }
+}
+
+const flat = {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: '5px'
 }
 
 const menu = {

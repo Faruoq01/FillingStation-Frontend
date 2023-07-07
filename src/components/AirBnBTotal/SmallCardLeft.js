@@ -1,12 +1,27 @@
 import React from "react";
 import "../../styles/estation/airbnb.scss";
 import IconCircle from "@mui/icons-material/Circle";
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../common/approx";
+
 export default function SmallCardLeft({ dotColor, ...props }) {
+  const lpos = useSelector((state) => state.lpoReducer.lpoSales);
+
+  const getTotalSales = () => {
+    const pms = lpos.filter((data) => data.productType === props.type);
+
+    const totalSales = pms.reduce((accum, current) => {
+      return Number(accum) + Number(current.lpoLitre);
+    }, 0);
+
+    return totalSales;
+  };
+
   return (
     <div style={{ ...props.style }} className="left-card">
       <div className="left-card-inner">
         <div className="img-txt-wraper">
-          <img src={props.icon} />
+          <img src={props.icon} alt="icon" />
           <div
             style={{
               display: "flex",
@@ -15,9 +30,8 @@ export default function SmallCardLeft({ dotColor, ...props }) {
               marginLeft: "10px",
               alignContent: "center",
               marginTop: 5,
-            }}
-          >
-            <span>{props.amount}</span>
+            }}>
+            <span>{ApproximateDecimal(getTotalSales())}</span>
             <label>
               <IconCircle
                 style={{
@@ -31,6 +45,7 @@ export default function SmallCardLeft({ dotColor, ...props }) {
           </div>
         </div>
         <img
+          alt="icon"
           style={{
             width: 30,
             height: 30,

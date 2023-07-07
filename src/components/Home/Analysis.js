@@ -33,6 +33,7 @@ const Analysis = (props) => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const analysisData = useSelector(state => state.analysisReducer.analysisData);
+    const dipping = useSelector(state => state.dailySalesReducer.overages);
     const updatedDate = useSelector(state => state.dashboardReducer.dateRange);
     const moment = require('moment-timezone');
 
@@ -224,35 +225,40 @@ const Analysis = (props) => {
     }
 
     const totalSales = () => {
+        const pmsList = analysisData.sales.filter(data => data.productType === "PMS");
+        const agoList = analysisData.sales.filter(data => data.productType === "AGO");
+        const dpkList = analysisData.sales.filter(data => data.productType === "DPK");
+
         /*#################################################
             Sales records for each product
         ##################################################*/
 
-        const pmsSales = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
+        const pmsSales = pmsList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales)*Number(current.PMSSellingPrice);
         }, 0);
 
-        const agoSales = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
+        const agoSales = agoList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales)*Number(current.AGOSellingPrice);
         }, 0);
 
-        const dpkSales = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
+        const dpkSales = dpkList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales)*Number(current.DPKSellingPrice);
         }, 0);
+
 
         /*#################################################
             volume records for each product
         ##################################################*/
 
-        const pmsVol = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
+        const pmsVol = pmsList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales);
         }, 0);
 
-        const agoVol = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
+        const agoVol = agoList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales);
         }, 0);
 
-        const dpkVol = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
+        const dpkVol = dpkList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales);
         }, 0);
 
@@ -270,125 +276,81 @@ const Analysis = (props) => {
     }
 
     const calculateProfit = () => {
+        const pmsList = analysisData.sales.filter(data => data.productType === "PMS");
+        const agoList = analysisData.sales.filter(data => data.productType === "AGO");
+        const dpkList = analysisData.sales.filter(data => data.productType === "DPK");
+
         /*#################################################
             Sales records for each product
         ##################################################*/
 
-        const pmsSales = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
+        const pmsSales = pmsList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales)*Number(current.PMSSellingPrice) - Number(current.sales)*Number(current.PMSCostPrice);
         }, 0);
 
 
-        const agoSales = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
+        const agoSales = agoList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales)*Number(current.AGOSellingPrice) - Number(current.sales)*Number(current.AGOCostPrice);
         }, 0);
 
-        const dpkSales = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
+        const dpkSales = dpkList.reduce((accum, current) => {
             return Number(accum) + Number(current.sales)*Number(current.DPKSellingPrice) - Number(current.sales)*Number(current.DPKCostPrice);
         }, 0);
 
-        /*#################################################
-            Overages/Shortages records for each product
-        ##################################################*/
-        
-        const pmsDipping = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
-
-            return Number(accum) + Number(varience)*Number(current.PMSSellingPrice) - Number(varience)*Number(current.PMSCostPrice);
-        }, 0);
-
-        const agoDipping = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
-
-            return Number(accum) + Number(varience)*Number(current.AGOSellingPrice) - Number(varience)*Number(current.AGOCostPrice);
-            
-        }, 0);
-
-        const dpkDipping = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
-
-            return Number(accum) + Number(varience)*Number(current.DPKSellingPrice) - Number(varience)*Number(current.DPKCostPrice);
-            
-        }, 0);
-
         const totalSales = pmsSales + agoSales + dpkSales;
-        const netVareince = pmsDipping + agoDipping + dpkDipping;
+        const netVareince = Variences().pmsSales + Variences().agoSales + Variences().dpkSales;
 
         return totalSales + netVareince - calculateExpenses();
     }
 
     const Variences = () => {
+        const pmsList = analysisData.sales.filter(data => data.productType === "PMS");
+        const agoList = analysisData.sales.filter(data => data.productType === "AGO");
+        const dpkList = analysisData.sales.filter(data => data.productType === "DPK");
+
          /*#################################################
             Overages/Shortages records for each product
         ##################################################*/
 
-        const pmsVarSales = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
+        const pmsOverageList = dipping.filter(data => data.productType === "PMS");
+        const agoOverageList = dipping.filter(data => data.productType === "AGO");
+        const dpkOverageList = dipping.filter(data => data.productType === "DPK");
 
-            return Number(accum) + Number(varience)*Number(current.PMSSellingPrice) - Number(varience)*Number(current.PMSCostPrice);
+        const pmsVarSales = pmsOverageList.reduce((accum, current) => {
+            const singleSales = pmsList.filter(data => data.createdAt === current.createdAt);
+            const price = singleSales.length === 0? 0: singleSales[0].PMSSellingPrice;
+
+            return Number(accum) + (Number(current.dipping) - Number(current.afterSales))*Number(price);
         }, 0);
 
-        const agoVarSales = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
+        const agoVarSales = agoOverageList.reduce((accum, current) => {
+            const singleSales = agoList.filter(data => data.createdAt === current.createdAt);
+            const price = singleSales.length === 0? 0: singleSales[0].AGOSellingPrice;
 
-            return Number(accum) + Number(varience)*Number(current.AGOSellingPrice) - Number(varience)*Number(current.AGOCostPrice);
-            
+            return Number(accum) + (Number(current.dipping) - Number(current.afterSales))*Number(price);
         }, 0);
 
-        const dpkVarSales = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
+        const dpkVarSales = dpkOverageList.reduce((accum, current) => {
+            const singleSales = dpkList.filter(data => data.createdAt === current.createdAt);
+            const price = singleSales.length === 0? 0: singleSales[0].DPKSellingPrice;
 
-            return Number(accum) + Number(varience)*Number(current.DPKSellingPrice) - Number(varience)*Number(current.DPKCostPrice);
-            
+            return Number(accum) + (Number(current.dipping) - Number(current.afterSales))*Number(price);
         }, 0);
 
          /*#################################################
             Overages/Shortages volume records for each product
         ##################################################*/
 
-        const pmsVarVol = analysisData.sales.filter(data => data.productType === "PMS").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
-
-            return Number(accum) + Number(varience);
+        const pmsVarVol = pmsOverageList.reduce((accum, current) => {
+            return Number(accum) + Number(current.dipping) - Number(current.afterSales);
         }, 0);
 
-        const agoVarVol = analysisData.sales.filter(data => data.productType === "AGO").reduce((accum, current) => {
-            const ID = analysisData?.dipping?.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
-
-            return Number(accum) + Number(varience);
+        const agoVarVol = agoOverageList.reduce((accum, current) => {
+            return Number(accum) + Number(current.dipping) - Number(current.afterSales);
         }, 0);
 
-        const dpkVarVol = analysisData.sales.filter(data => data.productType === "DPK").reduce((accum, current) => {
-            const ID = analysisData.dipping.findIndex(data => data.tankID === current.tankID);
-            if(ID === -1) return 0;
-            const currentDip = analysisData?.dipping[ID];
-            const varience = Number(currentDip.dipping) - Number(current.afterSales);
-
-            return Number(accum) + Number(varience);
+        const dpkVarVol = dpkOverageList.reduce((accum, current) => {
+            return Number(accum) + Number(current.dipping) - Number(current.afterSales);
         }, 0);
 
         const totalSales = pmsVarSales + agoVarSales + dpkVarSales

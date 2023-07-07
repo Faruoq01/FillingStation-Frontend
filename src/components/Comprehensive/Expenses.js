@@ -7,6 +7,7 @@ import { bulkReports } from '../../store/actions/dailySales';
 import { useState } from 'react';
 import UpdateExpenses from '../Modals/DailySales/expenses';
 import ApproximateDecimal from '../common/approx';
+import APIs from '../../services/api';
 
 const Expenses = () => {
 
@@ -50,7 +51,7 @@ const Expenses = () => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                DailySalesService.deleteSales({id: data._id, type:'expenses'}).then(data => {
+                APIs.post("/sales/delete/expenses", {id: data._id}).then(data => {
                     getAndAnalyzeDailySales();
                 }).then(()=>{
                     swal("Success", "Record deleted successfully", "success");

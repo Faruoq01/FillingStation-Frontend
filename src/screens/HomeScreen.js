@@ -74,6 +74,7 @@ import EStation from "../components/Home/e-station/EStation";
 
 import EStationIndividualIncomingOrder from "../components/Home/e-station/EStationIndividualIncomingOrder";
 import AirBnBTotal from "../components/Home/e-station/AirBnBTotal";
+import Transactions from "../components/Home/Transactions";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -258,12 +259,13 @@ const HomeScreen = () => {
       "/home/estation/individual/customer": "Individual Customer",
       "/home/estation/orders": "Incoming Order",
       "/home/estation/orders/incoming-individual": "Individual Incoming Order",
-      "/home/estation/airbnb": "Air BnB Total ",
+      "/home/estation/airbnb": "Corporate Customer ",
       "/home/estation/orders/incoming-corporate": "Corporate Incoming Order",
       "/home/estation/payments": "Payments",
       "/home/dashEmp": "← Employee List",
       "/home/lpo/list": "LPO",
       "/home/lpo/company": "Corporate Company",
+      "/home/transactions": "← Transaction History",
       "/home/product-orders": "Product Orders",
       "/home/inc-orders": "Incoming Orders",
       "/home/supply": "Supply",
@@ -301,7 +303,7 @@ const HomeScreen = () => {
   useEffect(() => {
     setActiveRoute(history.location.pathname);
     setName(routes[history.location.pathname]);
-  }, []);
+  }, [history.location.pathname, routes]);
 
   const goBackToPreviousPage = () => {
     history.goBack();
@@ -315,8 +317,7 @@ const HomeScreen = () => {
             setNames(props.name);
           }}
           style={{ marginTop: props.marginT }}
-          className="item-container"
-        >
+          className="item-container">
           {activeRoute.split("/")[2] === props.link.split("/")[2] ? (
             <div className="side-item">
               <div className="side-focus">
@@ -338,8 +339,7 @@ const HomeScreen = () => {
                     alt="icon"
                   />
                   <div
-                    style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}
-                  >
+                    style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}>
                     {props.name}
                   </div>
                 </div>
@@ -520,15 +520,12 @@ const HomeScreen = () => {
             flexDirection: "row",
             justifyContent: "flex-end",
           }}
-          className="side-bar"
-        >
+          className="side-bar">
           <div style={{ width: "90%" }} className="inner-side-bar">
             <img
               onClick={goToEsales}
               className="home-logo"
-              src={
-                user.image === null ? homeLogo : config.BASE_URL + user.image
-              }
+              src={homeLogo}
               alt="icon"
             />
             <SideItems
@@ -630,13 +627,11 @@ const HomeScreen = () => {
 
       <div
         style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
-        className="main-content"
-      >
+        className="main-content">
         <div className="mobile-bar">
           <AppBar
             sx={{ background: "#06805B", zIndex: "50" }}
-            position="absolute"
-          >
+            position="absolute">
             <Toolbar>
               <IconButton
                 size="large"
@@ -644,8 +639,7 @@ const HomeScreen = () => {
                 color="inherit"
                 aria-label="menu"
                 sx={{ mr: 2 }}
-                onClick={toggleDrawer}
-              >
+                onClick={toggleDrawer}>
                 <MenuIcon />
               </IconButton>
               <span style={roots}>{name}</span>
@@ -655,8 +649,7 @@ const HomeScreen = () => {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
-                  sx={{ marginRight: "0px" }}
-                >
+                  sx={{ marginRight: "0px" }}>
                   <img
                     style={{ width: "35px", height: "35px" }}
                     src={search}
@@ -669,8 +662,7 @@ const HomeScreen = () => {
                   color="inherit"
                   aria-label="menu"
                   sx={{ marginRight: "0px" }}
-                  onClick={openTheRightDrawer}
-                >
+                  onClick={openTheRightDrawer}>
                   {user.noteCount === "0" || (
                     <Badge badgeContent={user.noteCount} color="error">
                       <img
@@ -694,8 +686,7 @@ const HomeScreen = () => {
                   color="inherit"
                   aria-label="menu"
                   sx={{ marginRight: "0px" }}
-                  onClick={switchDarkMode}
-                >
+                  onClick={switchDarkMode}>
                   <img
                     style={{ width: "35px", height: "35px" }}
                     src={user.isDark ? dark : switchT}
@@ -709,8 +700,7 @@ const HomeScreen = () => {
         <div className="top-bar-menu">
           <div
             style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}
-            className="left-lobe"
-          >
+            className="left-lobe">
             {(activeRoute.split("/").length === 4 ||
               activeRoute.split("/").length >= 5) && (
               <img
@@ -723,12 +713,47 @@ const HomeScreen = () => {
             <span
               onClick={() => {
                 navigateBack(name);
-              }}
-            >
+              }}>
               {name?.concat(" ")}{" "}
               {name === "Human Resources" ? "" : getStationDetails()}
             </span>
           </div>
+          {/* {oneStationData !== null &&
+            <div style={prices}>
+              <div style={products}>
+                <div style={main}>
+                  <div style={{
+                    width: '15px',
+                    height: '15px',
+                    borderRadius: '15px',
+                    background: '#399A19',
+                    marginRight: '5px',
+                  }}></div>
+                  <div>PMS: N{oneStationData?.PMSSellingPrice}</div>
+                </div>
+                <div style={main}>
+                  <div style={{
+                    width: '15px',
+                    height: '15px',
+                    borderRadius: '15px',
+                    background: '#FFA010',
+                    marginRight: '5px',
+                  }}></div>
+                  <div>AGO: N535</div>
+                </div>
+                <div style={main}>
+                  <div style={{
+                    width: '15px',
+                    height: '15px',
+                    borderRadius: '15px',
+                    background: '#35393E',
+                    marginRight: '5px',
+                  }}></div>
+                  <div>DPK: N535</div>
+                </div>
+              </div>
+            </div>
+          } */}
           <div className="right-lobe">
             <div className="search-icon">
               <input
@@ -748,8 +773,7 @@ const HomeScreen = () => {
               color="inherit"
               aria-label="menu"
               sx={{ marginRight: "0px" }}
-              onClick={openTheRightDrawer}
-            >
+              onClick={openTheRightDrawer}>
               {user.noteCount === "0" || (
                 <Badge badgeContent={user.noteCount} color="error">
                   <img
@@ -773,8 +797,7 @@ const HomeScreen = () => {
               color="inherit"
               aria-label="menu"
               sx={{ marginRight: "0px" }}
-              onClick={switchDarkMode}
-            >
+              onClick={switchDarkMode}>
               <img
                 style={{ width: "35px", height: "35px" }}
                 src={user.isDark ? dark : switchT}
@@ -851,6 +874,9 @@ const HomeScreen = () => {
             <Route path="/home/history">
               <HistoryPage />
             </Route>
+            <Route path="/home/transactions">
+              <Transactions />
+            </Route>
           </Switch>
         </div>
       </div>
@@ -872,5 +898,28 @@ const inner = {
   flexDirection: "column",
   alignItems: "center",
 };
+
+// const prices = {
+//   width: "100%",
+//   height: "100%",
+//   display: "flex",
+//   flexDirection: "row",
+//   alignItems: "center",
+//   justifyContent: "center",
+// };
+
+// const products = {
+//   display: "flex",
+//   flexDirection: "row",
+// };
+
+// const main = {
+//   marginRight: "15px",
+//   fontFamily: "Poppins",
+//   fontSize: "12px",
+//   fontWeight: "bold",
+//   display: "flex",
+//   flexDirection: "row",
+// };
 
 export default withRouter(HomeScreen);

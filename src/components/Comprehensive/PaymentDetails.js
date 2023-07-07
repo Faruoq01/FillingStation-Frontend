@@ -8,6 +8,7 @@ import { bulkReports } from "../../store/actions/dailySales";
 import { useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 import ApproximateDecimal from "../common/approx";
+import APIs from "../../services/api";
 
 const PaymentDetails = () => {
 
@@ -123,22 +124,43 @@ const PaymentDetails = () => {
     }
 
     const deleteRecord = (data, type) => {
-        swal({
-            title: "Alert!",
-            text: "Are you sure you want to delete this record?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
-                DailySalesService.deleteSales({id: data._id, type: type}).then(data => {
-                    getAndAnalyzeDailySales();
-                }).then(()=>{
-                    swal("Success", "Record deleted successfully", "success");
-                });
-            }
-        });
+
+        if(type === "bank"){
+            swal({
+                title: "Alert!",
+                text: "Are you sure you want to delete this record?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    APIs.post("/sales/delete/bankPayment", {id: data._id}).then(data => {
+                        getAndAnalyzeDailySales();
+                    }).then(()=>{
+                        swal("Success", "Record deleted successfully", "success");
+                    });
+                }
+            });
+
+        }else{
+            swal({
+                title: "Alert!",
+                text: "Are you sure you want to delete this record?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    APIs.post("/sales/delete/posPayment", {id: data._id}).then(data => {
+                        getAndAnalyzeDailySales();
+                    }).then(()=>{
+                        swal("Success", "Record deleted successfully", "success");
+                    });
+                }
+            });
+        }
     }
 
     const getAndAnalyzeDailySales = () => {

@@ -467,3 +467,18 @@
         }
     }
 }
+
+.mainContainerPays{
+    width: 98%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.linesPay{
+    width: 100%;
+    height: 10px;
+    background: #404141;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

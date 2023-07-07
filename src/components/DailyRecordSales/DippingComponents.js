@@ -117,7 +117,11 @@ const DippingComponents = (props) => {
                 return Number(accum) + Number(current.sales);
             }, 0);
 
-            const levelAfterSales = Number(item.currentLevel) - totalSales;
+            const totalSalesRT = connectedPumps.reduce((accum, current) => {
+                return Number(accum) + Number(current.RTlitre);
+            }, 0);
+
+            const levelAfterSales = Number(item.currentLevel) - totalSales + totalSalesRT;
             let clonedPMS = {...item};
             clonedPMS = {...clonedPMS, dippingValue: removeSpecialCharacters(e.target.value), afterSales: levelAfterSales};
             const newPMSList = [...pms];
@@ -125,13 +129,13 @@ const DippingComponents = (props) => {
             setPMS(newPMSList);
 
             const tankFromPayload = {...records};
-            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            const indices = tankFromPayload['7'].findIndex(data => data._id === item._id);
             if(indices === -1){
-                tankFromPayload['6'].push(clonedPMS);
+                tankFromPayload['7'].push(clonedPMS);
                 dispatch(updatePayload(tankFromPayload));
 
             }else{
-                tankFromPayload['6'][indices] = clonedPMS;
+                tankFromPayload['7'][indices] = clonedPMS;
                 dispatch(updatePayload(tankFromPayload));
 
             }
@@ -142,7 +146,11 @@ const DippingComponents = (props) => {
                 return Number(accum) + Number(current.sales);
             }, 0);
 
-            const levelAfterSales = Number(item.currentLevel) - totalSales;
+            const totalSalesRT = connectedPumps.reduce((accum, current) => {
+                return Number(accum) + Number(current.RTlitre);
+            }, 0);
+
+            const levelAfterSales = Number(item.currentLevel) - totalSales + totalSalesRT;
             let clonedAGO = {...item};
             clonedAGO = {...clonedAGO, dippingValue: removeSpecialCharacters(e.target.value), afterSales: levelAfterSales};
             const newAGOList = [...ago]
@@ -150,13 +158,13 @@ const DippingComponents = (props) => {
             setAGO(newAGOList);
 
             const tankFromPayload = {...records};
-            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            const indices = tankFromPayload['7'].findIndex(data => data._id === item._id);
             if(indices === -1){
-                tankFromPayload['6'].push(clonedAGO);
+                tankFromPayload['7'].push(clonedAGO);
                 dispatch(updatePayload(tankFromPayload));
 
             }else{
-                tankFromPayload['6'][indices] = clonedAGO;
+                tankFromPayload['7'][indices] = clonedAGO;
                 dispatch(updatePayload(tankFromPayload));
 
             }
@@ -167,7 +175,11 @@ const DippingComponents = (props) => {
                 return Number(accum) + Number(current.sales);
             }, 0);
 
-            const levelAfterSales = Number(item.currentLevel) - totalSales;
+            const totalSalesRT = connectedPumps.reduce((accum, current) => {
+                return Number(accum) + Number(current.RTlitre);
+            }, 0);
+
+            const levelAfterSales = Number(item.currentLevel) - totalSales + totalSalesRT;
             let clonedDPK = {...item};
             clonedDPK = {...clonedDPK, dippingValue: removeSpecialCharacters(e.target.value), afterSales: levelAfterSales};
             const newDPKList = [...dpk]
@@ -175,13 +187,13 @@ const DippingComponents = (props) => {
             setDPK(newDPKList);
 
             const tankFromPayload = {...records};
-            const indices = tankFromPayload['6'].findIndex(data => data._id === item._id);
+            const indices = tankFromPayload['7'].findIndex(data => data._id === item._id);
             if(indices === -1){
-                tankFromPayload['6'].push(clonedDPK);
+                tankFromPayload['7'].push(clonedDPK);
                 dispatch(updatePayload(tankFromPayload));
 
             }else{
-                tankFromPayload['6'][indices] = clonedDPK;
+                tankFromPayload['7'][indices] = clonedDPK;
                 dispatch(updatePayload(tankFromPayload));
 
             }

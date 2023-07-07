@@ -33,7 +33,7 @@ import { BallTriangle } from 'react-loader-spinner';
 import { useState } from 'react';
 import { useRef } from 'react';
 import SummaryRecord from '../Modals/SummaryRecord';
-import { changeDate, changeStation } from '../../store/actions/records';
+import { changeDate, changeStation, updatePayload } from '../../store/actions/records';
 import { isSafari } from 'react-device-detect';
 import swal from 'sweetalert';
 import ButtonDatePicker from '../common/CustomDatePicker';
@@ -278,6 +278,18 @@ const DailyRecordSales = () => {
                 payload: [],
             });
         }
+
+        let loads = {
+            '1': [],
+            '2': [],
+            '3': [],
+            '4': [],
+            '5': [],
+            '6': [],
+            '7': [],
+            '8': [],
+        };
+        dispatch(updatePayload(loads));
         dispatch(passRecordSales(list));
         getAllInitialRecords(list);
 

@@ -50,7 +50,7 @@ const SalesMachine = function(data){
     this.sales = (mch, retry) => {
         try{
             const payload = data.load['1'];
-            const result = new Promise(async function(resolve, reject){
+            const result = new Promise(function(resolve, reject){
                 const load = {
                     label: 'sales',
                     currentDate: data.date,
@@ -60,8 +60,8 @@ const SalesMachine = function(data){
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
-                .then(( {data} ) => {console.log(data, 'sales record')
+                APIs.post('/daily-sales/create', load)
+                .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");
                     }
@@ -103,7 +103,7 @@ const SalesMachine = function(data){
     this.returntotank = (mch, retry) => {
         try{
             const payload = data.load['2'];
-            const result = new Promise(async function(resolve, reject){
+            const result = new Promise(function(resolve, reject){
                 const load = {
                     label: 'rt',
                     currentDate: data.date,
@@ -113,7 +113,7 @@ const SalesMachine = function(data){
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
+                APIs.post('/daily-sales/create', load)
                 .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");
@@ -156,7 +156,7 @@ const SalesMachine = function(data){
     this.esales = (mch, retry) => {
         try{
             const payload = data.load['3'];
-            const result = new Promise(async function(resolve, reject){
+            const result = new Promise(function(resolve, reject){
                 const load = {
                     label: 'esales',
                     currentDate: data.date,
@@ -166,7 +166,7 @@ const SalesMachine = function(data){
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
+                APIs.post('/daily-sales/create', load)
                 .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");
@@ -209,7 +209,7 @@ const SalesMachine = function(data){
     this.expenses = (mch, retry) => {
         try{
             const payload = data.load['4'];
-            const result = new Promise(async function(resolve, reject){
+            const result = new Promise(function(resolve, reject){
                 const load = {
                     label: 'expenses',
                     currentDate: data.date,
@@ -219,7 +219,7 @@ const SalesMachine = function(data){
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
+                APIs.post('/daily-sales/create', load)
                 .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");
@@ -232,7 +232,7 @@ const SalesMachine = function(data){
             result.then(
                 (value) => {
                     if(value === "success"){
-                        mch.changeState('Payments', mch, retry);
+                        mch.changeState('Bank Payments', mch, retry);
                     }
                 },
                 (error) => {
@@ -259,20 +259,73 @@ const SalesMachine = function(data){
         }
     }
 
-    this.payments = (mch, retry) => {
+    this.bankpayments = (mch, retry) => {
         try{
             const payload = data.load['5'];
-            const result = new Promise(async function(resolve, reject){
+            const result = new Promise(function(resolve, reject){
                 const load = {
-                    label: 'payments',
+                    label: 'bankpayments',
                     currentDate: data.date,
-                    payments: payload,
+                    payment: payload,
                     outletID: data.outletID,
                     org: data.org,
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
+                APIs.post('/daily-sales/create', load)
+                .then(( {data} ) => {
+                    if(data.code === 200){
+                        resolve("success");
+                    }
+                }).catch(e => {
+                    reject(e)
+                });
+            });
+
+            result.then(
+                (value) => {
+                    if(value === "success"){
+                        mch.changeState('Pos Payments', mch, retry);
+                    }
+                },
+                (error) => {
+                    if(error){
+                        mch.error = error;
+                        mch.events.emit('change', {
+                            label: mch.stateLabel, 
+                            machine: mch,
+                            error: error,
+                            state: mch.currentState
+                        });
+                    }
+                }
+            );
+            
+        }catch(e){
+            mch.error = e;
+            mch.events.emit('change', {
+                label: mch.stateLabel, 
+                machine: mch,
+                error: mch.error,
+                state: mch.currentState
+            });
+        }
+    }
+
+    this.pospayments = (mch, retry) => {
+        try{
+            const payload = data.load['6'];
+            const result = new Promise(function(resolve, reject){
+                const load = {
+                    label: 'pospayments',
+                    currentDate: data.date,
+                    payment: payload,
+                    outletID: data.outletID,
+                    org: data.org,
+                    retry: retry
+                }
+
+                APIs.post('/daily-sales/create', load)
                 .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");
@@ -312,10 +365,11 @@ const SalesMachine = function(data){
         }
     }
 
+
     this.dipping = (mch, retry) => {
         try{
-            const payload = data.load['6'];
-            const result = new Promise(async function(resolve, reject){
+            const payload = data.load['7'];
+            const result = new Promise(function(resolve, reject){
                 const load = {
                     label: 'dipping',
                     currentDate: data.date,
@@ -325,7 +379,7 @@ const SalesMachine = function(data){
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
+                APIs.post('/daily-sales/create', load)
                 .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");
@@ -368,7 +422,7 @@ const SalesMachine = function(data){
     this.balancecarriedforward = (mch, retry) => {
         try{
             const payload = data.load['1'];
-            const result = new Promise(async function(resolve, reject){
+            const result = new Promise(function(resolve, reject){
                 const load = {
                     label: 'balanceCF',
                     currentDate: data.date,
@@ -378,7 +432,7 @@ const SalesMachine = function(data){
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
+                APIs.post('/daily-sales/create', load)
                 .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");
@@ -420,8 +474,8 @@ const SalesMachine = function(data){
 
     this.tanklevels = (mch, retry) => {
         try{
-            const payload = data.load['7'];
-            const result = new Promise(async function(resolve, reject){
+            const payload = data.load['8'];
+            const result = new Promise(function(resolve, reject){
                 const load = {
                     label: 'tankLevels',
                     currentDate: data.date,
@@ -431,7 +485,7 @@ const SalesMachine = function(data){
                     retry: retry
                 }
 
-                await APIs.post('/daily-sales/create', load)
+                APIs.post('/daily-sales/create', load)
                 .then(( {data} ) => {
                     if(data.code === 200){
                         resolve("success");

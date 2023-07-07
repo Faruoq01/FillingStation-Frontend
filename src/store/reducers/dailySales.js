@@ -19,7 +19,8 @@ import {
     REMARKS,
     OVERAGES,
     OVERAGE_TYPE,
-    SUPPLIES
+    SUPPLIES,
+    SALES_STATUS
 } from '../types'
 
 const initialState = {
@@ -43,7 +44,8 @@ const initialState = {
         supply: [],
         sales: [],
         expenses: [],
-        dipping: []
+        dipping: [],
+        tankLevels: []
     },
     linkedData: { page: 1 },
     balanceBF: {},
@@ -56,7 +58,8 @@ const initialState = {
     remarks: [],
     overages: [],
     overageType: 'PMS',
-    supplies: []
+    supplies: [],
+    salesStatus: [],
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -64,6 +67,13 @@ const dailySalesReducer = (state = initialState, action) => {
     const { type, payload } = action
 
     switch (type) {
+
+        case SALES_STATUS: {
+            return {
+                ...state,
+                salesStatus: payload
+            }
+        }
 
         case SUPPLIES: {
             return {

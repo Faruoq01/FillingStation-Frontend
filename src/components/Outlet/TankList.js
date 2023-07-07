@@ -291,8 +291,6 @@ const ListAllTanks = () => {
             }
 
             setList(load);
-
-            console.log(data, "tank list")
         });
     }
 

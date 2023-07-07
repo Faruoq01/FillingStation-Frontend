@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -13,6 +13,11 @@ import { MenuItem, Select } from '@mui/material';
 import { adminOutlet } from '../../store/actions/outlet';
 import AdminUserService from '../../services/adminUsers';
 import { useEffect } from 'react';
+import photo from '../../assets/photo.png';
+import upload from '../../assets/upload.png';
+import axios from 'axios';
+import config from '../../constants';
+import ReactCamera from './ReactCamera';
 
 const ManagerModal = (props) => {
     const dispatch = useDispatch();
@@ -20,6 +25,12 @@ const ManagerModal = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+
+    const [loading2, setLoading2] = useState(0);
+    const [cam, setCam] = useState("null");
+    const [gall, setGall] = useState("null");
+    const [open, setOpen] = useState('');
+    const attach = useRef();
 
     const [staffName, setStaffName] = useState('');
     const [sex, setSex] = useState('Male');
@@ -80,6 +91,7 @@ const ManagerModal = (props) => {
         if(jobTitle === "") return swal("Warning!", "Job title field cannot be empty", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
         if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
+        if(cam === "null" && gall === "null") return swal("Warning!", "File upload cannot be empty", "info");
 
         setLoading(true);
         setLoader(true);
@@ -93,6 +105,7 @@ const ManagerModal = (props) => {
             accountNumber: accountNumber,
             bankName: bankName,
             salary: salary,
+            image: cam === "null"? gall: cam,
             dateEmployed: dateEmployed,
             dateOfBirth: dateOfBirth,
             role: roleData,
@@ -150,6 +163,33 @@ const ManagerModal = (props) => {
         }
     }
 
+    const uploadProductOrders = () => {
+        attach.current.click();
+    }
+
+    const selectedFile = (e) => {
+        let file = e.target.files[0];
+        setLoading2(1);
+        const formData = new FormData();
+        formData.append("file", file);
+        const httpConfig = {
+            headers: {
+                "content-type": "multipart/form-data",
+                "Authorization": "Bearer "+ localStorage.getItem('token'),
+            }
+        };
+        const url = `${config.BASE_URL}/360-station/api/upload`;
+        axios.post(url, formData, httpConfig).then((data) => {
+            setGall(data.data.path);
+        }).then(()=>{
+            setLoading2(2);
+        });
+    }
+
+    const openCamera = () => {
+        setOpen(true);
+    }
+
     return(
         <Modal
             open={props.open}
@@ -159,6 +199,7 @@ const ManagerModal = (props) => {
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
                 <div className='modalContainer2'>
+                    <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
                     <div className='inner'>
                         <div className='head'>
                             <div className='head-text'>Admin Users</div>
@@ -531,6 +572,55 @@ const ManagerModal = (props) => {
                                     onChange={e => setConfirmPassword(e.target.value)}
                                 />
                             </div>
+
+                            <Button sx={{
+                                width:'98%', 
+                                height:'35px',  
+                                background: "green",
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                marginTop:'30px',
+                                '&:hover': {
+                                    backgroundColor: 'green'
+                                }
+                                }} 
+                                onClick={openCamera}
+                                variant="contained"> 
+                                <img style={{width:'25px', height:'20px', marginRight:'10px'}} src={photo} alt={'icon'} />
+                                { cam === "null" && <div>Take Photo</div>}
+                                { cam !== "null" && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
+                            </Button>
+
+                            <Button sx={{
+                                width:'98%', 
+                                height:'35px',  
+                                background: '#427BBE',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                marginTop:'20px',
+                                '&:hover': {
+                                    backgroundColor: '#427BBE'
+                                }
+                                }} 
+                                onClick={uploadProductOrders}
+                                variant="contained"> 
+                                <img style={{width:'25px', height:'20px', marginRight:'10px'}} src={upload} alt={'icon'} />
+                                { loading2 === 0 && <div>Attachment</div>}
+                                { loading2 === 1 &&
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                }
+                                { loading2 === 2 && <div style={{color:'#fff', fontSize:'12px'}}>Success</div>}
+                            </Button>
+                            <input onChange={selectedFile} ref={attach} type="file" style={{visibility:'hidden'}} />
 
                        </div>
 

@@ -7,6 +7,7 @@ import { bulkReports } from '../../store/actions/dailySales';
 import UpdateDipping from '../Modals/DailySales/Dipping';
 import { useState } from 'react';
 import ApproximateDecimal from '../common/approx';
+import APIs from '../../services/api';
 
 const Dipping = () => {
 
@@ -51,7 +52,7 @@ const Dipping = () => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                DailySalesService.deleteSales({id: data._id, type: "dipping"}).then(data => {
+                APIs.post("/sales/delete/dipping", {id: data._id}).then(data => {
                     getAndAnalyzeDailySales();
                 }).then(()=>{
                     swal("Success", "Record deleted successfully", "success");

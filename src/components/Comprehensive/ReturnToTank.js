@@ -7,6 +7,7 @@ import { bulkReports } from '../../store/actions/dailySales';
 import { useState } from 'react';
 import UpdateReturnToTank from '../Modals/DailySales/returnToTank';
 import ApproximateDecimal from '../common/approx';
+import APIs from '../../services/api';
 
 const ReturnToTank = () => { 
 
@@ -61,7 +62,7 @@ const ReturnToTank = () => {
         })
         .then((willDelete) => {
             if (willDelete) {
-                DailySalesService.deleteSales({id: data._id, type:'rt'}).then(data => {
+                APIs.post("/sales/delete/rt", {id: data._id}).then(data => {
                     getAndAnalyzeDailySales();
                 }).then(()=>{
                     swal("Success", "Record deleted successfully", "success");
