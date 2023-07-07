@@ -272,7 +272,7 @@ font-weight: 500;
   
 }
 .range-picker-date {
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -282,8 +282,8 @@ font-weight: 500;
 @media screen and (max-width:1000px) {
 
   .range-picker-date {
-    background-color: #066348;
-      margin-top: 1rem;
+    // background-color: #066348;
+      margin-top: 5rem;
   
     }
   .airbnb-top-wrapper {
