@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThreeDots } from "react-loader-spinner";
+import { Button } from "@mui/material";
 
 const ConfirmDeleteModal = (props) => {
   const handleClose = () => props.close(false);
@@ -9,19 +10,20 @@ const ConfirmDeleteModal = (props) => {
 
   return (
     <Modal
-      open={props.open}
+      open={props?.open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", marginTop: "5rem" }}
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
       <div style={styles(mobile).container}>
         <span style={styles(mobile).title}>Wish to Continue?</span>
         <div style={styles(mobile).buttonWrap}>
-          <button
+          <Button
             disabled={props.deleteStatus}
             onClick={props.handleDelete}
             style={{ ...styles(mobile).button, backgroundColor: "red" }}
+            variant="contained"
           >
             {props.deleteStatus ? (
               <>
@@ -37,22 +39,23 @@ const ConfirmDeleteModal = (props) => {
                     visible={true}
                   />
                 </div>
-                {/*
-            spainner gose here
-            
-            */}
               </>
             ) : (
-              " Continue"
+              <span style={{ marginLeft: 3, color: "white" }}>Continue</span>
             )}
-          </button>
-          <button
+          </Button>
+
+          {/* ============ */}
+          <Button
             disabled={props.deleteStatus}
             onClick={handleClose}
             style={{ ...styles(mobile).button, backgroundColor: "#06805B" }}
+            variant="contained"
           >
-            Cancel
-          </button>
+            <span style={{ marginLeft: 3, color: "white" }}>Cancel</span>
+          </Button>
+
+          {/* ========== */}
         </div>
       </div>
     </Modal>
@@ -95,10 +98,10 @@ const styles = (_mobile) => ({
     height: 40,
     cursor: "pointer",
     border: "none",
-    borderRadius: 20,
     fontFamily: "poppin",
     fontSize: 18,
     color: "#ffffff",
+    borderRadius: "3px",
   },
   load: {
     width: "100%",

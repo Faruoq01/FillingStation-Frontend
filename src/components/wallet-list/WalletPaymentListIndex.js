@@ -3,12 +3,11 @@ import React, { Fragment, useState } from "react";
 import "../../styles/estation/payment.scss";
 import { useMediaQuery } from "@mui/material";
 import WalletPaymentTable from "./WalletPaymentTable";
-import Button from "./Button";
 import EStationPaymentReceiptModal from "../Modals/EStationPaymentReceiptModal";
 import { useDispatch } from "react-redux";
 import { eStationSinglePaymentAction } from "../../store/actions/payment";
 import EStationCreatePaymentModal from "../Modals/EStationCreatePaymentModal";
-import EStationPayments from "../Home/e-station/EStationPayments";
+import { Button } from "antd";
 
 export default function WalletPaymentListIndex({ ...props }) {
   const mobile = useMediaQuery("(max-width:1000px)");
@@ -24,12 +23,56 @@ export default function WalletPaymentListIndex({ ...props }) {
   };
   return (
     <Fragment>
-      <div className="individual-sale-container-">
+      <div
+        className="individual-sale-container-"
+        style={{
+          paddingTop: "1rem",
+        }}
+      >
         <div className="tb-inner-payment">
           <div className="wrap-btn-wrap">
             <div className="btn-wrap-">
-              <Button>Individual</Button>
-              <Button style={{ marginLeft: 5 }}>Corporate</Button>
+              <Button
+                sx={{
+                  width: mobile ? "100%" : "100px",
+                  height: "30px",
+                  background: "#58A0DF",
+                  borderRadius: "3px",
+                  fontSize: "10px",
+                  display: mobile && "none",
+                  marginTop: mobile ? "10px" : "0px",
+                  marginRight: "10px",
+                  "&:hover": {
+                    backgroundColor: "#58A0DF",
+                  },
+                }}
+                variant="contained"
+              >
+                Individual
+              </Button>
+
+              <Button
+                style={{
+                  marginLeft: "5px",
+                }}
+                sx={{
+                  width: mobile ? "100%" : "100px",
+                  height: "30px",
+                  background: "#58A0DF",
+                  borderRadius: "3px",
+                  fontSize: "10px",
+                  display: mobile && "none",
+                  marginTop: mobile ? "10px" : "0px",
+                  marginRight: "10px",
+                  "&:hover": {
+                    backgroundColor: "#06805B",
+                    color: "white",
+                  },
+                }}
+                variant="contained"
+              >
+                Corporate
+              </Button>
             </div>
             <div className="input-wrapp-payment">
               <input
@@ -39,7 +82,31 @@ export default function WalletPaymentListIndex({ ...props }) {
                 placeholder="Search"
                 style={{}}
               />
-              <Button onClick={openCreatePaymentModal}>Register Payment</Button>
+              <Button
+                size="small"
+                style={{
+                  marginLeft: "5px",
+                  height: "30px",
+                }}
+                sx={{
+                  width: mobile ? "100%" : "100px",
+                  height: "30px",
+                  background: "#58A0DF",
+                  borderRadius: "3px",
+                  fontSize: "10px",
+                  display: mobile && "none",
+                  marginTop: mobile ? "10px" : "0px",
+                  marginRight: "10px",
+                  "&:hover": {
+                    backgroundColor: "#06805B",
+                    color: "white",
+                  },
+                }}
+                variant="contained"
+                onClick={openCreatePaymentModal}
+              >
+                Register Payment
+              </Button>
             </div>
           </div>
           <WalletPaymentTable handleViewReciept={handleViewReciept} />

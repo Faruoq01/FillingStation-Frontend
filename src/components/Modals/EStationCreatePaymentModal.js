@@ -4,6 +4,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThreeDots } from "react-loader-spinner";
 import "../../styles/estation/payment.scss";
 import CloseIcon from "@mui/icons-material/Close";
+import { Button } from "@mui/material";
 
 const EStationCreatePaymentModal = (props) => {
   const handleClose = () => props.close(false);
@@ -35,7 +36,7 @@ const EStationCreatePaymentModal = (props) => {
       aria-describedby="modal-modal-description"
       sx={{ display: "flex", justifyContent: "center", border: "none" }}
     >
-      <div className="e-station-reciept-modal">
+      <div className="e-station-payment-modal">
         <div className="cancel-confirm">
           <label for="Confirm Payment" className="title-label-">
             Register Payment
@@ -45,18 +46,22 @@ const EStationCreatePaymentModal = (props) => {
         <div className="form-area-new-pay">
           <form onSubmit={handleSubmitForm}>
             <CustomTextInput
+              placeholder="Account Name"
               title="Account Name"
               onChange={handleOnChange(setAccountName)}
             />
             <CustomTextInput
+              placeholder="Enter Amount"
               title="Amount"
               onChange={handleOnChange(setAmount)}
             />
             <CustomTextInput
               title="Payment Method"
+              placeholder="Bank"
               onChange={handleOnChange(setAmount)}
             />
             <CustomTextInput
+              placeholder="Enter Teller Number"
               title="Teller Number"
               onChange={handleOnChange(setAmount)}
             />
@@ -67,12 +72,32 @@ const EStationCreatePaymentModal = (props) => {
               />
               Uplaod Image
             </button>
+            <div
+              style={{
+                marginBottom: "1rem",
+                marginTop: "2rem",
+                // backgroundColor: "red",
+                padding: 0,
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                flexDirection: "column",
+              }}
+              className="footer-section-p"
+            >
+              <Button
+                style={{
+                  width: "100px",
+                  // height: 35,
+                  background: "#06805B",
+                  color: "white",
+                }}
+                className=""
+              >
+                Save
+              </Button>
+            </div>
           </form>
-        </div>
-        <div style={{ marginBottom: "15%" }} className="footer-section-p">
-          <button style={{ width: "30%" }} className="footer-btn-p">
-            Save
-          </button>
         </div>
       </div>
     </Modal>
