@@ -112,7 +112,8 @@ font-weight: 500;
         .wraper{
           width: 95%;
           margin-bottom:10px;
-          margin-top: 10px;
+          
+          position: relative;
           height: fit-content;
           display: flex;
           align-items: center;
@@ -278,6 +279,7 @@ font-weight: 500;
   justify-content: flex-end;
   margin-top: 10px;
   margin-bottom: 10px;
+  position: relative;
 }
 @media screen and (max-width:1000px) {
 
@@ -289,6 +291,7 @@ font-weight: 500;
   .airbnb-top-wrapper {
     // margin-top: 5rem;
       flex-direction: column;
+      position: relative;
       justify-content: center;
       padding: 19px 14px 27px 21px;
       // .arbnb-card-top
@@ -324,6 +327,7 @@ font-weight: 500;
     
           .body-card {
             background-color: white;
+            position: relative;
             &:first-child {
               height:max-content;
               width: 100%;
