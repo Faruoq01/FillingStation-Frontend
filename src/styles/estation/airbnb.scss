@@ -271,12 +271,19 @@ font-weight: 500;
   color: #585858;
   
 }
+.range-picker-date {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 @media screen and (max-width:1000px) {
 
   .range-picker-date {
     background-color: #066348;
-  
-      margin-top: 20rem;
+      margin-top: 1rem;
   
     }
   .airbnb-top-wrapper {
@@ -373,14 +380,7 @@ font-weight: 500;
 
 }
 
-.range-picker-date{
-  width: 96%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
+
 
 .nav-Table{
   width: 100%;
