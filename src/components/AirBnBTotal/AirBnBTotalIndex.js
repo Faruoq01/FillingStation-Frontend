@@ -187,7 +187,6 @@ export default function AirBnBTotalIndex() {
             <div className="wraper-right">
               <div className="top-">
                 <label>Expenses</label>
-                <div></div>
               </div>
               <AirbnbTable />
             </div>

@@ -328,8 +328,8 @@ font-weight: 500;
     
           .body-card {
             width: 100%;
-            background-color: white;
             position: relative;
+            margin: 0px;
             &:first-child {
               height:max-content;
               width: 100%;
@@ -371,9 +371,9 @@ font-weight: 500;
               height: 100%;
               width: 100%;
               border-radius: 5px;
-              flex-grow: 1;
-              background: #FFF;
-              // margin-left: 10px;
+              // background-color: green;
+              margin: 0px;
+             
               margin-top: 1rem;
               box-shadow: 0px 0px 26px 0px rgba(0, 0, 0, 0.04);
               
