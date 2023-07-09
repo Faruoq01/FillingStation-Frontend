@@ -23,7 +23,7 @@ const ComprehensiveReportModal = (props) => {
   };
 
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     setTimeout(() => {
       setTheDomHere();
     }, 5000);
@@ -50,14 +50,13 @@ const ComprehensiveReportModal = (props) => {
       <div style={contain}>
         <div
           style={{
-            overflow: "scroll",
             position: "absolute",
             zIndex: "10",
-            // width: "100%",
-            // height: "100%",
           }}
         >
-          <Table />
+          <div style={{ display: "none" }}>
+            <Table />
+          </div>
         </div>
         <div style={frame}>
           <iframe
@@ -67,7 +66,7 @@ const ComprehensiveReportModal = (props) => {
             height="100%"
             width="100%"
           />
-          <div style={{ marginTop: "10px" }}>
+          <div style={{ marginTop: "10px", marginBottom: "5px" }}>
             <button
               onClick={() => {
                 handlePrint();
