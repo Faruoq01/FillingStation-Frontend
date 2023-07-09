@@ -34,7 +34,7 @@ const ComprehensiveReportModal = (props) => {
     wspFrame.focus();
     wspFrame.print();
   };
-  const Table = () => (
+  const Table = ({}) => (
     <div ref={printTableDiv} style={tableContainer}>
       <ComprehensiveReportPrintable />
     </div>
