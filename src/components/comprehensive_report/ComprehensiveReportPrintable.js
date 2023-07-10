@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CustomTable1 from "./components/CustomTable1";
 import CustomTable5 from "./components/CustomTable5";
 import CustomTable3 from "./components/CustomTable3";
@@ -27,8 +27,15 @@ import CustomTable6 from "./components/CustomTable6";
 import CustomTable8 from "./components/CustomTable8";
 import CustomTable9 from "./components/CustomTable9";
 import CustomTable7 from "./components/CustomTable7";
+import { useSelector } from "react-redux";
 
 export default function ComprehensiveReportPrintable() {
+  const report = useSelector((state) => state.dailySalesReducer.bulkReports);
+  useEffect(() => {
+    console.log("=====================REPORT=============================");
+    console.log(JSON.stringify(report));
+    console.log("=====================REPORT END=============================");
+  }, []);
   return (
     <div style={Styles.wrapper}>
       <div style={Styles.tp}>
@@ -102,4 +109,105 @@ const Styles = {
     backgroundColor: "white",
   },
   ft: { marginTop: 20, marginBottom: "1rem" },
+};
+
+const datae = {
+  sales: [],
+  lpo: [],
+  expenses: [],
+  payments: [],
+  pospayment: [],
+  supply: [],
+  incoming: [],
+  tanks: [
+    {
+      _id: "64a2c50b7d6d9b50290aa140",
+      tankName: "Tank 1",
+      tankHeight: "",
+      productType: "PMS",
+      tankCapacity: "35000",
+      deadStockLevel: "200",
+      dipping: "0.00",
+      calibrationDate: "2023-07-27",
+      organisationID: "64a2c3be7d6d9b50290aa100",
+      outletID: "64a2c4787d6d9b50290aa130",
+      dateUpdated: "07/03/2023",
+      station: "Hajj Camp",
+      previousLevel: "0",
+      quantityAdded: "0",
+      currentLevel: "5350",
+      activeState: "1",
+      createdAt: "2023-07-03",
+      updatedAt: "2023-07-03",
+      __v: 0,
+    },
+    {
+      _id: "64a2c5217d6d9b50290aa14d",
+      tankName: "Tank 2",
+      tankHeight: "",
+      productType: "PMS",
+      tankCapacity: "35000",
+      deadStockLevel: "200",
+      dipping: "0.00",
+      calibrationDate: "2023-07-27",
+      organisationID: "64a2c3be7d6d9b50290aa100",
+      outletID: "64a2c4787d6d9b50290aa130",
+      dateUpdated: "07/03/2023",
+      station: "Hajj Camp",
+      previousLevel: "0",
+      quantityAdded: "0",
+      currentLevel: "7350",
+      activeState: "1",
+      createdAt: "2023-07-03",
+      updatedAt: "2023-07-03",
+      __v: 0,
+    },
+    {
+      _id: "64a2c53d7d6d9b50290aa15a",
+      tankName: "Tank 1",
+      tankHeight: "",
+      productType: "AGO",
+      tankCapacity: "35000",
+      deadStockLevel: "200",
+      dipping: "0.00",
+      calibrationDate: "2023-07-27",
+      organisationID: "64a2c3be7d6d9b50290aa100",
+      outletID: "64a2c4787d6d9b50290aa130",
+      dateUpdated: "07/03/2023",
+      station: "Hajj Camp",
+      previousLevel: "0",
+      quantityAdded: "0",
+      currentLevel: "15300",
+      activeState: "1",
+      createdAt: "2023-07-03",
+      updatedAt: "2023-07-03",
+      __v: 0,
+    },
+    {
+      _id: "64a2c5537d6d9b50290aa167",
+      tankName: "Tank 2",
+      tankHeight: "",
+      productType: "AGO",
+      tankCapacity: "35000",
+      deadStockLevel: "200",
+      dipping: "0.00",
+      calibrationDate: "2023-07-27",
+      organisationID: "64a2c3be7d6d9b50290aa100",
+      outletID: "64a2c4787d6d9b50290aa130",
+      dateUpdated: "07/03/2023",
+      station: "Hajj Camp",
+      previousLevel: "0",
+      quantityAdded: "0",
+      currentLevel: "30000",
+      activeState: "1",
+      createdAt: "2023-07-03",
+      updatedAt: "2023-07-03",
+      __v: 0,
+    },
+  ],
+  rtVolumes: [],
+  dipping: [],
+  tankLevels: [],
+  balances: { pms: 0, ago: 0, dpk: 0 },
+  balanceCF: { pms: 0, ago: 0, dpk: 0 },
 };
