@@ -1,113 +1,5 @@
-// import React from "react";
-// import TowRow from "../components/customTableOne/TwoRow";
-// import FiveRow from "../components/customTableOne/FiveRow";
-
-// const data1 = [
-//   {
-//     id: `${Math.random()}`,
-//     name: "PMS",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "DPK",
-//     price: "12,018",
-//   },
-// ];
-// const data2 = [
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     truck_number: "132KSA-ABJ",
-//     transportation: "Sule Alanimi",
-//     shortage: "Shortage",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     truck_number: "132KSA-ABJ",
-//     transportation: "Sule Alanimi",
-//     shortage: "Shortage",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     truck_number: "132KSA-ABJ",
-//     transportation: "Sule Alanimi",
-//     shortage: "Shortage",
-//     price: "12,018",
-//   },
-// ];
-
-// export default function CustomTable1() {
-//   return (
-//     <div style={{ marginTop: 10, marginBottom: 10 }}>
-//       <span style={Styles.title}>Initial Balance</span>
-//       <div style={Styles.body}>
-//         <TowRow data={data1} header="Balance B/ Forward" />
-//         <FiveRow data={data2} />
-//         <TowRow data={data1} header="Available Balance" />
-//       </div>
-//     </div>
-//   );
-// }
-
-// // const Styles = {
-// //   title: {
-// //     fontFamily: "'Nunito', sans-serif",
-// //     fontStyle: "normal",
-// //     fontWeight: 800,
-// //     lineHeight: "34px",
-// //     color: "#06805B",
-// //     marginTop: "1rem",
-// //     marginBottom: 5,
-// //   },
-// //   body: {
-// //     display: "flex",
-// //     flexDirection: "row",
-// //   },
-// // };
-
-// const Styles = {
-//   header: {
-//     paddingLeft: 10,
-//     fontFamily: "'Nunito', sans-serif",
-//     fontStyle: "normal",
-//     lineHeight: "22px",
-//     textAlign: "start",
-//     width: "130px",
-//     color: "white",
-//     height: "40px",
-//     background: "linear-gradient(266.48deg, #171717 8.34%, #252525 52.9%)",
-//     borderRadius: "4px",
-//   },
-//   title: {
-//     fontFamily: "'Nunito', sans-serif",
-//     fontStyle: "normal",
-//     fontWeight: 800,
-//     lineHeight: "34px",
-//     color: "#06805B",
-//     marginTop: "1rem",
-//     marginBottom: 5,
-//   },
-//   th: {
-//     height: "35px",
-//     background: "#F3F3F3",
-//     borderRadius: "4px",
-//     padding: "5px",
-//     // paddingRight: "auto",
-//     fontFamily: "'Nunito', sans-serif",
-//   },
-// };
-
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const data = [
   {
@@ -211,6 +103,14 @@ const header = [
 ];
 
 export default function CustomTable1() {
+  const { balances, supply, sales } = useSelector(
+    (state) => state.dailySalesReducer.bulkReports
+  );
+  useEffect(() => {
+    console.log("================Balance======");
+    console.log(JSON.stringify(balances));
+    console.log("================Balance======");
+  }, []);
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>Initial Balance</span>
@@ -364,4 +264,30 @@ const Styles = {
     // paddingRight: "auto",
     fontFamily: "'Nunito', sans-serif",
   },
+};
+
+let Balance_ = {
+  pms: {
+    _id: "64a82b8cd2847135340900be",
+    balanceCF: "53037.30999999959",
+    productType: "PMS",
+    totalTankCapacity: "200000",
+    outletID: "64a6bd1dbc2fa90b074cb6b6",
+    organizationID: "64a2c3be7d6d9b50290aa100",
+    createdAt: "2023-07-06",
+    updatedAt: "2023-07-06",
+    __v: 0,
+  },
+  ago: {
+    _id: "64a82b8cd2847135340900bf",
+    balanceCF: "36482.23999999996",
+    productType: "AGO",
+    totalTankCapacity: "100000",
+    outletID: "64a6bd1dbc2fa90b074cb6b6",
+    organizationID: "64a2c3be7d6d9b50290aa100",
+    createdAt: "2023-07-06",
+    updatedAt: "2023-07-06",
+    __v: 0,
+  },
+  dpk: 0,
 };

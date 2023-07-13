@@ -31,11 +31,7 @@ import { useSelector } from "react-redux";
 
 export default function ComprehensiveReportPrintable() {
   const report = useSelector((state) => state.dailySalesReducer.bulkReports);
-  useEffect(() => {
-    console.log("=====================REPORT=============================");
-    console.log(JSON.stringify(report));
-    console.log("=====================REPORT END=============================");
-  }, []);
+
   return (
     <div style={Styles.wrapper}>
       <div style={Styles.tp}>
