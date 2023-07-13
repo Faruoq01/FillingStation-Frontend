@@ -129,7 +129,6 @@ const ProductBalance = (props) => {
       onLoad: currentDate === "" ? true : false,
       selectedDate: currentDate,
     };
-
     DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then((data) => {
       dispatch(bulkReports(data.dailyRecords));
     });
@@ -277,10 +276,12 @@ const ProductBalance = (props) => {
         <div style={{ marginTop: "5px" }} className="product_balance_header">
           <div
             style={{ ...ins, background: "transparent" }}
-            className="cells"></div>
+            className="cells"
+          ></div>
           <div
             style={{ ...ins, background: "transparent" }}
-            className="cells"></div>
+            className="cells"
+          ></div>
           <div style={{ ...ins, background: "transparent" }} className="cells">
             Total
           </div>
@@ -293,7 +294,8 @@ const ProductBalance = (props) => {
           </div>
           <div
             style={{ ...ins, background: "transparent" }}
-            className="cells"></div>
+            className="cells"
+          ></div>
         </div>
       </div>
 
@@ -302,7 +304,8 @@ const ProductBalance = (props) => {
         <div className="mobile_header">&nbsp;&nbsp;&nbsp; {props.type}</div>
         <div
           style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
+          className="balance_mobile_detail"
+        >
           <div className="sups">
             <div className="slide">
               {product?.length === 0 ? (

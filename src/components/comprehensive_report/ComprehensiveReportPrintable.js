@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CustomTable1 from "./components/CustomTable1";
 import CustomTable5 from "./components/CustomTable5";
 import CustomTable3 from "./components/CustomTable3";
@@ -31,7 +31,43 @@ import { useSelector } from "react-redux";
 
 export default function ComprehensiveReportPrintable() {
   const report = useSelector((state) => state.dailySalesReducer.bulkReports);
+  const [pms, setPms] = useState([]);
+  const [ago, setAgo] = useState([]);
+  const [dpk, setDpk] = useState([]);
+  const structureData = () => {
+    let f = {
+      id: `${Math.random()}`,
+      amount: "122,293.00",
+      pms: "01",
+      opening: "122,293 ",
+      difference: "122,293 ",
+      lop: "283,922 ",
+      rate: "283,922",
+      total: "283,922",
+      closing: "122,293 ",
+    };
+    const product = sales.filter((data) => data.productType === "PMS");
+    const AGO = sales.filter((data) => data.productType === "AGO");
+    const DPK = sales.filter((data) => data.productType === "DPK");
+    // console.log("==================PMS==============");
+    // console.log(product);
+    setPms([...product]);
+    // console.log("==================PMS==============");
 
+    // console.log("==================AGO==============");
+    // console.log(AGO);
+    setAgo([...AGO]);
+    // console.log("==================AGO==============");
+    console.log("==================DPK==============");
+    console.log(DPK);
+    setDpk([...DPK]);
+    // console.log("==================dpk==============");
+  };
+  const { sales } = useSelector((state) => state.dailySalesReducer.bulkReports);
+
+  useEffect(() => {
+    structureData();
+  }, []);
   return (
     <div style={Styles.wrapper}>
       <div style={Styles.tp}>
@@ -45,14 +81,24 @@ export default function ComprehensiveReportPrintable() {
         </div>
         <CustomTable1 />
         <CustomTable2
+          type="PMS"
           title="Product Dispense"
-          data={dataT2}
-          footer={footer}
+          data={pms}
+          footerData={footer}
           header={header}
         />
-
-        <CustomTable3 data={data2} footer={footer} header={header2} />
-        <CustomTable4 data={data} footer={footer} header={header3} />
+        <CustomTable3
+          type="AGO"
+          data={ago}
+          footerData={footer}
+          header={header}
+        />
+        <CustomTable4
+          type="DPK"
+          data={dpk}
+          footerData={footer}
+          header={header}
+        />
         <CustomTable5
           title="LPO"
           data={lpoData}

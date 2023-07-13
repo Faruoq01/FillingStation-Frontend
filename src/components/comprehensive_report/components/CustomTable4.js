@@ -1,11 +1,57 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../../common/approx";
 export default function CustomTable4({
   header = [],
-  footer = [],
+  footerData = [],
   data = [],
   title = "",
+  ...props
 }) {
+  const [footer, setFooter] = useState([]);
+  const formatFooter = () => {
+    setFooter([
+      ...footerData({
+        total: ApproximateDecimal(sumOfTotals()),
+        difference: ApproximateDecimal(sumOfDifference()),
+      }),
+    ]);
+  };
+  const sumOfTotals = () => {
+    const totalSum = data.reduce((accum, current) => {
+      return Number(accum) + amount(current, current.productType);
+    }, 0);
+
+    return totalSum;
+  };
+
+  useEffect(() => {
+    formatFooter();
+  }, [data]);
+  const rate = (row, type) => {
+    if (type === "PMS") return row.PMSSellingPrice;
+    if (type === "AGO") return row.AGOSellingPrice;
+    if (type === "DPK") return row.DPKSellingPrice;
+  };
+
+  const amount = (row, type) => {
+    const diff = Number(row.closingMeter) - Number(row.openingMeter);
+
+    if (type === "PMS") return row.PMSSellingPrice * diff;
+    if (type === "AGO") return row.AGOSellingPrice * diff;
+    if (type === "DPK") return row.DPKSellingPrice * diff;
+  };
+
+  const sumOfDifference = () => {
+    const totalDifference = data.reduce((accum, current) => {
+      return (
+        Number(accum) +
+        (Number(current.closingMeter) - Number(current.openingMeter))
+      );
+    }, 0);
+    return totalDifference;
+    footer();
+  };
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>{title}</span>
@@ -32,7 +78,7 @@ export default function CustomTable4({
                       : Styles.header
                   }
                 >
-                  {item.value}
+                  {index === 0 ? "DPK" : item.value}
                 </th>
               ))}
             </tr>
@@ -40,38 +86,46 @@ export default function CustomTable4({
 
           <tbody>
             {data.map((item, index) => (
-              <tr key={item.id}>
-                <td style={{ ...Styles.th }}>{item.pms} </td>
-                <td style={{ ...Styles.th }}>{item.opening} </td>
-                <td style={{ ...Styles.th }}>{item.closing} </td>
-                <td style={{ ...Styles.th }}>{item.difference} </td>
-                <td style={{ ...Styles.th }}>{item.lop} </td>
-                <td style={{ ...Styles.th }}>{item.rate} </td>
-                <td style={{ ...Styles.th }}>{item.amount} </td>
+              <tr key={Math.random()}>
+                <td style={{ ...Styles.th }}>{index + 1} </td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(item.openingMeter)}
+                </td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(item.closingMeter)}
+                </td>
+                <td style={{ ...Styles.th }}>{rate(item, props.type)}</td>
+                {/* <td style={{ ...Styles.th }}>{item.lpo} </td> */}
+                <td style={{ ...Styles.th }}>{rate(item, props.type)} </td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(amount(item, props.type))}
+                </td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
-              {footer.map((item, index) => (
-                <td
-                  key={Math.random()}
-                  style={
-                    index === 0 || index === 1
-                      ? {
-                          ...Styles.th,
-                          backgroundColor: "white",
-                          textAlign: item.value === "Total" && "end",
-                        }
-                      : {
-                          ...Styles.th,
-                          textAlign: item.value === "Total" && "end",
-                        }
-                  }
-                >
-                  {item.value}
-                </td>
-              ))}
+              {Array.isArray(footer) &&
+                footer.length &&
+                footer.map((item, index) => (
+                  <td
+                    key={Math.random()}
+                    style={
+                      index === 0 || index === 1
+                        ? {
+                            ...Styles.th,
+                            backgroundColor: "white",
+                            textAlign: item.value === "Total" && "end",
+                          }
+                        : {
+                            ...Styles.th,
+                            textAlign: item.value === "Total" && "end",
+                          }
+                    }
+                  >
+                    {item.value}
+                  </td>
+                ))}
             </tr>
           </tfoot>
         </table>
