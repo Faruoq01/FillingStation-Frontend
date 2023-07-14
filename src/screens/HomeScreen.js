@@ -77,12 +77,10 @@ import AirBnBTotal from "../components/Home/e-station/AirBnBTotal";
 import Transactions from "../components/Home/Transactions";
 
 const HomeScreen = () => {
-  const user = useSelector((state) => state.authReducer.user);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const online = useSelector((data) => data.authReducer.connection);
+  const user = useSelector((state) => state.auth.user);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const online = useSelector((data) => data.auth.connection);
   const dispatch = useDispatch();
   const history = useHistory();
 

@@ -96,10 +96,10 @@ const Styles = {
     fontFamily: "'Nunito', sans-serif",
   },
   tp: {
-    width: "85%",
+    width: "100%",
     paddingLeft: 20,
     paddingRight: 20,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
   },
   ft: { marginTop: 20, marginBottom: "1rem" },
 };

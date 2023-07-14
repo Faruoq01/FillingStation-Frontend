@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import { ThreeDots } from "react-loader-spinner";
-import { useSelector } from "react-redux";
 import swal from "sweetalert";
-import { register, setSpinner } from "../../store/actions/auth";
-import { useDispatch } from "react-redux";
 import "../../styles/login.scss";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import COUNTRIES from "../common/countryList";
+import AuthService from "../../services/authService";
 const moment = require("moment-timezone");
 
 const Register = (props) => {
-  const loadingSpinner = useSelector(
-    (state) => state.authReducer.loadingSpinner
-  );
-  const dispatch = useDispatch();
+  const [loader, setLoader] = useState(false);
 
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
@@ -63,8 +58,15 @@ const Register = (props) => {
       location: location,
     };
 
-    dispatch(setSpinner());
-    dispatch(register(data, props));
+    setLoader(true);
+    AuthService.register(data)
+      .then(() => {
+        props.reg((prev) => !prev);
+      })
+      .then(() => {
+        setLoader(false);
+      })
+      .catch((err) => {});
   };
 
   const filterCountry = (e) => {
@@ -268,7 +270,7 @@ const Register = (props) => {
 
         <div style={{ height: "35px", alignItems: "center" }} className="reg">
           <div>
-            {loadingSpinner && (
+            {loader && (
               <ThreeDots
                 height="60"
                 width="50"

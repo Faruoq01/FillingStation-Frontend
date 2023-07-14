@@ -41,10 +41,8 @@ import "react-calendar/dist/Calendar.css";
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const DashboardImage = (props) => {
-  const user = useSelector((state) => state.authReducer.user);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const user = useSelector((state) => state.auth.user);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -136,16 +134,12 @@ const Dashboard = (props) => {
   const history = useHistory();
   const approx = require("approximate-number");
   const moment = require("moment-timezone");
-  const user = useSelector((state) => state.authReducer.user);
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const dashboardData = useSelector(
-    (state) => state.dashboardReducer.dashboardData
-  );
+  const user = useSelector((state) => state.auth.user);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const dashboardData = useSelector((state) => state.dashboard.dashboardData);
   const dashboardRecords = useSelector(
-    (state) => state.dashboardReducer.dashboardRecords
+    (state) => state.dashboard.dashboardRecords
   );
   const [defaultState, setDefault] = useState(0);
   const [load, setLoad] = useState(false);
@@ -157,7 +151,7 @@ const Dashboard = (props) => {
   });
   const [productState, setProductState] = useState(0);
   // const [value, setValue] = React.useState([new Date(), new Date()]);
-  const updatedDate = useSelector((state) => state.dashboardReducer.dateRange);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const [prices, setPrices] = useState(false);
 
   const resolveUserID = () => {
@@ -174,7 +168,6 @@ const Dashboard = (props) => {
     }
     return user.permission?.dashboard[e];
   };
-  console.log(topStationsList, "tops");
 
   const getTopStations = () => {
     if (product === "PMS") return topStationsList.topPMS;
