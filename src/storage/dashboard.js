@@ -1,67 +1,132 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  dashboardData: {
-    count: 0,
+  employees: 0,
+
+  products: {
+    pms: {
+      sales: 0,
+      amount: 0,
+    },
+    ago: {
+      sales: 0,
+      amount: 0,
+    },
+    dpk: {
+      sales: 0,
+      amount: 0,
+    },
+  },
+  graph: {
+    weekly: {
+      pms: [0, 0, 0, 0, 0, 0, 0],
+      ago: [0, 0, 0, 0, 0, 0, 0],
+      dpk: [0, 0, 0, 0, 0, 0, 0],
+    },
+    monthly: {
+      pms: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ago: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      dpk: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    },
+    annually: {
+      pms: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ago: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      dpk: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    },
+  },
+  overage: {
+    pms: {
+      dipping: 0,
+      currentLevel: 0,
+      capacity: 0,
+      supply: 0,
+    },
+    ago: {
+      dipping: 0,
+      currentLevel: 0,
+      capacity: 0,
+      supply: 0,
+    },
+    dpk: {
+      dipping: 0,
+      currentLevel: 0,
+      capacity: 0,
+      supply: 0,
+    },
+  },
+  assets: {
     tanks: {
-      activeTank: { count: 0, list: [] },
-      inActiveTank: { count: 0, list: [] },
+      activeCounts: 0,
+      inactiveCounts: 0,
     },
     pumps: {
-      activePumps: { count: 0, list: [] },
-      inActivePumps: { count: 0, list: [] },
+      activeCounts: 0,
+      inactiveCounts: 0,
     },
   },
-  dashboardRecords: {
-    sales: {
-      totalAmount: 0,
-      totalVolume: 0,
-    },
+  supplies: {
+    pms: 0,
+    ago: 0,
+    dpk: 0,
+  },
+  paymentsDetails: {
+    bankPayments: 0,
+    posPayments: 0,
+    netToBank: 0,
+    outstandingBalance: 0,
+  },
+  expenses: 0,
 
-    supply: {
-      pmsSupply: 0,
-      agoSupply: 0,
-      dpkSupply: 0,
-    },
-    totalExpenses: 0,
-    incoming: [],
-    station: [],
-    payments: {
-      totalPayments: 0,
-      totalPosPayments: 0,
-      netToBank: 0,
-    },
+  topStations: {
+    topPMS: [],
+    topAGO: [],
+    topDPK: [],
   },
 
-  employees: [],
-  searchData: [],
-  utils: {},
-  singleUser: {},
+  lpo: {
+    pms: 0,
+    ago: 0,
+    dpk: 0,
+  },
+  incoming: [],
+  overageType: "PMS",
   dateRange: [new Date(), new Date()],
-  sales: [],
 };
 
-export const counterSlice = createSlice({
+export const dashboard = createSlice({
   name: "dashboard",
   initialState,
   reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
+    employees: (state, action) => {
+      state.employees = action.payload;
     },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
+    products: (state) => {},
+    graph: (state) => {},
+    overage: (state) => {},
+    assets: (state) => {},
+    supplies: (state) => {},
+    paymentsDetails: (state) => {},
+    topStations: (state) => {},
+    lpo: (state) => {},
+    incoming: (state) => {},
+    dateRange: (state, action) => {
+      state.dateRange = action.payload;
     },
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const {
+  employees,
+  products,
+  graph,
+  overage,
+  assets,
+  supplies,
+  paymentsDetails,
+  topStations,
+  lpo,
+  incoming,
+  dateRange,
+} = dashboard.actions;
 
-export default counterSlice.reducer;
+export default dashboard.reducer;
