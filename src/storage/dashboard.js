@@ -37,6 +37,19 @@ const initialState = {
       dpk: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     },
   },
+  yearList: [
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026",
+    "2027",
+  ],
   overage: {
     pms: {
       dipping: 0,
@@ -115,6 +128,9 @@ export const dashboard = createSlice({
     annually: (state, action) => {
       state.graph.annually = action.payload;
     },
+    yearList: (state, action) => {
+      state.yearList = action.payload;
+    },
     overage: (state) => {},
     assets: (state) => {},
     supplies: (state) => {},
@@ -134,6 +150,7 @@ export const {
   weekly,
   monthly,
   annually,
+  yearList,
   overage,
   assets,
   supplies,

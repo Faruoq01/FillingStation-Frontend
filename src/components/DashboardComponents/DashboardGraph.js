@@ -18,7 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import APIs from "../../services/api";
-import { weekly, monthly, annually } from "../../storage/dashboard";
+import { weekly, monthly, annually, yearList } from "../../storage/dashboard";
 
 ChartJS.register(
   CategoryScale,
@@ -55,20 +55,6 @@ const weekLabels = [
   "Saturday",
 ];
 
-const annualLabels = [
-  "2017",
-  "2018",
-  "2019",
-  "2020",
-  "2021",
-  "2022",
-  "2023",
-  "2024",
-  "2025",
-  "2026",
-  "2027",
-];
-
 const options = {
   plugins: {
     legend: {
@@ -92,6 +78,7 @@ const DashboardGraph = (props) => {
   const [value, setValue] = useState(null);
 
   const graph = useSelector((state) => state.dashboard.graph);
+  const annualLabel = useSelector((state) => state.dashboard.yearList);
   const [load, setLoad] = useState(false);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const user = useSelector((state) => state.auth.user);
@@ -151,7 +138,7 @@ const DashboardGraph = (props) => {
 
   const setAnnualData = () => {
     const annualData = {
-      labels: annualLabels,
+      labels: annualLabel,
       datasets: [
         {
           label: "AGO",
@@ -278,22 +265,38 @@ const DashboardGraph = (props) => {
   const getAnnualGraphData = useCallback(
     (date, station) => {
       const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
-      const firstDayOfTheWeek = getLastSunday(getDate);
-      const lastDayOfTheWeek = getUpcomingSunday(getDate);
-      const range = getAllDatesBetween(firstDayOfTheWeek, lastDayOfTheWeek);
+      const getYear = moment(getDate).format("YYYY");
+      const startYear = Number(getYear) - 5;
+      const endYear = Number(getYear) + 5;
+      const yearSet = [];
+      const range = [];
+      for (let i = startYear; i <= endYear; i++) {
+        yearSet.push(i);
+      }
 
-      // const payload = {
-      //   organisation: resolveUserID().id,
-      //   outletID: station === null ? "None" : station?._id,
-      //   range: range,
-      // };
+      for (let year of yearSet) {
+        const startDate = moment({ year, month: 0 })
+          .startOf("year")
+          .format("YYYY-MM-DD");
+        const endDate = moment({ year, month: 11 })
+          .endOf("year")
+          .format("YYYY-MM-DD");
 
-      // APIs.post("/dashboard/annually", payload)
-      //   .then(({ data }) => {
-      //     dispatch(annually(data.annually.annually));
-      //   })
-      //   .catch((err) => {
-      //   });
+        range.push({ start: startDate, end: endDate });
+      }
+      dispatch(yearList(yearSet));
+
+      const payload = {
+        organisation: resolveUserID().id,
+        outletID: station === null ? "None" : station?._id,
+        range: range,
+      };
+
+      APIs.post("/dashboard/annually", payload)
+        .then(({ data }) => {
+          dispatch(annually(data.annually.annually));
+        })
+        .catch((err) => {});
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
