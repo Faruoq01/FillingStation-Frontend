@@ -106,7 +106,9 @@ export const dashboard = createSlice({
     products: (state, action) => {
       state.products = action.payload;
     },
-    graph: (state) => {},
+    weekly: (state, action) => {
+      state.graph.weekly = action.payload;
+    },
     overage: (state) => {},
     assets: (state) => {},
     supplies: (state) => {},
@@ -123,7 +125,7 @@ export const dashboard = createSlice({
 export const {
   employees,
   products,
-  graph,
+  weekly,
   overage,
   assets,
   supplies,

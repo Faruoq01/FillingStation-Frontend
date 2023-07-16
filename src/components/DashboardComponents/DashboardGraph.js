@@ -1,6 +1,5 @@
 import { Button, Skeleton, Stack } from "@mui/material";
 import { Line } from "react-chartjs-2";
-import DashboardService from "../../services/dashboard";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,14 +10,15 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import APIs from "../../services/api";
+import { weekly } from "../../storage/dashboard";
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +30,7 @@ ChartJS.register(
   Legend
 );
 
-const labels = [
+const monthlyLabels = [
   "Jan",
   "Feb",
   "Mar",
@@ -69,69 +69,6 @@ const annualLabels = [
   "2027",
 ];
 
-const weeklyData = {
-  labels: weekLabels,
-  datasets: [
-    {
-      label: "AGO",
-      borderColor: "#399A19",
-      data: [0, 0, 0, 0, 0, 0, 0],
-    },
-    {
-      label: "PMS",
-      borderColor: "#FFA010",
-      data: [0, 0, 0, 0, 0, 0, 0],
-    },
-    {
-      label: "DPK",
-      borderColor: "#000",
-      data: [0, 0, 0, 0, 0, 0, 0],
-    },
-  ],
-};
-
-const monthlyData = {
-  labels: labels,
-  datasets: [
-    {
-      label: "AGO",
-      borderColor: "#399A19",
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    },
-    {
-      label: "PMS",
-      borderColor: "#FFA010",
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    },
-    {
-      label: "DPK",
-      borderColor: "#000",
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    },
-  ],
-};
-
-const annualData = {
-  labels: annualLabels,
-  datasets: [
-    {
-      label: "AGO",
-      borderColor: "#399A19",
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    },
-    {
-      label: "PMS",
-      borderColor: "#FFA010",
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    },
-    {
-      label: "DPK",
-      borderColor: "#000",
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    },
-  ],
-};
-
 const options = {
   plugins: {
     legend: {
@@ -155,15 +92,87 @@ const DashboardGraph = (props) => {
   const [value, setValue] = useState(null);
 
   const graph = useSelector((state) => state.dashboard.graph);
-
-  const [weeklyDataSet, setWeeklyDataSet] = useState(weeklyData);
-  const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
-  const [annualDataSet, setAnnualDataSet] = useState(annualData);
   const [load, setLoad] = useState(false);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  console.log(graph, "graph");
+  const [currentSelection, setCurrentSelection] = useState(1);
 
-  const [currentSelection, setCurrentSelection] = useState(0);
+  const setWeeklyData = () => {
+    const weeklyData = {
+      labels: weekLabels,
+      datasets: [
+        {
+          label: "AGO",
+          borderColor: "#399A19",
+          data: graph.weekly.pms,
+        },
+        {
+          label: "PMS",
+          borderColor: "#FFA010",
+          data: graph.weekly.ago,
+        },
+        {
+          label: "DPK",
+          borderColor: "#000",
+          data: graph.weekly.dpk,
+        },
+      ],
+    };
+
+    return weeklyData;
+  };
+
+  const setMonthlyData = () => {
+    const monthlyData = {
+      labels: monthlyLabels,
+      datasets: [
+        {
+          label: "AGO",
+          borderColor: "#399A19",
+          data: graph.monthly.pms,
+        },
+        {
+          label: "PMS",
+          borderColor: "#FFA010",
+          data: graph.monthly.ago,
+        },
+        {
+          label: "DPK",
+          borderColor: "#000",
+          data: graph.monthly.dpk,
+        },
+      ],
+    };
+
+    return monthlyData;
+  };
+
+  const setAnnualData = () => {
+    const annualData = {
+      labels: annualLabels,
+      datasets: [
+        {
+          label: "AGO",
+          borderColor: "#399A19",
+          data: graph.annually.pms,
+        },
+        {
+          label: "PMS",
+          borderColor: "#FFA010",
+          data: graph.annually.ago,
+        },
+        {
+          label: "DPK",
+          borderColor: "#000",
+          data: graph.annually.dpk,
+        },
+      ],
+    };
+
+    return annualData;
+  };
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -175,22 +184,6 @@ const DashboardGraph = (props) => {
 
   const updateDate = async (newValue) => {
     setValue(newValue);
-
-    const getDate = newValue.format("YYYY-MM-DD");
-
-    const firstDayOfTheWeek = getLastSunday(getDate);
-    const lastDayOfTheWeek = getUpcomingSunday(getDate);
-
-    const payload = {
-      organisation: resolveUserID().id,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      startRange: firstDayOfTheWeek,
-      endRange: lastDayOfTheWeek,
-    };
-
-    DashboardService.getWeeklyDataFromApi(payload).then((data) => {
-      analyseWeeklyData(data);
-    });
   };
 
   function getUpcomingSunday(data) {
@@ -209,138 +202,36 @@ const DashboardGraph = (props) => {
     return last;
   }
 
-  function getFirstAndLastDayOfTheYear() {
-    const currentYear = new Date().getFullYear();
-    const firstDay = new Date(currentYear, 0, 1).toLocaleDateString();
-    const year = firstDay.split("/")[2];
+  const getAllDatesBetween = (startDateString, endDateString) => {
+    const dateFormat = "YYYY-MM-DD";
+    const startDate = moment(startDateString, dateFormat);
+    const endDate = moment(endDateString, dateFormat);
+    const dates = [];
 
-    const firstRange = moment([year])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const secondRange = moment([year])
-      .endOf("year")
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    return { firstDay: firstRange, lastDay: secondRange };
-  }
-
-  function getYearRange() {
-    const currentYear = new Date().getFullYear();
-    const firstDay = new Date(currentYear, 0, 1).toLocaleDateString();
-    const year = firstDay.split("/")[2];
-
-    const firstRange = moment([year])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const secondRange = moment([year])
-      .endOf("year")
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    return { firstRange: firstRange, secondRange: secondRange };
-  }
-
-  const analyseWeeklyData = (data) => {
-    const weeklyData = {
-      labels: weekLabels,
-      datasets: [
-        {
-          label: "AGO",
-          borderColor: "#FFA010",
-          data: graph.weekly.pms,
-        },
-        {
-          label: "PMS",
-          borderColor: "#399A19",
-          data: graph.weekly.ago,
-        },
-        {
-          label: "DPK",
-          borderColor: "#000",
-          data: graph.weekly.dpk,
-        },
-      ],
-    };
-    setWeeklyDataSet(weeklyData);
-  };
-
-  const analyseMonthlyData = (data) => {
-    const monthlyData = {
-      labels: labels,
-      datasets: [
-        {
-          label: "AGO",
-          borderColor: "#FFA010",
-          data: graph.monthly.ago,
-        },
-        {
-          label: "PMS",
-          borderColor: "#399A19",
-          data: graph.monthly.pms,
-        },
-        {
-          label: "DPK",
-          borderColor: "#000",
-          data: graph.monthly.dpk,
-        },
-      ],
-    };
-
-    setMonthlyDataSet(monthlyData);
-  };
-
-  const analyseAnnualData = (data, range) => {
-    const years = [];
-    const getTheYear = range.firstRange.split("-")[0];
-
-    const firstRange = Number(getTheYear) - 5;
-    const lastRangeRange = Number(getTheYear) + 5;
-
-    for (let i = firstRange; i <= lastRangeRange; i++) {
-      years.push(i);
+    while (startDate.isSameOrBefore(endDate)) {
+      dates.push(startDate.format(dateFormat));
+      startDate.add(1, "day");
     }
 
-    const annualData = {
-      labels: years,
-      datasets: [
-        {
-          label: "AGO",
-          borderColor: "#FFA010",
-          data: graph.annually.pms,
-        },
-        {
-          label: "PMS",
-          borderColor: "#399A19",
-          data: graph.annually.ago,
-        },
-        {
-          label: "DPK",
-          borderColor: "#000",
-          data: graph.annually.dpk,
-        },
-      ],
-    };
-
-    setAnnualDataSet(annualData);
+    return dates;
   };
 
   const getWeeklyGraphData = useCallback((date, station) => {
-    // setLoad(true);
+    setLoad(true);
     const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
     const firstDayOfTheWeek = getLastSunday(getDate);
     const lastDayOfTheWeek = getUpcomingSunday(getDate);
+    const range = getAllDatesBetween(firstDayOfTheWeek, lastDayOfTheWeek);
 
     const payload = {
       organisation: resolveUserID().id,
       outletID: station === null ? "None" : station?._id,
-      start: firstDayOfTheWeek,
-      end: lastDayOfTheWeek,
+      range: range,
     };
 
     APIs.post("/dashboard/weekly", payload)
       .then(({ data }) => {
-        console.log(data, "data");
+        dispatch(weekly(data.weekly.weekly));
       })
       .then(() => {
         setLoad(false);
@@ -355,87 +246,6 @@ const DashboardGraph = (props) => {
     getWeeklyGraphData(value, oneStationData);
   }, [oneStationData, getWeeklyGraphData, value]);
 
-  const getAllCurrentWeekData = useCallback(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getAllWeeklyData = () => {
-    const gate = new Date();
-    const firstDayOfTheWeek = getLastSunday(gate);
-    const lastDayOfTheWeek = getUpcomingSunday(gate);
-
-    const payload = {
-      organisation: resolveUserID().id,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      startRange: firstDayOfTheWeek,
-      endRange: lastDayOfTheWeek,
-    };
-
-    DashboardService.getWeeklyDataFromApi(payload).then((data) => {
-      analyseWeeklyData(data);
-    });
-  };
-
-  const getAllMonthlyData = () => {
-    const dateRange = getFirstAndLastDayOfTheYear();
-
-    const payload = {
-      organisation: resolveUserID().id,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      startRange: dateRange.firstDay,
-      endRange: dateRange.lastDay,
-    };
-
-    DashboardService.getMonthlyDataFromApi(payload).then((data) => {
-      analyseMonthlyData(data);
-    });
-  };
-
-  const getAllAnnualData = () => {
-    const dateRange = getYearRange();
-
-    const payload = {
-      organisation: resolveUserID().id,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      startRange: dateRange.firstRange,
-      endRange: dateRange.secondRange,
-    };
-
-    DashboardService.getAnnualDataFromApi(payload).then((data) => {
-      analyseAnnualData(data, dateRange);
-    });
-  };
-
-  const switchGraphTab = (data) => {
-    switch (data) {
-      case "week": {
-        setCurrentSelection(0);
-        getAllWeeklyData();
-        break;
-      }
-
-      case "month": {
-        setCurrentSelection(1);
-        getAllMonthlyData();
-        break;
-      }
-
-      case "year": {
-        setCurrentSelection(2);
-        getAllAnnualData();
-        break;
-      }
-      default: {
-      }
-    }
-  };
-
-  useEffect(() => {
-    // setCurrentDate(date2);
-
-    getAllCurrentWeekData();
-  }, [getAllCurrentWeekData]);
-
   const convertDate = (newValue) => {
     const getDate = newValue.format("MM/DD/YYYY");
     const date = new Date(getDate);
@@ -444,6 +254,34 @@ const DashboardGraph = (props) => {
     const finalDate = `${day} ${month} ${year}`;
 
     return finalDate;
+  };
+
+  const switchGraphTab = (type) => {
+    switch (type) {
+      case "week": {
+        setCurrentSelection(1);
+        break;
+      }
+
+      case "month": {
+        setCurrentSelection(2);
+        break;
+      }
+
+      case "year": {
+        setCurrentSelection(3);
+        break;
+      }
+
+      default: {
+      }
+    }
+  };
+
+  const getDataDetails = () => {
+    if (currentSelection === 1) return setWeeklyData();
+    if (currentSelection === 2) return setMonthlyData();
+    if (currentSelection === 3) return setAnnualData();
   };
 
   return (
@@ -464,7 +302,7 @@ const DashboardGraph = (props) => {
                 onClick={() => {
                   switchGraphTab("week");
                 }}
-                sx={currentSelection === 0 ? activeButton : inActive}
+                sx={currentSelection === 1 ? activeButton : inActive}
                 variant="contained">
                 {" "}
                 Week{" "}
@@ -473,7 +311,7 @@ const DashboardGraph = (props) => {
                 onClick={() => {
                   switchGraphTab("month");
                 }}
-                sx={currentSelection === 1 ? activeButton : inActive}
+                sx={currentSelection === 2 ? activeButton : inActive}
                 variant="contained">
                 {" "}
                 Month{" "}
@@ -482,7 +320,7 @@ const DashboardGraph = (props) => {
                 onClick={() => {
                   switchGraphTab("year");
                 }}
-                sx={currentSelection === 2 ? activeButton : inActive}
+                sx={currentSelection === 3 ? activeButton : inActive}
                 variant="contained">
                 {" "}
                 Year{" "}
@@ -514,18 +352,7 @@ const DashboardGraph = (props) => {
             </div>
           </div>
           <div className="graph">
-            <Line
-              options={options}
-              data={
-                currentSelection === 0
-                  ? weeklyDataSet
-                  : currentSelection === 1
-                  ? monthlyDataSet
-                  : currentSelection
-                  ? annualDataSet
-                  : []
-              }
-            />
+            <Line options={options} data={getDataDetails()} />
           </div>
         </div>
       )}
