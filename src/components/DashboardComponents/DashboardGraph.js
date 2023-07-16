@@ -18,7 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import APIs from "../../services/api";
-import { weekly } from "../../storage/dashboard";
+import { weekly, monthly, annually } from "../../storage/dashboard";
 
 ChartJS.register(
   CategoryScale,
@@ -242,9 +242,74 @@ const DashboardGraph = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getMonthlyGraphData = useCallback(
+    (date, station) => {
+      const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
+      const getYear = moment(getDate).format("YYYY");
+      const range = [];
+
+      for (let month = 0; month < 12; month++) {
+        const startDate = moment({ getYear, month })
+          .startOf("month")
+          .format("YYYY-MM-DD");
+        const endDate = moment({ getYear, month })
+          .endOf("month")
+          .format("YYYY-MM-DD");
+
+        range.push({ start: startDate, end: endDate });
+      }
+
+      const payload = {
+        organisation: resolveUserID().id,
+        outletID: station === null ? "None" : station?._id,
+        range: range,
+      };
+
+      APIs.post("/dashboard/monthly", payload)
+        .then(({ data }) => {
+          dispatch(monthly(data.monthly.monthly));
+        })
+        .catch((err) => {});
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const getAnnualGraphData = useCallback(
+    (date, station) => {
+      const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
+      const firstDayOfTheWeek = getLastSunday(getDate);
+      const lastDayOfTheWeek = getUpcomingSunday(getDate);
+      const range = getAllDatesBetween(firstDayOfTheWeek, lastDayOfTheWeek);
+
+      // const payload = {
+      //   organisation: resolveUserID().id,
+      //   outletID: station === null ? "None" : station?._id,
+      //   range: range,
+      // };
+
+      // APIs.post("/dashboard/annually", payload)
+      //   .then(({ data }) => {
+      //     dispatch(annually(data.annually.annually));
+      //   })
+      //   .catch((err) => {
+      //   });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   useEffect(() => {
     getWeeklyGraphData(value, oneStationData);
-  }, [oneStationData, getWeeklyGraphData, value]);
+    getMonthlyGraphData(value, oneStationData);
+    getAnnualGraphData(value, oneStationData);
+  }, [
+    oneStationData,
+    getWeeklyGraphData,
+    value,
+    getMonthlyGraphData,
+    getAnnualGraphData,
+  ]);
 
   const convertDate = (newValue) => {
     const getDate = newValue.format("MM/DD/YYYY");
@@ -260,16 +325,19 @@ const DashboardGraph = (props) => {
     switch (type) {
       case "week": {
         setCurrentSelection(1);
+        getWeeklyGraphData(value, oneStationData);
         break;
       }
 
       case "month": {
         setCurrentSelection(2);
+        getMonthlyGraphData(value, oneStationData);
         break;
       }
 
       case "year": {
         setCurrentSelection(3);
+        getAnnualGraphData(value, oneStationData);
         break;
       }
 
