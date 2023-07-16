@@ -1,4 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import moment from "moment";
+
+const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
 const initialState = {
   employees: 0,
@@ -90,7 +93,7 @@ const initialState = {
   },
   incoming: [],
   overageType: "PMS",
-  dateRange: [new Date(), new Date()],
+  dateRange: [today, today],
 };
 
 export const dashboard = createSlice({
@@ -100,7 +103,9 @@ export const dashboard = createSlice({
     employees: (state, action) => {
       state.employees = action.payload;
     },
-    products: (state) => {},
+    products: (state, action) => {
+      state.products = action.payload;
+    },
     graph: (state) => {},
     overage: (state) => {},
     assets: (state) => {},

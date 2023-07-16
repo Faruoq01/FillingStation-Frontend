@@ -1,8 +1,7 @@
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import DashboardService from "../../services/dashboard";
-import { adminOutlet } from "../../store/actions/outlet";
+import { adminOutlet } from "../../storage/outlet";
 import swal from "sweetalert";
 import { MenuItem, Select } from "@mui/material";
 import { dateRange } from "../../storage/dashboard";
@@ -17,15 +16,6 @@ const Controls = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const [defaultState, setDefault] = useState(0);
-  const [load, setLoad] = useState(false);
-
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -35,15 +25,13 @@ const Controls = () => {
   };
 
   const onChangeRange = (date) => {
-    setLoad(true);
-
     const formatOne = moment(new Date(date[0]))
       .format("YYYY-MM-DD HH:mm:ss")
       .split(" ")[0];
     const formatTwo = moment(new Date(date[1]))
       .format("YYYY-MM-DD HH:mm:ss")
       .split(" ")[0];
-    dispatch(dateRange([new Date(formatOne), new Date(formatTwo)]));
+    dispatch(dateRange([formatOne, formatTwo]));
   };
 
   const changeMenu = (index, item) => {
@@ -51,14 +39,6 @@ const Controls = () => {
       return swal("Warning!", "Permission denied", "info");
     setDefault(index);
     dispatch(adminOutlet(item));
-    setLoad(true);
-
-    const formatOne = moment(new Date(updatedDate[0]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const formatTwo = moment(new Date(updatedDate[1]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
   };
 
   return (

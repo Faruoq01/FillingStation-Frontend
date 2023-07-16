@@ -10,17 +10,18 @@ import approximateNumber from "approximate-number";
 import DashboardImage from "./dashImage";
 import APIs from "../../services/api";
 import { useCallback } from "react";
-import { employees } from "../../storage/dashboard";
+import { employees, products } from "../../storage/dashboard";
 
 const Sales = (props) => {
   const dispatch = useDispatch();
+  const moment = require("moment-timezone");
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const employee = useSelector((state) => state.dashboard.employees);
-  const products = useSelector((state) => state.dashboard.products);
+  const product = useSelector((state) => state.dashboard.products);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const [load, setLoad] = useState(false);
-  console.log(updatedDate, "range");
+
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
       return { id: user._id };
@@ -37,14 +38,32 @@ const Sales = (props) => {
   };
 
   const getEmployeeCounts = useCallback(() => {
+    updateSalesValues(updatedDate, oneStationData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const updateSalesValues = useCallback((date, station) => {
     setLoad(true);
+
+    const formatOne = moment(date[0])
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+
+    const formatTwo = moment(date[1])
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+
     const payload = {
-      outletID: oneStationData === null ? "None" : oneStationData._id,
+      outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
+      start: formatOne,
+      end: formatTwo,
     };
+
     APIs.post("/dashboard/employees", payload)
       .then(({ data }) => {
-        dispatch(employees(data.employees));
+        dispatch(employees(data.data.employee));
+        dispatch(products(data.data.sales));
       })
       .then(() => {
         setLoad(false);
@@ -58,6 +77,10 @@ const Sales = (props) => {
   useEffect(() => {
     getEmployeeCounts();
   }, [getEmployeeCounts]);
+
+  useEffect(() => {
+    updateSalesValues(updatedDate, oneStationData);
+  }, [oneStationData, updateSalesValues, updatedDate]);
 
   const openSalesDisplay = () => {
     if (!getPerm("5")) return swal("Warning!", "Permission denied", "info");
@@ -104,9 +127,9 @@ const Sales = (props) => {
                     Liter:{" "}
                     <span style={{ fontWeight: "bold", fontSize: "12px" }}>
                       {approximateNumber(
-                        Number(products.pms.sales) +
-                          Number(products.ago.sales) +
-                          Number(products.dpk.sales)
+                        Number(product.pms.sales) +
+                          Number(product.ago.sales) +
+                          Number(product.dpk.sales)
                       )}
                     </span>{" "}
                     LTR
@@ -121,9 +144,9 @@ const Sales = (props) => {
                     <span style={{ fontWeight: "bold" }}>
                       NGN{" "}
                       {approximateNumber(
-                        Number(products.pms.amount) +
-                          Number(products.ago.amount) +
-                          Number(products.dpk.amount)
+                        Number(product.pms.amount) +
+                          Number(product.ago.amount) +
+                          Number(product.dpk.amount)
                       )}
                     </span>
                   </div>

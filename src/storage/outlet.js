@@ -18,31 +18,20 @@ const initialState = {
   tankListType: "",
 };
 
-export const authSlice = createSlice({
+export const outletSlice = createSlice({
   name: "outlet",
   initialState,
   reducers: {
-    login: (state, payload) => {
-      state.user = payload.user;
-      state.token = payload.token;
-      state.isLoggedIn = true;
+    adminOutlet: (state, action) => {
+      state.adminOutlet = action.payload;
     },
-    logout: (state) => {
-      state.user = {};
-      state.token = "";
-      state.isLoggedIn = false;
-    },
-    updateUser: (state, payload) => {
-      state.user = payload;
-    },
-    internetConnection: (state, payload) => {
-      state.connection = payload;
+    getAllStations: (state, action) => {
+      state.allOutlets = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login, logout, updateUser, internetConnection } =
-  authSlice.actions;
+export const { adminOutlet, getAllStations } = outletSlice.actions;
 
-export default authSlice.reducer;
+export default outletSlice.reducer;

@@ -11,9 +11,9 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, payload) => {
-      state.user = payload.user;
-      state.token = payload.token;
+    login: (state, action) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
       state.isLoggedIn = true;
     },
     logout: (state) => {
@@ -21,11 +21,11 @@ export const authSlice = createSlice({
       state.token = "";
       state.isLoggedIn = false;
     },
-    updateUser: (state, payload) => {
-      state.user = payload;
+    updateUser: (state, action) => {
+      state.user = action.payload;
     },
-    internetConnection: (state, payload) => {
-      state.connection = payload;
+    internetConnection: (state, action) => {
+      state.connection = action.payload;
     },
   },
 });

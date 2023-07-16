@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ButtonDatePicker from "../common/CustomDatePicker";
+import APIs from "../../services/api";
 
 ChartJS.register(
   CategoryScale,
@@ -149,11 +150,8 @@ const options = {
 };
 
 const DashboardGraph = (props) => {
-  const date = new Date();
-  const toString = date.toDateString();
-  const [month, day, year] = toString.split(" ");
-  const date2 = `${day} ${month} ${year}`;
   const moment = require("moment-timezone");
+  const date2 = moment().format("YYYY-MM-DD").split(" ")[0];
   const [value, setValue] = useState(null);
 
   const graph = useSelector((state) => state.dashboard.graph);
@@ -162,7 +160,6 @@ const DashboardGraph = (props) => {
   const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
   const [annualDataSet, setAnnualDataSet] = useState(annualData);
   const [load, setLoad] = useState(false);
-  // const [currentDate, setCurrentDate] = useState();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const user = useSelector((state) => state.auth.user);
 
@@ -328,21 +325,37 @@ const DashboardGraph = (props) => {
     setAnnualDataSet(annualData);
   };
 
-  const getAllCurrentWeekData = useCallback(() => {
-    const gate = new Date();
-    const firstDayOfTheWeek = getLastSunday(gate);
-    const lastDayOfTheWeek = getUpcomingSunday(gate);
+  const getWeeklyGraphData = useCallback((date, station) => {
+    // setLoad(true);
+    const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
+    const firstDayOfTheWeek = getLastSunday(getDate);
+    const lastDayOfTheWeek = getUpcomingSunday(getDate);
 
     const payload = {
       organisation: resolveUserID().id,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      startRange: firstDayOfTheWeek,
-      endRange: lastDayOfTheWeek,
+      outletID: station === null ? "None" : station?._id,
+      start: firstDayOfTheWeek,
+      end: lastDayOfTheWeek,
     };
 
-    DashboardService.getWeeklyDataFromApi(payload).then((data) => {
-      analyseWeeklyData(data);
-    });
+    APIs.post("/dashboard/weekly", payload)
+      .then(({ data }) => {
+        console.log(data, "data");
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getWeeklyGraphData(value, oneStationData);
+  }, [oneStationData, getWeeklyGraphData, value]);
+
+  const getAllCurrentWeekData = useCallback(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
