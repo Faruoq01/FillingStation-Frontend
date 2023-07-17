@@ -131,7 +131,9 @@ export const dashboard = createSlice({
     yearList: (state, action) => {
       state.yearList = action.payload;
     },
-    overage: (state) => {},
+    overage: (state, action) => {
+      state.overage = action.payload;
+    },
     assets: (state) => {},
     supplies: (state) => {},
     paymentsDetails: (state) => {},
@@ -140,6 +142,9 @@ export const dashboard = createSlice({
     incoming: (state) => {},
     dateRange: (state, action) => {
       state.dateRange = action.payload;
+    },
+    overageType: (state, action) => {
+      state.overageType = action.payload;
     },
   },
 });
@@ -159,6 +164,7 @@ export const {
   lpo,
   incoming,
   dateRange,
+  overageType,
 } = dashboard.actions;
 
 export default dashboard.reducer;

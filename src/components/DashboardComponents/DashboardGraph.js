@@ -83,7 +83,6 @@ const DashboardGraph = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  console.log(graph, "graph");
   const [currentSelection, setCurrentSelection] = useState(1);
 
   const setWeeklyData = () => {
