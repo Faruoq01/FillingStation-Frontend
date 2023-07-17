@@ -1,7 +1,7 @@
 import { Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
 import me1 from "../../assets/me1.png";
 import me2 from "../../assets/me2.png";
@@ -14,7 +14,6 @@ import { employees, products } from "../../storage/dashboard";
 
 const Sales = (props) => {
   const dispatch = useDispatch();
-  const moment = require("moment-timezone");
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const employee = useSelector((state) => state.dashboard.employees);
@@ -45,19 +44,11 @@ const Sales = (props) => {
   const updateSalesValues = useCallback((date, station) => {
     setLoad(true);
 
-    const formatOne = moment(date[0])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    const formatTwo = moment(date[1])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: formatOne,
-      end: formatTwo,
+      start: date[0],
+      end: date[1],
     };
 
     APIs.post("/dashboard/employees", payload)

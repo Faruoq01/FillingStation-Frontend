@@ -1,10 +1,6 @@
 import React from "react";
 import "../../styles/dashboard.scss";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useCallback } from "react";
-import OutletService from "../../services/outletService";
-import { adminOutlet, getAllStations } from "../../storage/outlet";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 import DashboardGraph from "../DashboardComponents/DashboardGraph";
 import SalesDisplay from "../Modals/SalesDisplay";
@@ -21,73 +17,9 @@ import IncomingOrder from "../DashboardComponents/IncomingOrder";
 import Controls from "../DashboardComponents/Controls";
 
 const Dashboard = (props) => {
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const [defaultState, setDefault] = useState(0);
-  const [load, setLoad] = useState(false);
   const [prices, setPrices] = useState(false);
-
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
-
-  const getPerm = (e) => {
-    if (user.userType === "superAdmin") {
-      return true;
-    }
-    return user.permission?.dashboard[e];
-  };
-
-  const getAllStationData = useCallback(() => {
-    const payload = {
-      organisation: resolveUserID().id,
-    };
-
-    if (oneStationData !== null) {
-      if (getPerm("1") || getPerm("2") || user.userType === "superAdmin") {
-        const findID = allOutlets.findIndex(
-          (data) => data._id === oneStationData._id
-        );
-        setDefault(findID + 1);
-        return;
-      }
-    }
-
-    setLoad(true);
-    OutletService.getAllOutletStations(payload)
-      .then((data) => {
-        dispatch(getAllStations(data.station));
-        if (
-          (getPerm("1") || user.userType === "superAdmin") &&
-          oneStationData === null
-        ) {
-          if (!getPerm("2")) setDefault(1);
-          dispatch(adminOutlet(null));
-          return "None";
-        } else {
-          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-            (data) => {
-              dispatch(adminOutlet(data.station));
-            }
-          );
-        }
-      })
-      .then(() => {
-        setLoad(false);
-      });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user._id, user.userType, user.outletID, dispatch]);
-
-  useEffect(() => {
-    getAllStationData();
-  }, [getAllStationData]);
 
   const closeModal = () => {
     setPrices(false);
@@ -111,7 +43,7 @@ const Dashboard = (props) => {
               }}>
               Total Sales
             </div>
-            <DashboardGraph load={load} station={oneStationData} />
+            <DashboardGraph station={oneStationData} />
             <OveragesAndShortages path={"dash"} />
           </div>
           <div className="right-dash">

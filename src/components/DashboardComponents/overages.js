@@ -83,7 +83,7 @@ const OveragesAndShortages = (props) => {
   };
 
   const loadOverageList = () => {
-    // history.push("/home/overage");
+    history.push("/home/overage");
   };
 
   const Selectors = () => {

@@ -1,17 +1,56 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import DashboardImage from "./dashImage";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Skeleton } from "@mui/material";
 import { useState } from "react";
 import slideMenu from "../../assets/slideMenu.png";
 import me4 from "../../assets/me4.png";
 import me5 from "../../assets/me5.png";
+import APIs from "../../services/api";
+import { assets } from "../../storage/dashboard";
 
 const Assets = () => {
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const assets = useSelector((state) => state.dashboard.assets);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const assetsData = useSelector((state) => state.dashboard.assets);
   const [load, setLoad] = useState(false);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
+  const getAssetCounts = useCallback((date, station) => {
+    setLoad(true);
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date[0],
+      end: date[1],
+    };
+
+    APIs.post("/dashboard/assets", payload)
+      .then(({ data }) => {
+        dispatch(assets(data.assets));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getAssetCounts(updatedDate, oneStationData);
+  }, [getAssetCounts, oneStationData, updatedDate]);
 
   return (
     <React.Fragment>
@@ -68,7 +107,7 @@ const Assets = () => {
           screen={"activeTank"}
           image={me4}
           name={"Active Tank"}
-          value={assets.tanks.activeCounts}
+          value={assetsData.tanks.activeCounts}
         />
         <DashboardImage
           load={load}
@@ -76,7 +115,7 @@ const Assets = () => {
           screen={"inactiveTank"}
           image={me4}
           name={"Inactive Tank"}
-          value={assets.tanks.inactiveCounts}
+          value={assetsData.tanks.inactiveCounts}
         />
       </div>
       <div style={{ marginTop: "15px" }} className="dashImages">
@@ -86,7 +125,7 @@ const Assets = () => {
           screen={"activePump"}
           image={me5}
           name={"Active Pump"}
-          value={assets.pumps.activeCounts}
+          value={assetsData.pumps.activeCounts}
         />
         <DashboardImage
           load={load}
@@ -94,7 +133,7 @@ const Assets = () => {
           screen={"inactivePump"}
           image={me5}
           name={"Inactive Pump"}
-          value={assets.pumps.inactiveCounts}
+          value={assetsData.pumps.inactiveCounts}
         />
       </div>
     </React.Fragment>

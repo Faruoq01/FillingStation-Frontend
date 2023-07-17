@@ -134,7 +134,9 @@ export const dashboard = createSlice({
     overage: (state, action) => {
       state.overage = action.payload;
     },
-    assets: (state) => {},
+    assets: (state, action) => {
+      state.assets = action.payload;
+    },
     supplies: (state) => {},
     paymentsDetails: (state) => {},
     topStations: (state) => {},

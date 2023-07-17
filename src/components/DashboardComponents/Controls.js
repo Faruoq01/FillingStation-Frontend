@@ -1,10 +1,13 @@
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { adminOutlet } from "../../storage/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import swal from "sweetalert";
 import { MenuItem, Select } from "@mui/material";
 import { dateRange } from "../../storage/dashboard";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import OutletService from "../../services/outletService";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -17,12 +20,60 @@ const Controls = () => {
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const [defaultState, setDefault] = useState(0);
 
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
       return true;
     }
     return user.permission?.dashboard[e];
   };
+
+  const getAllStationData = useCallback(() => {
+    const payload = {
+      organisation: resolveUserID().id,
+    };
+
+    if (oneStationData !== null) {
+      if (getPerm("1") || getPerm("2") || user.userType === "superAdmin") {
+        const findID = allOutlets.findIndex(
+          (data) => data._id === oneStationData._id
+        );
+        setDefault(findID + 1);
+        return;
+      }
+    }
+
+    OutletService.getAllOutletStations(payload).then((data) => {
+      dispatch(getAllStations(data.station));
+      if (
+        (getPerm("1") || user.userType === "superAdmin") &&
+        oneStationData === null
+      ) {
+        if (!getPerm("2")) setDefault(1);
+        dispatch(adminOutlet(null));
+        return "None";
+      } else {
+        OutletService.getOneOutletStation({ outletID: user.outletID }).then(
+          (data) => {
+            dispatch(adminOutlet(data.station));
+          }
+        );
+      }
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user._id, user.userType, user.outletID, dispatch]);
+
+  useEffect(() => {
+    getAllStationData();
+  }, [getAllStationData]);
 
   const onChangeRange = (date) => {
     const formatOne = moment(new Date(date[0]))
