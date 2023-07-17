@@ -1,14 +1,21 @@
 import { Button, Skeleton } from "@mui/material";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import slideMenu from "../../assets/slideMenu.png";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import ApproximateDecimal from "../common/approx";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import APIs from "../../services/api";
+import { supplies } from "../../storage/dashboard";
 
 const Supply = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const supplies = useSelector((state) => state.dashboard.supplies);
+  const suppliesData = useSelector((state) => state.dashboard.supplies);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const history = useHistory();
   const [load, setLoad] = useState(false);
 
@@ -26,6 +33,33 @@ const Supply = () => {
     }
     return user.permission?.dashboard[e];
   };
+
+  const getAssetCounts = useCallback((date, station) => {
+    setLoad(true);
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date[0],
+      end: date[1],
+    };
+
+    APIs.post("/dashboard/supplies", payload)
+      .then(({ data }) => {
+        dispatch(supplies(data.supplies));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getAssetCounts(updatedDate, oneStationData);
+  }, [getAssetCounts, oneStationData, updatedDate]);
 
   const goToSupplyPage = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");
@@ -96,7 +130,7 @@ const Supply = () => {
               <div className="left">PMS</div>
               <div className="right">
                 <div>Litre Qty</div>
-                <div>{ApproximateDecimal(supplies.pms)} Litres</div>
+                <div>{ApproximateDecimal(suppliesData.pms)} Litres</div>
               </div>
             </>
           )}
@@ -115,7 +149,7 @@ const Supply = () => {
               <div className="left">AGO</div>
               <div className="right">
                 <div>Litre Qty</div>
-                <div>{ApproximateDecimal(supplies.ago)} Litres</div>
+                <div>{ApproximateDecimal(suppliesData.ago)} Litres</div>
               </div>
             </>
           )}
@@ -134,7 +168,7 @@ const Supply = () => {
               <div className="left">DPK</div>
               <div className="right">
                 <div>Litre Qty</div>
-                <div>{ApproximateDecimal(supplies.dpk)} Litres</div>
+                <div>{ApproximateDecimal(suppliesData.dpk)} Litres</div>
               </div>
             </>
           )}

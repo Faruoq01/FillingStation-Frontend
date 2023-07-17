@@ -1,17 +1,58 @@
 import { Skeleton } from "@mui/material";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
 import me6 from "../../assets/me6.png";
+import APIs from "../../services/api";
+import { paymentsDetails } from "../../storage/dashboard";
+import { useEffect } from "react";
 
 const PaymentDetails = () => {
   const user = useSelector((state) => state.auth.user);
-  const paymentsDetails = useSelector(
+  const dispatch = useDispatch();
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const paymentsDetailData = useSelector(
     (state) => state.dashboard.paymentsDetails
   );
   const history = useHistory();
   const [load, setLoad] = useState(false);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
+  const getAssetCounts = useCallback((date, station) => {
+    setLoad(true);
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date[0],
+      end: date[1],
+    };
+
+    APIs.post("/dashboard/payments", payload)
+      .then(({ data }) => {
+        dispatch(paymentsDetails(data.paymentsDetails));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getAssetCounts(updatedDate, oneStationData);
+  }, [getAssetCounts, oneStationData, updatedDate]);
 
   const goToPayments = () => {
     history.push("/home/analysis/payments");
@@ -57,7 +98,7 @@ const PaymentDetails = () => {
                     fontWeight: "600",
                   }}
                   className="item-count">
-                  NGN {ApproximateDecimal(paymentsDetails.netToBank)}
+                  NGN {ApproximateDecimal(paymentsDetailData.netToBank)}
                 </div>
                 <div
                   style={{
@@ -75,7 +116,7 @@ const PaymentDetails = () => {
                     fontWeight: "600",
                   }}
                   className="item-count">
-                  NGN {ApproximateDecimal(paymentsDetails.bankPayments)}
+                  NGN {ApproximateDecimal(paymentsDetailData.bankPayments)}
                 </div>
                 <div
                   style={{
@@ -84,7 +125,8 @@ const PaymentDetails = () => {
                     fontWeight: "600",
                   }}
                   className="item-count">
-                  NGN {ApproximateDecimal(paymentsDetails.outstandingBalance)}
+                  NGN{" "}
+                  {ApproximateDecimal(paymentsDetailData.outstandingBalance)}
                 </div>
               </div>
               <div className="row-count">
@@ -111,7 +153,7 @@ const PaymentDetails = () => {
                     fontWeight: "600",
                   }}
                   className="item-count">
-                  NGN {ApproximateDecimal(paymentsDetails.posPayments)}
+                  NGN {ApproximateDecimal(paymentsDetailData.posPayments)}
                 </div>
                 <div
                   style={{

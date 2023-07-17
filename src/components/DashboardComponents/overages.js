@@ -162,7 +162,7 @@ const OveragesAndShortages = (props) => {
     <React.Fragment>
       {load ? (
         <Skeleton
-          sx={{ borderRadius: "5px", background: "#f7f7f7" }}
+          sx={{ borderRadius: "5px", background: "#f7f7f7", marginTop: "20px" }}
           animation="wave"
           variant="rectangular"
           width={"100%"}

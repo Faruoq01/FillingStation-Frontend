@@ -137,8 +137,12 @@ export const dashboard = createSlice({
     assets: (state, action) => {
       state.assets = action.payload;
     },
-    supplies: (state) => {},
-    paymentsDetails: (state) => {},
+    supplies: (state, action) => {
+      state.supplies = action.payload;
+    },
+    paymentsDetails: (state, action) => {
+      state.paymentsDetails = action.payload;
+    },
     topStations: (state) => {},
     lpo: (state) => {},
     incoming: (state) => {},
