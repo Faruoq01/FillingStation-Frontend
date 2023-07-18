@@ -103,13 +103,13 @@ export default function AirBnBTotalIndex() {
     }, 0);
 
     return {
-      labels: ["PMS", "DPK", "AGO"],
+      labels: ["PMS", "AGO", "DPK"],
       datasets: [
         {
           // label: "# of Votes",
           data: [pmsSales, agoSales, dpkSales],
-          backgroundColor: ["#399A19", "#35393E", "#FFA010"],
-          borderColor: ["#399A19", "#35393E", "#FFA010"],
+          backgroundColor: ["#399A19", "#FFA010", "#35393E"],
+          borderColor: ["#399A19", "#FFA010", "#35393E"],
           borderWidth: 0.5,
         },
       ],

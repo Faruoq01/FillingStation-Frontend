@@ -45,15 +45,13 @@ const ComprehensiveReportModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div style={contain}>
         <div
           style={{
             position: "absolute",
             zIndex: "10",
-          }}
-        >
+          }}>
           <div style={{ display: "none" }}>
             <Table />
           </div>
@@ -71,8 +69,7 @@ const ComprehensiveReportModal = (props) => {
               onClick={() => {
                 handlePrint();
               }}
-              style={prints}
-            >
+              style={prints}>
               Print
             </button>
             <button onClick={handleClose} style={closes}>
@@ -128,54 +125,6 @@ const contain = {
   position: "relative",
 };
 
-const tableHead = {
-  width: "100%",
-  height: "35px",
-  backgroundColor: "#525252",
-  display: "flex",
-  flexDirection: "row",
-  borderRadius: "4px",
-};
-
-const tableHead2 = {
-  width: "100%",
-  height: "50px",
-  backgroundColor: "#EDEDED",
-  display: "flex",
-  flexDirection: "row",
-  borderRadius: "4px",
-  marginTop: "5px",
-};
-
-const column = {
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "#fff",
-  fontSize: "14px",
-};
-
-const column2 = {
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "#000",
-  fontSize: "14px",
-};
-
-const place = {
-  width: "100%",
-  textAlign: "center",
-  fontSize: "14px",
-  marginTop: "20px",
-  color: "green",
-};
 const tableContainer = {
   width: "100%",
   minWidth: "980px",
