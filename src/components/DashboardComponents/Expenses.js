@@ -1,14 +1,21 @@
 import { Skeleton } from "@mui/material";
 import ApproximateDecimal from "../common/approx";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import expense from "../../assets/expense.png";
 import swal from "sweetalert";
+import { useCallback } from "react";
+import APIs from "../../services/api";
+import { useEffect } from "react";
+import { expenses } from "../../storage/dashboard";
 
 const Expenses = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const expenses = useSelector((state) => state.dashboard.expenses);
+  const expenseData = useSelector((state) => state.dashboard.expenses);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const history = useHistory();
   const [load, setLoad] = useState(false);
 
@@ -26,6 +33,33 @@ const Expenses = () => {
     }
     return user.permission?.dashboard[e];
   };
+
+  const getExpenses = useCallback((date, station) => {
+    setLoad(true);
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date[0],
+      end: date[1],
+    };
+
+    APIs.post("/dashboard/expenses", payload)
+      .then(({ data }) => {
+        dispatch(expenses(data.expenses));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getExpenses(updatedDate, oneStationData);
+  }, [getExpenses, oneStationData, updatedDate]);
 
   const goToExpenses = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
@@ -72,7 +106,7 @@ const Expenses = () => {
                 fontSize: "12px",
                 fontWeight: "900",
               }}>
-              NGN {ApproximateDecimal(expenses)}
+              NGN {ApproximateDecimal(expenseData)}
             </span>
           </div>
         )}

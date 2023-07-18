@@ -1,23 +1,105 @@
 import { MenuItem, Select, Skeleton } from "@mui/material";
 import approximateNumber from "approximate-number";
-import { useState } from "react";
-import { ProgressBar } from "react-loader-spinner";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import APIs from "../../services/api";
+import { topStations } from "../../storage/dashboard";
+
+import LinearProgress from "@mui/material/LinearProgress";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const pmsTheme = createTheme({
+  components: {
+    MuiLinearProgress: {
+      styleOverrides: {
+        barColorPrimary: {
+          backgroundColor: "#399A19",
+        },
+      },
+    },
+  },
+});
+
+const agoTheme = createTheme({
+  components: {
+    MuiLinearProgress: {
+      styleOverrides: {
+        barColorPrimary: {
+          backgroundColor: "#FFA010",
+        },
+      },
+    },
+  },
+});
+
+const dpkTheme = createTheme({
+  components: {
+    MuiLinearProgress: {
+      styleOverrides: {
+        barColorPrimary: {
+          backgroundColor: "#35393E",
+        },
+      },
+    },
+  },
+});
+
+const ProgressBar = ({ type, completed }) => {
+  const PMSProg = () => {
+    return (
+      <ThemeProvider theme={pmsTheme}>
+        <LinearProgress
+          variant="determinate"
+          value={completed}
+          sx={{ height: 6, borderRadius: 5 }}
+        />
+      </ThemeProvider>
+    );
+  };
+
+  const AGOProg = () => {
+    return (
+      <ThemeProvider theme={agoTheme}>
+        <LinearProgress
+          variant="determinate"
+          value={completed}
+          sx={{ height: 6, borderRadius: 5 }}
+        />
+      </ThemeProvider>
+    );
+  };
+
+  const DPKProg = () => {
+    return (
+      <ThemeProvider theme={dpkTheme}>
+        <LinearProgress
+          variant="determinate"
+          value={completed}
+          sx={{ height: 6, borderRadius: 5 }}
+        />
+      </ThemeProvider>
+    );
+  };
+
+  return (
+    <div>
+      {type === "pms" && <PMSProg />}
+      {type === "ago" && <AGOProg />}
+      {type === "dpk" && <DPKProg />}
+    </div>
+  );
+};
 
 const TopStations = () => {
   const user = useSelector((state) => state.auth.user);
-  const history = useHistory();
+  const dispatch = useDispatch();
   const [load, setLoad] = useState(false);
   const [product, setProduct] = useState("PMS");
-  const [topStationsList, setTopStationsList] = useState({
-    topPMS: [],
-    topAGO: [],
-    topDPK: [],
-  });
   const [productState, setProductState] = useState(0);
-  const topStations = useSelector((state) => state.dashboard.topStations);
-
+  const topStationData = useSelector((state) => state.dashboard.topStations);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  console.log(topStationData, "stations");
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
       return { id: user._id };
@@ -32,6 +114,33 @@ const TopStations = () => {
     }
     return user.permission?.dashboard[e];
   };
+
+  const topStationsService = useCallback((date, station) => {
+    setLoad(true);
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date[0],
+      end: date[1],
+    };
+
+    APIs.post("/dashboard/topstations", payload)
+      .then(({ data }) => {
+        dispatch(topStations(data.topStations));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    topStationsService(updatedDate, oneStationData);
+  }, [topStationsService, oneStationData, updatedDate]);
 
   const getProgress = (item, type) => {
     if (type === "PMS") {
@@ -66,9 +175,9 @@ const TopStations = () => {
   };
 
   const getTopStations = () => {
-    if (product === "PMS") return topStations.topPMS;
-    if (product === "AGO") return topStations.topAGO;
-    if (product === "DPK") return topStations.topDPK;
+    if (product === "PMS") return topStationData?.topPMS;
+    if (product === "AGO") return topStationData?.topAGO;
+    if (product === "DPK") return topStationData?.topDPK;
   };
 
   return (
@@ -142,10 +251,7 @@ const TopStations = () => {
                         <div className="pms">PMS</div>
                         <div style={{ width: "100%" }}>
                           <ProgressBar
-                            bgColor={"#399A19"}
-                            isLabelVisible={false}
-                            height={"8px"}
-                            className="wrapper"
+                            type={"pms"}
                             completed={getProgress(item, "PMS")}
                           />
                         </div>
@@ -159,10 +265,7 @@ const TopStations = () => {
                         <div className="pms">AGO</div>
                         <div style={{ width: "100%" }}>
                           <ProgressBar
-                            bgColor={"#FFA010"}
-                            isLabelVisible={false}
-                            height={"8px"}
-                            className="wrapper"
+                            type={"ago"}
                             completed={getProgress(item, "AGO")}
                           />
                         </div>
@@ -176,10 +279,7 @@ const TopStations = () => {
                         <div className="pms">DPK</div>
                         <div style={{ width: "100%" }}>
                           <ProgressBar
-                            bgColor={"#35393E"}
-                            isLabelVisible={false}
-                            height={"8px"}
-                            className="wrapper"
+                            type={"dpk"}
                             completed={getProgress(item, "DPK")}
                           />
                         </div>

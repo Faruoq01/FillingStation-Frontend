@@ -20,7 +20,6 @@ const OveragesAndShortages = (props) => {
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const [load, setLoad] = useState();
-  console.log(overageData, "overage");
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {

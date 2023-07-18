@@ -32,7 +32,6 @@ const Dashboard = (props) => {
         <div className="dashboardContainer">
           <div className="left-dash">
             <Controls />
-
             <Sales priceModal={setPrices} />
             <div
               style={{
@@ -43,6 +42,7 @@ const Dashboard = (props) => {
               }}>
               Total Sales
             </div>
+
             <DashboardGraph station={oneStationData} />
             <OveragesAndShortages path={"dash"} />
           </div>
@@ -51,14 +51,11 @@ const Dashboard = (props) => {
 
             <div className="section">
               <Supply />
-
               <PaymentDetails />
-
               <Expenses />
             </div>
 
             <TopStations />
-
             <IncomingOrder />
           </div>
         </div>

@@ -1,0 +1,118 @@
+import { Button } from "@mui/material";
+import React from "react";
+import { useSelector } from "react-redux";
+import slideMenu from "../../../assets/slideMenu.png";
+import swal from "sweetalert";
+import { useHistory } from "react-router-dom";
+import ApproximateDecimal from "../../common/approx";
+import { useState } from "react";
+
+const IncomingOrder = () => {
+  const history = useHistory();
+  const user = useSelector((state) => state.auth.user);
+  const [dailyIncoming, setInc] = useState([]);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
+  const getPerm = (e) => {
+    if (user.userType === "superAdmin") {
+      return true;
+    }
+    return user.permission?.dailySales[e];
+  };
+
+  const goToInc = () => {
+    if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
+    history.push("/home/inc-orders");
+  };
+
+  return (
+    <React.Fragment>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          marginTop: "40px",
+          justifyContent: "space-between",
+        }}
+        className="tank-text">
+        <div
+          style={{ color: user.isDark === "0" ? "#000" : "#fff" }}
+          className="tank-text">
+          Incoming Order
+        </div>
+        <Button
+          variant="contained"
+          startIcon={
+            <img
+              style={{
+                width: "15px",
+                height: "10px",
+                marginRight: "15px",
+              }}
+              src={slideMenu}
+              alt="icon"
+            />
+          }
+          sx={{
+            width: "150px",
+            height: "30px",
+            background: "#06805B",
+            fontSize: "11px",
+            borderRadius: "0px",
+            fontFamily: "Poppins",
+            textTransform: "capitalize",
+            "&:hover": {
+              backgroundColor: "#06805B",
+            },
+          }}
+          onClick={goToInc}>
+          View in details
+        </Button>
+      </div>
+
+      <div style={{ width: "100%", marginBottom: "40px" }}>
+        <div className="table-view">
+          <div className="table-text">Outlets</div>
+          <div className="table-text">Date approved</div>
+          <div className="table-text">Depot</div>
+          <div className="table-text">Products</div>
+          <div className="table-text">Quantity</div>
+        </div>
+
+        {dailyIncoming.length === 0 ? (
+          <div style={dats}> No incoming order today </div>
+        ) : (
+          dailyIncoming.map((data, index) => {
+            return (
+              <div key={index} className="table-view2">
+                <div className="table-text">{data.outletName}</div>
+                <div className="table-text">{data.createdAt.split("T")[0]}</div>
+                <div className="table-text">{data.depotStation}</div>
+                <div className="table-text">{data.product}</div>
+                <div className="table-text">
+                  {ApproximateDecimal(data.quantity)}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </React.Fragment>
+  );
+};
+
+const dats = {
+  marginTop: "20px",
+  fontSize: "12px",
+  fontWeight: "bold",
+};
+
+export default IncomingOrder;

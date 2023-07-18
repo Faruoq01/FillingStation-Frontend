@@ -143,7 +143,12 @@ export const dashboard = createSlice({
     paymentsDetails: (state, action) => {
       state.paymentsDetails = action.payload;
     },
-    topStations: (state) => {},
+    expenses: (state, action) => {
+      state.expenses = action.payload;
+    },
+    topStations: (state, action) => {
+      state.topStations = action.payload;
+    },
     lpo: (state) => {},
     incoming: (state) => {},
     dateRange: (state, action) => {
@@ -166,6 +171,7 @@ export const {
   assets,
   supplies,
   paymentsDetails,
+  expenses,
   topStations,
   lpo,
   incoming,
