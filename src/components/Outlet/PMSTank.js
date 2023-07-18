@@ -6,11 +6,16 @@ import ApproximateDecimal from "../common/approx";
 const TankComponent = (props) => {
   const canvas = useRef();
   const fuel = useRef();
-  // const cummulativeTotals = useSelector(state => state.dailySalesReducer.cummulative);
+  const tankLevelsData = useSelector((state) => state.dailysales.tankLevels);
 
   useEffect(() => {
-    createTankCanvas(0, 33000, 200);
-  });
+    const pmsLevel = tankLevelsData.pms.afterSales;
+    const capacity =
+      tankLevelsData.pms.tankCapacity === 0
+        ? 33000
+        : tankLevelsData.pms.tankCapacity;
+    createTankCanvas(pmsLevel, capacity, 200);
+  }, [tankLevelsData.pms.afterSales, tankLevelsData.pms.tankCapacity]);
 
   const createTankCanvas = (level, capacity, deadstock) => {
     let dpi = window.devicePixelRatio;
@@ -72,7 +77,9 @@ const TankComponent = (props) => {
 
   return (
     <div className="canvases">
-      <Tooltip title={`${ApproximateDecimal(0)} Litres`} followCursor>
+      <Tooltip
+        title={`${ApproximateDecimal(tankLevelsData.pms.afterSales)} Litres`}
+        followCursor>
         <div>
           <div className="fuel-container">
             <canvas

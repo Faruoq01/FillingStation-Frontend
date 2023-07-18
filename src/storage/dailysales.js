@@ -1,69 +1,54 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  dailySales: {},
-  payments: {},
-  dailyIncoming: [],
-  cummulative: {},
-  dailySupplies: {},
-  lpoRecords: [],
-  paymentRecords: {
-    bankPayment: [],
-    posPayment: [],
-    expenses: [],
-  },
-  bulkReports: {
-    balances: {
-      pms: 0,
-      ago: 0,
-      dpk: 0,
+  updatedDate: "",
+  sales: {
+    pms: {
+      sales: 0,
+      amount: 0,
     },
-    supply: [],
-    sales: [],
-    expenses: [],
-    dipping: [],
-    tankLevels: [],
+    ago: {
+      sales: 0,
+      amount: 0,
+    },
+    dpk: {
+      sales: 0,
+      amount: 0,
+    },
   },
-  linkedData: { page: 1 },
-  balanceBF: {},
-  pmsBBF: {},
-  agoBBF: {},
-  dpkBBF: {},
-  barData: {},
-  summary: {},
-  currentDate: "",
-  remarks: [],
-  overages: [],
-  overageType: "PMS",
-  supplies: [],
-  salesStatus: [],
+  tankLevels: {
+    pms: {
+      afterSales: 0,
+      tankCapacity: 0,
+    },
+    ago: {
+      afterSales: 0,
+      tankCapacity: 0,
+    },
+    dpk: {
+      afterSales: 0,
+      tankCapacity: 0,
+    },
+  },
 };
 
 export const dailysales = createSlice({
   name: "dailysales",
   initialState,
   reducers: {
-    login: (state, payload) => {
-      state.user = payload.user;
-      state.token = payload.token;
-      state.isLoggedIn = true;
+    setDateValue: (state, action) => {
+      state.updatedDate = action.payload;
     },
-    logout: (state) => {
-      state.user = {};
-      state.token = "";
-      state.isLoggedIn = false;
+    sales: (state, action) => {
+      state.sales = action.payload;
     },
-    updateUser: (state, payload) => {
-      state.user = payload;
-    },
-    internetConnection: (state, payload) => {
-      state.connection = payload;
+    tankLevels: (state, action) => {
+      state.tankLevels = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login, logout, updateUser, internetConnection } =
-  dailysales.actions;
+export const { sales, setDateValue, tankLevels } = dailysales.actions;
 
 export default dailysales.reducer;

@@ -12,61 +12,61 @@ const OveragesAndShortages = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [defaultState, setDefault] = useState(10);
-  const dipping = useSelector((state) => state.dailysales.overages);
-  const supplies = useSelector((state) => state.dailysales.supplies);
-  const overageTypeData = useSelector((state) => state.dailysales.overageType);
+  // const dipping = useSelector((state) => state.dailysales.overages);
+  // const supplies = useSelector((state) => state.dailysales.supplies);
+  // const overageTypeData = useSelector((state) => state.dailysales.overageType);
 
-  const getSupply = () => {
-    const getSelectedType = supplies.filter(
-      (data) => data.productType === overageTypeData
-    );
-    const firstPriority = getSelectedType.filter(
-      (data) => data.priority === "0"
-    );
-    const secondPriority = getSelectedType.filter(
-      (data) => data.priority === "1"
-    );
+  // const getSupply = () => {
+  //   const getSelectedType = supplies.filter(
+  //     (data) => data.productType === overageTypeData
+  //   );
+  //   const firstPriority = getSelectedType.filter(
+  //     (data) => data.priority === "0"
+  //   );
+  //   const secondPriority = getSelectedType.filter(
+  //     (data) => data.priority === "1"
+  //   );
 
-    const firstTotals = firstPriority.reduce((accum, current) => {
-      return Number(accum) + Number(current.quantity);
-    }, 0);
+  //   const firstTotals = firstPriority.reduce((accum, current) => {
+  //     return Number(accum) + Number(current.quantity);
+  //   }, 0);
 
-    const secondTotals = secondPriority.reduce((accum, current) => {
-      return Number(accum) + Number(current.quantity);
-    }, 0);
+  //   const secondTotals = secondPriority.reduce((accum, current) => {
+  //     return Number(accum) + Number(current.quantity);
+  //   }, 0);
 
-    return { first: firstTotals, second: secondTotals };
-  };
+  //   return { first: firstTotals, second: secondTotals };
+  // };
 
-  const getDippingResult = () => {
-    const productCategory = dipping.filter(
-      (data) => data.productType === overageTypeData
-    );
+  // const getDippingResult = () => {
+  //   const productCategory = dipping.filter(
+  //     (data) => data.productType === overageTypeData
+  //   );
 
-    const currentLevel = productCategory.reduce((accum, current) => {
-      return Number(accum) + Number(current.afterSales);
-    }, 0);
+  //   const currentLevel = productCategory.reduce((accum, current) => {
+  //     return Number(accum) + Number(current.afterSales);
+  //   }, 0);
 
-    const dippingLevel = productCategory.reduce((accum, current) => {
-      return Number(accum) + Number(current.dipping);
-    }, 0);
+  //   const dippingLevel = productCategory.reduce((accum, current) => {
+  //     return Number(accum) + Number(current.dipping);
+  //   }, 0);
 
-    const capacity = productCategory.reduce((accum, current) => {
-      return Number(accum) + Number(current.tankCapacity);
-    }, 0);
+  //   const capacity = productCategory.reduce((accum, current) => {
+  //     return Number(accum) + Number(current.tankCapacity);
+  //   }, 0);
 
-    const currentCent = (currentLevel / capacity) * 100;
-    const dippingCent = (dippingLevel / capacity) * 100;
+  //   const currentCent = (currentLevel / capacity) * 100;
+  //   const dippingCent = (dippingLevel / capacity) * 100;
 
-    const detail = {
-      currentCent: isNaN(currentCent) ? 0 : currentCent,
-      dippingCent: isNaN(dippingCent) ? 0 : dippingCent,
-      currentLevel: currentLevel,
-      dipping: dippingLevel,
-    };
+  //   const detail = {
+  //     currentCent: isNaN(currentCent) ? 0 : currentCent,
+  //     dippingCent: isNaN(dippingCent) ? 0 : dippingCent,
+  //     currentLevel: currentLevel,
+  //     dipping: dippingLevel,
+  //   };
 
-    return detail;
-  };
+  //   return detail;
+  // };
 
   const selectedType = (data) => {
     setDefault(data);
@@ -144,16 +144,16 @@ const OveragesAndShortages = (props) => {
     );
   };
 
-  const status = () => {
-    const total = getDippingResult().dipping - getDippingResult().currentLevel;
-    if (total < 0) {
-      return "Shortage";
-    } else if (total === 0) {
-      return "None";
-    } else {
-      return "Overage";
-    }
-  };
+  // const status = () => {
+  //   const total = getDippingResult().dipping - getDippingResult().currentLevel;
+  //   if (total < 0) {
+  //     return "Shortage";
+  //   } else if (total === 0) {
+  //     return "None";
+  //   } else {
+  //     return "Overage";
+  //   }
+  // };
 
   return (
     <div className="overages">
@@ -170,12 +170,18 @@ const OveragesAndShortages = (props) => {
           <div className="overlapTwo">
             <div className="current-level">
               <div
-                style={{ width: getDippingResult().currentCent + "%" }}
+                style={{
+                  width: "20%",
+                  // width: getDippingResult().currentCent + "%"
+                }}
                 className="dippingBarLeft"></div>
             </div>
             <div className="dipping">
               <div
-                style={{ width: getDippingResult().dippingCent + "%" }}
+                style={{
+                  width: "50%",
+                  // width: getDippingResult().dippingCent + "%"
+                }}
                 className="dippingBar"></div>
             </div>
           </div>
@@ -190,35 +196,22 @@ const OveragesAndShortages = (props) => {
 
         <div className="labelsOverage">
           <div>
-            <div style={title}>
-              {ApproximateDecimal(
-                getDippingResult().currentLevel + getSupply().second
-              )}{" "}
-              Ltrs
-            </div>
+            <div style={title}>{ApproximateDecimal(0)} Ltrs</div>
             <div style={label}>Current Level </div>
           </div>
 
           <div>
-            <div style={title}>
-              {ApproximateDecimal(getDippingResult().dipping)} Ltrs
-            </div>
+            <div style={title}>{ApproximateDecimal(0)} Ltrs</div>
             <div style={label}>Dipping Level </div>
           </div>
         </div>
 
         <div className="statusOverage">
           <div>
-            <div style={title}>
-              {ApproximateDecimal(
-                getDippingResult().dipping -
-                  (getDippingResult().currentLevel + getSupply().second)
-              )}{" "}
-              Ltrs
-            </div>
+            <div style={title}>{ApproximateDecimal(0)} Ltrs</div>
             <div style={label}>Differences</div>
           </div>
-          <div style={shortage}>{status()}</div>
+          <div style={shortage}>{"None"}</div>
         </div>
       </div>
     </div>

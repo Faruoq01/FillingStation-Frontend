@@ -1,18 +1,23 @@
 import { Skeleton } from "@mui/material";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 import me5 from "../../../assets/me5.png";
 import ApproximateDecimal from "../../common/approx";
+import APIs from "../../../services/api";
+import { sales } from "../../../storage/dailysales";
+import moment from "moment";
 
 const SalesCards = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [load, setLoad] = useState();
   const user = useSelector((state) => state.auth.user);
-  const oneStationData = useSelector(
-    (state) => state.outlet.adminOutlet
-  );
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesData = useSelector((state) => state.dailysales.sales);
+  console.log(salesData, "sales data");
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -28,6 +33,34 @@ const SalesCards = () => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const updateSalesValues = useCallback((date, station) => {
+    setLoad(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+    };
+
+    APIs.post("/daily-sales/sales", payload)
+      .then(({ data }) => {
+        dispatch(sales(data.sales));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    updateSalesValues(updatedDate, oneStationData);
+  }, [oneStationData, updateSalesValues, updatedDate]);
 
   const openDailySales = (data) => {
     if (load) return;
@@ -79,8 +112,7 @@ const SalesCards = () => {
                     marginTop: "5px",
                     fontSize: "12px",
                   }}>
-                  Litre {ApproximateDecimal(0)}
-                  ltr
+                  Litre {ApproximateDecimal(salesData?.pms?.sales)} ltr
                 </div>
                 <div
                   style={{
@@ -88,7 +120,7 @@ const SalesCards = () => {
                     marginTop: "5px",
                     fontSize: "12px",
                   }}>
-                  Total NGN {ApproximateDecimal(0)}
+                  Total N {ApproximateDecimal(salesData?.pms?.amount)}
                 </div>
               </div>
             </div>
@@ -104,10 +136,12 @@ const SalesCards = () => {
                 <div className="top-head-text">PMS Sales</div>
               </div>
               <div className="top-head-tx">
-                Litre {ApproximateDecimal(0)}
+                Litre {ApproximateDecimal(salesData?.pms?.sales)}
                 ltr{" "}
               </div>
-              <div className="top-head-tx">Total N {ApproximateDecimal(0)}</div>
+              <div className="top-head-tx">
+                Total N {ApproximateDecimal(salesData?.pms?.amoumt)}
+              </div>
             </div>
           </div>
         )}
@@ -145,8 +179,7 @@ const SalesCards = () => {
                     marginTop: "5px",
                     fontSize: "12px",
                   }}>
-                  Litre {ApproximateDecimal(0)}
-                  ltr
+                  Litre {ApproximateDecimal(salesData?.ago?.sales)} ltr
                 </div>
                 <div
                   style={{
@@ -154,7 +187,7 @@ const SalesCards = () => {
                     marginTop: "5px",
                     fontSize: "12px",
                   }}>
-                  Total NGN {ApproximateDecimal(0)}
+                  Total N {ApproximateDecimal(salesData?.ago?.amount)}
                 </div>
               </div>
             </div>
@@ -170,10 +203,12 @@ const SalesCards = () => {
                 <div className="top-head-text">AGO Sales</div>
               </div>
               <div className="top-head-tx">
-                Litre {ApproximateDecimal(0)}
+                Litre {ApproximateDecimal(salesData?.ago?.sales)}
                 ltr{" "}
               </div>
-              <div className="top-head-tx">Total N {ApproximateDecimal(0)}</div>
+              <div className="top-head-tx">
+                Total N {ApproximateDecimal(salesData?.ago?.amount)}
+              </div>
             </div>
           </div>
         )}
@@ -211,8 +246,7 @@ const SalesCards = () => {
                     marginTop: "5px",
                     fontSize: "12px",
                   }}>
-                  Litre {ApproximateDecimal(0)}
-                  ltr
+                  Litre {ApproximateDecimal(salesData?.dpk?.sales)} ltr
                 </div>
                 <div
                   style={{
@@ -220,7 +254,7 @@ const SalesCards = () => {
                     marginTop: "5px",
                     fontSize: "12px",
                   }}>
-                  TotaL NGN {ApproximateDecimal(0)}
+                  TotaL N {ApproximateDecimal(salesData?.dpk?.amount)}
                 </div>
               </div>
             </div>
@@ -236,10 +270,12 @@ const SalesCards = () => {
                 <div className="top-head-text">DPK Sales</div>
               </div>
               <div className="top-head-tx">
-                Litre {ApproximateDecimal(0)}
+                Litre {ApproximateDecimal(salesData?.dpk?.sales)}
                 ltr{" "}
               </div>
-              <div className="top-head-tx">Total N {ApproximateDecimal(0)}</div>
+              <div className="top-head-tx">
+                Total N {ApproximateDecimal(salesData?.dpk?.amount)}
+              </div>
             </div>
           </div>
         )}

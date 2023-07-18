@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import BarChartGraph from "../../common/BarChartGraph";
@@ -10,13 +10,15 @@ import { dateRange } from "../../../storage/dashboard";
 import swal from "sweetalert";
 import ApproximateDecimal from "../../common/approx";
 import ButtonDatePicker from "../../common/CustomDatePicker";
+import { setDateValue } from "../../../storage/dailysales";
 
 const ExpensesAndPayments = () => {
   const moment = require("moment-timezone");
-  const date2 = moment().format("YYYY-MM-DD").split(" ")[0];
+  const date2 = moment().format("Do MMM YYYY");
 
   const [value, setValue] = React.useState(null);
   const user = useSelector((state) => state.auth.user);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const dispatch = useDispatch();
   const history = useHistory();
   const [load, setLoads] = useState(false);
@@ -37,13 +39,8 @@ const ExpensesAndPayments = () => {
   };
 
   const convertDate = (newValue) => {
-    const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
-    const date = new Date(getDate);
-    const toString = date.toDateString();
-    const [day, year, month] = toString.split(" ");
-    const finalDate = `${day} ${month} ${year}`;
-
-    return finalDate;
+    const getDate = newValue === "" ? date2 : newValue.format("Do MMM YYYY");
+    return getDate;
   };
 
   const updateDate = (newValue) => {
@@ -51,9 +48,8 @@ const ExpensesAndPayments = () => {
     setValue(newValue);
 
     const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
-    setLoads(true);
-    // dispatch(currentDateValue(newValue));
-    dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+    dispatch(setDateValue(getDate));
+    dispatch(dateRange([getDate, getDate]));
   };
 
   const goToPagesInd = (data) => {
