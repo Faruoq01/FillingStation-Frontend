@@ -10,7 +10,9 @@ import { dateRange } from "../../../storage/dashboard";
 import swal from "sweetalert";
 import ApproximateDecimal from "../../common/approx";
 import ButtonDatePicker from "../../common/CustomDatePicker";
-import { setDateValue } from "../../../storage/dailysales";
+import { setDateValue, expenses } from "../../../storage/dailysales";
+import { useCallback } from "react";
+import APIs from "../../../services/api";
 
 const ExpensesAndPayments = () => {
   const moment = require("moment-timezone");
@@ -20,9 +22,11 @@ const ExpensesAndPayments = () => {
   const [value, setValue] = React.useState(null);
   const user = useSelector((state) => state.auth.user);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const expenseData = useSelector((state) => state.dailysales.expenses);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [load, setLoads] = useState(false);
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -42,6 +46,34 @@ const ExpensesAndPayments = () => {
   useEffect(() => {
     setInitial(date2);
   }, [date2, moment, updatedDate]);
+
+  const getExpenses = useCallback((station, date) => {
+    setLoad(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+    };
+
+    APIs.post("/daily-sales/expenses-payments", payload)
+      .then(({ data }) => {
+        dispatch(expenses(data.expenses));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getExpenses(oneStationData, updatedDate);
+  }, [getExpenses, oneStationData, updatedDate]);
 
   const convertDate = (newValue) => {
     const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
@@ -80,7 +112,6 @@ const ExpensesAndPayments = () => {
                     value === null || "" ? initial : convertDate(value)
                   }`}
                   value={value}
-                  disabled={load}
                   onChange={(newValue) => updateDate(newValue)}
                 />
               </Stack>
@@ -107,7 +138,7 @@ const ExpensesAndPayments = () => {
           ) : (
             <div className="ins">
               <div>Expenses</div>
-              <div>N {ApproximateDecimal(0)}</div>
+              <div>N {ApproximateDecimal(expenseData.expenses)}</div>
             </div>
           )}
         </div>
@@ -128,7 +159,7 @@ const ExpensesAndPayments = () => {
           ) : (
             <div className="ins">
               <div>Payments</div>
-              <div>N {ApproximateDecimal(0)}</div>
+              <div>N {ApproximateDecimal(expenseData.payments)}</div>
             </div>
           )}
         </div>

@@ -39,7 +39,7 @@ const Expenses = () => {
 
     const payload = {
       outletID: station === null ? "None" : station._id,
-      organisationID: resolveUserID().id,
+      organisation: resolveUserID().id,
       start: date[0],
       end: date[1],
     };
