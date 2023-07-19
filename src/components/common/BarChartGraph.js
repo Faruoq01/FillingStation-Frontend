@@ -66,9 +66,9 @@ const BarChartGraph = (props) => {
   };
 
   const getMonthlyGraphData = useCallback(
-    (date, station) => {
+    (station) => {
       setLoad(true);
-      const getDate = date === (null || "") ? date2 : date;
+      const getDate = updatedDate === (null || "") ? date2 : updatedDate;
       const getYear = moment(getDate).format("YYYY");
       const range = [];
 
@@ -106,8 +106,8 @@ const BarChartGraph = (props) => {
   );
 
   useEffect(() => {
-    getMonthlyGraphData(updatedDate, oneStationData);
-  }, [oneStationData, updatedDate, getMonthlyGraphData]);
+    getMonthlyGraphData(oneStationData);
+  }, [oneStationData, getMonthlyGraphData]);
 
   return (
     <div className="bar-chart">
