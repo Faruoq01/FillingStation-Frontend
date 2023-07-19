@@ -15,6 +15,7 @@ import { setDateValue } from "../../../storage/dailysales";
 const ExpensesAndPayments = () => {
   const moment = require("moment-timezone");
   const date2 = moment().format("Do MMM YYYY");
+  const [initial, setInitial] = useState("");
 
   const [value, setValue] = React.useState(null);
   const user = useSelector((state) => state.auth.user);
@@ -38,8 +39,12 @@ const ExpensesAndPayments = () => {
     return user.permission?.dailySales[e];
   };
 
+  useEffect(() => {
+    setInitial(date2);
+  }, [date2, moment, updatedDate]);
+
   const convertDate = (newValue) => {
-    const getDate = newValue === "" ? date2 : newValue.format("Do MMM YYYY");
+    const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
     return getDate;
   };
 
@@ -47,7 +52,7 @@ const ExpensesAndPayments = () => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
     setValue(newValue);
 
-    const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
+    const getDate = newValue === "" ? initial : newValue.format("YYYY-MM-DD");
     dispatch(setDateValue(getDate));
     dispatch(dateRange([getDate, getDate]));
   };
@@ -71,7 +76,9 @@ const ExpensesAndPayments = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Stack spacing={1}>
                 <ButtonDatePicker
-                  label={`${value === null || "" ? date2 : convertDate(value)}`}
+                  label={`${
+                    value === null || "" ? initial : convertDate(value)
+                  }`}
                   value={value}
                   disabled={load}
                   onChange={(newValue) => updateDate(newValue)}

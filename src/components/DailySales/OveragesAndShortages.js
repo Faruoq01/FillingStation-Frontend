@@ -1,72 +1,80 @@
-import { Button, MenuItem, Select } from "@mui/material";
+import { Button, MenuItem, Select, Skeleton } from "@mui/material";
 import "../../styles/overage.scss";
 import slideMenu from "../../assets/slideMenu.png";
 import tank from "../../assets/comp/tank.png";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { overageType } from "../../store/actions/dailySales";
 import ApproximateDecimal from "../common/approx";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import APIs from "../../services/api";
+import { overage, overageType } from "../../storage/dailysales";
+import React from "react";
+import moment from "moment";
 
 const OveragesAndShortages = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [defaultState, setDefault] = useState(10);
-  // const dipping = useSelector((state) => state.dailysales.overages);
-  // const supplies = useSelector((state) => state.dailysales.supplies);
-  // const overageTypeData = useSelector((state) => state.dailysales.overageType);
+  const overageData = useSelector((state) => state.dailysales.overage);
+  const overageTypeData = useSelector((state) => state.dailysales.overageType);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const user = useSelector((state) => state.auth.user);
+  const [load, setLoad] = useState();
 
-  // const getSupply = () => {
-  //   const getSelectedType = supplies.filter(
-  //     (data) => data.productType === overageTypeData
-  //   );
-  //   const firstPriority = getSelectedType.filter(
-  //     (data) => data.priority === "0"
-  //   );
-  //   const secondPriority = getSelectedType.filter(
-  //     (data) => data.priority === "1"
-  //   );
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
-  //   const firstTotals = firstPriority.reduce((accum, current) => {
-  //     return Number(accum) + Number(current.quantity);
-  //   }, 0);
+  const getOverages = useCallback((station, date) => {
+    setLoad(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
-  //   const secondTotals = secondPriority.reduce((accum, current) => {
-  //     return Number(accum) + Number(current.quantity);
-  //   }, 0);
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+    };
 
-  //   return { first: firstTotals, second: secondTotals };
-  // };
+    APIs.post("/daily-sales/overages", payload)
+      .then(({ data }) => {
+        dispatch(overage(data.overage));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // const getDippingResult = () => {
-  //   const productCategory = dipping.filter(
-  //     (data) => data.productType === overageTypeData
-  //   );
+  useEffect(() => {
+    getOverages(oneStationData, updatedDate);
+  }, [getOverages, oneStationData, updatedDate]);
 
-  //   const currentLevel = productCategory.reduce((accum, current) => {
-  //     return Number(accum) + Number(current.afterSales);
-  //   }, 0);
+  const getDippingResult = () => {
+    const product = overageData[overageTypeData.toLowerCase()];
 
-  //   const dippingLevel = productCategory.reduce((accum, current) => {
-  //     return Number(accum) + Number(current.dipping);
-  //   }, 0);
+    const currentCent = (product.currentLevel / product.capacity) * 100;
+    const dippingCent = (product.dipping / product.capacity) * 100;
 
-  //   const capacity = productCategory.reduce((accum, current) => {
-  //     return Number(accum) + Number(current.tankCapacity);
-  //   }, 0);
+    const detail = {
+      currentCent: isNaN(currentCent) ? 0 : currentCent,
+      dippingCent: isNaN(dippingCent) ? 0 : dippingCent,
+      currentLevel: product.currentLevel,
+      dipping: product.dipping,
+    };
 
-  //   const currentCent = (currentLevel / capacity) * 100;
-  //   const dippingCent = (dippingLevel / capacity) * 100;
-
-  //   const detail = {
-  //     currentCent: isNaN(currentCent) ? 0 : currentCent,
-  //     dippingCent: isNaN(dippingCent) ? 0 : dippingCent,
-  //     currentLevel: currentLevel,
-  //     dipping: dippingLevel,
-  //   };
-
-  //   return detail;
-  // };
+    return detail;
+  };
 
   const selectedType = (data) => {
     setDefault(data);
@@ -144,77 +152,98 @@ const OveragesAndShortages = (props) => {
     );
   };
 
-  // const status = () => {
-  //   const total = getDippingResult().dipping - getDippingResult().currentLevel;
-  //   if (total < 0) {
-  //     return "Shortage";
-  //   } else if (total === 0) {
-  //     return "None";
-  //   } else {
-  //     return "Overage";
-  //   }
-  // };
+  const status = () => {
+    const total = getDippingResult().dipping - getDippingResult().currentLevel;
+    if (total < 0) {
+      return "Shortage";
+    } else if (total === 0) {
+      return "None";
+    } else {
+      return "Overage";
+    }
+  };
 
   return (
-    <div className="overages">
-      <div className="alisss">
-        <div style={{ marginTop: "0px" }} className="tank-text">
-          Overage/Shortage
-        </div>
-        <Selectors />
-      </div>
-
-      <div className="overageContainer">
-        <div className="innerOverage">
-          <div className="overlapOne"></div>
-          <div className="overlapTwo">
-            <div className="current-level">
-              <div
-                style={{
-                  width: "20%",
-                  // width: getDippingResult().currentCent + "%"
-                }}
-                className="dippingBarLeft"></div>
+    <React.Fragment>
+      {load ? (
+        <Skeleton
+          sx={{ borderRadius: "5px", background: "#f7f7f7", marginTop: "20px" }}
+          animation="wave"
+          variant="rectangular"
+          width={"100%"}
+          height={200}
+        />
+      ) : (
+        <div className="overages">
+          <div className="alisss">
+            <div style={{ marginTop: "0px" }} className="tank-text">
+              Overage/Shortage
             </div>
-            <div className="dipping">
-              <div
-                style={{
-                  width: "50%",
-                  // width: getDippingResult().dippingCent + "%"
-                }}
-                className="dippingBar"></div>
+            <Selectors />
+          </div>
+
+          <div className="overageContainer">
+            <div className="innerOverage">
+              <div className="overlapOne"></div>
+              <div className="overlapTwo">
+                <div className="current-level">
+                  <div
+                    style={{ width: getDippingResult().currentCent + "%" }}
+                    className="dippingBarLeft"></div>
+                </div>
+                <div className="dipping">
+                  <div
+                    style={{ width: getDippingResult().dippingCent + "%" }}
+                    className="dippingBar"></div>
+                </div>
+              </div>
+              <div className="overlapThree">
+                <img
+                  style={{ width: "32px", height: "25px" }}
+                  src={tank}
+                  alt="icon"
+                />
+              </div>
+            </div>
+
+            <div className="labelsOverage">
+              <div>
+                <div style={title}>
+                  {ApproximateDecimal(
+                    getDippingResult().currentLevel +
+                      overageData[overageTypeData.toLowerCase()]?.supply
+                  )}{" "}
+                  Ltrs
+                </div>
+                <div style={label}>Current Level </div>
+              </div>
+
+              <div>
+                <div style={title}>
+                  {ApproximateDecimal(getDippingResult().dipping)} Ltrs
+                </div>
+                <div style={label}>Dipping Level </div>
+              </div>
+            </div>
+
+            <div className="statusOverage">
+              <div>
+                <div style={title}>
+                  {ApproximateDecimal(
+                    getDippingResult().dipping -
+                      (getDippingResult().currentLevel +
+                        overageData[overageTypeData.toLowerCase()]?.supply)
+                  )}{" "}
+                  Ltrs
+                </div>
+                <div style={label}>Differences</div>
+              </div>
+              <div style={shortage}>{status()}</div>
             </div>
           </div>
-          <div className="overlapThree">
-            <img
-              style={{ width: "32px", height: "25px" }}
-              src={tank}
-              alt="icon"
-            />
-          </div>
         </div>
-
-        <div className="labelsOverage">
-          <div>
-            <div style={title}>{ApproximateDecimal(0)} Ltrs</div>
-            <div style={label}>Current Level </div>
-          </div>
-
-          <div>
-            <div style={title}>{ApproximateDecimal(0)} Ltrs</div>
-            <div style={label}>Dipping Level </div>
-          </div>
-        </div>
-
-        <div className="statusOverage">
-          <div>
-            <div style={title}>{ApproximateDecimal(0)} Ltrs</div>
-            <div style={label}>Differences</div>
-          </div>
-          <div style={shortage}>{"None"}</div>
-        </div>
-      </div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 
