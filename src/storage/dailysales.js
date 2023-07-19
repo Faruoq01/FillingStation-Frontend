@@ -86,6 +86,17 @@ const initialState = {
       },
     ],
   },
+  supply: {
+    pms: 0,
+    ago: 0,
+    dpk: 0,
+  },
+  netToBank: {
+    bankPayments: 0,
+    posPayments: 0,
+    netToBank: 0,
+    outstandingBalance: 0,
+  },
 };
 
 export const dailysales = createSlice({
@@ -113,6 +124,12 @@ export const dailysales = createSlice({
     graph: (state, action) => {
       state.graph = action.payload;
     },
+    supply: (state, action) => {
+      state.supply = action.payload;
+    },
+    netToBank: (state, action) => {
+      state.netToBank = action.payload;
+    },
   },
 });
 
@@ -125,6 +142,8 @@ export const {
   overageType,
   expenses,
   graph,
+  supply,
+  netToBank,
 } = dailysales.actions;
 
 export default dailysales.reducer;

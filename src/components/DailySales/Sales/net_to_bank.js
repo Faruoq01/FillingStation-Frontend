@@ -1,133 +1,208 @@
-import { Button } from "@mui/material";
-import slideMenu from "../../../assets/slideMenu.png";
-import { useSelector } from "react-redux";
+import { Skeleton } from "@mui/material";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import AddPayModal from "../../Modals/AddPayModal";
-import { useState } from "react";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import ApproximateDecimal from "../../common/approx";
+import me6 from "../../../assets/me6.png";
+import APIs from "../../../services/api";
+import { netToBank } from "../../../storage/dailysales";
+import { useEffect } from "react";
 
 const NetToBank = () => {
-  const history = useHistory();
   const user = useSelector((state) => state.auth.user);
-  const [payMe, setPayMe] = useState(false);
+  const dispatch = useDispatch();
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const paymentsDetailData = useSelector((state) => state.dailysales.netToBank);
+  const history = useHistory();
+  const [load, setLoad] = useState(false);
 
-  const openPayModal = () => {
-    setPayMe(true);
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
+  const getNetToBank = useCallback((date, station) => {
+    setLoad(true);
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisation: resolveUserID().id,
+      start: date,
+      end: date,
+    };
+
+    APIs.post("/daily-sales/net_to_bank", payload)
+      .then(({ data }) => {
+        dispatch(netToBank(data.netToBank));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getNetToBank(updatedDate, oneStationData);
+  }, [getNetToBank, oneStationData, updatedDate]);
+
+  const goToPayments = () => {
+    history.push("/home/analysis/payments");
   };
 
   return (
-    <div style={{ marginTop: "30px" }} className="section">
-      {payMe && (
-        <AddPayModal
-          open={payMe}
-          close={setPayMe}
-          // refresh={getAllProductData}
-        />
-      )}
-      <div className="alisss">
-        <div
-          style={{ color: user.isDark === "0" ? "#000" : "#fff" }}
-          className="tank-text">
-          Net to bank
-        </div>
-        <Button
-          variant="contained"
-          startIcon={
-            <img
-              style={{
-                width: "15px",
-                height: "10px",
-                marginRight: "15px",
-              }}
-              src={slideMenu}
-              alt="icon"
-            />
-          }
-          sx={{
-            width: "150px",
-            height: "30px",
-            background: "#06805B",
-            fontSize: "11px",
-            borderRadius: "0px",
-            fontFamily: "Poppins",
-            textTransform: "capitalize",
-            "&:hover": {
-              backgroundColor: "#06805B",
-            },
-          }}
-          onClick={() => {
-            history.push("/home/analysis/payments");
-          }}>
-          View in details
-        </Button>
+    <React.Fragment>
+      <div
+        style={{
+          marginTop: "40px",
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          color: user.isDark === "0" ? "#000" : "#fff",
+          fontSize: "15px",
+          fontWeight: "bold",
+        }}
+        className="bank">
+        <span>Net to Bank</span>
+        <span>Payments</span>
+        <span>Outstanding</span>
       </div>
-      <div onClick={openPayModal} style={updatePay}>
-        <div>Click here to update payment</div>
-        <ArrowRightAltIcon />
-      </div>
-      <div className="inner-section">
-        <div className="inner-content">
-          <div className="conts">
-            <div className="row-count">
-              <div
-                style={{ fontSize: "12px", fontWeight: "bold" }}
-                className="item-count">
-                Net to bank
+      <div
+        onClick={goToPayments}
+        style={{ height: "130px", marginTop: "0px" }}
+        className="inner-section">
+        {load ? (
+          <Skeleton
+            sx={{ borderRadius: "5px", background: "#f7f7f7" }}
+            animation="wave"
+            variant="rectangular"
+            width={"100%"}
+            height={90}
+          />
+        ) : (
+          <div className="inner-content">
+            <div className="conts">
+              <div className="row-count">
+                <div
+                  style={{
+                    color: "green",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count">
+                  NGN {ApproximateDecimal(paymentsDetailData.netToBank)}
+                </div>
+                <div
+                  style={{
+                    color: "#0872D4",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count">
+                  Teller
+                </div>
+                <div
+                  style={{
+                    color: "#0872D4",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count">
+                  NGN {ApproximateDecimal(paymentsDetailData.bankPayments)}
+                </div>
+                <div
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count">
+                  NGN{" "}
+                  {ApproximateDecimal(paymentsDetailData.outstandingBalance)}
+                </div>
               </div>
-              <div
-                style={{ fontSize: "12px", fontWeight: "bold" }}
-                className="item-count">
-                Payment
+              <div className="row-count">
+                <div
+                  style={{
+                    color: "green",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count"></div>
+                <div
+                  style={{
+                    color: "#000",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count">
+                  POS
+                </div>
+                <div
+                  style={{
+                    color: "#000",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count">
+                  NGN {ApproximateDecimal(paymentsDetailData.posPayments)}
+                </div>
+                <div
+                  style={{
+                    color: "red",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                  className="item-count"></div>
               </div>
-              <div
-                style={{ fontSize: "12px", fontWeight: "bold" }}
-                className="item-count">
-                NGN {ApproximateDecimal(0)}
+              <div style={{ marginTop: "10px" }} className="arrows">
+                <div className="image">
+                  <img
+                    style={{
+                      width: "20px",
+                      height: "8px",
+                      marginRight: "30px",
+                    }}
+                    src={me6}
+                    alt="icon"
+                  />
+                </div>
+                <div className="image">
+                  <img
+                    style={{
+                      width: "20px",
+                      height: "8px",
+                      marginRight: "30px",
+                    }}
+                    src={me6}
+                    alt="icon"
+                  />
+                </div>
+                <div className="image">
+                  <img
+                    style={{
+                      width: "20px",
+                      height: "8px",
+                      marginRight: "30px",
+                    }}
+                    src={me6}
+                    alt="icon"
+                  />
+                </div>
               </div>
-              <div
-                style={{ fontSize: "12px", fontWeight: "bold" }}
-                className="item-count">
-                Outstanding
-              </div>
-            </div>
-            <div className="row-count">
-              <div className="item-count">NGN {ApproximateDecimal(0)}</div>
-              <div style={{ color: "#0872D4" }} className="item-count">
-                Teller
-              </div>
-              <div style={{ color: "#0872D4" }} className="item-count">
-                NGN {ApproximateDecimal(0)}
-              </div>
-              <div style={{ color: "red" }} className="item-count">
-                {ApproximateDecimal(0)}
-              </div>
-            </div>
-            <div className="row-count">
-              <div className="item-count"></div>
-              <div style={{ color: "#000" }} className="item-count">
-                POS
-              </div>
-              <div style={{ color: "#000" }} className="item-count">
-                NGN {ApproximateDecimal(0)}
-              </div>
-              <div className="item-count"></div>
             </div>
           </div>
-        </div>
+        )}
       </div>
-    </div>
+    </React.Fragment>
   );
-};
-
-const updatePay = {
-  fontWeight: "500",
-  color: "green",
-  marginTop: "10px",
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  cursor: "pointer",
 };
 
 export default NetToBank;
