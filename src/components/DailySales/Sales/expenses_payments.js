@@ -44,7 +44,12 @@ const ExpensesAndPayments = () => {
   };
 
   useEffect(() => {
-    setInitial(date2);
+    if (updatedDate === "") {
+      setInitial(date2);
+    } else {
+      const formatedDate = moment(updatedDate).format("Do MMM YYYY");
+      setInitial(formatedDate);
+    }
   }, [date2, moment, updatedDate]);
 
   const getExpenses = useCallback((station, date) => {

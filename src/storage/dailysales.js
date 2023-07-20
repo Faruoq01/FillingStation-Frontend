@@ -97,6 +97,21 @@ const initialState = {
     netToBank: 0,
     outstandingBalance: 0,
   },
+  lpo: {
+    pms: {
+      sales: 0,
+      quantity: 0,
+    },
+    ago: {
+      sales: 0,
+      quantity: 0,
+    },
+    dpk: {
+      sales: 0,
+      quantity: 0,
+    },
+  },
+  incoming: [],
 };
 
 export const dailysales = createSlice({
@@ -130,6 +145,12 @@ export const dailysales = createSlice({
     netToBank: (state, action) => {
       state.netToBank = action.payload;
     },
+    lpo: (state, action) => {
+      state.lpo = action.payload;
+    },
+    incoming: (state, action) => {
+      state.incoming = action.payload;
+    },
   },
 });
 
@@ -144,6 +165,8 @@ export const {
   graph,
   supply,
   netToBank,
+  lpo,
+  incoming,
 } = dailysales.actions;
 
 export default dailysales.reducer;

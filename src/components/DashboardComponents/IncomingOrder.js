@@ -1,15 +1,19 @@
 import { Button } from "@mui/material";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import slideMenu from "../../assets/slideMenu.png";
-import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
+import { useHistory } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
+import { incoming } from "../../storage/dashboard";
+import APIs from "../../services/api";
 
 const IncomingOrder = () => {
-  const user = useSelector((state) => state.auth.user);
   const history = useHistory();
-  const incoming = useSelector((state) => state.dashboard.incoming);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const incomingData = useSelector((state) => state.dashboard.incoming);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -23,11 +27,29 @@ const IncomingOrder = () => {
     if (user.userType === "superAdmin") {
       return true;
     }
-    return user.permission?.dashboard[e];
+    return user.permission?.dailySales[e];
   };
 
-  const goToIncoming = () => {
-    if (!getPerm("9")) return swal("Warning!", "Permission denied", "info");
+  const getIncomingOrder = useCallback((station) => {
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+    };
+
+    APIs.post("/dashboard/incoming", payload)
+      .then(({ data }) => {
+        dispatch(incoming(data.incoming));
+      })
+      .catch((err) => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getIncomingOrder(oneStationData);
+  }, [getIncomingOrder, oneStationData]);
+
+  const goToInc = () => {
+    if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
     history.push("/home/inc-orders");
   };
 
@@ -38,16 +60,13 @@ const IncomingOrder = () => {
           display: "flex",
           flexDirection: "row",
           width: "100%",
-          marginTop: "30px",
+          marginTop: "40px",
           justifyContent: "space-between",
         }}
         className="tank-text">
         <div
-          style={{
-            color: user.isDark === "0" ? "#000" : "#fff",
-            fontSize: "15px",
-            fontWeight: "bold",
-          }}>
+          style={{ color: user.isDark === "0" ? "#000" : "#fff" }}
+          className="tank-text">
           Incoming Order
         </div>
         <Button
@@ -75,7 +94,7 @@ const IncomingOrder = () => {
               backgroundColor: "#06805B",
             },
           }}
-          onClick={goToIncoming}>
+          onClick={goToInc}>
           View in details
         </Button>
       </div>
@@ -89,14 +108,14 @@ const IncomingOrder = () => {
           <div className="table-text">Quantity</div>
         </div>
 
-        {incoming.length === 0 ? (
-          <div style={place}>No incoming data</div>
+        {incomingData.length === 0 ? (
+          <div style={dats}> No incoming order today </div>
         ) : (
-          incoming.map((data, index) => {
+          incomingData.map((data, index) => {
             return (
               <div key={index} className="table-view2">
                 <div className="table-text">{data.outletName}</div>
-                <div className="table-text">{data.createdAt}</div>
+                <div className="table-text">{data.createdAt.split("T")[0]}</div>
                 <div className="table-text">{data.depotStation}</div>
                 <div className="table-text">{data.product}</div>
                 <div className="table-text">
@@ -111,11 +130,10 @@ const IncomingOrder = () => {
   );
 };
 
-const place = {
+const dats = {
+  marginTop: "20px",
   fontSize: "12px",
   fontWeight: "bold",
-  marginTop: "10px",
-  color: "green",
 };
 
 export default IncomingOrder;
