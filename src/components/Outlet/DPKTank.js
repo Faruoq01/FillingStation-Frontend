@@ -80,7 +80,7 @@ const TankComponent = (props) => {
   return (
     <div className="canvases">
       <Tooltip
-        title={`${ApproximateDecimal(tankLevelsData.pms.afterSales)} Litres`}
+        title={`${ApproximateDecimal(tankLevelsData.dpk.afterSales)} Litres`}
         followCursor>
         <div>
           <div className="fuel-container">

@@ -6,24 +6,34 @@ import PMSTank from "./PMSTank";
 import AGOTank from "./AGOTank";
 import DPKTank from "./DPKTank";
 import OutletService from "../../services/outletService";
-import { getAllOutletTanks, getAllPumps } from "../../store/actions/outlet";
+import { getAllOutletTanks, getAllPumps } from "../../storage/outlet";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { passCummulative } from "../../store/actions/dailySales";
 import ApproximateDecimal from "../common/approx";
 import DashboardGraph from "../DashboardComponents/DashboardGraph";
+import moment from "moment";
+import APIs from "../../services/api";
+import { tankLevels } from "../../storage/dailysales";
 
 const Sales = (props) => {
   const dispatch = useDispatch();
-  const tankList = useSelector((state) => state.outletReducer.tankList);
-  const pumpList = useSelector((state) => state.outletReducer.pumpList);
-  const oneStation = useSelector((state) => state.outletReducer.adminOutlet);
+  const user = useSelector((state) => state.auth.user);
+  const tankList = useSelector((state) => state.outlet.tankList);
+  const pumpList = useSelector((state) => state.outlet.pumpList);
+  const oneStation = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const [pumpAndTankMetric, setTankAndPumpMetrics] = useState({});
-  const cummulativeTotals = useSelector(
-    (state) => state.dailySalesReducer.cummulative
-  );
+  const tankLevelsData = useSelector((state) => state.dailysales.tankLevels);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
   const getAllStationTanks = useCallback(() => {
     const payload = {
@@ -42,73 +52,6 @@ const Sales = (props) => {
   useEffect(() => {
     getAllStationTanks();
   }, [getAllStationTanks]);
-
-  const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
-    let totalPMS = 0;
-    let PMSTankCapacity = 0;
-    let PMSDeadStock = 0;
-    let totalAGO = 0;
-    let AGOTankCapacity = 0;
-    let AGODeadStock = 0;
-    let totalDPK = 0;
-    let DPKTankCapacity = 0;
-    let DPKDeadStock = 0;
-
-    if (pms.length !== 0) {
-      for (let pm of pms) {
-        totalPMS = totalPMS + Number(pm.currentLevel);
-        PMSTankCapacity = PMSTankCapacity + Number(pm.tankCapacity);
-        PMSDeadStock = PMSDeadStock + Number(pm.deadStockLevel);
-      }
-    }
-
-    if (ago.length !== 0) {
-      for (let ag of ago) {
-        totalAGO = totalAGO + Number(ag.currentLevel);
-        AGOTankCapacity = AGOTankCapacity + Number(ag.tankCapacity);
-        AGODeadStock = AGODeadStock + Number(ag.deadStockLevel);
-      }
-    }
-
-    if (dpk.length !== 0) {
-      for (let dp of dpk) {
-        totalDPK = totalDPK + Number(dp.currentLevel);
-        DPKTankCapacity = DPKTankCapacity + Number(dp.tankCapacity);
-        DPKDeadStock = DPKDeadStock + Number(dp.deadStockLevel);
-      }
-    }
-
-    const payload = {
-      totalPMS: totalPMS,
-      PMSTankCapacity: PMSTankCapacity === 0 ? 33000 : PMSTankCapacity,
-      PMSDeadStock: PMSDeadStock,
-      totalAGO: totalAGO,
-      AGOTankCapacity: AGOTankCapacity === 0 ? 33000 : AGOTankCapacity,
-      AGODeadStock: AGODeadStock,
-      totalDPK: totalDPK,
-      DPKTankCapacity: DPKTankCapacity === 0 ? 33000 : DPKTankCapacity,
-      DPKDeadStock: DPKDeadStock,
-    };
-
-    return payload;
-  };
-
-  const getProductTanks = useCallback(() => {
-    const PMSList = tankList.filter((tank) => tank.productType === "PMS");
-    const AGOList = tankList.filter((tank) => tank.productType === "AGO");
-    const DPKList = tankList.filter((tank) => tank.productType === "DPK");
-
-    const cummulative = getCummulativeVolumePerProduct(
-      PMSList,
-      AGOList,
-      DPKList
-    );
-    dispatch(passCummulative(cummulative));
-  }, [dispatch, tankList]);
-
-  useEffect(() => {
-    getProductTanks();
-  }, [getProductTanks]);
 
   const getActiveTankAndPumps = useCallback(() => {
     const activePMSTank = tankList.filter(
@@ -193,6 +136,28 @@ const Sales = (props) => {
     props.goToList(product);
   };
 
+  const tankLevelsUpdate = useCallback((date, station) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+    };
+
+    APIs.post("/daily-sales/tanklevels", payload)
+      .then(({ data }) => {
+        dispatch(tankLevels(data.tankLevels));
+      })
+      .catch((err) => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    tankLevelsUpdate(updatedDate, oneStation);
+  }, [oneStation, tankLevelsUpdate, updatedDate]);
+
   return (
     <div className="sales-container">
       <div>
@@ -214,13 +179,17 @@ const Sales = (props) => {
                     PMS
                   </div>
                   <div className="level">
-                    Level: {ApproximateDecimal(cummulativeTotals?.totalPMS)}{" "}
-                    Litres
+                    Level: {ApproximateDecimal(tankLevelsData.pms.afterSales)}{" "}
+                    Ltr
                   </div>
                   <div className="capacity">
                     Capacity:{" "}
-                    {ApproximateDecimal(cummulativeTotals?.PMSTankCapacity)}{" "}
-                    Litres
+                    {ApproximateDecimal(
+                      tankLevelsData.pms.tankCapacity !== 0
+                        ? tankLevelsData.pms.tankCapacity
+                        : 33000
+                    )}{" "}
+                    Ltr
                   </div>
                 </div>
                 <div className="tanks">
@@ -237,13 +206,17 @@ const Sales = (props) => {
                     AGO
                   </div>
                   <div className="level">
-                    Level: {ApproximateDecimal(cummulativeTotals?.totalAGO)}{" "}
-                    Litres
+                    Level: {ApproximateDecimal(tankLevelsData.ago.afterSales)}{" "}
+                    Ltr
                   </div>
                   <div className="capacity">
                     Capacity:{" "}
-                    {ApproximateDecimal(cummulativeTotals?.AGOTankCapacity)}{" "}
-                    Litres
+                    {ApproximateDecimal(
+                      tankLevelsData.pms.tankCapacity !== 0
+                        ? tankLevelsData.pms.tankCapacity
+                        : 33000
+                    )}{" "}
+                    Ltr
                   </div>
                 </div>
                 <div className="tanks">
@@ -260,13 +233,17 @@ const Sales = (props) => {
                     DPK
                   </div>
                   <div className="level">
-                    Level: {ApproximateDecimal(cummulativeTotals?.totalDPK)}{" "}
-                    Litres
+                    Level: {ApproximateDecimal(tankLevelsData.dpk.afterSales)}{" "}
+                    Ltr
                   </div>
                   <div className="capacity">
                     Capacity:{" "}
-                    {ApproximateDecimal(cummulativeTotals?.DPKTankCapacity)}{" "}
-                    Litres
+                    {ApproximateDecimal(
+                      tankLevelsData.pms.tankCapacity !== 0
+                        ? tankLevelsData.pms.tankCapacity
+                        : 33000
+                    )}{" "}
+                    Ltr
                   </div>
                 </div>
               </div>
