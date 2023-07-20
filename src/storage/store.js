@@ -3,6 +3,7 @@ import authReducer from "./auth";
 import dashboardReducer from "./dashboard";
 import outletReducer from "./outlet";
 import dailysalesReducer from "./dailysales";
+import recordsalesReducer from "./recordsales";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     dashboard: dashboardReducer,
     outlet: outletReducer,
     dailysales: dailysalesReducer,
+    recordsales: recordsalesReducer,
   },
 });

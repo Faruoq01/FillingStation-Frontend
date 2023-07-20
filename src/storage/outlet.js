@@ -27,6 +27,7 @@ export const outletSlice = createSlice({
     },
     getAllStations: (state, action) => {
       state.allOutlets = action.payload;
+      state.searchStation = action.payload;
     },
     tankListType: (state, action) => {
       state.tankListType = action.payload;
