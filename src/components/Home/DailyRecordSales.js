@@ -243,11 +243,13 @@ const DailyRecordSales = () => {
           if (!getPerm("1")) setDefault(1);
           dispatch(adminOutlet(null));
           dispatch(getAllPumps([]));
+          dispatch(changeStation());
           return "None";
         } else {
           OutletService.getOneOutletStation({ outletID: user.outletID }).then(
             (data) => {
               dispatch(adminOutlet(data.station));
+              dispatch(changeStation());
             }
           );
 
@@ -357,9 +359,20 @@ const DailyRecordSales = () => {
 
     OutletService.getAllStationPumps(payload).then((data) => {
       const copyData = [...data];
-      const PMS = copyData.filter((data) => data.productType === "PMS");
-      const AGO = copyData.filter((data) => data.productType === "AGO");
-      const DPK = copyData.filter((data) => data.productType === "DPK");
+      const updated = copyData.map((data) => {
+        let pumps = { ...data };
+        return {
+          ...pumps,
+          identity: null,
+          closingMeter: 0,
+          newTotalizer: "Enter closing meter",
+          RTlitre: 0,
+          sales: 0,
+        };
+      });
+      const PMS = updated.filter((data) => data.productType === "PMS");
+      const AGO = updated.filter((data) => data.productType === "AGO");
+      const DPK = updated.filter((data) => data.productType === "DPK");
       dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
     });
 
@@ -369,7 +382,13 @@ const DailyRecordSales = () => {
           ...data,
           label: data.tankName,
           value: data._id,
-          dippingValue: "0",
+          dippingValue: 0,
+          sales: 0,
+          outlet: null,
+          pumps: [],
+          beforeSales: data.currentLevel,
+          afterSales: 0,
+          RTlitre: 0,
         };
         return newData;
       });

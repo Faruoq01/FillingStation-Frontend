@@ -73,7 +73,6 @@ export const recordsalesSlice = createSlice({
         const availableID = currentList.filter(
           (data) => data.hostTank === action.payload.tank._id
         );
-        console.log(availableID, "available");
 
         if (availableID.length === 0) {
           const filteredTank = currentTankList.filter(

@@ -45,13 +45,15 @@ export const outletSlice = createSlice({
     getAllOutletTanks: (state, action) => {
       const load = action.payload.map((data) => {
         let craze = { ...data };
-        craze["sales"] = "0";
-        craze["outlet"] = null;
-        craze["pumps"] = [];
-        craze["beforeSales"] = craze.currentLevel;
-        craze["afterSales"] = "0";
-        craze["RTlitre"] = "0";
-        return craze;
+        return {
+          ...craze,
+          sales: 0,
+          outlet: null,
+          pumps: [],
+          beforeSales: craze.currentLevel,
+          afterSales: 0,
+          RTlitre: 0,
+        };
       });
 
       state.tankList = load;
@@ -61,11 +63,13 @@ export const outletSlice = createSlice({
     getAllPumps: (state, action) => {
       const load = action.payload.map((data) => {
         let craze = { ...data };
-        craze["identity"] = null;
-        craze["closingMeter"] = "0";
-        craze["newTotalizer"] = "Enter closing meter";
-        craze["RTlitre"] = "0";
-        return craze;
+        return {
+          ...craze,
+          identity: null,
+          closingMeter: 0,
+          newTotalizer: "Enter closing meter",
+          RTlitre: 0,
+        };
       });
 
       state.pumpList = load;

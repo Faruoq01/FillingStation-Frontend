@@ -1,5 +1,5 @@
 import { Radio } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import {
   updateAgoList,
   updateDpkList,
   updatePmsList,
-  updateRecords,
   updateSelectedPumps,
 } from "../../storage/recordsales";
 
@@ -18,7 +17,6 @@ const mediaMatch = window.matchMedia("(max-width: 500px)");
 
 const PumpUpdateComponent = (props) => {
   const [productType, setProductType] = useState("PMS");
-  const pumpList = useSelector((state) => state.outlet.pumpList);
   const tankList = useSelector((state) => state.outlet.tankList);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
@@ -30,8 +28,8 @@ const PumpUpdateComponent = (props) => {
   const PMS = useSelector((state) => state.recordsales.PMS);
   const AGO = useSelector((state) => state.recordsales.AGO);
   const DPK = useSelector((state) => state.recordsales.DPK);
-  console.log(selectedPumps, "selected pumps");
-  console.log(selectedTanks, "selected tanks");
+  // console.log(selectedPumps, "selected pumps");
+  // console.log(selectedTanks, "selected tanks");
   // console.log(PMS, "pmmmmmmmmssssss");
 
   const onRadioClick = (data) => {
