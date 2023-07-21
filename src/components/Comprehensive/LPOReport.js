@@ -2,7 +2,6 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import DailySalesService from "../../services/DailySales";
-import { bulkReports } from "../../store/actions/dailySales";
 import swal from "sweetalert";
 import { useState } from "react";
 import UpdateLPO from "../Modals/DailySales/lpo";
@@ -10,16 +9,12 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 
 const LPOReport = () => {
-  const { lpo } = useSelector((state) => state.dailySalesReducer.bulkReports);
+  const lpo = useSelector((state) => state.comprehensive.lpo);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector(
-    (state) => state.dailySalesReducer.currentDate
-  );
-  const user = useSelector((state) => state.authReducer.user);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const user = useSelector((state) => state.auth.user);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
@@ -67,27 +62,10 @@ const LPOReport = () => {
       if (willDelete) {
         APIs.post("/sales/delete/lpo", {
           data: data,
-        })
-          .then((data) => {
-            getAndAnalyzeDailySales();
-          })
-          .then(() => {
-            swal("Success", "Record deleted successfully", "success");
-          });
+        }).then(() => {
+          swal("Success", "Record deleted successfully", "success");
+        });
       }
-    });
-  };
-
-  const getAndAnalyzeDailySales = () => {
-    const salesPayload = {
-      organisationID: resolveUserID().id,
-      outletID: oneStationData._id,
-      onLoad: currentDate === "" ? true : false,
-      selectedDate: currentDate,
-    };
-
-    DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then((data) => {
-      dispatch(bulkReports(data.dailyRecords));
     });
   };
 

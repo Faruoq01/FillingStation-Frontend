@@ -1,125 +1,117 @@
-import { useSelector } from 'react-redux';
-import ApproximateDecimal from '../common/approx';
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../common/approx";
 
 const BalanceCF = () => {
+  const balanceCF = useSelector((state) => state.comprehensive.balanceCF);
 
-    const {balances, balanceCF, supply} = useSelector(state => state.dailySalesReducer.bulkReports);
-
-    const getInit = (type) => {
-
-        const current = type === "PMS"? balances?.pms: type === "AGO"? balances?.ago: balances?.dpk;
-        const currentCF = type === "PMS"? balanceCF?.pms: type === "AGO"? balanceCF?.ago: balanceCF?.dpk;
-
-        const second = supply.filter(data => data.priority === "0");
-
-        const quantity = second.filter(data => data.productType === type).reduce((accum, current) => {
-            return Number(accum) + Number(current.quantity);
-        }, 0);
-
-        return{CF: currentCF === 0? Number(current.balanceCF) + quantity: Number(currentCF.balanceCF) + quantity}
-
-    }
-
-    const BalanceCF = ({data, type, sn}) => {
-
-        return(
-            <div style={{marginTop:'5px'}} className="product_balance_header">
-                <div style={ins} className="cells">{sn}</div>
-                <div style={ins} className="cells">{type} </div>
-                <div style={ins} className="cells">{data === null? "0": ApproximateDecimal( getInit(type).CF )}</div>
-            </div>
-        )
-    }
-
-    const MobileBalanceCF = ({data, type, sn}) => {
-        return(
-            <div className='supply_card'>
-    
-                <div style={rows}>
-                    <div style={{width:'100%'}}>
-                        <div style={title}>{sn}</div>
-                        <div style={label}>S/N</div>
-                    </div>
-
-                    <div style={{width:'100%'}}>
-                        <div style={title}>{type}</div>
-                        <div style={label}>Product</div>
-                    </div>
-                </div>
-    
-                <div style={rows}>
-                    <div style={{width:'100%'}}>
-                        <div style={title}>{data === null? "0": ApproximateDecimal( getInit(type).CF )}</div>
-                        <div style={label}>Quantity</div>
-                    </div>
-
-                    <div style={{width:'100%'}}></div>
-                </div>
-            </div>
-        )
-    }
-
-    return(
-        <div style={{width:'100%'}}>
-            <div style={{maxWidth: '700px'}} className="initial_balance_container">
-                <div className="product_balance_header">
-                    <div className="cells">S/N</div>
-                    <div className="cells">Product Type</div>
-                    <div className="cells">Quantity</div>
-                </div>
-
-                <BalanceCF data={balanceCF?.pms} type={'PMS'} sn={'1'} />
-                <BalanceCF data={balanceCF?.ago} type={'AGO'} sn={'2'} />
-                <BalanceCF data={balanceCF?.dpk} type={'DPK'} sn={'3'} />
-            </div>
-
-            <div className="initial_balance_container_mobile">
-                {/* Supply records */}
-                <div className='mobile_header'>
-                    &nbsp;&nbsp;&nbsp; Balance Carried Forward
-                </div>
-                <div style={{marginBottom:'20px', marginTop:'10px'}} className='balance_mobile_detail'>
-                    <div className='sups'>
-                        <div className='slide'>
-                            <MobileBalanceCF data={balanceCF?.pms} type={'PMS'} sn={'1'} />
-                            <MobileBalanceCF data={balanceCF?.ago} type={'AGO'} sn={'2'} />
-                            <MobileBalanceCF data={balanceCF?.dpk} type={'DPK'} sn={'3'} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+  const BalanceCF = ({ data, type, sn }) => {
+    return (
+      <div style={{ marginTop: "5px" }} className="product_balance_header">
+        <div style={ins} className="cells">
+          {sn}
         </div>
-    )
-}
+        <div style={ins} className="cells">
+          {type}{" "}
+        </div>
+        <div style={ins} className="cells">
+          {data === null ? "0" : ApproximateDecimal(0)}
+        </div>
+      </div>
+    );
+  };
+
+  const MobileBalanceCF = ({ data, type, sn }) => {
+    return (
+      <div className="supply_card">
+        <div style={rows}>
+          <div style={{ width: "100%" }}>
+            <div style={title}>{sn}</div>
+            <div style={label}>S/N</div>
+          </div>
+
+          <div style={{ width: "100%" }}>
+            <div style={title}>{type}</div>
+            <div style={label}>Product</div>
+          </div>
+        </div>
+
+        <div style={rows}>
+          <div style={{ width: "100%" }}>
+            <div style={title}>
+              {data === null ? "0" : ApproximateDecimal(0)}
+            </div>
+            <div style={label}>Quantity</div>
+          </div>
+
+          <div style={{ width: "100%" }}></div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ width: "100%" }}>
+      <div style={{ maxWidth: "700px" }} className="initial_balance_container">
+        <div className="product_balance_header">
+          <div className="cells">S/N</div>
+          <div className="cells">Product Type</div>
+          <div className="cells">Quantity</div>
+        </div>
+
+        <BalanceCF data={balanceCF?.pms} type={"PMS"} sn={"1"} />
+        <BalanceCF data={balanceCF?.ago} type={"AGO"} sn={"2"} />
+        <BalanceCF data={balanceCF?.dpk} type={"DPK"} sn={"3"} />
+      </div>
+
+      <div className="initial_balance_container_mobile">
+        {/* Supply records */}
+        <div className="mobile_header">
+          &nbsp;&nbsp;&nbsp; Balance Carried Forward
+        </div>
+        <div
+          style={{ marginBottom: "20px", marginTop: "10px" }}
+          className="balance_mobile_detail">
+          <div className="sups">
+            <div className="slide">
+              <MobileBalanceCF data={balanceCF?.pms} type={"PMS"} sn={"1"} />
+              <MobileBalanceCF data={balanceCF?.ago} type={"AGO"} sn={"2"} />
+              <MobileBalanceCF data={balanceCF?.dpk} type={"DPK"} sn={"3"} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ins = {
-    background: '#EDEDEDB2',
-    color:'#000',
-    fontWeight:'600'
-}
+  background: "#EDEDEDB2",
+  color: "#000",
+  fontWeight: "600",
+};
 
 const rows = {
-    width:'90%',
-    height:'auto',
-    marginTop:'20px',
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-between'
-}
+  width: "90%",
+  height: "auto",
+  marginTop: "20px",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+};
 
 const title = {
-    fontSize:'12px',
-    fontWeight:'500',
-    fontFamily:'Poppins',
-    lineHeight:'30px',
-    color:'#515151'
-}
+  fontSize: "12px",
+  fontWeight: "500",
+  fontFamily: "Poppins",
+  lineHeight: "30px",
+  color: "#515151",
+};
 
 const label = {
-    fontSize:'11px',
-    fontWeight:'500',
-    fontFamily:'Poppins',
-    color:'#07956A'
-}
+  fontSize: "11px",
+  fontWeight: "500",
+  fontFamily: "Poppins",
+  color: "#07956A",
+};
 
 export default BalanceCF;

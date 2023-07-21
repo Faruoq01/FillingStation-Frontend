@@ -5,21 +5,16 @@ import Sales from "../Modals/DailySales/sales";
 import { useState } from "react";
 import swal from "sweetalert";
 import DailySalesService from "../../services/DailySales";
-import { bulkReports } from "../../store/actions/dailySales";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import moment from "moment";
 
 const ProductBalance = (props) => {
-  const { sales } = useSelector((state) => state.dailySalesReducer.bulkReports);
+  const sales = useSelector((state) => state.comprehensive.sales);
   const dispatch = useDispatch();
-  const currentDate = useSelector(
-    (state) => state.dailySalesReducer.currentDate
-  );
-  const user = useSelector((state) => state.authReducer.user);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const user = useSelector((state) => state.auth.user);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const product = sales.filter((data) => data.productType === props.type);
   const [openEdit, setOpenEdit] = useState(false);
@@ -110,28 +105,11 @@ const ProductBalance = (props) => {
           DailySalesService.deleteSales({
             record: data,
             station: oneStationData,
-          })
-            .then((data) => {
-              getAndAnalyzeDailySales();
-            })
-            .then(() => {
-              swal("Success", "Record deleted successfully", "success");
-            });
+          }).then(() => {
+            swal("Success", "Record deleted successfully", "success");
+          });
         }
       }
-    });
-  };
-
-  const getAndAnalyzeDailySales = () => {
-    const salesPayload = {
-      organisationID: resolveUserID().id,
-      outletID: oneStationData._id,
-      onLoad: currentDate === "" ? true : false,
-      selectedDate: currentDate,
-    };
-
-    DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then((data) => {
-      dispatch(bulkReports(data.dailyRecords));
     });
   };
 
