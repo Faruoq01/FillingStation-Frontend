@@ -112,6 +112,7 @@ const initialState = {
     },
   },
   incoming: [],
+  tankLevelList: [],
 };
 
 export const dailysales = createSlice({
@@ -151,6 +152,9 @@ export const dailysales = createSlice({
     incoming: (state, action) => {
       state.incoming = action.payload;
     },
+    setTankLevelList: (state, action) => {
+      state.tankLevelList = action.payload;
+    },
   },
 });
 
@@ -167,6 +171,7 @@ export const {
   netToBank,
   lpo,
   incoming,
+  setTankLevelList,
 } = dailysales.actions;
 
 export default dailysales.reducer;

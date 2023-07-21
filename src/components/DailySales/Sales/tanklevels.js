@@ -11,6 +11,7 @@ import { useState } from "react";
 import moment from "moment";
 import APIs from "../../../services/api";
 import { tankLevels } from "../../../storage/dailysales";
+import { tankListType } from "../../../storage/outlet";
 
 const TankLevels = () => {
   const history = useHistory();
@@ -66,7 +67,7 @@ const TankLevels = () => {
 
   const goToTanks = (product) => {
     if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
-    // dispatch(tankListType(product));
+    dispatch(tankListType(product));
     history.push("/home/outlets/list");
   };
 
