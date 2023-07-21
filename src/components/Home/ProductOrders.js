@@ -128,16 +128,13 @@ const ProductOrders = () => {
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
+    setSkip((prev) => prev + 1);
     refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
     refresh(skip - 1);
   };
 

@@ -4,11 +4,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import SupplyModal from "../Modals/SupplyModal";
-import {
-  createSupply,
-  searchSupply,
-  singleSupply,
-} from "../../store/actions/supply";
+import { createSupply, searchSupply, singleSupply } from "../../storage/supply";
 import SupplyService from "../../services/supplyService";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -17,7 +13,7 @@ import {
   adminOutlet,
   getAllOutletTanks,
   getAllStations,
-} from "../../store/actions/outlet";
+} from "../../storage/outlet";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { OutlinedInput } from "@mui/material";
 import PrintSupplyRecords from "../Reports/SupplyRecords";
@@ -25,7 +21,7 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import CreateSupply from "../Supply/CreateSupply";
 import swal from "sweetalert";
 import IncomingService from "../../services/IncomingService";
-import { createIncomingOrder } from "../../store/actions/incomingOrder";
+import { createIncomingOrder } from "../../storage/incomingOrder";
 import { ThreeDots } from "react-loader-spinner";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import EditSupply from "../Supply/EditSupply";
@@ -34,9 +30,7 @@ const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const Supply = (props) => {
-  const singleSupplyDetails = useSelector(
-    (state) => state.supplyReducer.singleSupply
-  );
+  const singleSupplyDetails = useSelector((state) => state.supply.singleSupply);
   const [deleteLoad, setDeleteLoad] = useState(false);
   const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
     useState(false);
@@ -44,12 +38,10 @@ const Supply = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [defaultState, setDefault] = useState(0);
-  const user = useSelector((state) => state.authReducer.user);
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const supply = useSelector((state) => state.supplyReducer.supply);
+  const user = useSelector((state) => state.auth.user);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const supply = useSelector((state) => state.supply.supply);
   const [prints, setPrints] = useState(false);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
@@ -179,12 +171,12 @@ const Supply = (props) => {
     getAllSupplyData();
   }, [getAllSupplyData]);
 
-  const refresh = () => {
+  const refresh = (skip) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
       limit: limit,
-      outletID: oneStationData?._id,
+      outletID: oneStationData === null ? "None" : oneStationData?._id,
       organisationID: resolveUserID().id,
     };
 
@@ -266,17 +258,14 @@ const Supply = (props) => {
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh();
+    setSkip((prev) => prev + 1);
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh();
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    refresh(skip - 1);
   };
 
   const goToHistory = () => {
@@ -327,8 +316,7 @@ const Supply = (props) => {
                     ...selectStyle2,
                     backgroundColor: "#06805B",
                     color: "#fff",
-                  }}
-                >
+                  }}>
                   <MenuItem style={menu} value={10}>
                     Action
                   </MenuItem>
@@ -353,15 +341,13 @@ const Supply = (props) => {
                       labelId="demo-select-small"
                       id="demo-select-small"
                       value={defaultState}
-                      sx={selectStyle2}
-                    >
+                      sx={selectStyle2}>
                       <MenuItem
                         onClick={() => {
                           changeMenu(0, null);
                         }}
                         style={menu}
-                        value={0}
-                      >
+                        value={0}>
                         All Stations
                       </MenuItem>
                       {allOutlets.map((item, index) => {
@@ -372,8 +358,7 @@ const Supply = (props) => {
                             onClick={() => {
                               changeMenu(index + 1, item);
                             }}
-                            value={index + 1}
-                          >
+                            value={index + 1}>
                             {item.outletName + ", " + item.alias}
                           </MenuItem>
                         );
@@ -386,8 +371,7 @@ const Supply = (props) => {
                       id="demo-select-small"
                       value={0}
                       sx={selectStyle2}
-                      disabled
-                    >
+                      disabled>
                       <MenuItem style={menu} value={0}>
                         {!getPerm("0")
                           ? oneStationData?.outletName +
@@ -432,8 +416,7 @@ const Supply = (props) => {
                     },
                   }}
                   onClick={openPaymentModal}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   Add Supply
                 </Button>
@@ -446,8 +429,7 @@ const Supply = (props) => {
                   labelId="demo-select-small"
                   id="demo-select-small"
                   value={entries}
-                  sx={selectStyle2}
-                >
+                  sx={selectStyle2}>
                   <MenuItem style={menu} value={10}>
                     Show entries
                   </MenuItem>
@@ -456,8 +438,7 @@ const Supply = (props) => {
                       entriesMenu(20, 15);
                     }}
                     style={menu}
-                    value={20}
-                  >
+                    value={20}>
                     15 entries
                   </MenuItem>
                   <MenuItem
@@ -465,8 +446,7 @@ const Supply = (props) => {
                       entriesMenu(30, 30);
                     }}
                     style={menu}
-                    value={30}
-                  >
+                    value={30}>
                     30 entries
                   </MenuItem>
                   <MenuItem
@@ -474,16 +454,14 @@ const Supply = (props) => {
                       entriesMenu(40, 100);
                     }}
                     style={menu}
-                    value={40}
-                  >
+                    value={40}>
                     100 entries
                   </MenuItem>
                 </Select>
               </div>
               <div
                 style={{ width: mediaMatch.matches ? "100%" : "190px" }}
-                className="input-cont2"
-              >
+                className="input-cont2">
                 <Button
                   sx={{
                     width: mediaMatch.matches ? "100%" : "100px",
@@ -498,8 +476,7 @@ const Supply = (props) => {
                     },
                   }}
                   onClick={goToHistory}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   History
                 </Button>
@@ -517,8 +494,7 @@ const Supply = (props) => {
                     },
                   }}
                   onClick={printReport}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   Print
                 </Button>
