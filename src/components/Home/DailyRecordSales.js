@@ -49,7 +49,6 @@ import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PendingSales from "../Modals/PendingSales";
-import { useCallback } from "react";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 

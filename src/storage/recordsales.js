@@ -157,7 +157,6 @@ export const {
   changeStation,
   updatePayload,
   passRecordSales,
-  createLPO,
   desselectedListPumps,
   selectedListPumps,
   updateSelectedPumps,
@@ -165,6 +164,7 @@ export const {
   updatePmsList,
   updateAgoList,
   updateDpkList,
+  createLPO,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;

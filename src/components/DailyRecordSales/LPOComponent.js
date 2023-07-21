@@ -12,29 +12,23 @@ import swal from "sweetalert";
 import axios from "axios";
 import config from "../../constants";
 import { useEffect } from "react";
-import { updatePayload } from "../../store/actions/records";
+import { updatePayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 
 const LPOComponent = (props) => {
   const dispatch = useDispatch();
   const gallery = useRef();
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const lpos = useSelector((state) => state.lpoReducer.lpo);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const lpos = useSelector((state) => state.recordsales.lpo);
   const [selectedPMS, setSelectedPMS] = useState(null);
   const [selectedAGO, setSelectedAGO] = useState(null);
   const [selectedDPK, setSelectedDPK] = useState(null);
 
   // selections
   const [open, setOpen] = useState(false);
-  const records = useSelector((state) => state.recordsReducer.load);
-  const selectedPumps = useSelector(
-    (state) => state.recordsReducer.selectedPumps
-  );
-  const selectedTanks = useSelector(
-    (state) => state.recordsReducer.selectedTanks
-  );
+  const records = useSelector((state) => state.recordsales.load);
+  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
 
   // console.log(selectedPumps, "selected pumps")
   // console.log(selectedTanks, "selected tanks")
@@ -43,7 +37,6 @@ const LPOComponent = (props) => {
   // payload records
   const [cam, setCam] = useState(null);
   const [gall, setGall] = useState(null);
-  const pumpList = useSelector((state) => state.outletReducer.pumpList);
   const [productType, setProductType] = useState(null);
   const [dispenseLpo, setDispensedLPO] = useState(null);
   const [dispensedPump, setDispensedPump] = useState(null);
@@ -392,127 +385,150 @@ const LPOComponent = (props) => {
       <div
         style={{ flexDirection: "row", justifyContent: "center" }}
         className="pump-list">
-        {pumpList.length === 0 ? (
-          <div style={{ ...box, width: "170px" }}>
-            <div style={{ marginRight: "10px" }}>No pump Created</div>
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src={cross}
-              alt="icon"
-            />
-          </div>
-        ) : productType === "PMS" ? (
-          pms.map((data, index) => {
-            return (
-              <div key={index}>
-                {selectedPMS === index && (
-                  <div className="box">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={desselect}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-                {selectedPMS !== index && (
-                  <div className="box2">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={desselect}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })
-        ) : productType === "AGO" ? (
-          ago.map((data, index) => {
-            return (
-              <div key={index}>
-                {selectedAGO === index && (
-                  <div className="box">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={desselect}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-                {selectedAGO !== index && (
-                  <div className="box2">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={desselect}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })
-        ) : (
-          dpk.map((data, index) => {
-            return (
-              <div key={index}>
-                {selectedDPK === index && (
-                  <div className="box">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={desselect}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-                {selectedDPK !== index && (
-                  <div className="box2">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={desselect}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
+        {productType === "PMS" &&
+          (pms.length === 0 ? (
+            <div style={{ ...box, width: "170px" }}>
+              <div style={{ marginRight: "10px" }}>No pump Created</div>
+              <img
+                style={{ width: "20px", height: "20px" }}
+                src={cross}
+                alt="icon"
+              />
+            </div>
+          ) : (
+            pms.map((data, index) => {
+              return (
+                <div key={index}>
+                  {selectedPMS === index && (
+                    <div className="box">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={desselect}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
+                  )}
+                  {selectedPMS !== index && (
+                    <div className="box2">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={desselect}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          ))}
+        {productType === "AGO" &&
+          (ago.length === 0 ? (
+            <div style={{ ...box, width: "170px" }}>
+              <div style={{ marginRight: "10px" }}>No pump Created</div>
+              <img
+                style={{ width: "20px", height: "20px" }}
+                src={cross}
+                alt="icon"
+              />
+            </div>
+          ) : (
+            ago.map((data, index) => {
+              return (
+                <div key={index}>
+                  {selectedAGO === index && (
+                    <div className="box">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={desselect}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
+                  )}
+                  {selectedAGO !== index && (
+                    <div className="box2">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={desselect}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          ))}
+        {productType === "DPK" &&
+          (dpk.length === 0 ? (
+            <div style={{ ...box, width: "170px" }}>
+              <div style={{ marginRight: "10px" }}>No pump Created</div>
+              <img
+                style={{ width: "20px", height: "20px" }}
+                src={cross}
+                alt="icon"
+              />
+            </div>
+          ) : (
+            dpk.map((data, index) => {
+              return (
+                <div key={index}>
+                  {selectedDPK === index && (
+                    <div className="box">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={desselect}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
+                  )}
+                  {selectedDPK !== index && (
+                    <div className="box2">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={desselect}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          ))}
       </div>
 
       <div className="lpo-body">

@@ -3,24 +3,19 @@ import close from "../../assets/close.png";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@mui/material";
-import RecordSalesService from "../../services/DailyRecordSales";
 import swal from "sweetalert";
-import { changeStation, updatePayload } from "../../store/actions/records";
-import OutletService from "../../services/outletService";
+import { updatePayload } from "../../storage/recordsales";
 import { useHistory } from "react-router-dom";
 import "../../styles/summary.scss";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
-import SalesMachine from "../../modules/salesMachine";
 import { ThreeDots } from "react-loader-spinner";
-import DailySalesService from "../../services/DailySales";
 import SalesService from "../../services/sales";
-import { salesStatus } from "../../store/actions/dailySales";
 import APIs from "../../services/api";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
-  const records = useSelector((state) => state.recordsReducer.load);
+  const records = useSelector((state) => state.recordsales.load);
 
   const removeData = (index) => {
     swal({
@@ -158,7 +153,7 @@ const FuelCard = (props) => {
 
 const ReturnToTank = (props) => {
   const dispatch = useDispatch();
-  const records = useSelector((state) => state.recordsReducer.load);
+  const records = useSelector((state) => state.recordsales.load);
 
   const removeData = (index) => {
     swal({
@@ -265,23 +260,17 @@ const ReturnToTank = (props) => {
 };
 
 const SummaryRecord = (props) => {
-  const records = useSelector((state) => state.recordsReducer.load);
+  const records = useSelector((state) => state.recordsales.load);
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
   const history = useHistory();
-  const selectedPumps = useSelector(
-    (state) => state.recordsReducer.selectedPumps
-  );
-  const selectedTanks = useSelector(
-    (state) => state.recordsReducer.selectedTanks
-  );
-  const currentDate = useSelector((state) => state.recordsReducer.currentDate);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const tankList = useSelector((state) => state.outletReducer.tankList);
+  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const tankList = useSelector((state) => state.outlet.tankList);
   console.log(records, "summary");
   // console.log(selectedPumps, "Pumps")
   // console.log(selectedTanks, "Tanks")
@@ -473,7 +462,7 @@ const SummaryRecord = (props) => {
       ];
       Promise.allSettled(payload)
         .then((results) => {
-          dispatch(salesStatus(results));
+          // dispatch(salesStatus(results));
           handleClose();
           history.push("/home/daily-sales");
           swal("Success!", "Record saved successfully!", "success");
