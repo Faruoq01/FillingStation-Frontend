@@ -78,6 +78,7 @@ export const outletSlice = createSlice({
     getOneTank: (state, action) => {
       state.oneTank = action.payload;
     },
+    searchTanks: (state, action) => {},
   },
 });
 
@@ -92,6 +93,7 @@ export const {
   getAllOutletTanks,
   getAllPumps,
   getOneTank,
+  searchTanks,
 } = outletSlice.actions;
 
 export default outletSlice.reducer;

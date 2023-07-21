@@ -9,6 +9,10 @@ import productReducer from "./productOrder";
 import incomingReducer from "./incomingOrder";
 import supplyReducer from "./supply";
 import regulatoryReducer from "./regulatory";
+import employeeReducer from "./employee";
+import salaryReducer from "./salary";
+import queryReducer from "./query";
+import attendanceReducer from "./attendance";
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +26,9 @@ export const store = configureStore({
     incomingorder: incomingReducer,
     supply: supplyReducer,
     regulatory: regulatoryReducer,
+    employee: employeeReducer,
+    salary: salaryReducer,
+    query: queryReducer,
+    attendance: attendanceReducer,
   },
 });

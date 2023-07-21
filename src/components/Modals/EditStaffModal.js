@@ -16,14 +16,12 @@ import MenuItem from "@mui/material/MenuItem";
 
 const EditStaffModal = (props) => {
   const singleEmployeeDetails = useSelector(
-    (state) => state?.staffUserReducer?.singleEmployee
+    (state) => state?.employee?.singleEmployee
   );
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
 
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [staffName, setStaffName] = useState(
     singleEmployeeDetails.staffName ?? ""
@@ -77,69 +75,69 @@ const EditStaffModal = (props) => {
 
   const submit = () => {
     return;
-    if (oneStationData === null)
-      return swal("Warning!", "Please create a station", "info");
-    if (staffName === "")
-      return swal("Warning!", "Staff name field cannot be empty", "info");
-    if (sex === "")
-      return swal("Warning!", "Sex field cannot be empty", "info");
-    if (email === "")
-      return swal("Warning!", "Email field cannot be empty", "info");
-    if (phone === "")
-      return swal("Warning!", "Phone field cannot be empty", "info");
-    if (address === "")
-      return swal("Warning!", "Address field cannot be empty", "info");
-    if (state === "")
-      return swal("Warning!", "State field cannot be empty", "info");
-    if (accountNumber === "")
-      return swal("Warning!", "Account No field cannot be empty", "info");
-    if (bankName === "")
-      return swal("Warning!", "Bank name field cannot be empty", "info");
-    if (dateEmployed === "")
-      return swal("Warning!", "Date employed field cannot be empty", "info");
-    if (dateOfBirth === "")
-      return swal("Warning!", "Date of birth field cannot be empty", "info");
-    if (role === "")
-      return swal("Warning!", "Role field cannot be empty", "info");
-    if (jobTitle === "")
-      return swal("Warning!", "Job title field cannot be empty", "info");
-    if (password === "")
-      return swal("Warning!", "Password field cannot be empty", "info");
-    if (confirmPassword !== password)
-      return swal("Warning!", "Password field did not match", "info");
+    // if (oneStationData === null)
+    //   return swal("Warning!", "Please create a station", "info");
+    // if (staffName === "")
+    //   return swal("Warning!", "Staff name field cannot be empty", "info");
+    // if (sex === "")
+    //   return swal("Warning!", "Sex field cannot be empty", "info");
+    // if (email === "")
+    //   return swal("Warning!", "Email field cannot be empty", "info");
+    // if (phone === "")
+    //   return swal("Warning!", "Phone field cannot be empty", "info");
+    // if (address === "")
+    //   return swal("Warning!", "Address field cannot be empty", "info");
+    // if (state === "")
+    //   return swal("Warning!", "State field cannot be empty", "info");
+    // if (accountNumber === "")
+    //   return swal("Warning!", "Account No field cannot be empty", "info");
+    // if (bankName === "")
+    //   return swal("Warning!", "Bank name field cannot be empty", "info");
+    // if (dateEmployed === "")
+    //   return swal("Warning!", "Date employed field cannot be empty", "info");
+    // if (dateOfBirth === "")
+    //   return swal("Warning!", "Date of birth field cannot be empty", "info");
+    // if (role === "")
+    //   return swal("Warning!", "Role field cannot be empty", "info");
+    // if (jobTitle === "")
+    //   return swal("Warning!", "Job title field cannot be empty", "info");
+    // if (password === "")
+    //   return swal("Warning!", "Password field cannot be empty", "info");
+    // if (confirmPassword !== password)
+    //   return swal("Warning!", "Password field did not match", "info");
 
-    setLoading(true);
-    const payload = {
-      staffName: staffName,
-      sex: sex,
-      email: email,
-      phone: phone,
-      address: address,
-      state: state,
-      accountNumber: accountNumber,
-      bankName: bankName,
-      dateEmployed: dateEmployed,
-      dateOfBirth: dateOfBirth,
-      role: role,
-      jobTitle: jobTitle,
-      password: password,
-      organisationID: resolveUserID().id,
-      outletID: oneStationData._id,
-    };
+    // setLoading(true);
+    // const payload = {
+    //   staffName: staffName,
+    //   sex: sex,
+    //   email: email,
+    //   phone: phone,
+    //   address: address,
+    //   state: state,
+    //   accountNumber: accountNumber,
+    //   bankName: bankName,
+    //   dateEmployed: dateEmployed,
+    //   dateOfBirth: dateOfBirth,
+    //   role: role,
+    //   jobTitle: jobTitle,
+    //   password: password,
+    //   organisationID: resolveUserID().id,
+    //   outletID: oneStationData._id,
+    // };
 
-    AdminUserService.createStaffUsers(payload)
-      .then((data) => {
-        if (data.hasOwnProperty("message")) {
-          swal("Error!", data.message, "error");
-        } else {
-          swal("Success!", "A new user created successfully!", "success");
-        }
-      })
-      .then(() => {
-        setLoading(false);
-        props.refresh();
-        handleClose();
-      });
+    // AdminUserService.createStaffUsers(payload)
+    //   .then((data) => {
+    //     if (data.hasOwnProperty("message")) {
+    //       swal("Error!", data.message, "error");
+    //     } else {
+    //       swal("Success!", "A new user created successfully!", "success");
+    //     }
+    //   })
+    //   .then(() => {
+    //     setLoading(false);
+    //     props.refresh();
+    //     handleClose();
+    //   });
   };
 
   return (
@@ -148,8 +146,7 @@ const EditStaffModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div className="modalContainer2">
         <div className="inner">
           <div className="head">
@@ -194,8 +191,7 @@ const EditStaffModal = (props) => {
                   background: "#EEF2F1",
                   border: "1px solid #777777",
                   fontSize: "12px",
-                }}
-              >
+                }}>
                 {props?.allOutlets?.map((item, index) => {
                   return (
                     <MenuItem
@@ -204,8 +200,7 @@ const EditStaffModal = (props) => {
                       onClick={() => {
                         changeMenu(index, item);
                       }}
-                      value={index}
-                    >
+                      value={index}>
                       {item.outletName}
                     </MenuItem>
                   );
@@ -471,8 +466,7 @@ const EditStaffModal = (props) => {
                 },
               }}
               onClick={submit}
-              variant="contained"
-            >
+              variant="contained">
               {" "}
               Add User
             </Button>
