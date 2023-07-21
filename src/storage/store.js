@@ -8,6 +8,7 @@ import analysisReducer from "./analysis";
 import productReducer from "./productOrder";
 import incomingReducer from "./incomingOrder";
 import supplyReducer from "./supply";
+import regulatoryReducer from "./regulatory";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     productorder: productReducer,
     incomingorder: incomingReducer,
     supply: supplyReducer,
+    regulatory: regulatoryReducer,
   },
 });

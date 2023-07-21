@@ -12,7 +12,7 @@ import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import axios from "axios";
 import "../../styles/lpo.scss";
-import { certificate, reciepts } from "../../store/actions/payment";
+import { certificate, reciepts } from "../../storage/regulatory";
 import config from "../../constants";
 import ReactCamera from "./ReactCamera";
 
@@ -27,11 +27,9 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
   //  formData.append("outletID", oneStationData?._id);
   //  formData.append("organizationID", oneStationData?.organisation);
   const [loading, setLoading] = useState(false);
-  const cert = useSelector((state) => state.paymentReducer.certificate);
-  const reciept = useSelector((state) => state.paymentReducer.receipt);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const cert = useSelector((state) => state.regulatory.certificate);
+  const reciept = useSelector((state) => state.regulatory.receipt);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
 
   const [organisation, setOrganisation] = useState(
@@ -196,8 +194,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div className="modalContainer2">
         <ReactCamera open={open} close={setOpen} setDataUri={handleTakePhoto} />
         <ReactCamera
@@ -336,8 +333,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
                     },
                   }}
                   onClick={takePicFromCamera}
-                  variant="contained"
-                >
+                  variant="contained">
                   <img
                     style={{
                       width: "25px",
@@ -362,8 +358,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
                     },
                   }}
                   onClick={uploadProductOrders}
-                  variant="contained"
-                >
+                  variant="contained">
                   <img
                     style={{
                       width: "25px",
@@ -394,8 +389,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
                     },
                   }}
                   onClick={takePicFromCamera2}
-                  variant="contained"
-                >
+                  variant="contained">
                   <img
                     style={{
                       width: "25px",
@@ -420,8 +414,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
                     },
                   }}
                   onClick={uploadProductOrders2}
-                  variant="contained"
-                >
+                  variant="contained">
                   <img
                     style={{
                       width: "25px",
@@ -468,8 +461,7 @@ const PaymentEditModal = ({ singleRegulatoryDetails, ...props }) => {
                 },
               }}
               onClick={submit}
-              variant="contained"
-            >
+              variant="contained">
               {" "}
               Save
             </Button>

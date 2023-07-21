@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import PaymentModal from "../Modals/PaymentModal";
 import { useDispatch, useSelector } from "react-redux";
-import { adminOutlet, getAllStations } from "../../store/actions/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import OutletService from "../../services/outletService";
 import PaymentService from "../../services/paymentService";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
@@ -16,7 +16,7 @@ import {
   createPayment,
   searchPayment,
   singlePaymentAction,
-} from "../../store/actions/payment";
+} from "../../storage/regulatory";
 import ViewPayment from "../Modals/ViewPayment";
 import RegulatoryReports from "../Reports/RegulatoryReports";
 import config from "../../constants";
@@ -32,12 +32,10 @@ const Regulatory = () => {
   const [open, setOpen] = useState(false);
   const [defaultState, setDefault] = useState(0);
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.user);
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const payment = useSelector((state) => state.paymentReducer.payment);
+  const user = useSelector((state) => state.auth.user);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const payment = useSelector((state) => state.regulatory.payment);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -48,7 +46,7 @@ const Regulatory = () => {
   const [loading, setLoading] = useState(false);
   const [deleteLoad, setDeleteLoad] = useState(false);
   const singleRegulatoryDetails = useSelector(
-    (state) => state.paymentReducer.singlePayment
+    (state) => state.regulatory.singlePayment
   );
   const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
     useState(false);
@@ -150,7 +148,7 @@ const Regulatory = () => {
     getTankData();
   }, [getTankData]);
 
-  const refresh = () => {
+  const refresh = (skip) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
@@ -196,23 +194,20 @@ const Regulatory = () => {
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh();
+    setSkip((prev) => prev + 1);
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh();
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    refresh(skip - 1);
   };
 
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh();
+    refresh(skip);
   };
 
   const printReport = () => {
@@ -279,8 +274,7 @@ const Regulatory = () => {
                   ...selectStyle2,
                   backgroundColor: "#06805B",
                   color: "#fff",
-                }}
-              >
+                }}>
                 <MenuItem value={10}>Action</MenuItem>
                 <MenuItem onClick={openPaymentModal} value={20}>
                   Register Payment
@@ -299,15 +293,13 @@ const Regulatory = () => {
                     labelId="demo-select-small"
                     id="demo-select-small"
                     value={defaultState}
-                    sx={selectStyle2}
-                  >
+                    sx={selectStyle2}>
                     <MenuItem
                       onClick={() => {
                         changeMenu(0, null);
                       }}
                       style={menu}
-                      value={0}
-                    >
+                      value={0}>
                       All Stations
                     </MenuItem>
                     {allOutlets.map((item, index) => {
@@ -318,8 +310,7 @@ const Regulatory = () => {
                           onClick={() => {
                             changeMenu(index + 1, item);
                           }}
-                          value={index + 1}
-                        >
+                          value={index + 1}>
                           {item.outletName + ", " + item.alias}
                         </MenuItem>
                       );
@@ -332,8 +323,7 @@ const Regulatory = () => {
                     id="demo-select-small"
                     value={0}
                     sx={selectStyle2}
-                    disabled
-                  >
+                    disabled>
                     <MenuItem style={menu} value={0}>
                       {!getPerm("0")
                         ? oneStationData?.outletName +
@@ -377,8 +367,7 @@ const Regulatory = () => {
                   },
                 }}
                 onClick={openPaymentModal}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Register Payment
               </Button>
@@ -391,8 +380,7 @@ const Regulatory = () => {
                 labelId="demo-select-small"
                 id="demo-select-small"
                 value={entries}
-                sx={selectStyle2}
-              >
+                sx={selectStyle2}>
                 <MenuItem style={menu} value={10}>
                   Show entries
                 </MenuItem>
@@ -401,8 +389,7 @@ const Regulatory = () => {
                     entriesMenu(20, 15);
                   }}
                   style={menu}
-                  value={20}
-                >
+                  value={20}>
                   15 entries
                 </MenuItem>
                 <MenuItem
@@ -410,8 +397,7 @@ const Regulatory = () => {
                     entriesMenu(30, 30);
                   }}
                   style={menu}
-                  value={30}
-                >
+                  value={30}>
                   30 entries
                 </MenuItem>
                 <MenuItem
@@ -419,16 +405,14 @@ const Regulatory = () => {
                     entriesMenu(40, 100);
                   }}
                   style={menu}
-                  value={40}
-                >
+                  value={40}>
                   100 entries
                 </MenuItem>
               </Select>
             </div>
             <div
               style={{ width: mediaMatch.matches ? "100%" : "190px" }}
-              className="input-cont2"
-            >
+              className="input-cont2">
               <Button
                 sx={{
                   width: mediaMatch.matches ? "100%" : "100px",
@@ -443,8 +427,7 @@ const Regulatory = () => {
                   },
                 }}
                 onClick={goToHistory}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 History
               </Button>
@@ -462,8 +445,7 @@ const Regulatory = () => {
                   },
                 }}
                 onClick={printReport}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Print
               </Button>
@@ -508,8 +490,7 @@ const Regulatory = () => {
                               onClick={() => {
                                 viewDescription(item);
                               }}
-                              variant="contained"
-                            >
+                              variant="contained">
                               {" "}
                               View
                             </Button>
@@ -526,8 +507,7 @@ const Regulatory = () => {
                               <a
                                 href={config.BASE_URL + item.attachCertificate}
                                 target="_blank"
-                                rel="noreferrer"
-                              >
+                                rel="noreferrer">
                                 DPRCertificate
                               </a>
                             </div>
@@ -538,8 +518,7 @@ const Regulatory = () => {
                               <a
                                 href={config.BASE_URL + item.paymentReceipt}
                                 target="_blank"
-                                rel="noreferrer"
-                              >
+                                rel="noreferrer">
                                 DPRReceip
                               </a>
                             </div>
@@ -592,16 +571,14 @@ const Regulatory = () => {
                             justifyContent: "center",
                             alignItems: "center",
                           }}
-                          className="table-head2"
-                        >
+                          className="table-head2">
                           <div className="column">{Number(index) + 1}</div>
                           <div className="column">
                             {item.organisationalName}
                           </div>
                           <div
                             style={{ textAlign: "left", lineHeight: "20px" }}
-                            className="column"
-                          >
+                            className="column">
                             <Button
                               sx={{
                                 width: "80px",
@@ -616,8 +593,7 @@ const Regulatory = () => {
                               onClick={() => {
                                 viewDescription(item);
                               }}
-                              variant="contained"
-                            >
+                              variant="contained">
                               {" "}
                               View
                             </Button>
@@ -628,8 +604,7 @@ const Regulatory = () => {
                             <a
                               href={config.BASE_URL + item.attachCertificate}
                               target="_blank"
-                              rel="noreferrer"
-                            >
+                              rel="noreferrer">
                               DPRCertificate
                             </a>
                           </div>
@@ -637,8 +612,7 @@ const Regulatory = () => {
                             <a
                               href={config.BASE_URL + item.paymentReceipt}
                               target="_blank"
-                              rel="noreferrer"
-                            >
+                              rel="noreferrer">
                               DPRReceip
                             </a>
                           </div>
