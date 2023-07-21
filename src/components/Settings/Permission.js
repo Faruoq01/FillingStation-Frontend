@@ -1,305 +1,425 @@
-import { Avatar, Checkbox, MenuItem, OutlinedInput, Select, Switch } from "@mui/material";
+import {
+  Avatar,
+  Checkbox,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Switch,
+} from "@mui/material";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
-import { adminOutlet, getAllStations } from "../../store/actions/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import "../../styles/permission.scss";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 import perm from "../../assets/perm.png";
 import DashboardService from "../../services/dashboard";
-import { changeAllEmployeeStatus, changeEmployeeStatus, dashEmployees, storeSingleUser } from "../../store/actions/dashboard";
+import {
+  changeAllEmployeeStatus,
+  changeEmployeeStatus,
+  dashEmployees,
+  storeSingleUser,
+} from "../../storage/settings";
 import { ThreeDots } from "react-loader-spinner";
+import APIs from "../../services/api";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
-    padding: 8,
-    '& .MuiSwitch-track': {
-      borderRadius: 22 / 2,
-      '&:before, &:after': {
-        content: '""',
-        position: 'absolute',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: 16,
-        height: 16,
-      },
-      '&:before': {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-          theme.palette.getContrastText(theme.palette.primary.main),
-        )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-        left: 12,
-      },
-      '&:after': {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-          theme.palette.getContrastText(theme.palette.primary.main),
-        )}" d="M19,13H5V11H19V13Z" /></svg>')`,
-        right: 12,
-      },
-    },
-    '& .MuiSwitch-thumb': {
-      boxShadow: 'none',
+  padding: 8,
+  "& .MuiSwitch-track": {
+    borderRadius: 22 / 2,
+    "&:before, &:after": {
+      content: '""',
+      position: "absolute",
+      top: "50%",
+      transform: "translateY(-50%)",
       width: 16,
       height: 16,
-      margin: 2,
     },
+    "&:before": {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main)
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+    },
+    "&:after": {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main)
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxShadow: "none",
+    width: 16,
+    height: 16,
+    margin: 2,
+  },
 }));
 
 const UserRow = (props) => {
-    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-    const dispatch = useDispatch();
-    const [loads, setLoad] = useState(false);
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  const dispatch = useDispatch();
+  const [loads, setLoad] = useState(false);
 
-    const goToList = (data) => {
-        dispatch(storeSingleUser(data));
-        props.nav(7);
-    }
+  const goToList = (data) => {
+    dispatch(storeSingleUser(data));
+    props.nav(7);
+  };
 
-    const changeSelected = (e, data) => {
-        const newItem = {...data, selected: e.target.checked? "1": "0"};
-        dispatch(changeEmployeeStatus(newItem));
-    }
+  const changeSelected = (e, data) => {
+    const newItem = { ...data, selected: e.target.checked ? "1" : "0" };
+    dispatch(changeEmployeeStatus(newItem));
+  };
 
-    const changeUserStatus = (e, data) => {
-        setLoad(true);
+  const changeUserStatus = (e, data) => {
+    setLoad(true);
 
-        const payload = {
-            id: data._id,
-            email: data.email,
-            status: e.target.checked? "1": "0"
+    const payload = {
+      id: data._id,
+      email: data.email,
+      status: e.target.checked ? "1" : "0",
+    };
+
+    DashboardService.updateUserStatus(payload)
+      .then((data) => {
+        if (data.code === 200) {
+          const newItem = { ...data, status: e.target.checked ? "1" : "0" };
+          dispatch(changeEmployeeStatus(newItem));
         }
+      })
+      .then(() => {
+        const newItem = { ...data, status: e.target.checked ? "1" : "0" };
+        dispatch(changeEmployeeStatus(newItem));
+        setLoad(false);
+      });
+  };
 
-        DashboardService.updateUserStatus(payload).then(data => {
-            if(data.code === 200){
-                const newItem = {...data, status: e.target.checked? "1": "0"};
-                dispatch(changeEmployeeStatus(newItem));
-            }
-        }).then(()=>{
-            const newItem = {...data, status: e.target.checked? "1": "0"};
-            dispatch(changeEmployeeStatus(newItem));
-            setLoad(false);
-        });
-    }
-
-    return(
-        <div className="user_rows">
-            <div style={{justifyContent:'space-between'}} className="perm_cell2">
-                <Checkbox checked={props.data.selected === "1"? true: false} sx={{
-                    color:'#232759',
-                    marginLeft:'20px',
-                    '&.Mui-checked': {
-                        color: '#1368D8',
-                    },
-                }} {...label} onChange={e => changeSelected(e, props.data)} />
-                <div style={{marginRight:'30px'}}>{props.index + 1}</div>
-            </div>
-            <div className="perm_cell2"><Avatar sx={{width:'25px', height:'25px'}} /></div>
-            <div style={{display:'flex', flexDirection:'row', justifyContent:'flex-start'}} className="perm_cell2">{props.data.staffName}</div>
-            <div style={{color:'#1368D8'}} className="perm_cell2">{props.data.status === "1"? 'Enabled': 'Disabled'}</div>
-            <div className="perm_cell2">
-                <div style={{marginRight:'10px'}}>
-                    {loads?
-                        <ThreeDots 
-                            height="40" 
-                            width="30" 
-                            radius="9"
-                            color="#076146" 
-                            ariaLabel="three-dots-loading"
-                            wrapperStyle={{}}
-                            wrapperClassName=""
-                            visible={true}
-                        />:
-                        <Android12Switch onChange={e => changeUserStatus(e, props.data)} checked={props.data.status === "1"? true: false} />
-                    }
-                </div>
-                <img onClick={()=>{goToList(props.data)}} style={{width:'25px', height:'25px'}} src={perm} alt="icon" />
-            </div>
+  return (
+    <div className="user_rows">
+      <div style={{ justifyContent: "space-between" }} className="perm_cell2">
+        <Checkbox
+          checked={props.data.selected === "1" ? true : false}
+          sx={{
+            color: "#232759",
+            marginLeft: "20px",
+            "&.Mui-checked": {
+              color: "#1368D8",
+            },
+          }}
+          {...label}
+          onChange={(e) => changeSelected(e, props.data)}
+        />
+        <div style={{ marginRight: "30px" }}>{props.index + 1}</div>
+      </div>
+      <div className="perm_cell2">
+        <Avatar sx={{ width: "25px", height: "25px" }} />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+        }}
+        className="perm_cell2">
+        {props.data.staffName}
+      </div>
+      <div style={{ color: "#1368D8" }} className="perm_cell2">
+        {props.data.status === "1" ? "Enabled" : "Disabled"}
+      </div>
+      <div className="perm_cell2">
+        <div style={{ marginRight: "10px" }}>
+          {loads ? (
+            <ThreeDots
+              height="40"
+              width="30"
+              radius="9"
+              color="#076146"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <Android12Switch
+              onChange={(e) => changeUserStatus(e, props.data)}
+              checked={props.data.status === "1" ? true : false}
+            />
+          )}
         </div>
-    )
-}
+        <img
+          onClick={() => {
+            goToList(props.data);
+          }}
+          style={{ width: "25px", height: "25px" }}
+          src={perm}
+          alt="icon"
+        />
+      </div>
+    </div>
+  );
+};
 
 const Permissions = (props) => {
-    const user = useSelector(state => state.authReducer.user);
-    const dispatch = useDispatch();
-    const [defaultState, setDefault] = useState(0);
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
-    const employees = useSelector(state => state.dashboardReducer.employees);
-    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-    const [loading, setLoading] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  const [defaultState, setDefault] = useState(0);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const employees = useSelector((state) => state.settings.employees);
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  const [loading, setLoading] = useState(false);
 
-    const resolveUserID = () => {
-        if(user.userType === "superAdmin"){
-            return {id: user._id}
-        }else{
-            return {id: user.organisationID}
-        }
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
     }
+  };
 
-    const getAllLPOData = useCallback(() => {
-        setLoading(true);
+  const getUserData = useCallback(() => {
+    if (oneStationData !== null) {
+      if (user.userType === "superAdmin" || user.userType === "admin") {
+        const findID = allOutlets.findIndex(
+          (data) => data._id === oneStationData._id
+        );
+        setDefault(findID + 1);
+
         const payload = {
-            organisation: resolveUserID().id
+          organisationID: resolveUserID().id,
+          outletID: oneStationData === null ? "None" : oneStationData._id,
+        };
+
+        APIs.post("/dashboard/employee", payload)
+          .then(({ data }) => {
+            dispatch(dashEmployees(data.employee));
+          })
+          .then(() => {
+            setLoading(false);
+          });
+
+        return;
+      }
+    }
+
+    setLoading(true);
+    const payload = {
+      organisation: resolveUserID().id,
+    };
+
+    OutletService.getAllOutletStations(payload)
+      .then((data) => {
+        dispatch(getAllStations(data.station));
+        if (
+          (user.userType === "superAdmin" || user.userType === "admin") &&
+          oneStationData === null
+        ) {
+          dispatch(adminOutlet(null));
+          return "None";
+        } else {
+          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
+            (data) => {
+              dispatch(adminOutlet(data.station));
+            }
+          );
+
+          return user.outletID;
         }
+      })
+      .then((data) => {
+        const payload = {
+          organisationID: resolveUserID().id,
+          outletID: data,
+        };
 
-        const payload2 = {
-            id: resolveUserID().id, 
-            outletID: "None"
-        }
+        APIs.post("/dashboard/employee", payload)
+          .then(({ data }) => {
+            dispatch(dashEmployees(data.employee));
+          })
+          .then(() => {
+            setLoading(false);
+          });
+      });
 
-        if(user.userType === "superAdmin" || user.userType === "admin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
-                dispatch(adminOutlet(null));
-            });
-
-            DashboardService.allAttendanceRecords(payload2).then(data =>{
-                dispatch(dashEmployees(data.employees));
-            }).then(()=>{
-                setLoading(false);
-            });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-            });
-
-            DashboardService.allAttendanceRecords(payload2).then(data =>{
-                dispatch(dashEmployees(data.employees));
-            }).then(()=>{
-                setLoading(false);
-            });
-        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  }, []);
 
-    useEffect(()=>{
-        getAllLPOData();
-    },[getAllLPOData])
+  useEffect(() => {
+    getUserData();
+  }, [getUserData]);
 
-    const changeMenu = (index, item ) => {
-        setDefault(index);
-        dispatch(adminOutlet(item));
-    }
+  const changeMenu = (index, item) => {
+    setLoading(true);
+    setDefault(index);
+    dispatch(adminOutlet(item));
 
-    const selectAllUsers = (e) => {
-        dispatch(changeAllEmployeeStatus(e.target.checked));
-    }
+    const payload = {
+      organisationID: resolveUserID().id,
+      outletID: item === null ? "None" : item._id,
+    };
 
-    return(
-        <div className="permissions_container">
-            <div className="header_perm_text">Permissions</div>
-            <div className="perm_filters">
-                <div className="all_stations">
-                    {(user.userType === "superAdmin" || user.userType === "admin") &&
-                        <Select
-                            labelId="demo-select-small"
-                            id="demo-select-small"
-                            value={defaultState}
-                            sx={selectStyle2}
-                        >
-                            <MenuItem style={menu} value={0}>All Stations</MenuItem>
-                            {
-                                allOutlets.map((item, index) => {
-                                    return(
-                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
-                                    )
-                                })  
-                            }
-                        </Select>
-                    }
-                    {user.userType === "staff" &&
-                        <Select
-                            labelId="demo-select-small"
-                            id="demo-select-small"
-                            value={0}
-                            sx={selectStyle2}
-                            disabled
-                        >
-                            <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
-                        </Select>
-                    }
-                </div>
-                <div className="perm_search">
-                    <OutlinedInput
-                        sx={{
-                            width:'100%',
-                            height: '35px',  
-                            background:'#EEF2F1', 
-                            fontSize:'12px',
-                            borderRadius:'0px',
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                border:'1px solid #777777',
-                            },
-                        }} 
-                        type='text'
-                        placeholder="Search" 
-                        // onChange={(e) => {searchTable(e.target.value)}}
-                    />
-                </div>
-            </div>
+    APIs.post("/dashboard/employee", payload)
+      .then(({ data }) => {
+        dispatch(dashEmployees(data.employee));
+      })
+      .then(() => {
+        setLoading(false);
+      });
+  };
 
-            <div className="perm_users">
-                <div className="user_header">
-                    <div style={{justifyContent:'space-between'}} className="perm_cell">
-                        <Checkbox sx={{
-                            color:'#fff',
-                            marginLeft:'20px',
-                            '&.Mui-checked': {
-                                color: '#fff',
-                            },
-                        }} {...label} onChange={e => selectAllUsers(e)} />
-                        <div style={{marginRight:'30px'}}>S/N</div>
-                    </div>
-                    <div className="perm_cell">Image</div>
-                    <div className="perm_cell">Full Name</div>
-                    <div className="perm_cell">Status</div>
-                    <div className="perm_cell">Action</div>
-                </div>
+  const selectAllUsers = (e) => {
+    dispatch(changeAllEmployeeStatus(e.target.checked));
+  };
 
-                <div className="row_cell_perm">
-                    {
-                        loading?
-                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'center'}}>
-                            <ThreeDots 
-                                height="60" 
-                                width="50" 
-                                radius="9"
-                                color="#076146" 
-                                ariaLabel="three-dots-loading"
-                                wrapperStyle={{}}
-                                wrapperClassName=""
-                                visible={true}
-                            />
-                        </div>:
-                        employees.length === 0? 
-                        <div>No data</div>:
-                        employees.map((item, index) => {
-                            return(
-                                <UserRow key={index} index={index} data={item} nav={props.nav} />
-                            )
-                        })
-                    }
-                </div>
-            </div>
+  return (
+    <div className="permissions_container">
+      <div className="header_perm_text">Permissions</div>
+      <div className="perm_filters">
+        <div className="all_stations">
+          {(user.userType === "superAdmin" || user.userType === "admin") && (
+            <Select
+              labelId="demo-select-small"
+              id="demo-select-small"
+              value={defaultState}
+              sx={selectStyle2}>
+              <MenuItem
+                style={menu}
+                onClick={() => {
+                  changeMenu(0, null);
+                }}
+                value={0}>
+                All Stations
+              </MenuItem>
+              {allOutlets.map((item, index) => {
+                return (
+                  <MenuItem
+                    key={index}
+                    style={menu}
+                    onClick={() => {
+                      changeMenu(index + 1, item);
+                    }}
+                    value={index + 1}>
+                    {item.outletName + ", " + item.alias}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          )}
+          {user.userType === "staff" && (
+            <Select
+              labelId="demo-select-small"
+              id="demo-select-small"
+              value={0}
+              sx={selectStyle2}
+              disabled>
+              <MenuItem style={menu} value={0}>
+                {user.userType === "staff"
+                  ? oneStationData?.outletName + ", " + oneStationData?.alias
+                  : "No station created"}
+              </MenuItem>
+            </Select>
+          )}
         </div>
-    )
-}
+        <div className="perm_search">
+          <OutlinedInput
+            sx={{
+              width: "100%",
+              height: "35px",
+              background: "#EEF2F1",
+              fontSize: "12px",
+              borderRadius: "0px",
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "1px solid #777777",
+              },
+            }}
+            type="text"
+            placeholder="Search"
+            // onChange={(e) => {searchTable(e.target.value)}}
+          />
+        </div>
+      </div>
+
+      <div className="perm_users">
+        <div className="user_header">
+          <div
+            style={{ justifyContent: "space-between" }}
+            className="perm_cell">
+            <Checkbox
+              sx={{
+                color: "#fff",
+                marginLeft: "20px",
+                "&.Mui-checked": {
+                  color: "#fff",
+                },
+              }}
+              {...label}
+              onChange={(e) => selectAllUsers(e)}
+            />
+            <div style={{ marginRight: "30px" }}>S/N</div>
+          </div>
+          <div className="perm_cell">Image</div>
+          <div className="perm_cell">Full Name</div>
+          <div className="perm_cell">Status</div>
+          <div className="perm_cell">Action</div>
+        </div>
+
+        <div className="row_cell_perm">
+          {loading ? (
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}>
+              <ThreeDots
+                height="60"
+                width="50"
+                radius="9"
+                color="#076146"
+                ariaLabel="three-dots-loading"
+                wrapperStyle={{}}
+                wrapperClassName=""
+                visible={true}
+              />
+            </div>
+          ) : employees.length === 0 ? (
+            <div>No data</div>
+          ) : (
+            employees.map((item, index) => {
+              return (
+                <UserRow
+                  key={index}
+                  index={index}
+                  data={item}
+                  nav={props.nav}
+                />
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const selectStyle2 = {
-    width:'100%', 
-    height:'35px', 
-    borderRadius:'0px',
-    background: '#F2F1F1B2',
-    color:'#000',
-    fontSize:'12px',
-    outline:'none',
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-        border:'1px solid #777777',
-    },
-}
+  width: "100%",
+  height: "35px",
+  borderRadius: "0px",
+  background: "#F2F1F1B2",
+  color: "#000",
+  fontSize: "12px",
+  outline: "none",
+  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #777777",
+  },
+};
 
 const menu = {
-    fontSize:'12px',
-}
+  fontSize: "12px",
+};
 
 export default Permissions;

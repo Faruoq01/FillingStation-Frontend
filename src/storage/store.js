@@ -13,6 +13,7 @@ import employeeReducer from "./employee";
 import salaryReducer from "./salary";
 import queryReducer from "./query";
 import attendanceReducer from "./attendance";
+import settingsReducer from "./settings";
 
 export const store = configureStore({
   reducer: {
@@ -30,5 +31,6 @@ export const store = configureStore({
     salary: salaryReducer,
     query: queryReducer,
     attendance: attendanceReducer,
+    settings: settingsReducer,
   },
 });
