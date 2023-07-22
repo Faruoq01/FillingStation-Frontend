@@ -23,7 +23,11 @@ const initialState = {
       overage: 0,
     },
   },
-  sales: [],
+  sales: {
+    pms: [],
+    ago: [],
+    dpk: [],
+  },
   rtVolumes: [],
   lpo: [],
   expenses: [],
@@ -53,10 +57,29 @@ export const comprehensiveSlice = createSlice({
     setSupply: (state, action) => {
       state.supply = action.payload;
     },
+    setProduct: (state, action) => {
+      switch (action.payload.type) {
+        case "PMS": {
+          state.sales.pms = action.payload.data;
+          break;
+        }
+        case "AGO": {
+          state.sales.ago = action.payload.data;
+          break;
+        }
+        case "DPK": {
+          state.sales.dpk = action.payload.data;
+          break;
+        }
+        default: {
+        }
+      }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setBalances, setSupply } = comprehensiveSlice.actions;
+export const { setBalances, setSupply, setProduct } =
+  comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;

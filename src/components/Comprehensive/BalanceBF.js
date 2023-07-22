@@ -6,8 +6,10 @@ import APIs from "../../services/api";
 import { setBalances, setSupply } from "../../storage/comprehensive";
 import { Skeleton } from "@mui/material";
 import React from "react";
+import moment from "moment";
 
 const InitialBalance = () => {
+  const today = moment().format("YYYY-MM-DD").split(" ")[0];
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -29,7 +31,7 @@ const InitialBalance = () => {
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate === "" ? today : updatedDate,
     };
 
     APIs.post("/comprehensive/balanceBF", payload)
