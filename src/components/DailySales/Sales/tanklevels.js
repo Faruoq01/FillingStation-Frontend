@@ -91,8 +91,8 @@ const TankLevels = () => {
             <div style={{ fontWeight: "500" }} className="capacity">
               Capacity:{" "}
               {ApproximateDecimal(
-                tankLevelsData.pms.tankCapacity !== 0
-                  ? tankLevelsData.pms.tankCapacity
+                tankLevelsData?.pms.tankCapacity !== 0
+                  ? tankLevelsData?.pms.tankCapacity
                   : 33000
               )}{" "}
               Ltr
@@ -109,7 +109,7 @@ const TankLevels = () => {
           <div className="tanks">
             <div className="tank-head">AGO</div>
             <div style={{ fontWeight: "500" }} className="level">
-              Level: {ApproximateDecimal(tankLevelsData.ago.afterSales)} Ltr
+              Level: {ApproximateDecimal(tankLevelsData?.ago.afterSales)} Ltr
             </div>
             <div style={{ fontWeight: "500" }} className="capacity">
               Capacity:{" "}
