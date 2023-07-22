@@ -9,13 +9,13 @@ const TankComponent = (props) => {
   const tankLevelsData = useSelector((state) => state.dailysales.tankLevels);
 
   useEffect(() => {
-    const dpkLevel = tankLevelsData.dpk.afterSales;
+    const dpkLevel = tankLevelsData?.dpk.afterSales;
     const capacity =
-      tankLevelsData.dpk.tankCapacity === 0
+      tankLevelsData?.dpk.tankCapacity === 0
         ? 33000
-        : tankLevelsData.dpk.tankCapacity;
+        : tankLevelsData?.dpk.tankCapacity;
     createTankCanvas(dpkLevel, capacity, 200);
-  }, [tankLevelsData.dpk.afterSales, tankLevelsData.dpk.tankCapacity]);
+  }, [tankLevelsData?.dpk.afterSales, tankLevelsData?.dpk.tankCapacity]);
 
   const createTankCanvas = (level, capacity, deadstock) => {
     let dpi = window.devicePixelRatio;
@@ -80,13 +80,15 @@ const TankComponent = (props) => {
   return (
     <div className="canvases">
       <Tooltip
-        title={`${ApproximateDecimal(tankLevelsData.dpk.afterSales)} Litres`}
-        followCursor>
+        title={`${ApproximateDecimal(tankLevelsData?.dpk.afterSales)} Litres`}
+        followCursor
+      >
         <div>
           <div className="fuel-container">
             <canvas
               style={{ width: "150px", height: "300px" }}
-              ref={canvas}></canvas>
+              ref={canvas}
+            ></canvas>
           </div>
           <div className="fuel2"></div>
           <div ref={fuel} className="fuel"></div>
