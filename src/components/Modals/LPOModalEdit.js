@@ -397,7 +397,6 @@ const LPOModalEdit = (props) => {
               onClick={submit}
               variant="contained"
             >
-              {" "}
               Save
             </Button>
 
