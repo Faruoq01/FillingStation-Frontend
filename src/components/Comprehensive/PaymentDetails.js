@@ -3,8 +3,6 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import DailySalesService from "../../services/DailySales";
-import { bulkReports } from "../../store/actions/dailySales";
 import { useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 import ApproximateDecimal from "../common/approx";

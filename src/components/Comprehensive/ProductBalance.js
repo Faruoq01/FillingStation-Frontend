@@ -9,9 +9,9 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import moment from "moment";
 import { setProduct } from "../../storage/comprehensive";
-import { Skeleton } from "@mui/material";
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
 
 const ProductBalance = (props) => {
   const history = useHistory();
@@ -264,17 +264,15 @@ const ProductBalance = (props) => {
   return (
     <React.Fragment>
       {load ? (
-        <Skeleton
-          sx={{
-            borderRadius: "5px",
-            background: "#f7f7f7",
-            marginLeft: "20px",
-            marginTop: "20px",
-          }}
-          animation="wave"
-          variant="rectangular"
-          width={"94%"}
-          height={200}
+        <ThreeDots
+          height="60"
+          width="50"
+          radius="9"
+          color="#06805B"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{ marginLeft: "20px" }}
+          wrapperClassName=""
+          visible={true}
         />
       ) : (
         <div style={{ width: "100%" }}>
