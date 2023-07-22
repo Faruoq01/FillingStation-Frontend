@@ -13,7 +13,7 @@ const LPOModalEdit = (props) => {
   const { singleLPO } = useSelector((state) => state.lpoReducer);
   const [productType, setProductType] = useState("Weekly");
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
 
   const [companyName, setCompanyName] = useState(singleLPO.companyName);
   const [address, setAddress] = useState(singleLPO?.address ?? "");
