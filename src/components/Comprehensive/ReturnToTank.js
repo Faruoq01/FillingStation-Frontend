@@ -10,8 +10,8 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import { setReturnToTank } from "../../storage/comprehensive";
 import { useHistory } from "react-router-dom";
-import { Skeleton } from "@mui/material";
 import React from "react";
+import { ThreeDots } from "react-loader-spinner";
 
 const ReturnToTank = () => {
   const history = useHistory();
@@ -228,17 +228,15 @@ const ReturnToTank = () => {
   return (
     <React.Fragment>
       {load ? (
-        <Skeleton
-          sx={{
-            borderRadius: "5px",
-            background: "#f7f7f7",
-            marginLeft: "20px",
-            marginTop: "20px",
-          }}
-          animation="wave"
-          variant="rectangular"
-          width={"94%"}
-          height={200}
+        <ThreeDots
+          height="60"
+          width="50"
+          radius="9"
+          color="#06805B"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{ marginLeft: "20px" }}
+          wrapperClassName=""
+          visible={true}
         />
       ) : (
         <div style={{ width: "100%" }}>

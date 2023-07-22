@@ -2,18 +2,16 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import DailySalesService from "../../services/DailySales";
-import { bulkReports } from "../../store/actions/dailySales";
 import UpdateDipping from "../Modals/DailySales/Dipping";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
-import { Skeleton } from "@mui/material";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { setTankLevels } from "../../storage/comprehensive";
+import { ThreeDots } from "react-loader-spinner";
 
 const TankLevels = () => {
   const history = useHistory();
@@ -201,17 +199,15 @@ const TankLevels = () => {
   return (
     <React.Fragment>
       {load ? (
-        <Skeleton
-          sx={{
-            borderRadius: "5px",
-            background: "#f7f7f7",
-            marginLeft: "20px",
-            marginTop: "20px",
-          }}
-          animation="wave"
-          variant="rectangular"
-          width={"94%"}
-          height={200}
+        <ThreeDots
+          height="60"
+          width="50"
+          radius="9"
+          color="#06805B"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{ marginLeft: "20px" }}
+          wrapperClassName=""
+          visible={true}
         />
       ) : (
         <div style={{ width: "100%" }}>

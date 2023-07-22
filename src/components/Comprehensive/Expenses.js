@@ -6,11 +6,11 @@ import { useCallback, useState } from "react";
 import UpdateExpenses from "../Modals/DailySales/expenses";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
-import { Skeleton } from "@mui/material";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { setExpenses } from "../../storage/comprehensive";
 import { useEffect } from "react";
+import { ThreeDots } from "react-loader-spinner";
 
 const Expenses = () => {
   const history = useHistory();
@@ -181,17 +181,15 @@ const Expenses = () => {
   return (
     <React.Fragment>
       {load ? (
-        <Skeleton
-          sx={{
-            borderRadius: "5px",
-            background: "#f7f7f7",
-            marginLeft: "20px",
-            marginTop: "20px",
-          }}
-          animation="wave"
-          variant="rectangular"
-          width={"94%"}
-          height={200}
+        <ThreeDots
+          height="60"
+          width="50"
+          radius="9"
+          color="#06805B"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{ marginLeft: "20px" }}
+          wrapperClassName=""
+          visible={true}
         />
       ) : (
         <div style={{ width: "100%" }}>

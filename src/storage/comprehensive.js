@@ -93,6 +93,9 @@ export const comprehensiveSlice = createSlice({
     setRemarkList: (state, action) => {
       state.remarks = action.payload;
     },
+    setBalanceCF: (state, action) => {
+      state.balanceCF = action.payload;
+    },
   },
 });
 
@@ -107,6 +110,7 @@ export const {
   setDipping,
   setTankLevels,
   setRemarkList,
+  setBalanceCF,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;
