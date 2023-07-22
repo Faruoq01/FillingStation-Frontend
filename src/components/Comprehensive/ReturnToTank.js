@@ -2,13 +2,19 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import DailySalesService from "../../services/DailySales";
 import { useState } from "react";
 import UpdateReturnToTank from "../Modals/DailySales/returnToTank";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import { setReturnToTank } from "../../storage/comprehensive";
+import { useHistory } from "react-router-dom";
+import { Skeleton } from "@mui/material";
+import React from "react";
 
 const ReturnToTank = () => {
+  const history = useHistory();
   const rtVolumes = useSelector((state) => state.comprehensive.rtVolumes);
   const dispatch = useDispatch();
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
@@ -17,6 +23,7 @@ const ReturnToTank = () => {
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -32,6 +39,30 @@ const ReturnToTank = () => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const getReturnToTankData = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
+    setLoad(true);
+    const payload = {
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: updatedDate,
+    };
+
+    APIs.post("/comprehensive/retruntotank", payload)
+      .then(({ data }) => {
+        dispatch(setReturnToTank(data.rt));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getReturnToTankData(currentDate);
+  }, [getReturnToTankData, currentDate]);
 
   const rate = (data) => {
     if (data.productType === "PMS") return data.PMSPrice;
@@ -195,54 +226,73 @@ const ReturnToTank = () => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <div className="initial_balance_container">
-        {openEdit && (
-          <UpdateReturnToTank
-            data={oneRecord}
-            open={openEdit}
-            close={setOpenEdit}
-          />
-        )}
-        <div className="product_balance_header">
-          <div className="cells">Pump Name</div>
-          <div className="cells">Tank Name</div>
-          <div className="cells">Product</div>
-          <div className="cells">Quantity</div>
-          <div className="cells">Rate</div>
-          <div className="cells">Amount</div>
-          {getPerm("13") && <div className="cells">Action</div>}
-        </div>
+    <React.Fragment>
+      {load ? (
+        <Skeleton
+          sx={{
+            borderRadius: "5px",
+            background: "#f7f7f7",
+            marginLeft: "20px",
+            marginTop: "20px",
+          }}
+          animation="wave"
+          variant="rectangular"
+          width={"94%"}
+          height={200}
+        />
+      ) : (
+        <div style={{ width: "100%" }}>
+          <div className="initial_balance_container">
+            {openEdit && (
+              <UpdateReturnToTank
+                data={oneRecord}
+                open={openEdit}
+                close={setOpenEdit}
+              />
+            )}
+            <div className="product_balance_header">
+              <div className="cells">Pump Name</div>
+              <div className="cells">Tank Name</div>
+              <div className="cells">Product</div>
+              <div className="cells">Quantity</div>
+              <div className="cells">Rate</div>
+              <div className="cells">Amount</div>
+              {getPerm("13") && <div className="cells">Action</div>}
+            </div>
 
-        {rtVolumes?.length === 0 ? (
-          <div>No records</div>
-        ) : (
-          rtVolumes.map((item, index) => {
-            return <RTRows key={index} data={item} />;
-          })
-        )}
-      </div>
+            {rtVolumes?.length === 0 ? (
+              <div>No records</div>
+            ) : (
+              rtVolumes.map((item, index) => {
+                return <RTRows key={index} data={item} />;
+              })
+            )}
+          </div>
 
-      <div className="initial_balance_container_mobile">
-        {/* Supply records */}
-        <div className="mobile_header">&nbsp;&nbsp;&nbsp; Return to tank</div>
-        <div
-          style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
-          <div className="sups">
-            <div className="slide">
-              {rtVolumes?.length === 0 ? (
-                <div>No records</div>
-              ) : (
-                rtVolumes.map((item, index) => {
-                  return <MobileRTRows key={index} data={item} />;
-                })
-              )}
+          <div className="initial_balance_container_mobile">
+            {/* Supply records */}
+            <div className="mobile_header">
+              &nbsp;&nbsp;&nbsp; Return to tank
+            </div>
+            <div
+              style={{ marginBottom: "20px", marginTop: "10px" }}
+              className="balance_mobile_detail">
+              <div className="sups">
+                <div className="slide">
+                  {rtVolumes?.length === 0 ? (
+                    <div>No records</div>
+                  ) : (
+                    rtVolumes.map((item, index) => {
+                      return <MobileRTRows key={index} data={item} />;
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 

@@ -7,8 +7,10 @@ import { setBalances, setSupply } from "../../storage/comprehensive";
 import { Skeleton } from "@mui/material";
 import React from "react";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 
 const InitialBalance = () => {
+  const history = useHistory();
   const today = moment().format("YYYY-MM-DD").split(" ")[0];
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -27,6 +29,7 @@ const InitialBalance = () => {
   };
 
   const getAllProductBalances = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

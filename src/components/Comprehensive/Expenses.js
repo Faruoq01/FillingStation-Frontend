@@ -2,13 +2,18 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import DailySalesService from "../../services/DailySales";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import UpdateExpenses from "../Modals/DailySales/expenses";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
+import { Skeleton } from "@mui/material";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { setExpenses } from "../../storage/comprehensive";
+import { useEffect } from "react";
 
 const Expenses = () => {
+  const history = useHistory();
   const expenses = useSelector((state) => state.comprehensive.expenses);
 
   const dispatch = useDispatch();
@@ -18,6 +23,7 @@ const Expenses = () => {
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -33,6 +39,31 @@ const Expenses = () => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const getExpensesData = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
+    setLoad(true);
+    const payload = {
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: updatedDate,
+    };
+
+    APIs.post("/comprehensive/expenses", payload)
+      .then(({ data }) => {
+        console.log(data, "expenses");
+        dispatch(setExpenses(data.expenses));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getExpensesData(currentDate);
+  }, [getExpensesData, currentDate]);
 
   const updateRecord = (data) => {
     setOpenEdit(true);
@@ -149,53 +180,76 @@ const Expenses = () => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <div style={{ maxWidth: "700px" }} className="initial_balance_container">
-        {openEdit && (
-          <UpdateExpenses
-            data={oneRecord}
-            open={openEdit}
-            close={setOpenEdit}
-          />
-        )}
-        <div className="product_balance_header">
-          <div className="cells">S/N</div>
-          <div className="cells">Expense Name</div>
-          <div className="cells">Amount</div>
-          {getPerm("15") && <div className="cells">Action</div>}
-        </div>
+    <React.Fragment>
+      {load ? (
+        <Skeleton
+          sx={{
+            borderRadius: "5px",
+            background: "#f7f7f7",
+            marginLeft: "20px",
+            marginTop: "20px",
+          }}
+          animation="wave"
+          variant="rectangular"
+          width={"94%"}
+          height={200}
+        />
+      ) : (
+        <div style={{ width: "100%" }}>
+          <div
+            style={{ maxWidth: "700px" }}
+            className="initial_balance_container">
+            {openEdit && (
+              <UpdateExpenses
+                data={oneRecord}
+                open={openEdit}
+                close={setOpenEdit}
+              />
+            )}
+            <div className="product_balance_header">
+              <div className="cells">S/N</div>
+              <div className="cells">Expense Name</div>
+              <div className="cells">Amount</div>
+              {getPerm("15") && <div className="cells">Action</div>}
+            </div>
 
-        {expenses.length === 0 ? (
-          <div>No records </div>
-        ) : (
-          expenses.map((item, index) => {
-            return <ExpensesRow key={index} data={item} index={index} />;
-          })
-        )}
-      </div>
+            {expenses.length === 0 ? (
+              <div>No records </div>
+            ) : (
+              expenses.map((item, index) => {
+                return <ExpensesRow key={index} data={item} index={index} />;
+              })
+            )}
+          </div>
 
-      <div className="initial_balance_container_mobile">
-        {/* Supply records */}
-        <div className="mobile_header">&nbsp;&nbsp;&nbsp; Expenses</div>
-        <div
-          style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
-          <div className="sups">
-            <div className="slide">
-              {expenses.length === 0 ? (
-                <div>No records </div>
-              ) : (
-                expenses.map((item, index) => {
-                  return (
-                    <MobileExpensesRow key={index} data={item} index={index} />
-                  );
-                })
-              )}
+          <div className="initial_balance_container_mobile">
+            {/* Supply records */}
+            <div className="mobile_header">&nbsp;&nbsp;&nbsp; Expenses</div>
+            <div
+              style={{ marginBottom: "20px", marginTop: "10px" }}
+              className="balance_mobile_detail">
+              <div className="sups">
+                <div className="slide">
+                  {expenses.length === 0 ? (
+                    <div>No records </div>
+                  ) : (
+                    expenses.map((item, index) => {
+                      return (
+                        <MobileExpensesRow
+                          key={index}
+                          data={item}
+                          index={index}
+                        />
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 

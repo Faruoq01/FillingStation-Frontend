@@ -11,8 +11,10 @@ import moment from "moment";
 import { setProduct } from "../../storage/comprehensive";
 import { Skeleton } from "@mui/material";
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 const ProductBalance = (props) => {
+  const history = useHistory();
   const sales = useSelector((state) => state.comprehensive.sales);
   const dispatch = useDispatch();
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
@@ -40,6 +42,7 @@ const ProductBalance = (props) => {
   };
 
   const getAllProduct = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

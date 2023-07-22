@@ -75,11 +75,26 @@ export const comprehensiveSlice = createSlice({
         }
       }
     },
+    setReturnToTank: (state, action) => {
+      state.rtVolumes = action.payload;
+    },
+    setLpo: (state, action) => {
+      state.lpo = action.payload;
+    },
+    setExpenses: (state, action) => {
+      state.expenses = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setBalances, setSupply, setProduct } =
-  comprehensiveSlice.actions;
+export const {
+  setBalances,
+  setSupply,
+  setProduct,
+  setReturnToTank,
+  setLpo,
+  setExpenses,
+} = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;
