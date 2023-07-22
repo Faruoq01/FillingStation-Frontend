@@ -101,7 +101,8 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("PMS");
               }}
-              className="canvas-container">
+              className="canvas-container"
+            >
               <PMSTank />
             </div>
           </div>
@@ -123,7 +124,8 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("AGO");
               }}
-              className="canvas-container">
+              className="canvas-container"
+            >
               <AGOTank />
             </div>
           </div>
@@ -145,7 +147,8 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("DPK");
               }}
-              className="canvas-container">
+              className="canvas-container"
+            >
               <DPKTank />
             </div>
           </div>
