@@ -28,13 +28,11 @@ const mobile = window.matchMedia("(max-width: 600px)");
 const LPO = (props) => {
   const [lpoModalEditStatus, setLpoModalEditStatus] = React.useState(false);
   const [lpo, setLpo] = React.useState(false);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
   const lpos = useSelector((state) => state.lpoReducer.lpo);
   const dispatch = useDispatch();
   const history = useHistory();
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
