@@ -15,10 +15,12 @@ import queryReducer from "./query";
 import attendanceReducer from "./attendance";
 import settingsReducer from "./settings";
 import comprehensiveReducer from "./comprehensive";
+import lpoReducer from "./lpoReducer";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    lpoReducer: lpoReducer,
     dashboard: dashboardReducer,
     outlet: outletReducer,
     dailysales: dailysalesReducer,
