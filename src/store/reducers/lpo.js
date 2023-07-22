@@ -1,3 +1,4 @@
+import { createReducer } from "@reduxjs/toolkit";
 import {
   CREATE_LPO,
   CREATE_LPO_SALES,
@@ -15,25 +16,9 @@ const initialState = {
   singleLPO: {},
 };
 
-const lpoReducer = (state = initialState, action) => {
+const lpoReducerw = (state = initialState, action) => {
   const { type, payload } = action;
-
   switch (type) {
-    case CREATE_LPO: {
-      return {
-        ...state,
-        lpo: payload,
-        searchData2: payload,
-      };
-    }
-
-    case SINGLE_LPO: {
-      return {
-        ...state,
-        singleLPO: payload,
-      };
-    }
-
     case CREATE_LPO_SALES: {
       return {
         ...state,
@@ -84,3 +69,31 @@ const lpoReducer = (state = initialState, action) => {
 };
 
 export default lpoReducer;
+
+const ASSET_MODAL = createAction < boolean > "asset-modal/action";
+const lpoReducer = createReducer(initialState, (builder) => {
+  builder.addCase(SINGLE_LPO, (state, action) => ({
+    ...state,
+    singleLPO: action.payload,
+  }));
+  builder.addCase(CREATE_LPO, (state, action) => ({
+    ...state,
+    lpo: action.payload,
+    searchData2: action.payload,
+  }));
+  builder.addCase(SEARCH_LPO, (state, action) => {
+    const search = state.searchData2.filter(
+      (data) =>
+        !data.companyName.toUpperCase().indexOf(action.payload.toUpperCase()) ||
+        !data.paymentStructure
+          .toUpperCase()
+          .indexOf(action.payload.toUpperCase())
+    );
+    return {
+      ...state,
+      lpo: search,
+    };
+  });
+});
+
+export { ASSET_MODAL, ITEMS_MODAL };
