@@ -48,6 +48,14 @@ export default lpoReducer;
 
 const ASSET_MODAL = createAction < boolean > "asset-modal/action";
 const lpoReducer = createReducer(initialState, (builder) => {
+  builder.addCase(LOGOUT, (state, action) => ({
+    ...state,
+    lpo: [],
+    lpoSales: [],
+    searchData: [],
+    searchData2: [],
+    singleLPO: {},
+  }));
   builder.addCase(SINGLE_LPO, (state, action) => ({
     ...state,
     singleLPO: action.payload,
