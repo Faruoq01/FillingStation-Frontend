@@ -2,24 +2,29 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import DailySalesService from "../../services/DailySales";
-import { bulkReports } from "../../store/actions/dailySales";
 import UpdateDipping from "../Modals/DailySales/Dipping";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import { useHistory } from "react-router-dom";
+import { setDipping } from "../../storage/comprehensive";
+import { Skeleton } from "@mui/material";
+import React from "react";
 
 const Dipping = () => {
+  const history = useHistory();
   const dipping = useSelector((state) => state.comprehensive.dipping);
-  const supply = useSelector((state) => state.comprehensive.supply);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.comprehensive.updatedDate);
+  const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -35,6 +40,30 @@ const Dipping = () => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const getDippingData = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
+    setLoad(true);
+    const payload = {
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: updatedDate,
+    };
+
+    APIs.post("/comprehensive/dipping", payload)
+      .then(({ data }) => {
+        dispatch(setDipping(data.dipping));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getDippingData(currentDate);
+  }, [getDippingData, currentDate]);
 
   const updateRecord = (data) => {
     setOpenEdit(true);
@@ -72,13 +101,15 @@ const Dipping = () => {
           {props.data.productType}
         </div>
         <div style={ins} className="cells">
-          {ApproximateDecimal(0)}
+          {ApproximateDecimal(props.data.afterSales)}
         </div>
         <div style={ins} className="cells">
           {ApproximateDecimal(props.data.dipping)}
         </div>
         <div style={ins} className="cells">
-          {ApproximateDecimal(0)}
+          {ApproximateDecimal(
+            Number(props.data.dipping) - Number(props.data.afterSales)
+          )}
         </div>
         {getPerm("17") && (
           <div style={ins} className="cells">
@@ -121,7 +152,9 @@ const Dipping = () => {
 
         <div style={rows}>
           <div style={{ width: "100%" }}>
-            <div style={title}>{ApproximateDecimal(0)}</div>
+            <div style={title}>
+              {ApproximateDecimal(Number(data.afterSales))}
+            </div>
             <div style={label}>Computed Level</div>
           </div>
 
@@ -133,7 +166,11 @@ const Dipping = () => {
 
         <div style={rows}>
           <div style={{ width: "100%" }}>
-            <div style={title}>{ApproximateDecimal(0)}</div>
+            <div style={title}>
+              {ApproximateDecimal(
+                Number(data.dipping) - Number(data.afterSales)
+              )}
+            </div>
             <div style={label}>Difference</div>
           </div>
 
@@ -172,52 +209,77 @@ const Dipping = () => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <div className="initial_balance_container">
-        {openEdit && (
-          <UpdateDipping data={oneRecord} open={openEdit} close={setOpenEdit} />
-        )}
-        <div className="product_balance_header">
-          <div className="cells">S/N</div>
-          <div className="cells">Tank Name</div>
-          <div className="cells">Product</div>
-          <div className="cells">Computed Level</div>
-          <div className="cells">Dipping</div>
-          <div className="cells">Difference</div>
-          {getPerm("17") && <div className="cells">Action</div>}
-        </div>
+    <React.Fragment>
+      {load ? (
+        <Skeleton
+          sx={{
+            borderRadius: "5px",
+            background: "#f7f7f7",
+            marginLeft: "20px",
+            marginTop: "20px",
+          }}
+          animation="wave"
+          variant="rectangular"
+          width={"94%"}
+          height={200}
+        />
+      ) : (
+        <div style={{ width: "100%" }}>
+          <div className="initial_balance_container">
+            {openEdit && (
+              <UpdateDipping
+                data={oneRecord}
+                open={openEdit}
+                close={setOpenEdit}
+              />
+            )}
+            <div className="product_balance_header">
+              <div className="cells">S/N</div>
+              <div className="cells">Tank Name</div>
+              <div className="cells">Product</div>
+              <div className="cells">Computed Level</div>
+              <div className="cells">Dipping</div>
+              <div className="cells">Difference</div>
+              {getPerm("17") && <div className="cells">Action</div>}
+            </div>
 
-        {dipping.length === 0 ? (
-          <div>No records </div>
-        ) : (
-          dipping.map((item, index) => {
-            return <DippingRow key={index} data={item} index={index} />;
-          })
-        )}
-      </div>
+            {dipping.length === 0 ? (
+              <div>No records </div>
+            ) : (
+              dipping.map((item, index) => {
+                return <DippingRow key={index} data={item} index={index} />;
+              })
+            )}
+          </div>
 
-      <div className="initial_balance_container_mobile">
-        {/* Supply records */}
-        <div className="mobile_header">&nbsp;&nbsp;&nbsp; Dipping</div>
-        <div
-          style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
-          <div className="sups">
-            <div className="slide">
-              {dipping.length === 0 ? (
-                <div>No records </div>
-              ) : (
-                dipping.map((item, index) => {
-                  return (
-                    <MobileDippingRow key={index} data={item} index={index} />
-                  );
-                })
-              )}
+          <div className="initial_balance_container_mobile">
+            {/* Supply records */}
+            <div className="mobile_header">&nbsp;&nbsp;&nbsp; Dipping</div>
+            <div
+              style={{ marginBottom: "20px", marginTop: "10px" }}
+              className="balance_mobile_detail">
+              <div className="sups">
+                <div className="slide">
+                  {dipping.length === 0 ? (
+                    <div>No records </div>
+                  ) : (
+                    dipping.map((item, index) => {
+                      return (
+                        <MobileDippingRow
+                          key={index}
+                          data={item}
+                          index={index}
+                        />
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 

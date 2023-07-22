@@ -51,7 +51,6 @@ const Expenses = () => {
 
     APIs.post("/comprehensive/expenses", payload)
       .then(({ data }) => {
-        console.log(data, "expenses");
         dispatch(setExpenses(data.expenses));
       })
       .then(() => {

@@ -84,6 +84,15 @@ export const comprehensiveSlice = createSlice({
     setExpenses: (state, action) => {
       state.expenses = action.payload;
     },
+    setDipping: (state, action) => {
+      state.dipping = action.payload;
+    },
+    setTankLevels: (state, action) => {
+      state.tankLevels = action.payload;
+    },
+    setRemarkList: (state, action) => {
+      state.remarks = action.payload;
+    },
   },
 });
 
@@ -95,6 +104,9 @@ export const {
   setReturnToTank,
   setLpo,
   setExpenses,
+  setDipping,
+  setTankLevels,
+  setRemarkList,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;

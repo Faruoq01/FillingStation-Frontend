@@ -5,6 +5,9 @@ import swal from "sweetalert";
 import { useDispatch, useSelector } from "react-redux";
 import DailySalesService from "../../services/DailySales";
 import { ThreeDots } from "react-loader-spinner";
+import APIs from "../../services/api";
+import { useHistory } from "react-router-dom";
+import { setRemarkList } from "../../storage/comprehensive";
 
 const months = {
   "01": "January",
@@ -51,6 +54,7 @@ const RemarkCard = (props) => {
 };
 
 const ReportConfirmation = () => {
+  const history = useHistory();
   const [remark, setRemark] = useState("");
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
@@ -60,45 +64,49 @@ const ReportConfirmation = () => {
   const dispatch = useDispatch();
   const remarkList = useSelector((state) => state.comprehensive.remarks);
 
-  const getRemarkData = useCallback(() => {
-    setLoading(true);
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
+  const getRemarkData = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
+    setLoading(true);
     const payload = {
-      selectedDate: currentDate,
-      outletID: oneStationData?._id,
-      organisationID: oneStationData?.organisation,
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: updatedDate,
     };
 
-    DailySalesService.getRemarks(payload)
-      .then((data) => {
-        console.log(data, "remarks");
-        // dispatch(saveRemarks(data.remarks));
+    APIs.post("/comprehensive/remarks", payload)
+      .then(({ data }) => {
+        dispatch(setRemarkList(data.remarks));
       })
       .then(() => {
         setLoading(false);
       });
-  }, [
-    currentDate,
-    dispatch,
-    oneStationData?._id,
-    oneStationData?.organisation,
-  ]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    getRemarkData();
-  }, [getRemarkData]);
+    getRemarkData(currentDate);
+  }, [getRemarkData, currentDate]);
 
   const refresh = () => {
     setLoading(true);
     const payload = {
-      selectedDate: currentDate,
-      outletID: oneStationData?._id,
-      organisationID: oneStationData?.organisation,
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: currentDate,
     };
 
-    DailySalesService.getRemarks(payload)
-      .then((data) => {
-        // dispatch(saveRemarks(data.remarks));
+    APIs.post("/comprehensive/remarks", payload)
+      .then(({ data }) => {
+        dispatch(setRemarkList(data.remarks));
       })
       .then(() => {
         setLoading(false);
@@ -126,13 +134,14 @@ const ReportConfirmation = () => {
       organisationID: oneStationData?.organisation,
     };
 
-    DailySalesService.createRemark(payload)
+    APIs.post("/sales/remark", payload)
       .then((data) => {
-        setRemark("");
+        console.log(data);
         refresh();
-        setLoading2(false);
       })
       .then(() => {
+        setRemark("");
+        setLoading2(false);
         swal("Success!", "Remark created successfullt!", "success");
       });
   };
