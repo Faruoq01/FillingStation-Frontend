@@ -11,11 +11,11 @@ export const createLPO = (params) => (dispatch) => {
 };
 
 export const createLPOSales = (params) => (dispatch) => {
-  dispatch({ type: CREATE_LPO_SALES, payload: params });
+  dispatch(CREATE_LPO_SALES(params));
 };
 
 export const searchLPOList = (params) => (dispatch) => {
-  dispatch({ type: SEARCH_LPO_LIST, payload: params });
+  dispatch(SEARCH_LPO_LIST(params));
 };
 
 export const searchLPO = (params) => (dispatch) => {
