@@ -16,37 +16,6 @@ const initialState = {
   singleLPO: {},
 };
 
-const lpoReducerw = (state = initialState, action) => {
-  const { type, payload } = action;
-  switch (type) {
-    case CREATE_LPO_SALES: {
-      return {
-        ...state,
-        lpoSales: payload,
-        searchData: payload,
-      };
-    }
-
-    case LOGOUT: {
-      return {
-        ...state,
-        lpo: [],
-        lpoSales: [],
-        searchData: [],
-        searchData2: [],
-        singleLPO: {},
-      };
-    }
-
-    default: {
-      return state;
-    }
-  }
-};
-
-export default lpoReducer;
-
-const ASSET_MODAL = createAction < boolean > "asset-modal/action";
 const lpoReducer = createReducer(initialState, (builder) => {
   builder.addCase(LOGOUT, (state, action) => ({
     ...state,
@@ -96,4 +65,4 @@ const lpoReducer = createReducer(initialState, (builder) => {
   });
 });
 
-export { ASSET_MODAL, ITEMS_MODAL };
+export default lpoReducer;
