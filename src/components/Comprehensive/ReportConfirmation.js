@@ -3,7 +3,6 @@ import "../../styles/confirmation_msg.scss";
 import { useCallback, useEffect, useState } from "react";
 import swal from "sweetalert";
 import { useDispatch, useSelector } from "react-redux";
-import DailySalesService from "../../services/DailySales";
 import { ThreeDots } from "react-loader-spinner";
 import APIs from "../../services/api";
 import { useHistory } from "react-router-dom";
