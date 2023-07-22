@@ -23,5 +23,5 @@ export const searchLPO = (params) => (dispatch) => {
 };
 
 export const singleLPORecord = (params) => (dispatch) => {
-  dispatch({ type: SINGLE_LPO, payload: params });
+  dispatch(SINGLE_LPO(params));
 };
