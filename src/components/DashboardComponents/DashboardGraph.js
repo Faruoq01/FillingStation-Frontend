@@ -74,7 +74,8 @@ const options = {
 
 const DashboardGraph = (props) => {
   const moment = require("moment-timezone");
-  const date2 = moment().format("YYYY-MM-DD").split(" ")[0];
+  const date2 = moment().format("Do MMM YYYY");
+  const [initial, setInitial] = useState("");
   const [value, setValue] = useState(null);
 
   const graph = useSelector((state) => state.dashboard.graph);
@@ -313,14 +314,15 @@ const DashboardGraph = (props) => {
     getAnnualGraphData,
   ]);
 
-  const convertDate = (newValue) => {
-    const getDate = newValue.format("MM/DD/YYYY");
-    const date = new Date(getDate);
-    const toString = date.toDateString();
-    const [day, year, month] = toString.split(" ");
-    const finalDate = `${day} ${month} ${year}`;
+  useEffect(() => {
+    const formatedDate = moment().format("Do MMM YYYY");
+    setInitial(formatedDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    return finalDate;
+  const convertDate = (newValue) => {
+    const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
+    return getDate;
   };
 
   const switchGraphTab = (type) => {
@@ -400,7 +402,9 @@ const DashboardGraph = (props) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Stack spacing={1}>
                 <ButtonDatePicker
-                  label={`${value == null || "" ? date2 : convertDate(value)}`}
+                  label={`${
+                    value === null || "" ? initial : convertDate(value)
+                  }`}
                   value={value}
                   onChange={(newValue) => updateDate(newValue)}
                 />

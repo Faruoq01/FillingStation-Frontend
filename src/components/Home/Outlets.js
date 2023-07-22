@@ -90,7 +90,7 @@ const Outlets = (props) => {
 
   const goToTankList = (item) => {
     dispatch(tankListType(item));
-    props.history.push("/home/outlets/list");
+    props.history.push("/home/tankList");
   };
 
   const getAllStationData = useCallback(() => {
@@ -641,9 +641,6 @@ const Outlets = (props) => {
             </Route>
             <Route path="/home/outlets/pumps">
               <Pumps refresh={getAllStationData} />
-            </Route>
-            <Route path="/home/outlets/list">
-              <ListAllTanks refresh={getAllStationData} />
             </Route>
           </Switch>
         </div>

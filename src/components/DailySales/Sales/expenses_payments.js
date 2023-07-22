@@ -10,7 +10,11 @@ import { dateRange } from "../../../storage/dashboard";
 import swal from "sweetalert";
 import ApproximateDecimal from "../../common/approx";
 import ButtonDatePicker from "../../common/CustomDatePicker";
-import { setDateValue, expenses } from "../../../storage/dailysales";
+import {
+  setDateValue,
+  expenses,
+  setLocaleDate,
+} from "../../../storage/dailysales";
 import { useCallback } from "react";
 import APIs from "../../../services/api";
 
@@ -22,6 +26,7 @@ const ExpensesAndPayments = () => {
   const [value, setValue] = React.useState(null);
   const user = useSelector((state) => state.auth.user);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const localeDate = useSelector((state) => state.dailysales.localeDate);
   const expenseData = useSelector((state) => state.dailysales.expenses);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
@@ -44,13 +49,14 @@ const ExpensesAndPayments = () => {
   };
 
   useEffect(() => {
-    if (updatedDate === "") {
+    if (updatedDate === "" || localeDate === "") {
       setInitial(date2);
     } else {
       const formatedDate = moment(updatedDate).format("Do MMM YYYY");
       setInitial(formatedDate);
+      setValue(localeDate);
     }
-  }, [date2, moment, updatedDate]);
+  }, [date2, localeDate, moment, updatedDate]);
 
   const getExpenses = useCallback((station, date) => {
     setLoad(true);
@@ -91,6 +97,7 @@ const ExpensesAndPayments = () => {
 
     const getDate = newValue === "" ? initial : newValue.format("YYYY-MM-DD");
     dispatch(setDateValue(getDate));
+    dispatch(setLocaleDate(newValue));
     dispatch(dateRange([getDate, getDate]));
   };
 

@@ -17,23 +17,25 @@ import Button from "@mui/material/Button";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
 import DailySalesService from "../../services/DailySales";
-import { setDateValue, setTankLevelList } from "../../storage/dailysales";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import ButtonDatePicker from "../common/CustomDatePicker";
+import {
+  setDateValue,
+  setLocaleDate,
+  setTankLevelList,
+} from "../../storage/dailysales";
 import { dateRange } from "../../storage/dashboard";
 import APIs from "../../services/api";
+import ButtonDatePicker from "../common/CustomDatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 const ListAllTanks = () => {
-  const date = new Date();
-  const toString = date.toDateString();
-  const [day, year, month] = toString.split(" ");
-  const date2 = `${day} ${month} ${year}`;
+  const moment = require("moment-timezone");
+  const date2 = moment().format("Do MMM YYYY");
+  const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
 
-  const moment = require("moment-timezone");
-  const today = moment().format("YYYY-MM-DD").split(" ")[0];
-  const currentDate2 = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const localeDate = useSelector((state) => state.dailysales.localeDate);
   const tankLevelList = useSelector((state) => state.dailysales.tankLevelList);
 
   const tankList = useSelector((state) => state.outlet.tankList);
@@ -79,7 +81,7 @@ const ListAllTanks = () => {
           organisationID: resolveUserID().id,
           outletID: oneStationData._id,
           productType: tankListType,
-          date: currentDate2 === "" ? today : currentDate2,
+          date: updatedDate === "" ? initial : updatedDate,
         };
 
         APIs.post("/daily-sales/tankLevelsList", payload)
@@ -108,7 +110,7 @@ const ListAllTanks = () => {
           organisationID: resolveUserID().id,
           outletID: oneStationData === null ? "None" : oneStationData._id,
           productType: tankListType,
-          date: currentDate2 === "" ? today : currentDate2,
+          date: updatedDate === "" ? initial : updatedDate,
         };
 
         APIs.post("/daily-sales/tankLevelsList", payload)
@@ -128,13 +130,23 @@ const ListAllTanks = () => {
   }, []);
 
   useEffect(() => {
-    setValue(currentDate2);
     getAllProductData();
-  }, [currentDate2, getAllProductData]);
+  }, [getAllProductData]);
 
   useEffect(() => {
     getTanksLists();
   }, [getTanksLists]);
+
+  useEffect(() => {
+    if (updatedDate === "" || localeDate === "") {
+      setInitial(date2);
+    } else {
+      const formatedDate = moment(updatedDate).format("Do MMM YYYY");
+      setInitial(formatedDate);
+      setValue(localeDate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const changeMenu = (index, item) => {
     setDefault(index);
@@ -145,7 +157,7 @@ const ListAllTanks = () => {
       organisationID: resolveUserID().id,
       outletID: item === null ? "None" : item._id,
       productType: tankListType,
-      date: currentDate2 === "" ? today : currentDate2,
+      date: updatedDate === "" ? initial : updatedDate,
     };
 
     APIs.post("/daily-sales/tankLevelsList", payload)
@@ -248,30 +260,44 @@ const ListAllTanks = () => {
     });
   };
 
-  const convertDate = (newValue) => {
-    // const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
-    // const date = new Date(getDate);
-    // const toString = date.toDateString();
-    // const [day, year, month] = toString.split(" ");
-    // const finalDate = `${day} ${month} ${year}`;
-
-    return "2023";
-  };
-
   const updateDate = (newValue) => {
-    // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
     setValue(newValue);
 
-    // const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
-    // dispatch(setDateValue(newValue));
-    // dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+    const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
+    dispatch(setDateValue(getDate));
+    dispatch(setLocaleDate(newValue));
+    dispatch(dateRange([new Date(getDate), new Date(getDate)]));
+    setLoader(true);
+
+    const payload = {
+      organisationID: resolveUserID().id,
+      outletID: oneStationData === null ? "None" : oneStationData._id,
+      productType: tankListType,
+      date: getDate,
+    };
+
+    APIs.post("/daily-sales/tankLevelsList", payload)
+      .then(({ data }) => {
+        dispatch(setTankLevelList(data.tanks));
+      })
+      .then(() => {
+        setLoader(false);
+      });
+  };
+
+  const convertDate = (newValue) => {
+    const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
+    return getDate;
   };
 
   return (
     <React.Fragment>
-      <div className="listContainer">
+      <div style={{ width: "96%" }} className="listContainer">
         <div
-          style={{ flexDirection: "row", justifyContent: "space-between" }}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
           className="stat">
           <Select
             labelId="demo-select-small"
@@ -300,16 +326,19 @@ const ListAllTanks = () => {
               );
             })}
           </Select>
-          {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Stack spacing={1}>
-              <ButtonDatePicker
-                label={`${value == null || "" ? date2 : convertDate(value)}`}
-                value={value}
-                // disabled={load}
-                onChange={(newValue) => updateDate(newValue)}
-              />
-            </Stack>
-          </LocalizationProvider> */}
+          <div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Stack spacing={1}>
+                <ButtonDatePicker
+                  label={`${
+                    value === null || "" ? initial : convertDate(value)
+                  }`}
+                  value={value}
+                  onChange={(newValue) => updateDate(newValue)}
+                />
+              </Stack>
+            </LocalizationProvider>
+          </div>
         </div>
 
         <div className="mains">
@@ -354,19 +383,41 @@ const ListAllTanks = () => {
                             />
                           </div>
                         </div>
-                        <PMSTank
-                          margin={"80px"}
-                          data={{
-                            PMSTankCapacity: Number(0),
-                            totalPMS: Number(0),
-                            PMSDeadStock: 0,
-                          }}
-                        />
+                        {tankListType === "PMS" && (
+                          <PMSTank
+                            margin={"80px"}
+                            data={{
+                              PMSTankCapacity: Number(item.tankCapacity),
+                              totalPMS: Number(item.afterSales),
+                              PMSDeadStock: 200,
+                            }}
+                          />
+                        )}
+                        {tankListType === "AGO" && (
+                          <AGOTank
+                            margin={"80px"}
+                            data={{
+                              AGOTankCapacity: Number(item.tankCapacity),
+                              totalAGO: Number(item.afterSales),
+                              AGODeadStock: 200,
+                            }}
+                          />
+                        )}
+                        {tankListType === "DPK" && (
+                          <DPKTank
+                            margin={"80px"}
+                            data={{
+                              DPKTankCapacity: Number(item.tankCapacity),
+                              totalDPK: Number(item.afterSales),
+                              DPKDeadStock: 200,
+                            }}
+                          />
+                        )}
                         <div className="foot">
                           <div className="tex">
                             <div>
                               <span style={{ color: "#07956A" }}>Level: </span>{" "}
-                              {ApproximateDecimal(0)} litres
+                              {ApproximateDecimal(item.afterSales)} litres
                             </div>
                             <div>
                               <span style={{ color: "#07956A" }}>

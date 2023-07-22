@@ -18,7 +18,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ReturnToTank from "../Comprehensive/ReturnToTank";
 import PaymentDetails from "../Comprehensive/PaymentDetails";
-import { setDateValue } from "../../storage/dailysales";
+import { setDateValue, setLocaleDate } from "../../storage/dailysales";
 import { Button, Stack } from "@mui/material";
 import ReportConfirmation from "../Comprehensive/ReportConfirmation";
 import AssessmentIcon from "@mui/icons-material/Assessment";
@@ -35,15 +35,14 @@ import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
   const moment = require("moment-timezone");
-  const date = new Date();
-  const toString = date.toDateString();
-  const [day, year, month] = toString.split(" ");
-  const date2 = `${day} ${month} ${year}`;
+  const date2 = moment().format("Do MMM YYYY");
+  const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
 
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate2 = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const localeDate = useSelector((state) => state.dailysales.localeDate);
   const user = useSelector((state) => state.auth.user);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -59,7 +58,13 @@ const ComprehensiveReport = (props) => {
   };
 
   useEffect(() => {
-    setValue(currentDate2);
+    if (updatedDate === "" || localeDate === "") {
+      setInitial(date2);
+    } else {
+      const formatedDate = moment(updatedDate).format("Do MMM YYYY");
+      setInitial(formatedDate);
+      setValue(localeDate);
+    }
 
     if (oneStationData === null) {
       history.push("/home/daily-sales");
@@ -72,18 +77,14 @@ const ComprehensiveReport = (props) => {
     setValue(newValue);
 
     const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
-    dispatch(setDateValue(newValue));
+    dispatch(setDateValue(getDate));
+    dispatch(setLocaleDate(newValue));
     dispatch(dateRange([new Date(getDate), new Date(getDate)]));
   };
 
   const convertDate = (newValue) => {
-    const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
-    const date = new Date(getDate);
-    const toString = date.toDateString();
-    const [day, year, month] = toString.split(" ");
-    const finalDate = `${day} ${month} ${year}`;
-
-    return finalDate;
+    const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
+    return getDate;
   };
 
   const resetAllRecords = () => {
@@ -96,9 +97,9 @@ const ComprehensiveReport = (props) => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const getDate =
-          currentDate2 === ""
+          updatedDate === ""
             ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate2.format("YYYY-MM-DD");
+            : updatedDate.format("YYYY-MM-DD");
 
         const status = await APIs.post("/sales/delete/checkStatus", {
           org: resolveUserID().id,
@@ -145,10 +146,9 @@ const ComprehensiveReport = (props) => {
                     <Stack spacing={1}>
                       <ButtonDatePicker
                         label={`${
-                          value == null || "" ? date2 : convertDate(value)
+                          value === null || "" ? initial : convertDate(value)
                         }`}
                         value={value}
-                        disabled={load}
                         onChange={(newValue) => updateDate(newValue)}
                       />
                     </Stack>

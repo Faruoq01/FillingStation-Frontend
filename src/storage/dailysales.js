@@ -17,6 +17,7 @@ const labels = [
 
 const initialState = {
   updatedDate: "",
+  localeDate: "",
   overageType: "PMS",
   dailysales: 0,
   sales: {
@@ -122,6 +123,9 @@ export const dailysales = createSlice({
     setDateValue: (state, action) => {
       state.updatedDate = action.payload;
     },
+    setLocaleDate: (state, action) => {
+      state.localeDate = action.payload;
+    },
     sales: (state, action) => {
       state.sales = action.payload;
     },
@@ -162,6 +166,7 @@ export const dailysales = createSlice({
 export const {
   sales,
   setDateValue,
+  setLocaleDate,
   tankLevels,
   overage,
   overageType,

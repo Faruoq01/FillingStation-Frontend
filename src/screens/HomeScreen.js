@@ -75,6 +75,7 @@ import EStation from "../components/Home/e-station/EStation";
 import EStationIndividualIncomingOrder from "../components/Home/e-station/EStationIndividualIncomingOrder";
 import AirBnBTotal from "../components/Home/e-station/AirBnBTotal";
 import Transactions from "../components/Home/Transactions";
+import ListAllTanks from "../components/Outlet/TankList";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);
@@ -234,6 +235,7 @@ const HomeScreen = () => {
       "/home/pump-list": "← Station Pumps",
       "/home/daily-sales": "Daily Sales",
       "/home/overage": "← Overage/Shortage",
+      "/home/tankList": "← Tank List",
       "/home/history": "← History",
       "/home/daily-sales/report": "Daily Sales",
       "/home/daily-sales/pms": "Daily Sales",
@@ -874,6 +876,9 @@ const HomeScreen = () => {
             </Route>
             <Route path="/home/transactions">
               <Transactions />
+            </Route>
+            <Route path="/home/tankList">
+              <ListAllTanks refresh={getAllStationData} />
             </Route>
           </Switch>
         </div>

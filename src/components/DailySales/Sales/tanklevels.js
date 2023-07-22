@@ -68,7 +68,7 @@ const TankLevels = () => {
   const goToTanks = (product) => {
     if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
     dispatch(tankListType(product));
-    history.push("/home/outlets/list");
+    history.push("/home/tankList");
   };
 
   return (
