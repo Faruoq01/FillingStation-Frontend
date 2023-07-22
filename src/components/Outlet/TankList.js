@@ -2,11 +2,7 @@ import { MenuItem, Select, Stack, Switch } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
-import {
-  adminOutlet,
-  getAllOutletTanks,
-  getAllStations,
-} from "../../storage/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import "../../styles/listTanks.scss";
 import PMSTank from "./TankSingleList/PMSTank.js";
 import AGOTank from "./TankSingleList/AGOTank.js";
@@ -16,7 +12,6 @@ import swal from "sweetalert";
 import Button from "@mui/material/Button";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
-import DailySalesService from "../../services/DailySales";
 import {
   setDateValue,
   setLocaleDate,
@@ -38,18 +33,11 @@ const ListAllTanks = () => {
   const localeDate = useSelector((state) => state.dailysales.localeDate);
   const tankLevelList = useSelector((state) => state.dailysales.tankLevelList);
 
-  const tankList = useSelector((state) => state.outlet.tankList);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const [defaultState, setDefault] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const [list, setList] = useState({
-    PMS: [],
-    AGO: [],
-    DPK: [],
-  });
-  const [supply, setSupply] = useState([]);
   const tankListType = useSelector((state) => state.outlet.tankListType);
   const [loader, setLoader] = useState(false);
 
@@ -75,23 +63,7 @@ const ListAllTanks = () => {
           (data) => data._id === oneStationData._id
         );
         setDefault(findID + 1);
-        setLoader(true);
-
-        const payload = {
-          organisationID: resolveUserID().id,
-          outletID: oneStationData._id,
-          productType: tankListType,
-          date: updatedDate === "" ? initial : updatedDate,
-        };
-
-        APIs.post("/daily-sales/tankLevelsList", payload)
-          .then(({ data }) => {
-            dispatch(setTankLevelList(data.tanks));
-          })
-          .then(() => {
-            setLoader(false);
-          });
-
+        refresh(oneStationData, updatedDate);
         return;
       }
     }
@@ -106,20 +78,7 @@ const ListAllTanks = () => {
         dispatch(getAllStations(data.station));
       })
       .then(() => {
-        const payload = {
-          organisationID: resolveUserID().id,
-          outletID: oneStationData === null ? "None" : oneStationData._id,
-          productType: tankListType,
-          date: updatedDate === "" ? initial : updatedDate,
-        };
-
-        APIs.post("/daily-sales/tankLevelsList", payload)
-          .then(({ data }) => {
-            dispatch(setTankLevelList(data.tanks));
-          })
-          .then(() => {
-            setLoader(false);
-          });
+        refresh(oneStationData, updatedDate);
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,8 +110,11 @@ const ListAllTanks = () => {
   const changeMenu = (index, item) => {
     setDefault(index);
     dispatch(adminOutlet(item));
-    setLoader(true);
+    refresh(item, updatedDate);
+  };
 
+  const refresh = (item, updatedDate) => {
+    setLoader(true);
     const payload = {
       organisationID: resolveUserID().id,
       outletID: item === null ? "None" : item._id,
@@ -168,8 +130,6 @@ const ListAllTanks = () => {
         setLoader(false);
       });
   };
-
-  const refresh = () => {};
 
   const IOSSwitch = styled((props) => (
     <Switch
@@ -228,36 +188,19 @@ const ListAllTanks = () => {
   }));
 
   const activateTank = (e, data) => {
-    const payload = {
-      id: data._id,
-      activeState: e.target.checked ? "1" : "0",
-    };
-    // OutletService.activateTanks(payload).then((data) => {
-    //   if (data.code === 200)
-    //     swal("Success!", "Tank active state updated successfully", "success");
-    //   refresh();
-    // });
+    return swal(
+      "Warning!",
+      "Can not activate this record from here, go to comprehensive report!",
+      "error"
+    );
   };
 
   const deleteTank = (data) => {
-    swal({
-      title: "Alert!",
-      text: `Are you sure you want to delete ${data.tankName}?`,
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        const payload = {
-          id: data._id,
-        };
-        // OutletService.deleteTanks(payload).then((data) => {
-        //   if (data.code === 200)
-        //     swal("Success!", "Tank deleted successfully", "success");
-        //   refresh();
-        // });
-      }
-    });
+    return swal(
+      "Warning!",
+      "Can not delete this record from here, go to comprehensive report!",
+      "error"
+    );
   };
 
   const updateDate = (newValue) => {
@@ -267,22 +210,7 @@ const ListAllTanks = () => {
     dispatch(setDateValue(getDate));
     dispatch(setLocaleDate(newValue));
     dispatch(dateRange([new Date(getDate), new Date(getDate)]));
-    setLoader(true);
-
-    const payload = {
-      organisationID: resolveUserID().id,
-      outletID: oneStationData === null ? "None" : oneStationData._id,
-      productType: tankListType,
-      date: getDate,
-    };
-
-    APIs.post("/daily-sales/tankLevelsList", payload)
-      .then(({ data }) => {
-        dispatch(setTankLevelList(data.tanks));
-      })
-      .then(() => {
-        setLoader(false);
-      });
+    refresh(oneStationData, getDate);
   };
 
   const convertDate = (newValue) => {
