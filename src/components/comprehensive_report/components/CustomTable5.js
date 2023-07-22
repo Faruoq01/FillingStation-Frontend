@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../../common/approx";
 
 export default function CustomTable5({
   header = [],
@@ -6,6 +8,36 @@ export default function CustomTable5({
   data = [],
   title = "",
 }) {
+  const { lpo } = useSelector((state) => state.dailySalesReducer.bulkReports);
+  useEffect(() => {
+    console.log("============LPO=============");
+    console.log(lpo);
+    console.log("=================LPO=========");
+  }, []);
+  const rate = (row, type) => {
+    if (type === "PMS") return row.PMSRate;
+    if (type === "AGO") return row.AGORate;
+    if (type === "DPK") return row.DPKRate;
+  };
+  const [total, setTotal] = useState(0);
+
+  const amount = (row, type) => {
+    if (type === "PMS") {
+      const p = row.PMSRate * row.lpoLitre;
+      setTotal(total + p);
+      return p;
+    }
+    if (type === "AGO") {
+      const a = row.AGORate * row.lpoLitre;
+      setTotal(total + a);
+      return a;
+    }
+    if (type === "DPK") {
+      const d = row.DPKRate * row.lpoLitre;
+      setTotal(total + d);
+      return d;
+    }
+  };
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>{title}</span>
@@ -39,15 +71,19 @@ export default function CustomTable5({
           </thead>
 
           <tbody>
-            {data.map((item, index) => (
+            {lpo.map((item, index) => (
               <tr key={item.id}>
-                <td style={{ ...Styles.th }}>{item.pms} </td>
-                <td style={{ ...Styles.th }}>{item.opening} </td>
-                <td style={{ ...Styles.th }}>{item.closing} </td>
-                <td style={{ ...Styles.th }}>{item.difference} </td>
-                <td style={{ ...Styles.th }}>{item.lop} </td>
-                <td style={{ ...Styles.th }}>{item.rate} </td>
-                <td style={{ ...Styles.th }}>{item.amount} </td>
+                <td style={{ ...Styles.th }}>{index + 1} </td>
+                <td style={{ ...Styles.th }}>{item.accountName}</td>
+                <td style={{ ...Styles.th }}>{item.productType} </td>
+                <td style={{ ...Styles.th }}>{item.truckNo} </td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(item.lpoLitre)}
+                </td>
+                <td style={{ ...Styles.th }}>{rate(lpo, item.productType)}</td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(amount(lpo, item.productType))}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -73,7 +109,7 @@ export default function CustomTable5({
                         }
                   }
                 >
-                  {item.value}
+                  {footer.length - 1 === index && total}
                 </td>
               ))}
             </tr>

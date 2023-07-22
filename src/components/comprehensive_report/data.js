@@ -138,7 +138,7 @@ const data2 = [
     closing: "122,293 ",
   },
 ];
-const footer = [
+const footer = (data) => [
   {
     id: `${Math.random()}`,
     value: "",
@@ -153,19 +153,16 @@ const footer = [
   },
   {
     id: `${Math.random()}`,
-    value: "283,922 ",
+    value: `${data?.difference}`,
   },
   {
     id: `${Math.random()}`,
-    value: "283.00",
+    value: "",
   },
+
   {
     id: `${Math.random()}`,
-    value: "283,922.00 ",
-  },
-  {
-    id: `${Math.random()}`,
-    value: "283,922.00 ",
+    value: `${data?.total}`,
   },
 ];
 const header = [
@@ -185,10 +182,10 @@ const header = [
     id: `${Math.random()}`,
     value: "Difference",
   },
-  {
-    id: `${Math.random()}`,
-    value: "LP0",
-  },
+  // {
+  //   id: `${Math.random()}`,
+  //   value: "LP0",
+  // },
   {
     id: `${Math.random()}`,
     value: "Rate",

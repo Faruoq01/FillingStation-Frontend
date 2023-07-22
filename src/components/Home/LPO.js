@@ -28,13 +28,11 @@ const mobile = window.matchMedia("(max-width: 600px)");
 const LPO = (props) => {
   const [lpoModalEditStatus, setLpoModalEditStatus] = React.useState(false);
   const [lpo, setLpo] = React.useState(false);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
   const lpos = useSelector((state) => state.lpoReducer.lpo);
   const dispatch = useDispatch();
   const history = useHistory();
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -197,7 +195,8 @@ const LPO = (props) => {
                     ...selectStyle2,
                     backgroundColor: "#06805B",
                     color: "#fff",
-                  }}>
+                  }}
+                >
                   <MenuItem value={10}>Action</MenuItem>
                   <MenuItem onClick={openModal} value={20}>
                     Register LPO
@@ -244,7 +243,8 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={openModal}
-                  variant="contained">
+                  variant="contained"
+                >
                   {" "}
                   Register LPO
                 </Button>
@@ -296,7 +296,8 @@ const LPO = (props) => {
                   width: mediaMatch.matches ? "100%" : "330px",
                   alignItems: "center",
                 }}
-                className="input-cont2">
+                className="input-cont2"
+              >
                 <Select
                   labelId="demo-select-small"
                   id="demo-select-small"
@@ -306,7 +307,8 @@ const LPO = (props) => {
                     width: "130px",
                     height: "32px",
                     display: mediaMatch.matches && "none",
-                  }}>
+                  }}
+                >
                   <MenuItem style={menu} value={10}>
                     Show entries
                   </MenuItem>
@@ -315,7 +317,8 @@ const LPO = (props) => {
                       entriesMenu(20, 15);
                     }}
                     style={menu}
-                    value={20}>
+                    value={20}
+                  >
                     15 entries
                   </MenuItem>
                   <MenuItem
@@ -323,7 +326,8 @@ const LPO = (props) => {
                       entriesMenu(30, 30);
                     }}
                     style={menu}
-                    value={30}>
+                    value={30}
+                  >
                     30 entries
                   </MenuItem>
                   <MenuItem
@@ -331,7 +335,8 @@ const LPO = (props) => {
                       entriesMenu(40, 100);
                     }}
                     style={menu}
-                    value={40}>
+                    value={40}
+                  >
                     100 entries
                   </MenuItem>
                 </Select>
@@ -349,7 +354,8 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={goToHistory}
-                  variant="contained">
+                  variant="contained"
+                >
                   {" "}
                   History
                 </Button>
@@ -367,7 +373,8 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={printReport}
-                  variant="contained">
+                  variant="contained"
+                >
                   {" "}
                   Print
                 </Button>
@@ -475,7 +482,8 @@ const LPO = (props) => {
                                 flexDirection: "column",
                                 alignItems: "center",
                               }}
-                              className="column">
+                              className="column"
+                            >
                               {ApproximateDecimal(data.currentBalance)}
                             </div>
                             <div className="column">
