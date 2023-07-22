@@ -10,18 +10,28 @@ import { dateRange } from "../../../storage/dashboard";
 import swal from "sweetalert";
 import ApproximateDecimal from "../../common/approx";
 import ButtonDatePicker from "../../common/CustomDatePicker";
-import { setDateValue } from "../../../storage/dailysales";
+import {
+  setDateValue,
+  expenses,
+  setLocaleDate,
+} from "../../../storage/dailysales";
+import { useCallback } from "react";
+import APIs from "../../../services/api";
 
 const ExpensesAndPayments = () => {
   const moment = require("moment-timezone");
   const date2 = moment().format("Do MMM YYYY");
+  const [initial, setInitial] = useState("");
 
   const [value, setValue] = React.useState(null);
   const user = useSelector((state) => state.auth.user);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const localeDate = useSelector((state) => state.dailysales.localeDate);
+  const expenseData = useSelector((state) => state.dailysales.expenses);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [load, setLoads] = useState(false);
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -38,8 +48,46 @@ const ExpensesAndPayments = () => {
     return user.permission?.dailySales[e];
   };
 
+  useEffect(() => {
+    if (updatedDate === "" || localeDate === "") {
+      setInitial(date2);
+    } else {
+      const formatedDate = moment(updatedDate).format("Do MMM YYYY");
+      setInitial(formatedDate);
+      setValue(localeDate);
+    }
+  }, [date2, localeDate, moment, updatedDate]);
+
+  const getExpenses = useCallback((station, date) => {
+    setLoad(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+    };
+
+    APIs.post("/daily-sales/expenses-payments", payload)
+      .then(({ data }) => {
+        dispatch(expenses(data.expenses));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getExpenses(oneStationData, updatedDate);
+  }, [getExpenses, oneStationData, updatedDate]);
+
   const convertDate = (newValue) => {
-    const getDate = newValue === "" ? date2 : newValue.format("Do MMM YYYY");
+    const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
     return getDate;
   };
 
@@ -47,8 +95,9 @@ const ExpensesAndPayments = () => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
     setValue(newValue);
 
-    const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
+    const getDate = newValue === "" ? initial : newValue.format("YYYY-MM-DD");
     dispatch(setDateValue(getDate));
+    dispatch(setLocaleDate(newValue));
     dispatch(dateRange([getDate, getDate]));
   };
 
@@ -71,9 +120,10 @@ const ExpensesAndPayments = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Stack spacing={1}>
                 <ButtonDatePicker
-                  label={`${value === null || "" ? date2 : convertDate(value)}`}
+                  label={`${
+                    value === null || "" ? initial : convertDate(value)
+                  }`}
                   value={value}
-                  disabled={load}
                   onChange={(newValue) => updateDate(newValue)}
                 />
               </Stack>
@@ -100,7 +150,7 @@ const ExpensesAndPayments = () => {
           ) : (
             <div className="ins">
               <div>Expenses</div>
-              <div>N {ApproximateDecimal(0)}</div>
+              <div>N {ApproximateDecimal(expenseData.expenses)}</div>
             </div>
           )}
         </div>
@@ -121,7 +171,7 @@ const ExpensesAndPayments = () => {
           ) : (
             <div className="ins">
               <div>Payments</div>
-              <div>N {ApproximateDecimal(0)}</div>
+              <div>N {ApproximateDecimal(expenseData.payments)}</div>
             </div>
           )}
         </div>

@@ -12,10 +12,10 @@ import Controls from "../DailySales/Sales/controls";
 import SalesCards from "../DailySales/Sales/salescards";
 import TankLevels from "../DailySales/Sales/tanklevels";
 import ExpensesAndPayments from "../DailySales/Sales/expenses_payments";
-import SupplyCard from "../DailySales/Sales/supply";
 import NetToBank from "../DailySales/Sales/net_to_bank";
 import LPO from "../DailySales/Sales/lpo";
 import IncomingOrder from "../DailySales/Sales/incoming";
+import Supply from "../DailySales/Sales/supply";
 // const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const DailySales = (props) => {
@@ -75,7 +75,7 @@ const SalesRightColumn = () => {
   return (
     <div className="daily-right">
       <ExpensesAndPayments />
-      <SupplyCard />
+      <Supply />
       <NetToBank />
       <LPO />
       <IncomingOrder />

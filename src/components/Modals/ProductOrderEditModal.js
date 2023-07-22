@@ -14,10 +14,10 @@ import { useSelector } from "react-redux";
 
 const ProductOrderEditModal = (props) => {
   const singleProductOrder = useSelector(
-    (state) => state?.productOrderReducer.singleProductOrder
+    (state) => state?.productorder.singleProductOrder
   );
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
 
   const [dateCreated, setDateCreated] = useState(
     singleProductOrder.dateCreated
@@ -140,8 +140,7 @@ const ProductOrderEditModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div className="modalContainer2">
         <div className="inner">
           <div className="head">
@@ -229,15 +228,13 @@ const ProductOrderEditModal = (props) => {
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     border: "1px solid #777777",
                   },
-                }}
-              >
+                }}>
                 <MenuItem
                   onClick={() => {
                     menuSelection(10, "");
                   }}
                   style={menu}
-                  value={10}
-                >
+                  value={10}>
                   Select Product
                 </MenuItem>
                 <MenuItem
@@ -245,8 +242,7 @@ const ProductOrderEditModal = (props) => {
                     menuSelection(20, "PMS");
                   }}
                   style={menu}
-                  value={20}
-                >
+                  value={20}>
                   PMS
                 </MenuItem>
                 <MenuItem
@@ -254,8 +250,7 @@ const ProductOrderEditModal = (props) => {
                     menuSelection(30, "AGO");
                   }}
                   style={menu}
-                  value={30}
-                >
+                  value={30}>
                   AGO
                 </MenuItem>
                 <MenuItem
@@ -263,8 +258,7 @@ const ProductOrderEditModal = (props) => {
                     menuSelection(40, "DPK");
                   }}
                   style={menu}
-                  value={40}
-                >
+                  value={40}>
                   DPK
                 </MenuItem>
               </Select>
@@ -324,8 +318,7 @@ const ProductOrderEditModal = (props) => {
                 },
               }}
               onClick={uploadProductOrders}
-              variant="contained"
-            >
+              variant="contained">
               <img
                 style={{ width: "25px", height: "20px", marginRight: "10px" }}
                 src={upload}
@@ -371,8 +364,7 @@ const ProductOrderEditModal = (props) => {
                 },
               }}
               onClick={submit}
-              variant="contained"
-            >
+              variant="contained">
               {" "}
               Save
             </Button>

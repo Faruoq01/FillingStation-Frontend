@@ -1,16 +1,20 @@
 import { Button } from "@mui/material";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import slideMenu from "../../../assets/slideMenu.png";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 import ApproximateDecimal from "../../common/approx";
-import { useState } from "react";
+import { incoming } from "../../../storage/dailysales";
+import APIs from "../../../services/api";
 
 const IncomingOrder = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const [dailyIncoming, setInc] = useState([]);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const incomingData = useSelector((state) => state.dailysales.incoming);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -26,6 +30,26 @@ const IncomingOrder = () => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const getIncomingOrder = useCallback((date, station) => {
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date,
+      end: date,
+    };
+
+    APIs.post("/daily-sales/incoming", payload)
+      .then(({ data }) => {
+        dispatch(incoming(data.incoming));
+      })
+      .catch((err) => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getIncomingOrder(updatedDate, oneStationData);
+  }, [getIncomingOrder, oneStationData, updatedDate]);
 
   const goToInc = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
@@ -87,10 +111,10 @@ const IncomingOrder = () => {
           <div className="table-text">Quantity</div>
         </div>
 
-        {dailyIncoming.length === 0 ? (
+        {incomingData.length === 0 ? (
           <div style={dats}> No incoming order today </div>
         ) : (
-          dailyIncoming.map((data, index) => {
+          incomingData.map((data, index) => {
             return (
               <div key={index} className="table-view2">
                 <div className="table-text">{data.outletName}</div>

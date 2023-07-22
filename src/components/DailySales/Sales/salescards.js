@@ -17,7 +17,6 @@ const SalesCards = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const salesData = useSelector((state) => state.dailysales.sales);
-  console.log(salesData, "sales data");
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {

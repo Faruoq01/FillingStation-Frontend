@@ -150,7 +150,9 @@ export const dashboard = createSlice({
       state.topStations = action.payload;
     },
     lpo: (state) => {},
-    incoming: (state) => {},
+    incoming: (state, action) => {
+      state.incoming = action.payload;
+    },
     dateRange: (state, action) => {
       state.dateRange = action.payload;
     },

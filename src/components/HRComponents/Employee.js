@@ -7,7 +7,7 @@ import avatar from "../../assets/avatar.png";
 import hr6 from "../../assets/hr6.png";
 import EmployeeDetails from "../Modals/EmployeeModal";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { adminOutlet, getAllStations } from "../../store/actions/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import OutletService from "../../services/outletService";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -17,14 +17,14 @@ import {
   searchStaffs,
   singleEmployee,
   storeStaffUsers,
-} from "../../store/actions/staffUsers";
+} from "../../storage/employee";
 import PrintStaffRecords from "../Reports/StaffRecord";
 import ManagerModal from "../Modals/ManagerModal";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import EditStaffModal from "../Modals/EditStaffModal";
-import config from '../../constants';
+import config from "../../constants";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -53,15 +53,13 @@ const Employee = () => {
   const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
     useState(false);
   const singleEmployeeDetails = useSelector(
-    (state) => state?.staffUserReducer?.singleEmployee
+    (state) => state?.employee?.singleEmployee
   );
 
-  const user = useSelector((state) => state.authReducer.user);
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const staffUsers = useSelector((state) => state.staffUserReducer.staffUsers);
+  const user = useSelector((state) => state.auth.user);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const staffUsers = useSelector((state) => state.employee.staffUsers);
   const [cRoles, setCroles] = useState([]);
   const dispatch = useDispatch();
 
@@ -193,7 +191,7 @@ const Employee = () => {
     getAllEmployeeData();
   }, [getAllEmployeeData]);
 
-  const refresh = () => {
+  const refresh = (skip) => {
     setLoading(true);
     const payload = {
       filter: roles[filter],
@@ -259,17 +257,14 @@ const Employee = () => {
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh();
+    setSkip((prev) => prev + 1);
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh();
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    refresh(skip - 1);
   };
 
   const entriesMenu = (value, limit) => {
@@ -340,8 +335,7 @@ const Employee = () => {
                   ...selectStyle2,
                   backgroundColor: "#06805B",
                   color: "#fff",
-                }}
-              >
+                }}>
                 <MenuItem style={menu} value={10}>
                   Action
                 </MenuItem>
@@ -366,15 +360,13 @@ const Employee = () => {
                     labelId="demo-select-small"
                     id="demo-select-small"
                     value={defaultState}
-                    sx={selectStyle2}
-                  >
+                    sx={selectStyle2}>
                     <MenuItem
                       onClick={() => {
                         changeMenu(0, null);
                       }}
                       style={menu}
-                      value={0}
-                    >
+                      value={0}>
                       All Stations
                     </MenuItem>
                     {allOutlets.map((item, index) => {
@@ -385,8 +377,7 @@ const Employee = () => {
                           onClick={() => {
                             changeMenu(index + 1, item);
                           }}
-                          value={index + 1}
-                        >
+                          value={index + 1}>
                           {item.outletName + ", " + item.alias}
                         </MenuItem>
                       );
@@ -399,8 +390,7 @@ const Employee = () => {
                     id="demo-select-small"
                     value={0}
                     sx={selectStyle2}
-                    disabled
-                  >
+                    disabled>
                     <MenuItem style={menu} value={0}>
                       {!getPerm("0")
                         ? oneStationData?.outletName +
@@ -445,8 +435,7 @@ const Employee = () => {
                   },
                 }}
                 onClick={openModal}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Add Employee
               </Button>
@@ -459,8 +448,7 @@ const Employee = () => {
                 labelId="demo-select-small"
                 id="demo-select-small"
                 value={entries}
-                sx={selectStyle2}
-              >
+                sx={selectStyle2}>
                 <MenuItem style={menu} value={10}>
                   Show entries
                 </MenuItem>
@@ -469,8 +457,7 @@ const Employee = () => {
                     entriesMenu(20, 15);
                   }}
                   style={menu}
-                  value={20}
-                >
+                  value={20}>
                   15 entries
                 </MenuItem>
                 <MenuItem
@@ -478,8 +465,7 @@ const Employee = () => {
                     entriesMenu(30, 30);
                   }}
                   style={menu}
-                  value={30}
-                >
+                  value={30}>
                   30 entries
                 </MenuItem>
                 <MenuItem
@@ -487,16 +473,14 @@ const Employee = () => {
                     entriesMenu(40, 100);
                   }}
                   style={menu}
-                  value={40}
-                >
+                  value={40}>
                   100 entries
                 </MenuItem>
               </Select>
             </div>
             <div
               style={{ width: mediaMatch.matches ? "100%" : "200px" }}
-              className="input-cont2"
-            >
+              className="input-cont2">
               <Select
                 labelId="demo-select-small"
                 id="demo-select-small"
@@ -506,8 +490,7 @@ const Employee = () => {
                   height: "30px",
                   marginRight: "10px",
                   marginTop: mediaMatch.matches ? "20px" : "0px",
-                }}
-              >
+                }}>
                 {roles.map((data, index) => {
                   return (
                     <MenuItem
@@ -515,8 +498,7 @@ const Employee = () => {
                         filterMenu(data, index);
                       }}
                       style={menu}
-                      value={index}
-                    >
+                      value={index}>
                       {data}
                     </MenuItem>
                   );
@@ -536,8 +518,7 @@ const Employee = () => {
                   },
                 }}
                 onClick={printReport}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Print
               </Button>
@@ -661,7 +642,11 @@ const Employee = () => {
                                 height: "35px",
                                 borderRadius: "35px",
                               }}
-                              src={item.image === null? avatar: config.BASE_URL.concat(item.image)}
+                              src={
+                                item.image === null
+                                  ? avatar
+                                  : config.BASE_URL.concat(item.image)
+                              }
                               alt="icon"
                             />
                           </div>

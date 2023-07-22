@@ -2,28 +2,29 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import Sales from "../Modals/DailySales/sales";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import swal from "sweetalert";
 import DailySalesService from "../../services/DailySales";
-import { bulkReports } from "../../store/actions/dailySales";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import moment from "moment";
+import { setProduct } from "../../storage/comprehensive";
+import { Skeleton } from "@mui/material";
+import React from "react";
+import { useHistory } from "react-router-dom";
 
 const ProductBalance = (props) => {
-  const { sales } = useSelector((state) => state.dailySalesReducer.bulkReports);
+  const history = useHistory();
+  const sales = useSelector((state) => state.comprehensive.sales);
   const dispatch = useDispatch();
-  const currentDate = useSelector(
-    (state) => state.dailySalesReducer.currentDate
-  );
-  const user = useSelector((state) => state.authReducer.user);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const user = useSelector((state) => state.auth.user);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
-  const product = sales.filter((data) => data.productType === props.type);
+  const product = sales[props.type.toLowerCase()];
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -39,6 +40,32 @@ const ProductBalance = (props) => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const getAllProduct = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
+    setLoad(true);
+    const payload = {
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: updatedDate,
+      productType: props.type,
+    };
+
+    APIs.post("/comprehensive/products", payload)
+      .then(({ data }) => {
+        console.log(data, "sales");
+        dispatch(setProduct({ type: props.type, data: data.product }));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getAllProduct(currentDate);
+  }, [getAllProduct, currentDate]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSSellingPrice;
@@ -110,27 +137,11 @@ const ProductBalance = (props) => {
           DailySalesService.deleteSales({
             record: data,
             station: oneStationData,
-          })
-            .then((data) => {
-              getAndAnalyzeDailySales();
-            })
-            .then(() => {
-              swal("Success", "Record deleted successfully", "success");
-            });
+          }).then(() => {
+            swal("Success", "Record deleted successfully", "success");
+          });
         }
       }
-    });
-  };
-
-  const getAndAnalyzeDailySales = () => {
-    const salesPayload = {
-      organisationID: resolveUserID().id,
-      outletID: oneStationData._id,
-      onLoad: currentDate === "" ? true : false,
-      selectedDate: currentDate,
-    };
-    DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then((data) => {
-      dispatch(bulkReports(data.dailyRecords));
     });
   };
 
@@ -251,75 +262,98 @@ const ProductBalance = (props) => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <div className="initial_balance_container">
-        {openEdit && (
-          <Sales data={oneRecord} open={openEdit} close={setOpenEdit} />
-        )}
-        <div className="product_balance_header">
-          <div className="cells">{props.type}</div>
-          <div className="cells">Opening</div>
-          <div className="cells">Closing</div>
-          <div className="cells">Differences</div>
-          <div className="cells">Rate</div>
-          <div className="cells">Amount</div>
-          {getPerm("12") && <div className="cells">Action</div>}
-        </div>
+    <React.Fragment>
+      {load ? (
+        <Skeleton
+          sx={{
+            borderRadius: "5px",
+            background: "#f7f7f7",
+            marginLeft: "20px",
+            marginTop: "20px",
+          }}
+          animation="wave"
+          variant="rectangular"
+          width={"94%"}
+          height={200}
+        />
+      ) : (
+        <div style={{ width: "100%" }}>
+          <div className="initial_balance_container">
+            {openEdit && (
+              <Sales data={oneRecord} open={openEdit} close={setOpenEdit} />
+            )}
+            <div className="product_balance_header">
+              <div className="cells">{props.type}</div>
+              <div className="cells">Opening</div>
+              <div className="cells">Closing</div>
+              <div className="cells">Differences</div>
+              <div className="cells">Rate</div>
+              <div className="cells">Amount</div>
+              {getPerm("12") && <div className="cells">Action</div>}
+            </div>
 
-        {product?.length === 0 ? (
-          <div>No records</div>
-        ) : (
-          product.map((item, index) => {
-            return <ProductRow key={index} data={item} />;
-          })
-        )}
-        <div style={{ marginTop: "5px" }} className="product_balance_header">
-          <div
-            style={{ ...ins, background: "transparent" }}
-            className="cells"
-          ></div>
-          <div
-            style={{ ...ins, background: "transparent" }}
-            className="cells"
-          ></div>
-          <div style={{ ...ins, background: "transparent" }} className="cells">
-            Total
+            {product?.length === 0 ? (
+              <div>No records</div>
+            ) : (
+              product.map((item, index) => {
+                return <ProductRow key={index} data={item} />;
+              })
+            )}
+            <div
+              style={{ marginTop: "5px" }}
+              className="product_balance_header"
+            >
+              <div
+                style={{ ...ins, background: "transparent" }}
+                className="cells"
+              ></div>
+              <div
+                style={{ ...ins, background: "transparent" }}
+                className="cells"
+              ></div>
+              <div
+                style={{ ...ins, background: "transparent" }}
+                className="cells"
+              >
+                Total
+              </div>
+              <div style={ins} className="cells">
+                {ApproximateDecimal(sumOfDifference())}
+              </div>
+              <div style={ins} className="cells"></div>
+              <div style={ins} className="cells">
+                {ApproximateDecimal(sumOfTotals())}
+              </div>
+              <div
+                style={{ ...ins, background: "transparent" }}
+                className="cells"
+              ></div>
+            </div>
           </div>
-          <div style={ins} className="cells">
-            {ApproximateDecimal(sumOfDifference())}
-          </div>
-          <div style={ins} className="cells"></div>
-          <div style={ins} className="cells">
-            {ApproximateDecimal(sumOfTotals())}
-          </div>
-          <div
-            style={{ ...ins, background: "transparent" }}
-            className="cells"
-          ></div>
-        </div>
-      </div>
 
-      <div className="initial_balance_container_mobile">
-        {/* product records */}
-        <div className="mobile_header">&nbsp;&nbsp;&nbsp; {props.type}</div>
-        <div
-          style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail"
-        >
-          <div className="sups">
-            <div className="slide">
-              {product?.length === 0 ? (
-                <div>No records</div>
-              ) : (
-                product.map((item, index) => {
-                  return <MobileProduct key={index} data={item} />;
-                })
-              )}
+          <div className="initial_balance_container_mobile">
+            {/* product records */}
+            <div className="mobile_header">&nbsp;&nbsp;&nbsp; {props.type}</div>
+            <div
+              style={{ marginBottom: "20px", marginTop: "10px" }}
+              className="balance_mobile_detail"
+            >
+              <div className="sups">
+                <div className="slide">
+                  {product?.length === 0 ? (
+                    <div>No records</div>
+                  ) : (
+                    product.map((item, index) => {
+                      return <MobileProduct key={index} data={item} />;
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 

@@ -7,10 +7,10 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import ProductOrderModal from "../Modals/ProductOrderModal";
 import ProductService from "../../services/productService";
 import {
-  createProductOrder,
+  setProductOrder,
   searchProduct,
   singleProductOrderRecord,
-} from "../../store/actions/productOrder";
+} from "../../storage/productOrder";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -36,16 +36,10 @@ const ProductOrders = () => {
     useState(false);
   const [open2, setOpen2] = React.useState({ id: "", trigger: false });
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.user);
-  const productOrder = useSelector(
-    (state) => state.productOrderReducer.productOrder
-  );
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const { singleProductOrder } = useSelector(
-    (state) => state?.productOrderReducer
-  );
+  const user = useSelector((state) => state.auth.user);
+  const productOrder = useSelector((state) => state.productorder.productorder);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const { singleProductOrder } = useSelector((state) => state?.productorder);
   const [deleteLoad, setDeleteLoad] = useState(false);
 
   const [entries, setEntries] = useState(10);
@@ -89,7 +83,7 @@ const ProductOrders = () => {
     ProductService.getAllProductOrder(payload).then((data) => {
       setLoading(false);
       setTotal(data.product.count);
-      dispatch(createProductOrder(data.product.product));
+      dispatch(setProductOrder(data.product.product));
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,7 +93,7 @@ const ProductOrders = () => {
     getAllProductData();
   }, [getAllProductData]);
 
-  const refresh = () => {
+  const refresh = (skip) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
@@ -111,7 +105,7 @@ const ProductOrders = () => {
     ProductService.getAllProductOrder(payload)
       .then((data) => {
         setTotal(data.product.count);
-        dispatch(createProductOrder(data.product.product));
+        dispatch(setProductOrder(data.product.product));
       })
       .then(() => {
         setLoading(false);
@@ -134,17 +128,14 @@ const ProductOrders = () => {
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh();
+    setSkip((prev) => prev + 1);
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh();
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    refresh(skip - 1);
   };
 
   const openOrderDetails = (data) => {
@@ -198,8 +189,7 @@ const ProductOrders = () => {
                   ...selectStyle2,
                   backgroundColor: "#06805B",
                   color: "#fff",
-                }}
-              >
+                }}>
                 <MenuItem value={10}>Actions</MenuItem>
                 <MenuItem onClick={createOrderHandler} value={20}>
                   Create Order
@@ -246,8 +236,7 @@ const ProductOrders = () => {
                   },
                 }}
                 onClick={createOrderHandler}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Create Order
               </Button>
@@ -260,8 +249,7 @@ const ProductOrders = () => {
                 labelId="demo-select-small"
                 id="demo-select-small"
                 value={entries}
-                sx={selectStyle2}
-              >
+                sx={selectStyle2}>
                 <MenuItem style={menu} value={10}>
                   Show entries
                 </MenuItem>
@@ -270,8 +258,7 @@ const ProductOrders = () => {
                     entriesMenu(20, 15);
                   }}
                   style={menu}
-                  value={20}
-                >
+                  value={20}>
                   15 entries
                 </MenuItem>
                 <MenuItem
@@ -279,8 +266,7 @@ const ProductOrders = () => {
                     entriesMenu(30, 30);
                   }}
                   style={menu}
-                  value={30}
-                >
+                  value={30}>
                   30 entries
                 </MenuItem>
                 <MenuItem
@@ -288,16 +274,14 @@ const ProductOrders = () => {
                     entriesMenu(40, 100);
                   }}
                   style={menu}
-                  value={40}
-                >
+                  value={40}>
                   100 entries
                 </MenuItem>
               </Select>
             </div>
             <div
               style={{ width: mediaMatch.matches ? "100%" : "190px" }}
-              className="input-cont2"
-            >
+              className="input-cont2">
               <Button
                 sx={{
                   width: mediaMatch.matches ? "100%" : "100px",
@@ -313,8 +297,7 @@ const ProductOrders = () => {
                   },
                 }}
                 onClick={goToHistory}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 History
               </Button>
@@ -333,8 +316,7 @@ const ProductOrders = () => {
                   },
                 }}
                 onClick={printReport}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Print
               </Button>
@@ -435,8 +417,7 @@ const ProductOrders = () => {
                           <div className="column">
                             <div
                               style={{ justifyContent: "space-around" }}
-                              className="actions"
-                            >
+                              className="actions">
                               <EditIcon
                                 style={{
                                   ...styles.icons,

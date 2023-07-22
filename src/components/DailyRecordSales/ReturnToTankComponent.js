@@ -4,25 +4,19 @@ import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { updatePayload, updateRecords } from "../../store/actions/records";
+import { updatePayload, updateRecords } from "../../storage/recordsales";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
 const ReturnToTank = (props) => {
   const [productType, setProductType] = useState("PMS");
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   ////////////////////////////////////////////////////////////
   const dispatch = useDispatch();
-  const records = useSelector((state) => state.recordsReducer.load);
-  const selectedPumps = useSelector(
-    (state) => state.recordsReducer.selectedPumps
-  );
-  const selectedTanks = useSelector(
-    (state) => state.recordsReducer.selectedTanks
-  );
+  const records = useSelector((state) => state.recordsales.load);
+  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
 
   console.log(selectedPumps, "selected pumps");
   console.log(selectedTanks, "selected tanks");
@@ -87,6 +81,9 @@ const ReturnToTank = (props) => {
   };
 
   const updateTotalizer = (e, pump) => {
+    if (Number(pump.sales) === 0)
+      return swal("Error!", "You have made zero sales from this pump", "error");
+
     if (productType === "PMS") {
       /*###########################################
                 Update the pump readings for PMS
@@ -94,8 +91,8 @@ const ReturnToTank = (props) => {
 
       const newPms = [...pms];
       const findID = newPms.findIndex((data) => data._id === pump._id);
-      newPms[findID].RTlitre = e;
-      newPms[findID].outlet = oneStationData;
+      newPms[findID] = { ...newPms[findID], RTlitre: e };
+      newPms[findID] = { ...newPms[findID], outlet: oneStationData };
       setPMS(newPms);
       dispatch(updateRecords({ pms: newPms, ago: ago, dpk: dpk }));
 
@@ -119,14 +116,29 @@ const ReturnToTank = (props) => {
       const tankID = cloneSelectedTanks.findIndex(
         (data) => data._id === pump.hostTank
       );
-      cloneSelectedTanks[tankID].pumps = connectedPumps;
-      cloneSelectedTanks[tankID].RTlitre = totalRT;
-      cloneSelectedTanks[tankID].sales = totalSales;
-      cloneSelectedTanks[tankID].outlet = oneStationData;
-      cloneSelectedTanks[tankID].afterSales =
-        Number(cloneSelectedTanks[tankID].currentLevel) -
-        Number(cloneSelectedTanks[tankID].sales) +
-        totalRT;
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        pumps: connectedPumps,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        RTlitre: totalRT,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        sales: totalSales,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        outlet: oneStationData,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        afterSales:
+          Number(cloneSelectedTanks[tankID].currentLevel) -
+          Number(cloneSelectedTanks[tankID].sales) +
+          totalRT,
+      };
       tankFromPayload["2"] = cloneSelectedTanks;
       dispatch(updatePayload(tankFromPayload));
     } else if (productType === "AGO") {
@@ -136,8 +148,8 @@ const ReturnToTank = (props) => {
 
       const newAgo = [...ago];
       const findID = newAgo.findIndex((data) => data._id === pump._id);
-      newAgo[findID].RTlitre = e;
-      newAgo[findID].outlet = oneStationData;
+      newAgo[findID] = { ...newAgo[findID], RTlitre: e };
+      newAgo[findID] = { ...newAgo[findID], outlet: oneStationData };
       setAGO(newAgo);
       dispatch(updateRecords({ pms: pms, ago: newAgo, dpk: dpk }));
 
@@ -161,14 +173,30 @@ const ReturnToTank = (props) => {
       const tankID = cloneSelectedTanks.findIndex(
         (data) => data._id === pump.hostTank
       );
-      cloneSelectedTanks[tankID].pumps = connectedPumps;
-      cloneSelectedTanks[tankID].RTlitre = totalRT;
-      cloneSelectedTanks[tankID].sales = totalSales;
-      cloneSelectedTanks[tankID].outlet = oneStationData;
-      cloneSelectedTanks[tankID].afterSales =
-        Number(cloneSelectedTanks[tankID].currentLevel) -
-        Number(cloneSelectedTanks[tankID].sales) +
-        totalRT;
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        pumps: connectedPumps,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        RTlitre: totalRT,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        sales: totalSales,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        outlet: oneStationData,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        afterSales:
+          Number(cloneSelectedTanks[tankID].currentLevel) -
+          Number(cloneSelectedTanks[tankID].sales) +
+          totalRT,
+      };
+
       tankFromPayload["2"] = cloneSelectedTanks;
       dispatch(updatePayload(tankFromPayload));
     } else if (productType === "DPK") {
@@ -178,8 +206,8 @@ const ReturnToTank = (props) => {
 
       const newDpk = [...dpk];
       const findID = newDpk.findIndex((data) => data._id === pump._id);
-      newDpk[findID].RTlitre = e;
-      newDpk[findID].outlet = oneStationData;
+      newDpk[findID] = { ...newDpk[findID], RTlitre: e };
+      newDpk[findID] = { ...newDpk[findID], outlet: oneStationData };
       setDPK(newDpk);
       dispatch(updateRecords({ pms: pms, ago: ago, dpk: newDpk }));
 
@@ -203,14 +231,30 @@ const ReturnToTank = (props) => {
       const tankID = cloneSelectedTanks.findIndex(
         (data) => data._id === pump.hostTank
       );
-      cloneSelectedTanks[tankID].pumps = connectedPumps;
-      cloneSelectedTanks[tankID].RTlitre = totalRT;
-      cloneSelectedTanks[tankID].sales = totalSales;
-      cloneSelectedTanks[tankID].outlet = oneStationData;
-      cloneSelectedTanks[tankID].afterSales =
-        Number(cloneSelectedTanks[tankID].currentLevel) -
-        Number(cloneSelectedTanks[tankID].sales) +
-        totalRT;
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        pumps: connectedPumps,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        RTlitre: totalRT,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        sales: totalSales,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        outlet: oneStationData,
+      };
+      cloneSelectedTanks[tankID] = {
+        ...cloneSelectedTanks[tankID],
+        afterSales:
+          Number(cloneSelectedTanks[tankID].currentLevel) -
+          Number(cloneSelectedTanks[tankID].sales) +
+          totalRT,
+      };
+
       tankFromPayload["2"] = cloneSelectedTanks;
       dispatch(updatePayload(tankFromPayload));
     }
@@ -341,7 +385,7 @@ const ReturnToTank = (props) => {
           pms.map((data, index) => {
             return (
               <div key={index}>
-                {data.identity === index && (
+                {Number.isInteger(data.identity) && (
                   <div className="box">
                     <p
                       onClick={(e) => pumpItem(e, index, data)}
@@ -358,7 +402,7 @@ const ReturnToTank = (props) => {
                     />
                   </div>
                 )}
-                {data.identity !== index && (
+                {!Number.isInteger(data.identity) && (
                   <div className="box2">
                     <p
                       onClick={(e) => pumpItem(e, index, data)}
@@ -382,7 +426,7 @@ const ReturnToTank = (props) => {
           ago.map((data, index) => {
             return (
               <div key={index}>
-                {data.identity === index && (
+                {Number.isInteger(data.identity) && (
                   <div className="box">
                     <p
                       onClick={(e) => pumpItem(e, index, data)}
@@ -399,7 +443,7 @@ const ReturnToTank = (props) => {
                     />
                   </div>
                 )}
-                {data.identity !== index && (
+                {!Number.isInteger(data.identity) && (
                   <div className="box2">
                     <p
                       onClick={(e) => pumpItem(e, index, data)}
@@ -423,7 +467,7 @@ const ReturnToTank = (props) => {
           dpk.map((data, index) => {
             return (
               <div key={index}>
-                {data.identity === index && (
+                {Number.isInteger(data.identity) && (
                   <div className="box">
                     <p
                       onClick={(e) => pumpItem(e, index, data)}
@@ -440,7 +484,7 @@ const ReturnToTank = (props) => {
                     />
                   </div>
                 )}
-                {data.identity !== index && (
+                {!Number.isInteger(data.identity) && (
                   <div className="box2">
                     <p
                       onClick={(e) => pumpItem(e, index, data)}

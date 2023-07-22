@@ -11,7 +11,7 @@ import {
   createIncomingOrder,
   searchIncoming,
   singleIncomingOrderRecord,
-} from "../../store/actions/incomingOrder";
+} from "../../storage/incomingOrder";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
@@ -27,16 +27,14 @@ const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const IncomingOrder = () => {
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
   const incomingOrder = useSelector(
-    (state) => state.incomingOrderReducer.incomingOrder
+    (state) => state.incomingorder.incomingOrder
   );
   const dispatch = useDispatch();
   const [defaultState, setDefault] = useState(0);
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -65,7 +63,7 @@ const IncomingOrder = () => {
   const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
     useState(false);
   const singleIncomingOrder = useSelector(
-    (state) => state?.incomingOrderReducer.singleIncomingOrder
+    (state) => state?.incomingorder.singleIncomingOrder
   );
 
   const openCreateModal = () => {
@@ -147,7 +145,7 @@ const IncomingOrder = () => {
     getAllIncomingOrder();
   }, [getAllIncomingOrder]);
 
-  const refresh = () => {
+  const refresh = (skip) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
@@ -207,17 +205,14 @@ const IncomingOrder = () => {
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh();
+    setSkip((prev) => prev + 1);
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh();
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    refresh(skip - 1);
   };
 
   const goToHistory = () => {
@@ -267,8 +262,7 @@ const IncomingOrder = () => {
                   ...selectStyle2,
                   backgroundColor: "#06805B",
                   color: "#fff",
-                }}
-              >
+                }}>
                 <MenuItem value={10}>Action</MenuItem>
                 <MenuItem onClick={openCreateModal} value={20}>
                   Create Incoming Order
@@ -287,15 +281,13 @@ const IncomingOrder = () => {
                     labelId="demo-select-small"
                     id="demo-select-small"
                     value={defaultState}
-                    sx={selectStyle2}
-                  >
+                    sx={selectStyle2}>
                     <MenuItem
                       onClick={() => {
                         changeMenu(0, null);
                       }}
                       style={menu}
-                      value={0}
-                    >
+                      value={0}>
                       All Stations
                     </MenuItem>
                     {allOutlets.map((item, index) => {
@@ -306,8 +298,7 @@ const IncomingOrder = () => {
                           onClick={() => {
                             changeMenu(index + 1, item);
                           }}
-                          value={index + 1}
-                        >
+                          value={index + 1}>
                           {item.outletName + ", " + item.alias}
                         </MenuItem>
                       );
@@ -320,8 +311,7 @@ const IncomingOrder = () => {
                     id="demo-select-small"
                     value={0}
                     sx={selectStyle2}
-                    disabled
-                  >
+                    disabled>
                     <MenuItem style={menu} value={0}>
                       {!getPerm("0")
                         ? oneStationData?.outletName +
@@ -366,8 +356,7 @@ const IncomingOrder = () => {
                   },
                 }}
                 onClick={openCreateModal}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Create Incoming Order
               </Button>
@@ -380,8 +369,7 @@ const IncomingOrder = () => {
                 labelId="demo-select-small"
                 id="demo-select-small"
                 value={entries}
-                sx={selectStyle2}
-              >
+                sx={selectStyle2}>
                 <MenuItem style={menu} value={10}>
                   Show entries
                 </MenuItem>
@@ -390,8 +378,7 @@ const IncomingOrder = () => {
                     entriesMenu(20, 15);
                   }}
                   style={menu}
-                  value={20}
-                >
+                  value={20}>
                   15 entries
                 </MenuItem>
                 <MenuItem
@@ -399,8 +386,7 @@ const IncomingOrder = () => {
                     entriesMenu(30, 30);
                   }}
                   style={menu}
-                  value={30}
-                >
+                  value={30}>
                   30 entries
                 </MenuItem>
                 <MenuItem
@@ -408,16 +394,14 @@ const IncomingOrder = () => {
                     entriesMenu(40, 100);
                   }}
                   style={menu}
-                  value={40}
-                >
+                  value={40}>
                   100 entries
                 </MenuItem>
               </Select>
             </div>
             <div
               style={{ width: mediaMatch.matches ? "100%" : "190px" }}
-              className="input-cont2"
-            >
+              className="input-cont2">
               <Button
                 sx={{
                   width: mediaMatch.matches ? "100%" : "100px",
@@ -433,8 +417,7 @@ const IncomingOrder = () => {
                   },
                 }}
                 onClick={goToHistory}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 History
               </Button>
@@ -453,8 +436,7 @@ const IncomingOrder = () => {
                   },
                 }}
                 onClick={printReport}
-                variant="contained"
-              >
+                variant="contained">
                 {" "}
                 Print
               </Button>

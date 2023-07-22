@@ -2,27 +2,30 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import DailySalesService from "../../services/DailySales";
-import { bulkReports } from "../../store/actions/dailySales";
 import swal from "sweetalert";
 import { useState } from "react";
 import UpdateLPO from "../Modals/DailySales/lpo";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import { useHistory } from "react-router-dom";
+import { setLpo } from "../../storage/comprehensive";
+import { Skeleton } from "@mui/material";
+import React from "react";
 
 const LPOReport = () => {
-  const { lpo } = useSelector((state) => state.dailySalesReducer.bulkReports);
+  const history = useHistory();
+  const lpo = useSelector((state) => state.comprehensive.lpo);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector(
-    (state) => state.dailySalesReducer.currentDate
-  );
-  const user = useSelector((state) => state.authReducer.user);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const user = useSelector((state) => state.auth.user);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -38,6 +41,30 @@ const LPOReport = () => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const getLPOData = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
+    setLoad(true);
+    const payload = {
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: updatedDate,
+    };
+
+    APIs.post("/comprehensive/lpo", payload)
+      .then(({ data }) => {
+        dispatch(setLpo(data.lpo));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getLPOData(currentDate);
+  }, [getLPOData, currentDate]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSRate;
@@ -67,27 +94,10 @@ const LPOReport = () => {
       if (willDelete) {
         APIs.post("/sales/delete/lpo", {
           data: data,
-        })
-          .then((data) => {
-            getAndAnalyzeDailySales();
-          })
-          .then(() => {
-            swal("Success", "Record deleted successfully", "success");
-          });
+        }).then(() => {
+          swal("Success", "Record deleted successfully", "success");
+        });
       }
-    });
-  };
-
-  const getAndAnalyzeDailySales = () => {
-    const salesPayload = {
-      organisationID: resolveUserID().id,
-      outletID: oneStationData._id,
-      onLoad: currentDate === "" ? true : false,
-      selectedDate: currentDate,
-    };
-
-    DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then((data) => {
-      dispatch(bulkReports(data.dailyRecords));
     });
   };
 
@@ -221,55 +231,72 @@ const LPOReport = () => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <div className="initial_balance_container">
-        {openEdit && (
-          <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />
-        )}
-        <div className="product_balance_header">
-          <div className="cells">S/N</div>
-          <div style={{ width: "150%" }} className="cells">
-            Account Name
+    <React.Fragment>
+      {load ? (
+        <Skeleton
+          sx={{
+            borderRadius: "5px",
+            background: "#f7f7f7",
+            marginLeft: "20px",
+            marginTop: "20px",
+          }}
+          animation="wave"
+          variant="rectangular"
+          width={"94%"}
+          height={200}
+        />
+      ) : (
+        <div style={{ width: "100%" }}>
+          <div className="initial_balance_container">
+            {openEdit && (
+              <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />
+            )}
+            <div className="product_balance_header">
+              <div className="cells">S/N</div>
+              <div style={{ width: "150%" }} className="cells">
+                Account Name
+              </div>
+              <div className="cells">Product</div>
+              <div className="cells">Truck No</div>
+              <div className="cells">Quantity</div>
+              <div className="cells">Rate</div>
+              <div className="cells">Amount</div>
+              {getPerm("14") && <div className="cells">Action</div>}
+            </div>
+
+            {lpo?.length === 0 ? (
+              <div>No records</div>
+            ) : (
+              lpo.map((item, index) => {
+                return <LPORows key={index} data={item} index={index} />;
+              })
+            )}
           </div>
-          <div className="cells">Product</div>
-          <div className="cells">Truck No</div>
-          <div className="cells">Quantity</div>
-          <div className="cells">Rate</div>
-          <div className="cells">Amount</div>
-          {getPerm("14") && <div className="cells">Action</div>}
-        </div>
 
-        {lpo?.length === 0 ? (
-          <div>No records</div>
-        ) : (
-          lpo.map((item, index) => {
-            return <LPORows key={index} data={item} index={index} />;
-          })
-        )}
-      </div>
-
-      <div className="initial_balance_container_mobile">
-        {/* Supply records */}
-        <div className="mobile_header">&nbsp;&nbsp;&nbsp; LPO</div>
-        <div
-          style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
-          <div className="sups">
-            <div className="slide">
-              {lpo?.length === 0 ? (
-                <div>No records</div>
-              ) : (
-                lpo.map((item, index) => {
-                  return (
-                    <MobileLPORows key={index} data={item} index={index} />
-                  );
-                })
-              )}
+          <div className="initial_balance_container_mobile">
+            {/* Supply records */}
+            <div className="mobile_header">&nbsp;&nbsp;&nbsp; LPO</div>
+            <div
+              style={{ marginBottom: "20px", marginTop: "10px" }}
+              className="balance_mobile_detail">
+              <div className="sups">
+                <div className="slide">
+                  {lpo?.length === 0 ? (
+                    <div>No records</div>
+                  ) : (
+                    lpo.map((item, index) => {
+                      return (
+                        <MobileLPORows key={index} data={item} index={index} />
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 

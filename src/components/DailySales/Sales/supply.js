@@ -1,16 +1,23 @@
 import { Button, Skeleton } from "@mui/material";
-import React from "react";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import slideMenu from "../../../assets/slideMenu.png";
 import swal from "sweetalert";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import ApproximateDecimal from "../../common/approx";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import { supply } from "../../../storage/dailysales";
+import APIs from "../../../services/api";
 
-const SupplyCard = () => {
-  const history = useHistory();
+const Supply = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const [load, setLoad] = useState();
+  const suppliesData = useSelector((state) => state.dailysales.supply);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const history = useHistory();
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -24,20 +31,49 @@ const SupplyCard = () => {
     if (user.userType === "superAdmin") {
       return true;
     }
-    return user.permission?.dailySales[e];
+    return user.permission?.dailysales[e];
   };
 
-  const goToSupply = () => {
-    if (!getPerm("5")) return swal("Warning!", "Permission denied", "info");
+  const getSupply = useCallback((date, station) => {
+    setLoad(true);
+
+    const payload = {
+      outletID: station === null ? "None" : station._id,
+      organisationID: resolveUserID().id,
+      start: date,
+      end: date,
+    };
+
+    APIs.post("/daily-sales/supply", payload)
+      .then(({ data }) => {
+        dispatch(supply(data.supply));
+      })
+      .then(() => {
+        setLoad(false);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getSupply(updatedDate, oneStationData);
+  }, [getSupply, oneStationData, updatedDate]);
+
+  const goToSupplyPage = () => {
+    if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");
     history.push("/home/supply");
   };
 
   return (
     <React.Fragment>
-      <div style={{ marginTop: "30px" }} className="asset">
+      <div className="asset">
         <div
-          style={{ color: user.isDark === "0" ? "#000" : "#fff" }}
-          className="tank-text">
+          style={{
+            color: user.isDark === "0" ? "#000" : "#fff",
+            fontSize: "15px",
+          }}>
           Supply
         </div>
         {load ? (
@@ -45,7 +81,7 @@ const SupplyCard = () => {
             sx={{ borderRadius: "5px", background: "#f7f7f7" }}
             animation="wave"
             variant="rectangular"
-            width={"130px"}
+            width={130}
             height={35}
           />
         ) : (
@@ -74,7 +110,7 @@ const SupplyCard = () => {
                 backgroundColor: "#06805B",
               },
             }}
-            onClick={goToSupply}>
+            onClick={goToSupplyPage}>
             View in details
           </Button>
         )}
@@ -87,14 +123,14 @@ const SupplyCard = () => {
               animation="wave"
               variant="rectangular"
               width={"100%"}
-              height={105}
+              height={90}
             />
           ) : (
             <>
               <div className="left">PMS</div>
               <div className="right">
                 <div>Litre Qty</div>
-                <div>{ApproximateDecimal(0)}</div>
+                <div>{ApproximateDecimal(suppliesData?.pms)} Litres</div>
               </div>
             </>
           )}
@@ -106,14 +142,14 @@ const SupplyCard = () => {
               animation="wave"
               variant="rectangular"
               width={"100%"}
-              height={105}
+              height={90}
             />
           ) : (
             <>
               <div className="left">AGO</div>
               <div className="right">
                 <div>Litre Qty</div>
-                <div>{ApproximateDecimal(0)}</div>
+                <div>{ApproximateDecimal(suppliesData?.ago)} Litres</div>
               </div>
             </>
           )}
@@ -125,14 +161,14 @@ const SupplyCard = () => {
               animation="wave"
               variant="rectangular"
               width={"100%"}
-              height={105}
+              height={90}
             />
           ) : (
             <>
               <div className="left">DPK</div>
               <div className="right">
                 <div>Litre Qty</div>
-                <div>{ApproximateDecimal(0)}</div>
+                <div>{ApproximateDecimal(suppliesData?.dpk)} Litres</div>
               </div>
             </>
           )}
@@ -142,4 +178,4 @@ const SupplyCard = () => {
   );
 };
 
-export default SupplyCard;
+export default Supply;

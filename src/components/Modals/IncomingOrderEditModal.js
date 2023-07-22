@@ -11,21 +11,19 @@ import IncomingService from "../../services/IncomingService";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import ProductService from "../../services/productService";
-import { createProductOrder } from "../../store/actions/productOrder";
+import { setProductOrder } from "../../storage/productOrder";
 import { Radio } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const IncomingOrderEditModal = (props) => {
   const singleIncomingOrder = useSelector(
-    (state) => state?.incomingOrderReducer.singleIncomingOrder
+    (state) => state?.incomingorder.singleIncomingOrder
   );
   const [loading, setLoading] = useState(false);
   const [defaultState, setDefault] = useState(0);
-  const productOrder = useSelector(
-    (state) => state.productOrderReducer.productOrder
-  );
+  const productOrder = useSelector((state) => state.productorder.productorder);
 
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const dispatch = useDispatch();
   const [productType, setProductType] = useState("available");
   const [quantityOrdered, setQuantityOrdered] = useState(
@@ -33,9 +31,7 @@ const IncomingOrderEditModal = (props) => {
   );
   const [previousBalance, setPreviousBalance] = useState("");
   const [quantityLoaded, setQuantityLoaded] = useState("");
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [depotStation, setDepotStation] = useState(
     singleIncomingOrder.depotStation ?? ""
@@ -72,82 +68,82 @@ const IncomingOrderEditModal = (props) => {
   const submit = async () => {
     return;
 
-    // save updated data
-    if (transporter === "")
-      return swal("Warning!", "Transporter cannot be empty", "info");
-    if (depotStation === "")
-      return swal("Warning!", "Depot station field cannot be empty", "info");
-    if (destination === "")
-      return swal("Warning!", "Destination field cannot be empty", "info");
-    if (product === "")
-      return swal("Warning!", "Product field cannot be empty", "info");
-    if (dateCreated === "")
-      return swal("Warning!", "Date created field cannot be empty", "info");
-    if (productOrderID === "" && productType === "available")
-      return swal("Warning!", "Product order ID field cannot be empty", "info");
-    if (truckNo === "")
-      return swal("Warning!", "Truck No cannot be empty", "info");
-    if (driverName === "")
-      return swal("Warning!", "Driver name cannot be empty", "info");
-    if (phoneNo === "")
-      return swal("Warning!", "Phone no cannot be empty", "info");
+    // // save updated data
+    // if (transporter === "")
+    //   return swal("Warning!", "Transporter cannot be empty", "info");
+    // if (depotStation === "")
+    //   return swal("Warning!", "Depot station field cannot be empty", "info");
+    // if (destination === "")
+    //   return swal("Warning!", "Destination field cannot be empty", "info");
+    // if (product === "")
+    //   return swal("Warning!", "Product field cannot be empty", "info");
+    // if (dateCreated === "")
+    //   return swal("Warning!", "Date created field cannot be empty", "info");
+    // if (productOrderID === "" && productType === "available")
+    //   return swal("Warning!", "Product order ID field cannot be empty", "info");
+    // if (truckNo === "")
+    //   return swal("Warning!", "Truck No cannot be empty", "info");
+    // if (driverName === "")
+    //   return swal("Warning!", "Driver name cannot be empty", "info");
+    // if (phoneNo === "")
+    //   return swal("Warning!", "Phone no cannot be empty", "info");
 
-    const totalLoadedQuantity = selected.reduce((accum, current) => {
-      return Number(accum) + Number(current.incomingQuantity);
-    }, 0);
+    // const totalLoadedQuantity = selected.reduce((accum, current) => {
+    //   return Number(accum) + Number(current.incomingQuantity);
+    // }, 0);
 
-    if (
-      Number(totalLoadedQuantity) > Number(previousBalance) &&
-      productType === "available"
-    )
-      return swal("Warning!", "Total quantity exceeds current balance", "info");
+    // if (
+    //   Number(totalLoadedQuantity) > Number(previousBalance) &&
+    //   productType === "available"
+    // )
+    //   return swal("Warning!", "Total quantity exceeds current balance", "info");
 
-    setLoading(true);
+    // setLoading(true);
 
-    const selectedStations = [...selected];
-    let previous = previousBalance;
-    let loaded = quantityLoaded;
+    // const selectedStations = [...selected];
+    // let previous = previousBalance;
+    // let loaded = quantityLoaded;
 
-    for (let station of selectedStations) {
-      const currentBalanceUpdate =
-        Number(previous) - Number(station.incomingQuantity);
-      const loadedUpdate = Number(loaded) + Number(station.incomingQuantity);
+    // for (let station of selectedStations) {
+    //   const currentBalanceUpdate =
+    //     Number(previous) - Number(station.incomingQuantity);
+    //   const loadedUpdate = Number(loaded) + Number(station.incomingQuantity);
 
-      const payload = {
-        depotStation: depotStation,
-        destination: station.alias,
-        product: product,
-        quantity: station.incomingQuantity,
-        updateCurrentBalance: currentBalanceUpdate,
-        updateQantityLoaded: loadedUpdate,
-        dateCreated: dateCreated,
-        productOrderID: productOrderID,
-        truckNo: truckNo,
-        transporter: transporter,
-        wayBillNo: wayBillNo,
-        driverName: driverName,
-        phoneNo: phoneNo,
-        outletName: station.outletName,
-        outletID: station._id,
-        organizationID: station.organisation,
-      };
+    //   const payload = {
+    //     depotStation: depotStation,
+    //     destination: station.alias,
+    //     product: product,
+    //     quantity: station.incomingQuantity,
+    //     updateCurrentBalance: currentBalanceUpdate,
+    //     updateQantityLoaded: loadedUpdate,
+    //     dateCreated: dateCreated,
+    //     productOrderID: productOrderID,
+    //     truckNo: truckNo,
+    //     transporter: transporter,
+    //     wayBillNo: wayBillNo,
+    //     driverName: driverName,
+    //     phoneNo: phoneNo,
+    //     outletName: station.outletName,
+    //     outletID: station._id,
+    //     organizationID: station.organisation,
+    //   };
 
-      const res = await IncomingService.createIncoming(payload);
-      if (res) previous = currentBalanceUpdate;
-      loaded = loadedUpdate;
-    }
+    //   const res = await IncomingService.createIncoming(payload);
+    //   if (res) previous = currentBalanceUpdate;
+    //   loaded = loadedUpdate;
+    // }
 
-    setLoading(false);
-    setDepotStation("");
-    setDestination("");
-    setTransporter("");
-    setTruckNo("");
-    setWayBillNo("");
-    setDriverName("");
-    setPhoneNumber("");
-    swal("Success", "Product order created successfully!", "success");
-    props.refresh();
-    handleClose();
+    // setLoading(false);
+    // setDepotStation("");
+    // setDestination("");
+    // setTransporter("");
+    // setTruckNo("");
+    // setWayBillNo("");
+    // setDriverName("");
+    // setPhoneNumber("");
+    // swal("Success", "Product order created successfully!", "success");
+    // props.refresh();
+    // handleClose();
   };
 
   const menuSelection = (e, item) => {
@@ -163,7 +159,7 @@ const IncomingOrderEditModal = (props) => {
     };
 
     ProductService.getAllProductOrder2(payload).then((data) => {
-      dispatch(createProductOrder(data.product.product));
+      dispatch(setProductOrder(data.product.product));
     });
   };
 
@@ -247,8 +243,7 @@ const IncomingOrderEditModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div className="modalContainer2">
         <div className="inner">
           <div className="head">
@@ -306,8 +301,7 @@ const IncomingOrderEditModal = (props) => {
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     border: "1px solid #777777",
                   },
-                }}
-              >
+                }}>
                 <MenuItem style={menu} value={1}>
                   Select Product
                 </MenuItem>
@@ -316,8 +310,7 @@ const IncomingOrderEditModal = (props) => {
                     menuSelection(2, "PMS");
                   }}
                   style={menu}
-                  value={2}
-                >
+                  value={2}>
                   PMS
                 </MenuItem>
                 <MenuItem
@@ -325,8 +318,7 @@ const IncomingOrderEditModal = (props) => {
                     menuSelection(3, "AGO");
                   }}
                   style={menu}
-                  value={3}
-                >
+                  value={3}>
                   AGO
                 </MenuItem>
                 <MenuItem
@@ -334,8 +326,7 @@ const IncomingOrderEditModal = (props) => {
                     menuSelection(4, "DPK");
                   }}
                   style={menu}
-                  value={4}
-                >
+                  value={4}>
                   DPK
                 </MenuItem>
               </Select>
@@ -348,8 +339,7 @@ const IncomingOrderEditModal = (props) => {
                   labelId="demo-select-small"
                   id="demo-select-small"
                   value={defaultState}
-                  sx={selectStyle2}
-                >
+                  sx={selectStyle2}>
                   <MenuItem style={menu} value={0}>
                     Select Product Order
                   </MenuItem>
@@ -361,8 +351,7 @@ const IncomingOrderEditModal = (props) => {
                         onClick={() => {
                           changeMenu(index + 1, item);
                         }}
-                        value={index + 1}
-                      >
+                        value={index + 1}>
                         {item.depot}
                       </MenuItem>
                     );
@@ -483,8 +472,7 @@ const IncomingOrderEditModal = (props) => {
               <div className="head-text2">Select discharge stations</div>
               <div
                 onClick={() => setStationSelect(!stationSelect)}
-                style={drop}
-              >
+                style={drop}>
                 <span style={{ marginLeft: "10px" }}>
                   Select ({selected.length})
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loaded
@@ -518,8 +506,7 @@ const IncomingOrderEditModal = (props) => {
                             type={"checkbox"}
                           />
                           <span
-                            style={{ marginLeft: "10px", fontSize: "11px" }}
-                          >
+                            style={{ marginLeft: "10px", fontSize: "11px" }}>
                             {data.outletName}, {data.city}
                           </span>
                         </div>
@@ -684,8 +671,7 @@ const IncomingOrderEditModal = (props) => {
                 },
               }}
               onClick={submit}
-              variant="contained"
-            >
+              variant="contained">
               {" "}
               Save
             </Button>
