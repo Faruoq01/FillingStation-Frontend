@@ -7,7 +7,7 @@ import {
 } from "../types";
 
 export const createLPO = (params) => (dispatch) => {
-  dispatch({ type: CREATE_LPO, payload: params });
+  dispatch(CREATE_LPO(params));
 };
 
 export const createLPOSales = (params) => (dispatch) => {
