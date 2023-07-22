@@ -19,7 +19,7 @@ export const searchLPOList = (params) => (dispatch) => {
 };
 
 export const searchLPO = (params) => (dispatch) => {
-  dispatch({ type: SEARCH_LPO, payload: params });
+  dispatch(SEARCH_LPO(params));
 };
 
 export const singleLPORecord = (params) => (dispatch) => {
