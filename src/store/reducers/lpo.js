@@ -27,30 +27,6 @@ const lpoReducerw = (state = initialState, action) => {
       };
     }
 
-    case SEARCH_LPO_LIST: {
-      const search = state.searchData.filter(
-        (data) =>
-          !data.accountName.toUpperCase().indexOf(payload.toUpperCase()) ||
-          !data.productType.toUpperCase().indexOf(payload.toUpperCase())
-      );
-      return {
-        ...state,
-        lpoSales: search,
-      };
-    }
-
-    case SEARCH_LPO: {
-      const search = state.searchData2.filter(
-        (data) =>
-          !data.companyName.toUpperCase().indexOf(payload.toUpperCase()) ||
-          !data.paymentStructure.toUpperCase().indexOf(payload.toUpperCase())
-      );
-      return {
-        ...state,
-        lpo: search,
-      };
-    }
-
     case LOGOUT: {
       return {
         ...state,
@@ -75,6 +51,22 @@ const lpoReducer = createReducer(initialState, (builder) => {
   builder.addCase(SINGLE_LPO, (state, action) => ({
     ...state,
     singleLPO: action.payload,
+  }));
+  builder.addCase(SEARCH_LPO_LIST, (state, action) => {
+    const search = state.searchData.filter(
+      (data) =>
+        !data.accountName.toUpperCase().indexOf(action.payload.toUpperCase()) ||
+        !data.productType.toUpperCase().indexOf(action.payload.toUpperCase())
+    );
+    return {
+      ...state,
+      lpoSales: search,
+    };
+  });
+  builder.addCase(CREATE_LPO_SALES, (state, action) => ({
+    ...state,
+    lpoSales: action?.payload,
+    searchData: action?.payload,
   }));
   builder.addCase(CREATE_LPO, (state, action) => ({
     ...state,
