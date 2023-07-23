@@ -377,6 +377,28 @@ const SummaryRecord = (props) => {
       return result;
     }, {});
 
+    /*############# Getting payloads for sales ###############*/
+    let salesList = [];
+    let pumpUpdates = [];
+    let tankUpdates = [];
+
+    for (let tank of updatedTanks) {
+      for (let pump of tank.pumps) {
+        const salesPayload = getSalesPayload(tank, pump, currentDate);
+        const pumpPayload = getPumpPayloads(pump);
+        const tankPayload = getTankPayloads(tank);
+
+        salesList.push(salesPayload);
+        pumpUpdates.push(pumpPayload);
+        tankUpdates.push(tankPayload);
+      }
+    }
+
+    tankFromPayload["0"] = {
+      sales: salesList,
+      pumps: pumpUpdates,
+      tanks: tankUpdates,
+    };
     tankFromPayload["1"] = updatedTanks;
     tankFromPayload["8"] = updatedTankList;
     tankFromPayload["9"] = groupedObject;
@@ -753,6 +775,55 @@ const SummaryRecord = (props) => {
   );
 };
 
+const getSalesPayload = (tank, pump, currentDate) => {
+  const sales = Number(pump.newTotalizer) - Number(pump.totalizerReading);
+  return {
+    sales: sales - Number(pump.RTlitre),
+    RTlitre: tank.RTlitre,
+    productSales: tank.productSales,
+    totalSales: tank.totalSales,
+    previousLevel: tank.previousLevel,
+    currentLevel: tank.currentLevel,
+    tankID: tank._id,
+    tankName: tank.tankName,
+    totalTankLevel: tank.totalTankLevel,
+    pumpID: pump._id,
+    pumpName: pump.pumpName,
+    beforeSales: tank.beforeSales,
+    afterSales: tank.afterSales,
+    balanceCF: tank.balanceCF,
+    openingMeter: pump.totalizerReading,
+    closingMeter: pump.newTotalizer,
+    productType: pump.productType,
+    PMSCostPrice: tank.outlet.PMSCost,
+    PMSSellingPrice: tank.outlet.PMSPrice,
+    AGOCostPrice: tank.outlet.AGOCost,
+    AGOSellingPrice: tank.outlet.AGOPrice,
+    DPKCostPrice: tank.outlet.DPKCost,
+    DPKSellingPrice: tank.outlet.DPKPrice,
+    outletID: tank.outlet._id,
+    outletName: tank.outlet.outletName.concat(", ", tank.outlet.alias),
+    organisationID: tank.outlet.organisation,
+    createdAt: currentDate,
+    updatedAt: currentDate,
+  };
+};
+
+const getPumpPayloads = (pump) => {
+  return {
+    id: pump._id,
+    totalizerReading: pump.newTotalizer,
+  };
+};
+
+const getTankPayloads = (tank) => {
+  return {
+    id: tank._id,
+    previousLevel: tank.currentLevel,
+    currentLevel: Number(tank.afterSales),
+  };
+};
+
 const add = {
   width: "100%",
   height: "auto",
@@ -821,13 +892,6 @@ const topStyle = {
   fontWeight: "bold",
   fontSize: "16px",
   marginBottom: "10px",
-};
-
-const prog = {
-  fontSize: "12px",
-  color: "green",
-  fontFamily: "Poppins",
-  fontWeight: "600",
 };
 
 export default SummaryRecord;

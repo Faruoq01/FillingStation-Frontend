@@ -7,6 +7,7 @@ const initialState = {
   selectedPumps: [],
   selectedTanks: [],
   load: {
+    0: [],
     1: [],
     2: [],
     3: [],
@@ -37,6 +38,7 @@ export const recordsalesSlice = createSlice({
       state.selectedPumps = [];
       state.selectedTanks = [];
       state.load = {
+        0: [],
         1: [],
         2: [],
         3: [],
@@ -90,6 +92,7 @@ export const recordsalesSlice = createSlice({
       state.selectedPumps = removePump();
       state.selectedTanks = removeTank().list;
       state.load = {
+        0: state.load["0"],
         1: removeTank().pay,
         2: state.load["2"],
         3: state.load["3"],
