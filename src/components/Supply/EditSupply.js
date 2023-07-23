@@ -22,18 +22,14 @@ const EditSupply = (props) => {
   const [menus, setMenus] = useState(false);
   const dispatch = useDispatch();
   const incomingOrder = useSelector(
-    (state) => state.incomingOrderReducer.incomingOrder
+    (state) => state.incomingorder.incomingOrder
   );
-  const tankList = useSelector((state) => state.outletReducer.tankList);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const singleSupplyDetails = useSelector(
-    (state) => state.supplyReducer.singleSupply
-  );
+  const tankList = useSelector((state) => state.outlet.tankList);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const singleSupplyDetails = useSelector((state) => state.supply.singleSupply);
   const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
   const [supplyList, setSupplyList] = useState([]);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
 
   // payload data
   const [transporter, setTransporter] = useState("");
