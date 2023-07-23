@@ -3,11 +3,11 @@ import "../../styles/history.scss";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
-import { adminOutlet, getAllStations } from "../../store/actions/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import { DatePicker } from "antd";
 import HistoryService from "../../services/history";
 import { ThreeDots } from "react-loader-spinner";
-import { historyTags } from "../../store/actions/analysis";
+import { historyTags } from "../../storage/auth";
 import RemarkCard from "../common/RemarkCard";
 
 const HistoryPage = () => {
@@ -17,12 +17,10 @@ const HistoryPage = () => {
   const [defaultState2, setDefaultState2] = useState(0);
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState();
-  const user = useSelector((state) => state.authReducer.user);
-  const allOutlets = useSelector((state) => state.outletReducer.allOutlets);
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
-  const historyTag = useSelector((state) => state.analysisReducer.historyTag);
+  const user = useSelector((state) => state.auth.user);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const historyTag = useSelector((state) => state.auth.historyTag);
   const [historyData, setHistory] = useState([]);
   const [historyDataCopy, setHistoryCopy] = useState([]);
 

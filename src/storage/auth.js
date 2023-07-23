@@ -5,6 +5,7 @@ const initialState = {
   token: localStorage.getItem("token") || "",
   isLoggedIn: !!JSON.parse(localStorage.getItem("user")),
   connection: true,
+  historyTag: "All tags",
 };
 
 export const authSlice = createSlice({
@@ -27,11 +28,14 @@ export const authSlice = createSlice({
     internetConnection: (state, action) => {
       state.connection = action.payload;
     },
+    historyTags: (state, action) => {
+      state.historyTag = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login, logout, updateUser, internetConnection } =
+export const { login, logout, updateUser, internetConnection, historyTags } =
   authSlice.actions;
 
 export default authSlice.reducer;

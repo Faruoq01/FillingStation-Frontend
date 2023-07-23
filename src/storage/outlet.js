@@ -78,6 +78,17 @@ export const outletSlice = createSlice({
     getOneTank: (state, action) => {
       state.oneTank = action.payload;
     },
+    searchStations: (state, action) => {
+      const search = state.searchStation.filter(
+        (data) =>
+          !data.outletName
+            .toUpperCase()
+            .indexOf(action.payload.toUpperCase()) ||
+          !data.state.toUpperCase().indexOf(action.payload.toUpperCase()) ||
+          !data.city.toUpperCase().indexOf(action.payload.toUpperCase())
+      );
+      state.allOutlets = search;
+    },
     searchTanks: (state, action) => {},
   },
 });
@@ -94,6 +105,7 @@ export const {
   getAllPumps,
   getOneTank,
   searchTanks,
+  searchStations,
 } = outletSlice.actions;
 
 export default outletSlice.reducer;
