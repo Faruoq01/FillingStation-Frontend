@@ -66,12 +66,12 @@ export default function ComprehensiveReportPrintable() {
         />
         <CustomTable7 />
 
-        {/* <CustomTable8
+        <CustomTable8
           title="Product Balance Carried Forward"
           data={dataT8}
           header={headerT8}
         />
-        <CustomTable9
+        {/* <CustomTable9
           title="Dipping"
           // footer={footerT6}
           data={dataT9}

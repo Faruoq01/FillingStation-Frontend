@@ -4,7 +4,9 @@ import { useSelector } from "react-redux";
 export default function CustomTable7({ title = "Payment & Net to Bank" }) {
   const { payments } = useSelector((state) => state.comprehensive);
   const id = useId();
-
+  const { pms, ago, dpk } = useSelector(
+    (state) => state.comprehensive.balanceCF
+  );
   const formtData = () => {
     if (payments.bank) {
     }
@@ -84,22 +86,33 @@ export default function CustomTable7({ title = "Payment & Net to Bank" }) {
         }}
       >
         {/* ===================== Table1 =================*/}
-        <table style={Styles.table}>
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Contact</th>
-              <th>Country</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Alfreds Futterkiste</td>
-              <td>Maria Anders</td>
-              <td>Germany</td>
-            </tr>
-          </tbody>
-        </table>
+        <div style={{ width: "100%" }}>
+          <table
+            style={{
+              ...Styles.table,
+              borderSpacing: 5,
+              width: "100%",
+              padding: 0,
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={Styles.header}>S/N</th>
+                <th style={Styles.header}>Bank Name</th>
+                <th style={Styles.header}>Teller No</th>
+                <th style={Styles.header}>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={Styles.th}>1</td>
+                <td style={Styles.th}>Wema</td>
+                <td style={Styles.th}>#1234567</td>
+                <td style={Styles.th}>200,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         {/* =========================Table 2 ============== */}
         <table
@@ -132,7 +145,7 @@ export default function CustomTable7({ title = "Payment & Net to Bank" }) {
 
 const Styles = {
   table: {
-    borderCollapse: "collapse",
+    borderCollapse: "5",
     width: "100%",
   },
   td: {
@@ -168,6 +181,7 @@ const Styles = {
     borderRadius: "4px",
     fontSize: 14,
     padding: "5px",
+    // paddingRight: "auto",
     fontFamily: "'Nunito', sans-serif",
   },
 };
