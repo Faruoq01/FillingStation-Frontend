@@ -6,7 +6,7 @@ import "../../styles/estation/payment.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 
-const CreateProductDispensedModal = (props) => {
+const CreateExpenseModal = (props) => {
   const handleClose = () => props.close(false);
   const [accountName, setAccountName] = useState();
   const [amount, setAmount] = useState();
@@ -44,48 +44,40 @@ const CreateProductDispensedModal = (props) => {
       <div className="e-station-payment-modal">
         <div className="cancel-confirm">
           <label for="Confirm Payment" className="title-label-">
-            Create Product Dispensed
+            Create Corporate Sales
           </label>
           <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
         </div>
         <div className="form-area-new-pay">
           <form>
             <CustomTextInput
-              placeholder="Sales"
-              title="Sales"
+              placeholder="expense name"
+              title="Expense Name"
               onChange={handleOnChange(setAccountName)}
             />
             <CustomTextInput
-              placeholder="RT litre"
-              title="RTlitre"
+              placeholder="description"
+              title="Description"
               onChange={handleOnChange(setAmount)}
             />
             <CustomTextInput
-              title="Pump ID"
-              placeholder="pump id"
+              title="Amount"
+              placeholder="amount"
               onChange={handleOnChange(setAmount)}
             />
-            <CustomTextInput
-              placeholder="opening meter"
-              title="Opening Meter"
-              onChange={handleOnChange(setAmount)}
-            />
-            <CustomTextInput
-              placeholder="closing meter"
-              title="Closing Meter"
-              onChange={handleOnChange(setAmount)}
-            />
-            <CustomTextInput
-              placeholder="product type"
-              title="Product Type"
-              onChange={handleOnChange(setAmount)}
-            />
+
+            <label>Upload Attachment</label>
+            <button className="upload-btn">
+              <img
+                src={require("../../assets/estation/upload-icon.svg").default}
+              />
+              Uplaod Image
+            </button>
 
             <div
               style={{
                 marginBottom: "1rem",
                 marginTop: "2rem",
-                // backgroundColor: "red",
                 padding: 0,
                 display: "flex",
                 justifyContent: "flex-start",
@@ -173,4 +165,4 @@ const styles = (_mobile) => ({
   },
 });
 
-export default CreateProductDispensedModal;
+export default CreateExpenseModal;

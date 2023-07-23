@@ -6,7 +6,7 @@ import "../../styles/estation/payment.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
 
-const CreateProductDispensedModal = (props) => {
+const CreateReturnToTankModal = (props) => {
   const handleClose = () => props.close(false);
   const [accountName, setAccountName] = useState();
   const [amount, setAmount] = useState();
@@ -44,43 +44,17 @@ const CreateProductDispensedModal = (props) => {
       <div className="e-station-payment-modal">
         <div className="cancel-confirm">
           <label for="Confirm Payment" className="title-label-">
-            Create Product Dispensed
+            Create Return To Tank
           </label>
           <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
         </div>
         <div className="form-area-new-pay">
           <form>
             <CustomTextInput
-              placeholder="Sales"
-              title="Sales"
+              placeholder="quantity"
+              title="Quantity"
               onChange={handleOnChange(setAccountName)}
             />
-            <CustomTextInput
-              placeholder="RT litre"
-              title="RTlitre"
-              onChange={handleOnChange(setAmount)}
-            />
-            <CustomTextInput
-              title="Pump ID"
-              placeholder="pump id"
-              onChange={handleOnChange(setAmount)}
-            />
-            <CustomTextInput
-              placeholder="opening meter"
-              title="Opening Meter"
-              onChange={handleOnChange(setAmount)}
-            />
-            <CustomTextInput
-              placeholder="closing meter"
-              title="Closing Meter"
-              onChange={handleOnChange(setAmount)}
-            />
-            <CustomTextInput
-              placeholder="product type"
-              title="Product Type"
-              onChange={handleOnChange(setAmount)}
-            />
-
             <div
               style={{
                 marginBottom: "1rem",
@@ -173,4 +147,4 @@ const styles = (_mobile) => ({
   },
 });
 
-export default CreateProductDispensedModal;
+export default CreateReturnToTankModal;

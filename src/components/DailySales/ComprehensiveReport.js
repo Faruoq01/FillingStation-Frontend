@@ -33,6 +33,9 @@ import APIs from "../../services/api";
 import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
 import CreateInitialBalanceModal from "../Modals/CreateProductDispensedModal";
 import CreateProductDispensedModal from "../Modals/CreateProductDispensedModal";
+import CreateReturnToTankModal from "../Modals/CreateReturnToTankModal";
+import CreateCorporateSaleModal from "../Modals/CreateCorporateSaleModal";
+import CreateExpenseModal from "../Modals/CreateExpenseModal";
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
@@ -40,7 +43,15 @@ const ComprehensiveReport = (props) => {
   const date2 = moment().format("Do MMM YYYY");
   const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
-  const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(true);
+  const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
+  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
+  const [
+    openCreateCorporateSaleModalModal,
+    setOpenCreateCorporateSaleModalModal,
+  ] = useState(false);
+  const [createExpenseModalStatus, setCreateExpenseModalStatus] =
+    useState(true);
+
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
@@ -403,6 +414,18 @@ const ComprehensiveReport = (props) => {
       <CreateProductDispensedModal
         open={openInitialBalanceModal}
         close={setOpenInitialBalanceModal}
+      />
+      <CreateReturnToTankModal
+        open={openReturnToTankModal}
+        close={setOpenReturnToTankModal}
+      />
+      <CreateCorporateSaleModal
+        open={openCreateCorporateSaleModalModal}
+        close={setOpenCreateCorporateSaleModalModal}
+      />
+      <CreateExpenseModal
+        open={createExpenseModalStatus}
+        close={setCreateExpenseModalStatus}
       />
     </Fragment>
   );
