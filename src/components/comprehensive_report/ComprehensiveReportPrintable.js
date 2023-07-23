@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CustomTable1 from "./components/CustomTable1";
 import CustomTable5 from "./components/CustomTable5";
+import "../../styles/comprehensive.scss";
 import CustomTable3 from "./components/CustomTable3";
 import CustomTable4 from "./components/CustomTable4";
 import CustomTable2 from "./components/CustomeTable2";
@@ -28,6 +29,7 @@ import CustomTable8 from "./components/CustomTable8";
 import CustomTable9 from "./components/CustomTable9";
 import CustomTable7 from "./components/CustomTable7";
 import { useSelector } from "react-redux";
+import PaymentDetails from "../Comprehensive/PaymentDetails";
 
 export default function ComprehensiveReportPrintable() {
   return (
@@ -63,6 +65,7 @@ export default function ComprehensiveReportPrintable() {
           header={headerT6}
         />
         <CustomTable7 />
+
         {/* <CustomTable8
           title="Product Balance Carried Forward"
           data={dataT8}

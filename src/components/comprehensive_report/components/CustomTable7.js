@@ -84,28 +84,21 @@ export default function CustomTable7({ title = "Payment & Net to Bank" }) {
         }}
       >
         {/* ===================== Table1 =================*/}
-        <table
-          style={{
-            width: "45%",
-            padding: 0,
-            borderSpacing: 5,
-            // marginRight: 10,
-          }}
-        >
-          {dataT7_1.map((item, index) => (
-            <tr key={index}>
-              <th
-                style={
-                  index === dataT7_1.length - 1 || index === dataT7_1.length - 2
-                    ? Styles.th
-                    : Styles.header
-                }
-              >
-                {item.head}
-              </th>
-              <td style={Styles.th}>{item.data}</td>
+        <table style={Styles.table}>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Contact</th>
+              <th>Country</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            <tr>
+              <td>Alfreds Futterkiste</td>
+              <td>Maria Anders</td>
+              <td>Germany</td>
+            </tr>
+          </tbody>
         </table>
 
         {/* =========================Table 2 ============== */}
@@ -138,6 +131,15 @@ export default function CustomTable7({ title = "Payment & Net to Bank" }) {
 }
 
 const Styles = {
+  table: {
+    borderCollapse: "collapse",
+    width: "100%",
+  },
+  td: {
+    border: "1px solid #dddddd",
+    textAlign: "left",
+    padding: "8px",
+  },
   header: {
     paddingLeft: 10,
     fontFamily: "'Nunito', sans-serif",
