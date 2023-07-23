@@ -44,7 +44,7 @@ const CreateExpenseModal = (props) => {
       <div className="e-station-payment-modal">
         <div className="cancel-confirm">
           <label for="Confirm Payment" className="title-label-">
-            Create Corporate Sales
+            Create Expenses
           </label>
           <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
         </div>
@@ -67,12 +67,12 @@ const CreateExpenseModal = (props) => {
             />
 
             <label>Upload Attachment</label>
-            <button className="upload-btn">
+            <Button variant="contained" className="upload-btn">
               <img
                 src={require("../../assets/estation/upload-icon.svg").default}
               />
               Uplaod Image
-            </button>
+            </Button>
 
             <div
               style={{
