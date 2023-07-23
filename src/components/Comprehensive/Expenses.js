@@ -195,7 +195,8 @@ const Expenses = () => {
         <div style={{ width: "100%" }}>
           <div
             style={{ maxWidth: "700px" }}
-            className="initial_balance_container">
+            className="initial_balance_container"
+          >
             {openEdit && (
               <UpdateExpenses
                 data={oneRecord}
@@ -224,7 +225,8 @@ const Expenses = () => {
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; Expenses</div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}
-              className="balance_mobile_detail">
+              className="balance_mobile_detail"
+            >
               <div className="sups">
                 <div className="slide">
                   {expenses.length === 0 ? (

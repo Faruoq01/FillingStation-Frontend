@@ -8,12 +8,8 @@ export default function CustomTable5({
   data = [],
   title = "",
 }) {
-  const { lpo } = useSelector((state) => state.dailySalesReducer.bulkReports);
-  useEffect(() => {
-    console.log("============LPO=============");
-    console.log(lpo);
-    console.log("=================LPO=========");
-  }, []);
+  const lpos = useSelector((state) => state.comprehensive.lpo);
+
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSRate;
     if (type === "AGO") return row.AGORate;
@@ -69,23 +65,34 @@ export default function CustomTable5({
               ))}
             </tr>
           </thead>
-
+          {/* {
+    accountName: data.accountName,
+    productType: data.productType,
+    truckNo: data.truckNo,
+    lpoLitre:ApproximateDecimal(data.lpoLitre,
+    lpoRate:rate(data, data.productType),
+    amount:ApproximateDecimal(amount(data, data.productType))
+  } */}
           <tbody>
-            {lpo.map((item, index) => (
-              <tr key={item.id}>
-                <td style={{ ...Styles.th }}>{index + 1} </td>
-                <td style={{ ...Styles.th }}>{item.accountName}</td>
-                <td style={{ ...Styles.th }}>{item.productType} </td>
-                <td style={{ ...Styles.th }}>{item.truckNo} </td>
-                <td style={{ ...Styles.th }}>
-                  {ApproximateDecimal(item.lpoLitre)}
-                </td>
-                <td style={{ ...Styles.th }}>{rate(lpo, item.productType)}</td>
-                <td style={{ ...Styles.th }}>
-                  {ApproximateDecimal(amount(lpo, item.productType))}
-                </td>
-              </tr>
-            ))}
+            {lpos.map((item, index) => {
+              return (
+                <tr key={item.id}>
+                  <td style={{ ...Styles.th }}>{index + 1} </td>
+                  <td style={{ ...Styles.th }}>{item.accountName}</td>
+                  <td style={{ ...Styles.th }}>{item.productType} </td>
+                  <td style={{ ...Styles.th }}>{item.truckNo} </td>
+                  <td style={{ ...Styles.th }}>
+                    {ApproximateDecimal(item.lpoLitre)}
+                  </td>
+                  <td style={{ ...Styles.th }}>
+                    {rate(lpos, item.productType)}
+                  </td>
+                  <td style={{ ...Styles.th }}>
+                    {ApproximateDecimal(amount(lpos, item.productType))}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
           <tfoot>
             <tr>

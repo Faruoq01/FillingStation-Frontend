@@ -1,7 +1,14 @@
 import React, { useId } from "react";
+import { useSelector } from "react-redux";
 
 export default function CustomTable7({ title = "Payment & Net to Bank" }) {
+  const { payments } = useSelector((state) => state.comprehensive);
   const id = useId();
+
+  const formtData = () => {
+    if (payments.bank) {
+    }
+  };
   const dataT7_1 = [
     {
       id,

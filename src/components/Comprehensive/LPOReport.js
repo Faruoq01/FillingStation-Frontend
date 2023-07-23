@@ -275,7 +275,8 @@ const LPOReport = () => {
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; LPO</div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}
-              className="balance_mobile_detail">
+              className="balance_mobile_detail"
+            >
               <div className="sups">
                 <div className="slide">
                   {lpo?.length === 0 ? (

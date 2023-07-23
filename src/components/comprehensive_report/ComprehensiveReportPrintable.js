@@ -30,32 +30,6 @@ import CustomTable7 from "./components/CustomTable7";
 import { useSelector } from "react-redux";
 
 export default function ComprehensiveReportPrintable() {
-  const { sales } = useSelector((state) => state.comprehensive);
-  const [pms, setPms] = useState([]);
-  const [ago, setAgo] = useState([]);
-  const [dpk, setDpk] = useState([]);
-  const structureData = () => {
-    const product = sales.filter((data) => data.productType === "PMS");
-    const AGO = sales.filter((data) => data.productType === "AGO");
-    const DPK = sales.filter((data) => data.productType === "DPK");
-    // console.log("==================PMS==============");
-    // console.log(product);
-    setPms([...product]);
-    // console.log("==================PMS==============");
-
-    // console.log("==================AGO==============");
-    // console.log(AGO);
-    setAgo([...AGO]);
-    // console.log("==================AGO==============");
-    console.log("==================DPK==============");
-    console.log(DPK);
-    setDpk([...DPK]);
-    // console.log("==================dpk==============");
-  };
-
-  useEffect(() => {
-    structureData();
-  }, []);
   return (
     <div style={Styles.wrapper}>
       <div style={Styles.tp}>
@@ -71,22 +45,11 @@ export default function ComprehensiveReportPrintable() {
         <CustomTable2
           type="PMS"
           title="Product Dispense"
-          data={pms}
           footerData={footer}
           header={header}
         />
-        <CustomTable3
-          type="AGO"
-          data={ago}
-          footerData={footer}
-          header={header}
-        />
-        <CustomTable4
-          type="DPK"
-          data={dpk}
-          footerData={footer}
-          header={header}
-        />
+        <CustomTable3 type="AGO" footerData={footer} header={header} />
+        <CustomTable4 type="DPK" footerData={footer} header={header} />
         <CustomTable5
           title="LPO"
           data={lpoData}
@@ -100,7 +63,7 @@ export default function ComprehensiveReportPrintable() {
           header={headerT6}
         />
         <CustomTable7 />
-        <CustomTable8
+        {/* <CustomTable8
           title="Product Balance Carried Forward"
           data={dataT8}
           header={headerT8}
@@ -110,7 +73,7 @@ export default function ComprehensiveReportPrintable() {
           // footer={footerT6}
           data={dataT9}
           header={headerT9}
-        />
+        /> */}
       </div>
     </div>
   );

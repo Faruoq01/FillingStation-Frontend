@@ -8,9 +8,7 @@ export default function CustomTable6({
   data = [],
   title = "",
 }) {
-  const { expenses } = useSelector(
-    (state) => state.dailySalesReducer.bulkReports
-  );
+  const { expenses } = useSelector((state) => state.comprehensive);
   const [total, setTotal] = useState(0);
   const amount = (data) => {
     setTotal(data + total);

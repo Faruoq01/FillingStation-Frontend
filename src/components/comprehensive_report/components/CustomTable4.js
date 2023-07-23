@@ -4,11 +4,12 @@ import ApproximateDecimal from "../../common/approx";
 export default function CustomTable4({
   header = [],
   footerData = [],
-  data = [],
   title = "",
   ...props
 }) {
   const [footer, setFooter] = useState([]);
+  const sales = useSelector((state) => state.comprehensive.sales);
+  const data = sales[props.type.toLowerCase()];
   const formatFooter = () => {
     setFooter([
       ...footerData({

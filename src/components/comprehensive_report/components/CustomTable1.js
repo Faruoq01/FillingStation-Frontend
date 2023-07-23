@@ -22,12 +22,13 @@ const header = [
   },
   {
     id: `${Math.random()}`,
-    value: "Outage",
+    value: "Shortage",
   },
   {
     id: `${Math.random()}`,
-    value: "Shortage",
+    value: "Overage",
   },
+
   {
     id: `${Math.random()}`,
     value: "Details ",
@@ -47,123 +48,66 @@ export default function CustomTable1() {
   const { balances, supply, sales } = useSelector(
     (state) => state.comprehensive
   );
+  const { pms, ago, dpk } = supply;
 
   const reFcatorData = () => {
     const array_ = new Array();
-    let data = {
-      id: `${Math.random()}`,
-      product1: "DPK ",
-      product2: "DPK ",
-      qty: "12,018",
-      Details: "View",
-      qty2: "12,018 ",
-      outage: "22,018",
-      shortage: "22,018",
-      product3: "DPK ",
-      qty3: "22,018",
-    };
-    let g = {
-      _id: "64a82b8cd2847135340900bf",
-      balanceCF: "36482.23999999996",
-      productType: "AGO",
-      totalTankCapacity: "100000",
-      outletID: "64a6bd1dbc2fa90b074cb6b6",
-      organizationID: "64a2c3be7d6d9b50290aa100",
-      createdAt: "2023-07-06",
-      updatedAt: "2023-07-06",
-      __v: 0,
-    };
-    // =================
-
-    const arrayOfEntries = Object.entries(balances);
-    for (const [key, value] of arrayOfEntries) {
+    const arrayOfBalances = Object.entries(balances);
+    for (const [key, value] of arrayOfBalances) {
       if (key) {
-        const productValue = getInit({ type: value.productType });
-        const data = {
+        let data = {
           id: `${Math.random()}`,
           product1: `${key}`.toUpperCase(),
           product2: `${key}`.toUpperCase(),
-          qty:
-            !value === null
-              ? "0"
-              : ApproximateDecimal(Number(value?.balanceCF)),
+          qty: ApproximateDecimal(Number(value)),
           Details: "View",
           qty2:
-            !value === null ? "0" : ApproximateDecimal(productValue.quantity),
+            key === "pms" && pms
+              ? ApproximateDecimal(pms.quantity)
+              : key === "dpk" && pms
+              ? ApproximateDecimal(dpk.quantity)
+              : key === "ago" && ago
+              ? ApproximateDecimal(ago.quantity)
+              : 0,
           overage:
-            !value === null ? "0" : ApproximateDecimal(productValue.overage),
+            key === "pms" && pms
+              ? ApproximateDecimal(pms.overage)
+              : key === "dpk" && pms
+              ? ApproximateDecimal(dpk.overage)
+              : key === "ago" && ago
+              ? ApproximateDecimal(ago.overage)
+              : 0,
           shortage:
-            !value === null ? "0" : ApproximateDecimal(productValue.shortage),
+            key === "pms" && pms
+              ? ApproximateDecimal(pms.shortage)
+              : key === "dpk" && pms
+              ? ApproximateDecimal(dpk.shortage)
+              : key === "ago" && ago
+              ? ApproximateDecimal(ago.shortage)
+              : 0,
           product3: `${key}`.toUpperCase(),
-          qty3: !value
-            ? "0"
-            : ApproximateDecimal(
-                Number(value?.balanceCF) +
-                  Number(
-                    getInit({ data: value, type: `${key}`.toUpperCase() })
-                      .quantity
-                  )
-              ),
+          qty3:
+            key === "pms" && pms
+              ? ApproximateDecimal(calculateSum(value, pms))
+              : key === "dpk" && dpk
+              ? ApproximateDecimal(calculateSum(value, dpk))
+              : key === "ago" && ago
+              ? ApproximateDecimal(calculateSum(value, ago))
+              : 0,
         };
         array_.push(data);
       }
-      setInitialData([...array_]);
     }
+    setInitialData([...array_]);
+  };
+  const calculateSum = (data, supply) => {
+    const actaulSupply = supply?.quantity;
+    return Number(data) + Number(actaulSupply);
   };
   useEffect(() => {
     reFcatorData();
   }, []);
-  const getInit = (props) => {
-    let initialBalance = 0;
-    const current =
-      props.type === "PMS"
-        ? balances?.pms
-        : props.type === "AGO"
-        ? balances?.ago
-        : balances?.dpk;
-    const salesDayOne = sales.filter((data) => data.productType === props.type);
 
-    const totalSales = salesDayOne.reduce((accum, current) => {
-      return Number(accum) + Number(current.sales);
-    }, 0);
-
-    if (salesDayOne.length > 0) {
-      initialBalance = Number(salesDayOne[0].balanceCF) + totalSales;
-    }
-
-    const quantity = supply
-      .filter((data) => data.productType === props.type)
-      .reduce((accum, current) => {
-        return Number(accum) + Number(current.quantity);
-      }, 0);
-
-    const shortage = supply
-      .filter((data) => data.productType === props.type)
-      .reduce((accum, current) => {
-        if (current.shortage === "None") {
-          return 0;
-        } else {
-          return Number(accum) + Number(current.shortage);
-        }
-      }, 0);
-
-    const overage = supply
-      .filter((data) => data.productType === props.type)
-      .reduce((accum, current) => {
-        if (current.overage === "None") {
-          return 0;
-        } else {
-          return Number(accum) + Number(current.overage);
-        }
-      }, 0);
-
-    return {
-      quantity: quantity,
-      shortage: shortage,
-      overage: overage,
-      balance: current === 0 ? initialBalance : Number(current?.balanceCF),
-    };
-  };
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>Initial Balance</span>
@@ -255,8 +199,8 @@ export default function CustomTable1() {
                 <td style={{ ...Styles.th }}>{item.qty} </td>
                 <td style={{ ...Styles.th }}>{item.product2} </td>
                 <td style={{ ...Styles.th }}>{item.qty2} </td>
-                <td style={{ ...Styles.th }}>{item.overage} </td>
                 <td style={{ ...Styles.th }}>{item.shortage} </td>
+                <td style={{ ...Styles.th }}>{item.overage} </td>
                 <td style={{ ...Styles.th }}>{item.Details} </td>
                 <td style={{ ...Styles.th }}>{item.product3} </td>
                 <td style={{ ...Styles.th }}>{item.qty3} </td>

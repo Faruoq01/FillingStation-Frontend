@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import ApproximateDecimal from "../../common/approx";
+import { useSelector } from "react-redux";
 
 export default function CustomTable2({
   header = [],
-  data = [],
   title = "",
   footerData,
   ...props
 }) {
   const [footer, setFooter] = useState([]);
+  const sales = useSelector((state) => state.comprehensive.sales);
+  const data = sales[props.type.toLowerCase()];
+
   const formatFooter = () => {
     setFooter([
       ...footerData({
