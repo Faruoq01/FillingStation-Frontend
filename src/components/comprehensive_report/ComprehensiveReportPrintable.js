@@ -30,7 +30,7 @@ import CustomTable7 from "./components/CustomTable7";
 import { useSelector } from "react-redux";
 
 export default function ComprehensiveReportPrintable() {
-  const report = useSelector((state) => state.dailySalesReducer.bulkReports);
+  const report = useSelector((state) => state.dailysales.bulkReports);
   const [pms, setPms] = useState([]);
   const [ago, setAgo] = useState([]);
   const [dpk, setDpk] = useState([]);
@@ -63,7 +63,7 @@ export default function ComprehensiveReportPrintable() {
     setDpk([...DPK]);
     // console.log("==================dpk==============");
   };
-  const { sales } = useSelector((state) => state.dailySalesReducer.bulkReports);
+  const { sales } = useSelector((state) => state.dailysales.bulkReports);
 
   useEffect(() => {
     structureData();
