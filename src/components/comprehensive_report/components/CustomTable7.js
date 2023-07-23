@@ -4,9 +4,7 @@ import { useSelector } from "react-redux";
 export default function CustomTable7({ title = "Payment & Net to Bank" }) {
   const { payments } = useSelector((state) => state.comprehensive);
   const id = useId();
-  const { pms, ago, dpk } = useSelector(
-    (state) => state.comprehensive.balanceCF
-  );
+
   const formtData = () => {
     if (payments.bank) {
     }

@@ -31,6 +31,8 @@ import swal from "sweetalert";
 import SalesService from "../../services/sales";
 import APIs from "../../services/api";
 import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
+import CreateInitialBalanceModal from "../Modals/CreateProductDispensedModal";
+import CreateProductDispensedModal from "../Modals/CreateProductDispensedModal";
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
@@ -38,7 +40,7 @@ const ComprehensiveReport = (props) => {
   const date2 = moment().format("Do MMM YYYY");
   const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
-
+  const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(true);
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
@@ -139,7 +141,8 @@ const ComprehensiveReport = (props) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "flex-end",
-              }}>
+              }}
+            >
               <div>
                 <div style={sales}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -172,7 +175,8 @@ const ComprehensiveReport = (props) => {
                   backgroundColor: "blue",
                 },
               }}
-              onClick={resetAllRecords}>
+              onClick={resetAllRecords}
+            >
               Reset
             </Button>
 
@@ -192,7 +196,8 @@ const ComprehensiveReport = (props) => {
               }}
               onClick={() => {
                 setPrintReportStatus(true);
-              }}>
+              }}
+            >
               Print
             </Button>
           </div>
@@ -394,6 +399,11 @@ const ComprehensiveReport = (props) => {
           close={setPrintReportStatus}
         />
       )}
+
+      <CreateProductDispensedModal
+        open={openInitialBalanceModal}
+        close={setOpenInitialBalanceModal}
+      />
     </Fragment>
   );
 };
