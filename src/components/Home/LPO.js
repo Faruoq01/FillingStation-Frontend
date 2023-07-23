@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import LPOModal from "../Modals/LPOModal";
 import LPOService from "../../services/lpo";
 import { useSelector } from "react-redux";
-import { createLPO, searchLPO, singleLPORecord } from "../../store/actions/lpo";
+import { createLPO, searchLPO, singleLPORecord } from "../../storage/lpo";
 import { useDispatch } from "react-redux";
 import { OutlinedInput } from "@mui/material";
 import edit2 from "../../assets/edit2.png";
@@ -28,13 +28,11 @@ const mobile = window.matchMedia("(max-width: 600px)");
 const LPO = (props) => {
   const [lpoModalEditStatus, setLpoModalEditStatus] = React.useState(false);
   const [lpo, setLpo] = React.useState(false);
-  const user = useSelector((state) => state.authReducer.user);
-  const lpos = useSelector((state) => state.lpoReducer.lpo);
+  const user = useSelector((state) => state.auth.user);
+  const lpos = useSelector((state) => state.lpo.lpo);
   const dispatch = useDispatch();
   const history = useHistory();
-  const oneStationData = useSelector(
-    (state) => state.outletReducer.adminOutlet
-  );
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -85,7 +83,7 @@ const LPO = (props) => {
     getAllLPOData();
   }, [getAllLPOData]);
 
-  const refresh = () => {
+  const refresh = (skip) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
@@ -116,21 +114,18 @@ const LPO = (props) => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh();
+    refresh(skip);
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh();
+    setSkip((prev) => prev + 1);
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh();
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    refresh(skip - 1);
   };
 
   const openLPOSales = (data) => {

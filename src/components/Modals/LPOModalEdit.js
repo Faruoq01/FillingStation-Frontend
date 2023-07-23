@@ -7,13 +7,12 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import Radio from "@mui/material/Radio";
-import LPOService from "../../services/lpo";
 
 const LPOModalEdit = (props) => {
-  const { singleLPO } = useSelector((state) => state.lpoReducer);
+  const { singleLPO } = useSelector((state) => state.lpo);
   const [productType, setProductType] = useState("Weekly");
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
 
   const [companyName, setCompanyName] = useState(singleLPO.companyName);
   const [address, setAddress] = useState(singleLPO?.address ?? "");
@@ -128,8 +127,7 @@ const LPOModalEdit = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div className="modalContainer2">
         <div className="inner">
           <div className="head">
@@ -395,8 +393,7 @@ const LPOModalEdit = (props) => {
                 },
               }}
               onClick={submit}
-              variant="contained"
-            >
+              variant="contained">
               {" "}
               Save
             </Button>

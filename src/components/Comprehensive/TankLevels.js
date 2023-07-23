@@ -12,6 +12,7 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import { setTankLevels } from "../../storage/comprehensive";
 import { ThreeDots } from "react-loader-spinner";
+import ExpensesAndPayments from "../DailySales/Sales/expenses_payments";
 
 const TankLevels = () => {
   const history = useHistory();

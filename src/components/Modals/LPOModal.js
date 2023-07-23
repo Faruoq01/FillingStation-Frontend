@@ -12,7 +12,7 @@ import LPOService from "../../services/lpo";
 const LPOModal = (props) => {
   const [productType, setProductType] = useState("Weekly");
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector((state) => state.auth.user);
 
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");

@@ -12,8 +12,8 @@ import LPOService from "../../services/lpo";
 
 const CreditBalance = (props) => {
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.authReducer.user);
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const user = useSelector((state) => state.auth.user);
+  const singleLPO = useSelector((state) => state.lpo.singleLPO);
 
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("bank");

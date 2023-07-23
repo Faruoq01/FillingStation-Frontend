@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import ApproximateDecimal from "../common/approx";
 
 export default function AirBnBTopCard({ ...props }) {
-  const lpos = useSelector((state) => state.lpoReducer.lpoSales);
+  const lpos = useSelector((state) => state.lpo.lpoSales);
 
   const getTotalSales = () => {
     const pms = lpos.filter((data) => data.productType === "PMS");

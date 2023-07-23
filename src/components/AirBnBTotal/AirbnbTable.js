@@ -4,19 +4,18 @@ import { Circle } from "@mui/icons-material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LPOService from "../../services/lpo";
-import { createLPOSales } from "../../store/actions/lpo";
+import { createLPOSales } from "../../storage/lpo";
 import moment from "moment";
 
 export default function AirbnbTable() {
   const [skip, setSkip] = useState(0);
   const [limit] = useState(15);
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
-  const lpos = useSelector((state) => state.lpoReducer.lpoSales);
-  const updatedDate = useSelector((state) => state.dashboardReducer.dateRange);
+  const singleLPO = useSelector((state) => state.lpo.singleLPO);
+  const lpos = useSelector((state) => state.lpo.lpoSales);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const dispatch = useDispatch();
 
   const refresh = (skip) => {
-    if (skip < 0) return;
     const formatOne = moment(new Date(updatedDate[0]))
       .format("YYYY-MM-DD HH:mm:ss")
       .split(" ")[0];
@@ -34,21 +33,19 @@ export default function AirbnbTable() {
     };
 
     LPOService.getAllLPOSales(payload).then((data) => {
+      console.log(data, "dd");
       dispatch(createLPOSales(data.lpo.lpo));
     });
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
+    setSkip((prev) => prev + 1);
     refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
     refresh(skip - 1);
   };
 

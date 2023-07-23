@@ -13,10 +13,10 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
 import LPOService from "../../services/lpo";
-import { createLPOSales } from "../../store/actions/lpo";
+import { createLPOSales } from "../../storage/lpo";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
-import { dateRange } from "../../store/actions/dashboard";
+import { dateRange } from "../../storage/dashboard";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
@@ -25,11 +25,11 @@ ChartJS.overrides.doughnut.plugins.legend.labels.pointStyle = "circle";
 
 export default function AirBnBTotalIndex() {
   const [credit, setCredit] = useState(false);
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
-  const lpos = useSelector((state) => state.lpoReducer.lpoSales);
+  const singleLPO = useSelector((state) => state.lpo.singleLPO);
+  const lpos = useSelector((state) => state.lpo.lpoSales);
   const history = useHistory();
   const dispatch = useDispatch();
-  const updatedDate = useSelector((state) => state.dashboardReducer.dateRange);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
 
   const getAllLPOData = useCallback(() => {
     const formatOne = moment(new Date(updatedDate[0]))
