@@ -91,8 +91,8 @@ const TankLevels = () => {
             <div style={{ fontWeight: "500" }} className="capacity">
               Capacity:{" "}
               {ApproximateDecimal(
-                tankLevelsData.pms.tankCapacity !== 0
-                  ? tankLevelsData.pms.tankCapacity
+                tankLevelsData?.pms.tankCapacity !== 0
+                  ? tankLevelsData?.pms.tankCapacity
                   : 33000
               )}{" "}
               Ltr
@@ -101,20 +101,21 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("PMS");
               }}
-              className="canvas-container">
+              className="canvas-container"
+            >
               <PMSTank />
             </div>
           </div>
           <div className="tanks">
             <div className="tank-head">AGO</div>
             <div style={{ fontWeight: "500" }} className="level">
-              Level: {ApproximateDecimal(tankLevelsData.ago.afterSales)} Ltr
+              Level: {ApproximateDecimal(tankLevelsData?.ago.afterSales)} Ltr
             </div>
             <div style={{ fontWeight: "500" }} className="capacity">
               Capacity:{" "}
               {ApproximateDecimal(
-                tankLevelsData.pms.tankCapacity !== 0
-                  ? tankLevelsData.pms.tankCapacity
+                tankLevelsData?.pms.tankCapacity !== 0
+                  ? tankLevelsData?.pms.tankCapacity
                   : 33000
               )}{" "}
               Ltr
@@ -123,7 +124,8 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("AGO");
               }}
-              className="canvas-container">
+              className="canvas-container"
+            >
               <AGOTank />
             </div>
           </div>
@@ -135,8 +137,8 @@ const TankLevels = () => {
             <div style={{ fontWeight: "500" }} className="capacity">
               Capacity:{" "}
               {ApproximateDecimal(
-                tankLevelsData.pms.tankCapacity !== 0
-                  ? tankLevelsData.pms.tankCapacity
+                tankLevelsData?.pms.tankCapacity !== 0
+                  ? tankLevelsData?.pms.tankCapacity
                   : 33000
               )}{" "}
               Ltr
@@ -145,7 +147,8 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("DPK");
               }}
-              className="canvas-container">
+              className="canvas-container"
+            >
               <DPKTank />
             </div>
           </div>
