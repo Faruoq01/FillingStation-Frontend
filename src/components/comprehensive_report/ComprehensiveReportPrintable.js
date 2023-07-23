@@ -30,22 +30,11 @@ import CustomTable7 from "./components/CustomTable7";
 import { useSelector } from "react-redux";
 
 export default function ComprehensiveReportPrintable() {
-  const report = useSelector((state) => state.dailysales.bulkReports);
+  const { sales } = useSelector((state) => state.comprehensive);
   const [pms, setPms] = useState([]);
   const [ago, setAgo] = useState([]);
   const [dpk, setDpk] = useState([]);
   const structureData = () => {
-    let f = {
-      id: `${Math.random()}`,
-      amount: "122,293.00",
-      pms: "01",
-      opening: "122,293 ",
-      difference: "122,293 ",
-      lop: "283,922 ",
-      rate: "283,922",
-      total: "283,922",
-      closing: "122,293 ",
-    };
     const product = sales.filter((data) => data.productType === "PMS");
     const AGO = sales.filter((data) => data.productType === "AGO");
     const DPK = sales.filter((data) => data.productType === "DPK");
@@ -63,7 +52,6 @@ export default function ComprehensiveReportPrintable() {
     setDpk([...DPK]);
     // console.log("==================dpk==============");
   };
-  const { sales } = useSelector((state) => state.dailysales.bulkReports);
 
   useEffect(() => {
     structureData();

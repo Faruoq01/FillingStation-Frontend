@@ -45,7 +45,7 @@ const header = [
 export default function CustomTable1() {
   const [initialData, setInitialData] = useState([]);
   const { balances, supply, sales } = useSelector(
-    (state) => state.dailySalesReducer.bulkReports
+    (state) => state.comprehensive
   );
 
   const reFcatorData = () => {
