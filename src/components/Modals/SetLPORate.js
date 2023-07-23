@@ -13,7 +13,7 @@ import { useEffect } from "react";
 const LPORateModal = (props) => {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const [pms, setPMS] = useState("");
   const [ago, setAGO] = useState("");
   const [dpk, setDPK] = useState("");

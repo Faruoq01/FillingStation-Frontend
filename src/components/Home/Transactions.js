@@ -25,8 +25,8 @@ const Transactions = () => {
   const date2 = `${day} ${month} ${year}`;
   const [value, setValue] = React.useState(null);
 
-  const tankList = useSelector((state) => state.outletReducer.tankList);
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const tankList = useSelector((state) => state.outlet.tankList);
+  const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);

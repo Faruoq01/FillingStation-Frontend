@@ -15,7 +15,7 @@ import queryReducer from "./query";
 import attendanceReducer from "./attendance";
 import settingsReducer from "./settings";
 import comprehensiveReducer from "./comprehensive";
-import lpoReducer from "./lpoReducer";
+import lpoReducer from "./lpo";
 
 export const store = configureStore({
   reducer: {
@@ -36,5 +36,6 @@ export const store = configureStore({
     attendance: attendanceReducer,
     settings: settingsReducer,
     comprehensive: comprehensiveReducer,
+    lpo: lpoReducer,
   },
 });

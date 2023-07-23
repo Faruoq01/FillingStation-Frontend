@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 
 export default function Profile({ ...props }) {
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const openCreditModal = () => {
     props.modal(true);
   };

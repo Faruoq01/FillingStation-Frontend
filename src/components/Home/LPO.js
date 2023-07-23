@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import LPOModal from "../Modals/LPOModal";
 import LPOService from "../../services/lpo";
 import { useSelector } from "react-redux";
-import { createLPO, searchLPO, singleLPORecord } from "../../store/actions/lpo";
+import { createLPO, searchLPO, singleLPORecord } from "../../storage/lpo";
 import { useDispatch } from "react-redux";
 import { OutlinedInput } from "@mui/material";
 import edit2 from "../../assets/edit2.png";
@@ -29,7 +29,7 @@ const LPO = (props) => {
   const [lpoModalEditStatus, setLpoModalEditStatus] = React.useState(false);
   const [lpo, setLpo] = React.useState(false);
   const user = useSelector((state) => state.auth.user);
-  const lpos = useSelector((state) => state.lpoReducer.lpo);
+  const lpos = useSelector((state) => state.lpo.lpo);
   const dispatch = useDispatch();
   const history = useHistory();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -83,7 +83,7 @@ const LPO = (props) => {
     getAllLPOData();
   }, [getAllLPOData]);
 
-  const refresh = () => {
+  const refresh = (skip) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
@@ -114,21 +114,18 @@ const LPO = (props) => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh();
+    refresh(skip);
   };
 
   const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh();
+    setSkip((prev) => prev + 1);
+    refresh(skip + 1);
   };
 
   const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh();
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    refresh(skip - 1);
   };
 
   const openLPOSales = (data) => {
@@ -195,8 +192,7 @@ const LPO = (props) => {
                     ...selectStyle2,
                     backgroundColor: "#06805B",
                     color: "#fff",
-                  }}
-                >
+                  }}>
                   <MenuItem value={10}>Action</MenuItem>
                   <MenuItem onClick={openModal} value={20}>
                     Register LPO
@@ -243,8 +239,7 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={openModal}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   Register LPO
                 </Button>
@@ -296,8 +291,7 @@ const LPO = (props) => {
                   width: mediaMatch.matches ? "100%" : "330px",
                   alignItems: "center",
                 }}
-                className="input-cont2"
-              >
+                className="input-cont2">
                 <Select
                   labelId="demo-select-small"
                   id="demo-select-small"
@@ -307,8 +301,7 @@ const LPO = (props) => {
                     width: "130px",
                     height: "32px",
                     display: mediaMatch.matches && "none",
-                  }}
-                >
+                  }}>
                   <MenuItem style={menu} value={10}>
                     Show entries
                   </MenuItem>
@@ -317,8 +310,7 @@ const LPO = (props) => {
                       entriesMenu(20, 15);
                     }}
                     style={menu}
-                    value={20}
-                  >
+                    value={20}>
                     15 entries
                   </MenuItem>
                   <MenuItem
@@ -326,8 +318,7 @@ const LPO = (props) => {
                       entriesMenu(30, 30);
                     }}
                     style={menu}
-                    value={30}
-                  >
+                    value={30}>
                     30 entries
                   </MenuItem>
                   <MenuItem
@@ -335,8 +326,7 @@ const LPO = (props) => {
                       entriesMenu(40, 100);
                     }}
                     style={menu}
-                    value={40}
-                  >
+                    value={40}>
                     100 entries
                   </MenuItem>
                 </Select>
@@ -354,8 +344,7 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={goToHistory}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   History
                 </Button>
@@ -373,8 +362,7 @@ const LPO = (props) => {
                     },
                   }}
                   onClick={printReport}
-                  variant="contained"
-                >
+                  variant="contained">
                   {" "}
                   Print
                 </Button>
@@ -482,8 +470,7 @@ const LPO = (props) => {
                                 flexDirection: "column",
                                 alignItems: "center",
                               }}
-                              className="column"
-                            >
+                              className="column">
                               {ApproximateDecimal(data.currentBalance)}
                             </div>
                             <div className="column">

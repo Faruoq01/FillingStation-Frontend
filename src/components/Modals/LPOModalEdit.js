@@ -7,10 +7,9 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import Radio from "@mui/material/Radio";
-import LPOService from "../../services/lpo";
 
 const LPOModalEdit = (props) => {
-  const { singleLPO } = useSelector((state) => state.lpoReducer);
+  const { singleLPO } = useSelector((state) => state.lpo);
   const [productType, setProductType] = useState("Weekly");
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
@@ -397,6 +396,7 @@ const LPOModalEdit = (props) => {
               onClick={submit}
               variant="contained"
             >
+              {" "}
               Save
             </Button>
 

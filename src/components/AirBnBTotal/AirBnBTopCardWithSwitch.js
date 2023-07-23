@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 export default function AirBnBTopCardWithSwitch({ ...props }) {
   const [switchState, setSwitchState] = useState(false);
 
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const history = useHistory();
 
   const openModal = () => {
