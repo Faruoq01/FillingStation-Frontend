@@ -8,7 +8,6 @@ const initialState = {
 
 const staffUserReducer = (state = initialState, action) => {
   const { type, payload } = action;
-
   switch (type) {
     case STAFF_USER: {
       return {
