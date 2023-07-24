@@ -17,7 +17,7 @@ const initialState = {
     7: [],
     8: [],
   },
-  currentDate: null,
+  currentDate: "",
   linkedData: { page: 1 },
   lpo: [],
   searchData2: [],
@@ -137,6 +137,9 @@ export const recordsalesSlice = createSlice({
     updateSelectedPumps: (state, action) => {
       state.selectedPumps = action.payload;
     },
+    updateSelectedTanks: (state, action) => {
+      state.selectedTanks = action.payload;
+    },
     updateRecords: (state, action) => {
       state.PMS = action.payload.pms;
       state.AGO = action.payload.ago;
@@ -163,6 +166,7 @@ export const {
   desselectedListPumps,
   selectedListPumps,
   updateSelectedPumps,
+  updateSelectedTanks,
   updateRecords,
   updatePmsList,
   updateAgoList,

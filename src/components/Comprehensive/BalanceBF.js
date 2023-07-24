@@ -18,6 +18,7 @@ const InitialBalance = () => {
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const balances = useSelector((state) => state.comprehensive.balances);
   const { pms, ago, dpk } = useSelector((state) => state.comprehensive.supply);
+  console.log(ago);
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {

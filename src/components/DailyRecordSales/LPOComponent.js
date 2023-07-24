@@ -184,6 +184,7 @@ const LPOComponent = (props) => {
       return swal("Warning!", "Quantity field cannot be empty", "info");
     if (productType === "")
       return swal("Warning!", "Product type field cannot be empty", "info");
+
     if (isNaN(Number(quantity)))
       return swal(
         "Warning!",
@@ -213,8 +214,7 @@ const LPOComponent = (props) => {
       lpoLitre: quantity,
       balance: balance,
       debit: Number(quantity) * getProductDetails(),
-      camera: cam,
-      gallery: gall,
+      attachApproval: gall === null ? cam : gall,
       lpoID: dispenseLpo._id,
       pumpID: dispensedPump._id,
       tank: tank,
@@ -229,7 +229,7 @@ const LPOComponent = (props) => {
       organizationID: oneStationData?.organisation,
     };
 
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
     tankFromPayload["3"].push(payload);
     dispatch(updatePayload(tankFromPayload));
 
@@ -241,7 +241,7 @@ const LPOComponent = (props) => {
   };
 
   const deleteFromList = (index) => {
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
     tankFromPayload["3"].splice(index, 1);
     dispatch(updatePayload(tankFromPayload));
   };
@@ -251,7 +251,7 @@ const LPOComponent = (props) => {
   }
 
   const updateTankWithLPO = (e) => {
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
     const currentLPOs = tankFromPayload["3"];
 
     const pmsList = currentLPOs.filter((data) => data.productType === "PMS");

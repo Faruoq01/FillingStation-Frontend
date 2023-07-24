@@ -12,6 +12,7 @@ import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import SalesService from "../../services/sales";
 import APIs from "../../services/api";
+import moment from "moment";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
@@ -109,6 +110,7 @@ const FuelCard = (props) => {
           props.data?.pumps?.map((item, index) => {
             return (
               <div
+                key={index}
                 style={{
                   background: "#F5F5F5",
                   marginTop: "5px",
@@ -201,7 +203,7 @@ const ReturnToTank = (props) => {
         <div className="fuel_card_items">
           <div className="fuel_card_items_left">
             <div className="volum">
-              {ApproximateDecimal(props.data.RTlitre)} ltrs
+              {ApproximateDecimal(props.data.rtLitre)} ltrs
             </div>
             <div className="vol_label">Return to tank</div>
           </div>
@@ -210,56 +212,13 @@ const ReturnToTank = (props) => {
             <div className="vol_label"></div>
           </div>
         </div>
-
-        {props.data?.pumps?.length === 0 ? (
-          <div style={men}>No records</div>
-        ) : (
-          props.data?.pumps?.map((item, index) => {
-            return (
-              <div
-                style={{
-                  background: "#F5F5F5",
-                  marginTop: "5px",
-                  borderRadius: "10px",
-                }}
-                className="fuel_card_items">
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  className="fuel_card_items_left">
-                  <div
-                    style={{ marginLeft: "10px", fontSize: "14px" }}
-                    className="volum">
-                    {item.pumpName}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                  className="fuel_card_items_right">
-                  <div
-                    style={{ marginRight: "10px", fontSize: "14px" }}
-                    className="volum">
-                    {ApproximateDecimal(item.RTlitre)} ltrs
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
       </div>
     </div>
   );
 };
 
 const SummaryRecord = (props) => {
+  const today = moment().format("YYYY-MM-DD").split(" ")[0];
   const records = useSelector((state) => state.recordsales.load);
   const [loading, setLoading] = useState(false);
 
@@ -272,6 +231,7 @@ const SummaryRecord = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankList = useSelector((state) => state.outlet.tankList);
   console.log(records, "summary");
+  // console.log(typeof currentDate, "date");
   // console.log(selectedPumps, "Pumps")
   // console.log(selectedTanks, "Tanks")
 
@@ -287,8 +247,14 @@ const SummaryRecord = (props) => {
       return Number(accum) + Number(current.tankCapacity);
     }, 0);
 
-    const allPumps = selectedPumps.filter((pump) => pump.hostTank === tank._id);
-    const allProductPumps = selectedPumps.filter(
+    const deepCopy = JSON.parse(JSON.stringify(selectedPumps));
+    const updatedPumps = deepCopy.map((data) => {
+      const newSales = Number(data.sales) - Number(data.RTlitre);
+      return { ...data, sales: newSales };
+    });
+
+    const allPumps = updatedPumps.filter((pump) => pump.hostTank === tank._id);
+    const allProductPumps = updatedPumps.filter(
       (pump) => pump.productType === product
     );
 
@@ -319,8 +285,8 @@ const SummaryRecord = (props) => {
     const finalUpdate = {
       ...tank,
       pumps: allPumps,
-      totalSales: sales,
-      productSales: productSales,
+      totalSales: sales - salesRT,
+      productSales: productSales - productSalesRT,
       afterSales: Number(tank.currentLevel) - sales + salesRT,
       outlet: oneStationData,
       totalTankLevel: totalTankLevel,
@@ -332,6 +298,8 @@ const SummaryRecord = (props) => {
   };
 
   const updateAllTanks = () => {
+    const mainDate = typeof currentDate !== "string" ? today : currentDate;
+
     const updatedTanks = selectedTanks?.map((data) => {
       let update;
 
@@ -353,7 +321,7 @@ const SummaryRecord = (props) => {
       tankSet = tankSet.filter((data) => data._id !== tank._id);
     }
     const updatedTankList = [...updatedSet, ...tankSet];
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
 
     /*############# Creating credit balances ###############*/
     const lpoCopy = [...records["3"]];
@@ -378,13 +346,13 @@ const SummaryRecord = (props) => {
     }, {});
 
     /*############# Getting payloads for sales ###############*/
-    let salesList = [];
-    let pumpUpdates = [];
-    let tankUpdates = [];
+    const salesList = [];
+    const pumpUpdates = [];
+    const tankUpdates = [];
 
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const salesPayload = getSalesPayload(tank, pump, currentDate);
+        const salesPayload = getSalesPayload(tank, pump, mainDate);
         const pumpPayload = getPumpPayloads(pump);
         const tankPayload = getTankPayloads(tank);
 
@@ -394,13 +362,77 @@ const SummaryRecord = (props) => {
       }
     }
 
+    /*############# Getting payloads for RT ###############*/
+    const rtList = [];
+    for (let tank of updatedTanks) {
+      for (let pump of tank.pumps) {
+        const rt = getRTPayload(tank, pump, mainDate);
+        rtList.push(rt);
+      }
+    }
+
+    /*############# Getting payloads for lpo ###############*/
+    const lpoList = [];
+    for (let lpo of tankFromPayload["3"]) {
+      console.log(lpo, "gall");
+      const lpoData = getLPOPayload(lpo, mainDate);
+      lpoList.push(lpoData);
+    }
+
+    /*############# Getting payloads for expenses ###############*/
+    const expenseList = [];
+    for (let expense of tankFromPayload["4"]) {
+      console.log(expense, "gall");
+      const lpoData = getExpensePayload(expense, mainDate);
+      expenseList.push(lpoData);
+    }
+
+    /*############# Getting payloads for bank payment ###############*/
+    const bankList = [];
+    for (let bank of tankFromPayload["5"]) {
+      const bankData = getBankPayload(bank, mainDate);
+      bankList.push(bankData);
+    }
+
+    /*############# Getting payloads for bank payment ###############*/
+    const posList = [];
+    for (let pos of tankFromPayload["6"]) {
+      const posData = getPOSPayload(pos, mainDate);
+      posList.push(posData);
+    }
+
+    /*############# Getting payloads for dipping ###############*/
+    const dippingList = [];
+    for (let dipping of tankFromPayload["7"]) {
+      const dippingData = getDippingPayload(dipping, mainDate);
+      dippingList.push(dippingData);
+    }
+
+    /*############# Getting payloads for dipping ###############*/
+    const tankLevelList = [];
+    for (let level of updatedTankList) {
+      const notUsed = {
+        ...level,
+        afterSales:
+          level.afterSales === 0 ? level.currentLevel : level.afterSales,
+      };
+      const levelData = getTankLevelsPayload(notUsed, mainDate);
+      tankLevelList.push(levelData);
+    }
+
     tankFromPayload["0"] = {
       sales: salesList,
       pumps: pumpUpdates,
       tanks: tankUpdates,
     };
     tankFromPayload["1"] = updatedTanks;
-    tankFromPayload["8"] = updatedTankList;
+    tankFromPayload["2"] = rtList;
+    tankFromPayload["3"] = lpoList;
+    tankFromPayload["4"] = expenseList;
+    tankFromPayload["5"] = bankList;
+    tankFromPayload["6"] = posList;
+    tankFromPayload["7"] = dippingList;
+    tankFromPayload["8"] = tankLevelList;
     tankFromPayload["9"] = groupedObject;
     dispatch(updatePayload(tankFromPayload));
   };
@@ -723,7 +755,7 @@ const SummaryRecord = (props) => {
                         </div>
                         <div className="fuel_card_items_right">
                           <div className="volum">
-                            {ApproximateDecimal(data.dippingValue)} Ltrs
+                            {ApproximateDecimal(data.dipping)} Ltrs
                           </div>
                           <div className="vol_label">Stock level</div>
                         </div>
@@ -776,10 +808,9 @@ const SummaryRecord = (props) => {
 };
 
 const getSalesPayload = (tank, pump, currentDate) => {
-  const sales = Number(pump.newTotalizer) - Number(pump.totalizerReading);
   return {
-    sales: sales - Number(pump.RTlitre),
-    RTlitre: tank.RTlitre,
+    sales: pump.sales,
+    RTlitre: pump.RTlitre,
     productSales: tank.productSales,
     totalSales: tank.totalSales,
     previousLevel: tank.previousLevel,
@@ -821,6 +852,126 @@ const getTankPayloads = (tank) => {
     id: tank._id,
     previousLevel: tank.currentLevel,
     currentLevel: Number(tank.afterSales),
+  };
+};
+
+const getRTPayload = (tank, pump, mainDate) => {
+  return {
+    rtLitre: pump.RTlitre,
+    PMSCost: tank.outlet.PMSCost,
+    AGOCost: tank.outlet.AGOCost,
+    DPKCost: tank.outlet.DPKCost,
+    PMSPrice: tank.outlet.PMSPrice,
+    AGOPrice: tank.outlet.AGOPrice,
+    DPKPrice: tank.outlet.DPKPrice,
+    productType: tank.productType,
+    pumpID: pump._id,
+    tankID: tank._id,
+    pumpName: pump.pumpName,
+    tankName: tank.tankName,
+    outletID: tank.outletID,
+    organizationID: tank.organisationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getLPOPayload = (lpo, mainDate) => {
+  return {
+    accountName: lpo.accountName,
+    productType: lpo.productType,
+    truckNo: lpo.truckNo,
+    lpoLitre: lpo.lpoLitre,
+    attachApproval: lpo.attachApproval === null ? "None" : lpo.attachApproval,
+    lpoID: lpo.lpoID,
+    PMSRate: lpo.PMSRate,
+    AGORate: lpo.AGORate,
+    DPKRate: lpo.DPKRate,
+    PMSCost: lpo.PMSCost,
+    AGOCost: lpo.AGOCost,
+    DPKCost: lpo.DPKCost,
+    pumpID: lpo.pumpID,
+    station: lpo.station,
+    outletID: lpo.outletID,
+    organizationID: lpo.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getExpensePayload = (expense, mainDate) => {
+  return {
+    dateCreated: "none",
+    expenseName: expense.expenseName,
+    description: expense.description,
+    expenseAmount: expense.expenseAmount,
+    attachApproval:
+      expense.attachApproval === null ? "None" : expense.attachApproval,
+    outletID: expense.outletID,
+    organizationID: expense.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getBankPayload = (bank, mainDate) => {
+  return {
+    bankName: bank.bankName,
+    tellerNumber: bank.tellerNumber,
+    amountPaid: bank.amountPaid,
+    paymentDate: bank.paymentDate,
+    confirmation: "null",
+    uploadSlip: bank.uploadSlip,
+    outletID: bank.outletID,
+    organizationID: bank.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getPOSPayload = (pos, mainDate) => {
+  return {
+    posName: pos.posName,
+    terminalID: pos.terminalID,
+    amountPaid: pos.amountPaid,
+    paymentDate: pos.paymentDate,
+    confirmation: "null",
+    uploadSlip: pos.uploadSlip,
+    outletID: pos.outletID,
+    organizationID: pos.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getDippingPayload = (dipping, mainDate) => {
+  return {
+    tankID: dipping._id,
+    productType: dipping.productType,
+    currentLevel: dipping.currentLevel,
+    tankCapacity: dipping.tankCapacity,
+    dipping: dipping.dippingValue,
+    afterSales: dipping.afterSales,
+    tankName: dipping.tankName,
+    outletID: dipping.outletID,
+    organizationID: dipping.organisationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getTankLevelsPayload = (level, mainDate) => {
+  return {
+    currentLevel: level.currentLevel,
+    tankName: level.tankName,
+    productType: level.productType,
+    afterSales: level.afterSales,
+    tankCapacity: level.tankCapacity,
+    outletID: level.outletID,
+    tankID: level._id,
+    organizationID: level.organisationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
   };
 };
 

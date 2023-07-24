@@ -37,7 +37,7 @@ const ExpenseComponents = (props) => {
   const [gall, setGall] = useState(null);
 
   const deleteFromList = (index) => {
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
     tankFromPayload["4"].splice(index, 1);
     dispatch(updatePayload(tankFromPayload));
   };
@@ -95,13 +95,12 @@ const ExpenseComponents = (props) => {
       expenseName: reg ? "Regulatory payment" : expenseName,
       description: description,
       expenseAmount: expenseAmount,
-      camera: cam,
-      gallery: gall,
+      attachApproval: gall === null ? cam : gall,
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
     };
 
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
     tankFromPayload["4"].push(payload);
     dispatch(updatePayload(tankFromPayload));
 

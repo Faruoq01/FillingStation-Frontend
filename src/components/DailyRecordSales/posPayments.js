@@ -32,7 +32,7 @@ const PosPayments = (props) => {
   const [gall, setGall] = useState("null");
 
   const deleteFromList = (index) => {
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
     tankFromPayload["6"].splice(index, 1);
     dispatch(updatePayload(tankFromPayload));
   };
@@ -87,13 +87,12 @@ const PosPayments = (props) => {
       terminalID: terminalID,
       amountPaid: amountPaid,
       paymentDate: paymentDate,
-      camera: cam,
-      gallery: gall,
+      uploadSlip: gall === null ? cam : gall,
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
     };
 
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
     tankFromPayload["6"].push(payload);
     dispatch(updatePayload(tankFromPayload));
 
@@ -189,7 +188,7 @@ const PosPayments = (props) => {
       .reduce((accum, current) => {
         return (
           Number(accum) +
-          Number(current.RTlitre) * Number(oneStationData.PMSPrice)
+          Number(current.rtLitre) * Number(oneStationData.PMSPrice)
         );
       }, 0);
 
@@ -198,7 +197,7 @@ const PosPayments = (props) => {
       .reduce((accum, current) => {
         return (
           Number(accum) +
-          Number(current.RTlitre) * Number(oneStationData.AGOPrice)
+          Number(current.rtLitre) * Number(oneStationData.AGOPrice)
         );
       }, 0);
 
@@ -207,7 +206,7 @@ const PosPayments = (props) => {
       .reduce((accum, current) => {
         return (
           Number(accum) +
-          Number(current.RTlitre) * Number(oneStationData.DPKPrice)
+          Number(current.rtLitre) * Number(oneStationData.DPKPrice)
         );
       }, 0);
 
