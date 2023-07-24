@@ -98,25 +98,15 @@ const ReturnToTank = (props) => {
             ############################################*/
 
         const newPms = JSON.parse(JSON.stringify(pms));
-        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
         const findID = newPms.findIndex((data) => data._id === pump._id);
-        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
         newPms[findID] = { ...newPms[findID], RTlitre: e };
-        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
+        newPms[findID] = { ...newPms[findID], outlet: oneStationData };
         setPMS(newPms);
-        dispatch(updateSelectedPumps(FromAllPumps));
 
-        const fromAllTanks = JSON.parse(JSON.stringify(selectedTanks));
-        const findTankID = fromAllTanks.findIndex(
-          (data) => data._id === pump.hostTank
-        );
-        if (findTankID !== -1) {
-          fromAllTanks[findTankID] = {
-            ...fromAllTanks[findTankID],
-            outlet: oneStationData,
-          };
-          dispatch(updateSelectedTanks(fromAllTanks));
-        }
+        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
+        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
+        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
+        dispatch(updateSelectedPumps(FromAllPumps));
         break;
       }
 
@@ -126,25 +116,15 @@ const ReturnToTank = (props) => {
             ############################################*/
 
         const newAgo = JSON.parse(JSON.stringify(ago));
-        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
         const findID = newAgo.findIndex((data) => data._id === pump._id);
-        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
         newAgo[findID] = { ...newAgo[findID], RTlitre: e };
-        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
+        newAgo[findID] = { ...newAgo[findID], outlet: oneStationData };
         setAGO(newAgo);
-        dispatch(updateSelectedPumps(FromAllPumps));
 
-        const fromAllTanks = JSON.parse(JSON.stringify(selectedTanks));
-        const findTankID = fromAllTanks.findIndex(
-          (data) => data._id === pump.hostTank
-        );
-        if (findTankID !== -1) {
-          fromAllTanks[findTankID] = {
-            ...fromAllTanks[findTankID],
-            outlet: oneStationData,
-          };
-          dispatch(updateSelectedTanks(fromAllTanks));
-        }
+        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
+        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
+        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
+        dispatch(updateSelectedPumps(FromAllPumps));
         break;
       }
 
@@ -154,25 +134,15 @@ const ReturnToTank = (props) => {
             ############################################*/
 
         const newDpk = JSON.parse(JSON.stringify(dpk));
-        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
         const findID = newDpk.findIndex((data) => data._id === pump._id);
-        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
         newDpk[findID] = { ...newDpk[findID], RTlitre: e };
-        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
+        newDpk[findID] = { ...newDpk[findID], outlet: oneStationData };
         setDPK(newDpk);
-        dispatch(updateSelectedPumps(FromAllPumps));
 
-        const fromAllTanks = JSON.parse(JSON.stringify(selectedTanks));
-        const findTankID = fromAllTanks.findIndex(
-          (data) => data._id === pump.hostTank
-        );
-        if (findTankID !== -1) {
-          fromAllTanks[findTankID] = {
-            ...fromAllTanks[findTankID],
-            outlet: oneStationData,
-          };
-          dispatch(updateSelectedTanks(fromAllTanks));
-        }
+        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
+        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
+        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
+        dispatch(updateSelectedPumps(FromAllPumps));
         break;
       }
       default: {

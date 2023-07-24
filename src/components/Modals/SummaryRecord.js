@@ -12,6 +12,7 @@ import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import SalesService from "../../services/sales";
 import APIs from "../../services/api";
+import moment from "moment";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
@@ -109,6 +110,7 @@ const FuelCard = (props) => {
           props.data?.pumps?.map((item, index) => {
             return (
               <div
+                key={index}
                 style={{
                   background: "#F5F5F5",
                   marginTop: "5px",
@@ -201,7 +203,7 @@ const ReturnToTank = (props) => {
         <div className="fuel_card_items">
           <div className="fuel_card_items_left">
             <div className="volum">
-              {ApproximateDecimal(props.data.RTlitre)} ltrs
+              {ApproximateDecimal(props.data.rtLitre)} ltrs
             </div>
             <div className="vol_label">Return to tank</div>
           </div>
@@ -210,56 +212,13 @@ const ReturnToTank = (props) => {
             <div className="vol_label"></div>
           </div>
         </div>
-
-        {props.data?.pumps?.length === 0 ? (
-          <div style={men}>No records</div>
-        ) : (
-          props.data?.pumps?.map((item, index) => {
-            return (
-              <div
-                style={{
-                  background: "#F5F5F5",
-                  marginTop: "5px",
-                  borderRadius: "10px",
-                }}
-                className="fuel_card_items">
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  className="fuel_card_items_left">
-                  <div
-                    style={{ marginLeft: "10px", fontSize: "14px" }}
-                    className="volum">
-                    {item.pumpName}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                  className="fuel_card_items_right">
-                  <div
-                    style={{ marginRight: "10px", fontSize: "14px" }}
-                    className="volum">
-                    {ApproximateDecimal(item.RTlitre)} ltrs
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
       </div>
     </div>
   );
 };
 
 const SummaryRecord = (props) => {
+  const today = moment().format("YYYY-MM-DD").split(" ")[0];
   const records = useSelector((state) => state.recordsales.load);
   const [loading, setLoading] = useState(false);
 
@@ -272,6 +231,7 @@ const SummaryRecord = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankList = useSelector((state) => state.outlet.tankList);
   console.log(records, "summary");
+  // console.log(typeof currentDate, "date");
   // console.log(selectedPumps, "Pumps")
   // console.log(selectedTanks, "Tanks")
 
@@ -287,8 +247,14 @@ const SummaryRecord = (props) => {
       return Number(accum) + Number(current.tankCapacity);
     }, 0);
 
-    const allPumps = selectedPumps.filter((pump) => pump.hostTank === tank._id);
-    const allProductPumps = selectedPumps.filter(
+    const deepCopy = JSON.parse(JSON.stringify(selectedPumps));
+    const updatedPumps = deepCopy.map((data) => {
+      const newSales = Number(data.sales) - Number(data.RTlitre);
+      return { ...data, sales: newSales };
+    });
+
+    const allPumps = updatedPumps.filter((pump) => pump.hostTank === tank._id);
+    const allProductPumps = updatedPumps.filter(
       (pump) => pump.productType === product
     );
 
@@ -319,8 +285,8 @@ const SummaryRecord = (props) => {
     const finalUpdate = {
       ...tank,
       pumps: allPumps,
-      totalSales: sales,
-      productSales: productSales,
+      totalSales: sales - salesRT,
+      productSales: productSales - productSalesRT,
       afterSales: Number(tank.currentLevel) - sales + salesRT,
       outlet: oneStationData,
       totalTankLevel: totalTankLevel,
@@ -332,6 +298,8 @@ const SummaryRecord = (props) => {
   };
 
   const updateAllTanks = () => {
+    const mainDate = typeof currentDate !== "string" ? today : currentDate;
+
     const updatedTanks = selectedTanks?.map((data) => {
       let update;
 
@@ -378,13 +346,13 @@ const SummaryRecord = (props) => {
     }, {});
 
     /*############# Getting payloads for sales ###############*/
-    let salesList = [];
-    let pumpUpdates = [];
-    let tankUpdates = [];
+    const salesList = [];
+    const pumpUpdates = [];
+    const tankUpdates = [];
 
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const salesPayload = getSalesPayload(tank, pump, currentDate);
+        const salesPayload = getSalesPayload(tank, pump, mainDate);
         const pumpPayload = getPumpPayloads(pump);
         const tankPayload = getTankPayloads(tank);
 
@@ -394,12 +362,22 @@ const SummaryRecord = (props) => {
       }
     }
 
+    /*############# Getting payloads for RT ###############*/
+    const rtList = [];
+    for (let tank of updatedTanks) {
+      for (let pump of tank.pumps) {
+        const rt = getRTPayload(tank, pump, mainDate);
+        rtList.push(rt);
+      }
+    }
+
     tankFromPayload["0"] = {
       sales: salesList,
       pumps: pumpUpdates,
       tanks: tankUpdates,
     };
     tankFromPayload["1"] = updatedTanks;
+    tankFromPayload["2"] = rtList;
     tankFromPayload["8"] = updatedTankList;
     tankFromPayload["9"] = groupedObject;
     dispatch(updatePayload(tankFromPayload));
@@ -776,10 +754,9 @@ const SummaryRecord = (props) => {
 };
 
 const getSalesPayload = (tank, pump, currentDate) => {
-  const sales = Number(pump.newTotalizer) - Number(pump.totalizerReading);
   return {
-    sales: sales - Number(pump.RTlitre),
-    RTlitre: tank.RTlitre,
+    sales: pump.sales,
+    RTlitre: pump.RTlitre,
     productSales: tank.productSales,
     totalSales: tank.totalSales,
     previousLevel: tank.previousLevel,
@@ -821,6 +798,27 @@ const getTankPayloads = (tank) => {
     id: tank._id,
     previousLevel: tank.currentLevel,
     currentLevel: Number(tank.afterSales),
+  };
+};
+
+const getRTPayload = (tank, pump, mainDate) => {
+  return {
+    rtLitre: pump.RTlitre,
+    PMSCost: tank.outlet.PMSCost,
+    AGOCost: tank.outlet.AGOCost,
+    DPKCost: tank.outlet.DPKCost,
+    PMSPrice: tank.outlet.PMSPrice,
+    AGOPrice: tank.outlet.AGOPrice,
+    DPKPrice: tank.outlet.DPKPrice,
+    productType: tank.productType,
+    pumpID: pump._id,
+    tankID: tank._id,
+    pumpName: pump.pumpName,
+    tankName: tank.tankName,
+    outletID: tank.outletID,
+    organizationID: tank.organisationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
   };
 };
 

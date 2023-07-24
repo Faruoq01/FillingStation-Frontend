@@ -17,7 +17,7 @@ const initialState = {
     7: [],
     8: [],
   },
-  currentDate: null,
+  currentDate: "",
   linkedData: { page: 1 },
   lpo: [],
   searchData2: [],
