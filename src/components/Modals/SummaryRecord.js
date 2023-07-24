@@ -218,7 +218,6 @@ const ReturnToTank = (props) => {
 };
 
 const SummaryRecord = (props) => {
-  const today = moment().format("YYYY-MM-DD").split(" ")[0];
   const records = useSelector((state) => state.recordsales.load);
   const [loading, setLoading] = useState(false);
 
@@ -298,7 +297,15 @@ const SummaryRecord = (props) => {
   };
 
   const updateAllTanks = () => {
-    const mainDate = typeof currentDate !== "string" ? today : currentDate;
+    const dippingCheck = [...records["7"]];
+    if (dippingCheck.length === 0) {
+      handleClose();
+      return swal("Error", "Dipping record cannot be empty!", "error");
+    }
+    if (typeof currentDate !== "string") {
+      handleClose();
+      return swal("Error", "Please select record date", "error");
+    }
 
     const updatedTanks = selectedTanks?.map((data) => {
       let update;
@@ -352,7 +359,7 @@ const SummaryRecord = (props) => {
 
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const salesPayload = getSalesPayload(tank, pump, mainDate);
+        const salesPayload = getSalesPayload(tank, pump, currentDate);
         const pumpPayload = getPumpPayloads(pump);
         const tankPayload = getTankPayloads(tank);
 
@@ -366,7 +373,7 @@ const SummaryRecord = (props) => {
     const rtList = [];
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const rt = getRTPayload(tank, pump, mainDate);
+        const rt = getRTPayload(tank, pump, currentDate);
         rtList.push(rt);
       }
     }
@@ -375,7 +382,7 @@ const SummaryRecord = (props) => {
     const lpoList = [];
     for (let lpo of tankFromPayload["3"]) {
       console.log(lpo, "gall");
-      const lpoData = getLPOPayload(lpo, mainDate);
+      const lpoData = getLPOPayload(lpo, currentDate);
       lpoList.push(lpoData);
     }
 
@@ -383,28 +390,28 @@ const SummaryRecord = (props) => {
     const expenseList = [];
     for (let expense of tankFromPayload["4"]) {
       console.log(expense, "gall");
-      const lpoData = getExpensePayload(expense, mainDate);
+      const lpoData = getExpensePayload(expense, currentDate);
       expenseList.push(lpoData);
     }
 
     /*############# Getting payloads for bank payment ###############*/
     const bankList = [];
     for (let bank of tankFromPayload["5"]) {
-      const bankData = getBankPayload(bank, mainDate);
+      const bankData = getBankPayload(bank, currentDate);
       bankList.push(bankData);
     }
 
     /*############# Getting payloads for bank payment ###############*/
     const posList = [];
     for (let pos of tankFromPayload["6"]) {
-      const posData = getPOSPayload(pos, mainDate);
+      const posData = getPOSPayload(pos, currentDate);
       posList.push(posData);
     }
 
     /*############# Getting payloads for dipping ###############*/
     const dippingList = [];
     for (let dipping of tankFromPayload["7"]) {
-      const dippingData = getDippingPayload(dipping, mainDate);
+      const dippingData = getDippingPayload(dipping, currentDate);
       dippingList.push(dippingData);
     }
 
@@ -416,7 +423,7 @@ const SummaryRecord = (props) => {
         afterSales:
           level.afterSales === 0 ? level.currentLevel : level.afterSales,
       };
-      const levelData = getTankLevelsPayload(notUsed, mainDate);
+      const levelData = getTankLevelsPayload(notUsed, currentDate);
       tankLevelList.push(levelData);
     }
 
@@ -449,8 +456,8 @@ const SummaryRecord = (props) => {
         productType: data.productType,
         outletID: data.outlet._id,
         organizationID: data.outletID,
-        createdAt: mainDate,
-        updatedAt: mainDate,
+        createdAt: currentDate,
+        updatedAt: currentDate,
       };
     });
 
@@ -498,62 +505,61 @@ const SummaryRecord = (props) => {
         currentDate: currentDate,
       };
       const payload = [
-        // SalesService.pumpUpdate({
-        //   ...settings,
-        //   station: oneStationData,
-        //   sales: records["0"],
-        // }),
-        // SalesService.returnToTank({
-        //   ...settings,
-        //   station: oneStationData,
-        //   rt: records["2"],
-        // }),
-        // SalesService.lpo({
-        //   ...settings,
-        //   station: oneStationData,
-        //   lpo: records["3"],
-        // }),
+        SalesService.pumpUpdate({
+          ...settings,
+          station: oneStationData,
+          sales: records["0"],
+        }),
+        SalesService.returnToTank({
+          ...settings,
+          station: oneStationData,
+          rt: records["2"],
+        }),
+        SalesService.lpo({
+          ...settings,
+          station: oneStationData,
+          lpo: records["3"],
+        }),
         SalesService.expenses({
           ...settings,
           station: oneStationData,
           expenses: records["4"],
         }),
-        // SalesService.bankPayment({
-        //   ...settings,
-        //   station: oneStationData,
-        //   bankpayments: records["5"],
-        // }),
-        // SalesService.posPayment({
-        //   ...settings,
-        //   station: oneStationData,
-        //   pospayments: records["6"],
-        // }),
-        // SalesService.dipping({
-        //   ...settings,
-        //   station: oneStationData,
-        //   dipping: records["7"],
-        // }),
-        // SalesService.tankLevels({
-        //   ...settings,
-        //   station: oneStationData,
-        //   tankLevels: records["8"],
-        // }),
-        // SalesService.creditBalance({
-        //   ...settings,
-        //   station: oneStationData,
-        //   debits: records["9"],
-        // }),
-        // SalesService.balanceCF({
-        //   ...settings,
-        //   station: oneStationData,
-        //   balanceCF: records["10"],
-        // }),
+        SalesService.bankPayment({
+          ...settings,
+          station: oneStationData,
+          bankpayments: records["5"],
+        }),
+        SalesService.posPayment({
+          ...settings,
+          station: oneStationData,
+          pospayments: records["6"],
+        }),
+        SalesService.dipping({
+          ...settings,
+          station: oneStationData,
+          dipping: records["7"],
+        }),
+        SalesService.tankLevels({
+          ...settings,
+          station: oneStationData,
+          tankLevels: records["8"],
+        }),
+        SalesService.creditBalance({
+          ...settings,
+          station: oneStationData,
+          debits: records["9"],
+        }),
+        SalesService.balanceCF({
+          ...settings,
+          station: oneStationData,
+          balanceCF: records["10"],
+        }),
       ];
       Promise.allSettled(payload)
         .then((results) => {
-          // dispatch(salesStatus(results));
           handleClose();
-          // history.push("/home/daily-sales");
+          history.push("/home/daily-sales");
           swal("Success!", "Record saved successfully!", "success");
         })
         .catch((error) => {
