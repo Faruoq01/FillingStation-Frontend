@@ -408,7 +408,7 @@ const SummaryRecord = (props) => {
       dippingList.push(dippingData);
     }
 
-    /*############# Getting payloads for dipping ###############*/
+    /*############# Getting payloads for tank levels ###############*/
     const tankLevelList = [];
     for (let level of updatedTankList) {
       const notUsed = {
@@ -419,6 +419,40 @@ const SummaryRecord = (props) => {
       const levelData = getTankLevelsPayload(notUsed, mainDate);
       tankLevelList.push(levelData);
     }
+
+    /*############# Getting payloads for balance CF ###############*/
+    let balanceCF = [];
+    const pmsListing = updatedTanks.filter(
+      (data) => data.productType === "PMS"
+    );
+    const agoListing = updatedTanks.filter(
+      (data) => data.productType === "AGO"
+    );
+    const dpkListing = updatedTanks.filter(
+      (data) => data.productType === "DPK"
+    );
+
+    if (pmsListing.length !== 0) {
+      balanceCF.push(pmsListing[0]);
+    }
+    if (agoListing.length !== 0) {
+      balanceCF.push(agoListing[0]);
+    }
+    if (dpkListing.length !== 0) {
+      balanceCF.push(dpkListing[0]);
+    }
+
+    balanceCF = balanceCF.map((data) => {
+      return {
+        balanceCF: data.balanceCF,
+        totalTankCapacity: data.totalTankCapacity,
+        productType: data.productType,
+        outletID: data.outlet._id,
+        organizationID: data.outletID,
+        createdAt: mainDate,
+        updatedAt: mainDate,
+      };
+    });
 
     tankFromPayload["0"] = {
       sales: salesList,
@@ -434,6 +468,7 @@ const SummaryRecord = (props) => {
     tankFromPayload["7"] = dippingList;
     tankFromPayload["8"] = tankLevelList;
     tankFromPayload["9"] = groupedObject;
+    tankFromPayload["10"] = balanceCF;
     dispatch(updatePayload(tankFromPayload));
   };
 
@@ -511,7 +546,7 @@ const SummaryRecord = (props) => {
         // SalesService.balanceCF({
         //   ...settings,
         //   station: oneStationData,
-        //   balanceCF: records["1"],
+        //   balanceCF: records["10"],
         // }),
       ];
       Promise.allSettled(payload)
