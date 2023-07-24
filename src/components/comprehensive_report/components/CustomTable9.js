@@ -44,7 +44,6 @@ export default function CustomTable9({
               ))}
             </tr>
           </thead>
-
           <tbody>
             {dipping.map((item, index) => (
               <tr key={index + 1}>
