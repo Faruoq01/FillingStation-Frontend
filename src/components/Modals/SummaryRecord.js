@@ -321,7 +321,7 @@ const SummaryRecord = (props) => {
       tankSet = tankSet.filter((data) => data._id !== tank._id);
     }
     const updatedTankList = [...updatedSet, ...tankSet];
-    const tankFromPayload = { ...records };
+    const tankFromPayload = JSON.parse(JSON.stringify(records));
 
     /*############# Creating credit balances ###############*/
     const lpoCopy = [...records["3"]];
@@ -371,6 +371,55 @@ const SummaryRecord = (props) => {
       }
     }
 
+    /*############# Getting payloads for lpo ###############*/
+    const lpoList = [];
+    for (let lpo of tankFromPayload["3"]) {
+      console.log(lpo, "gall");
+      const lpoData = getLPOPayload(lpo, mainDate);
+      lpoList.push(lpoData);
+    }
+
+    /*############# Getting payloads for expenses ###############*/
+    const expenseList = [];
+    for (let expense of tankFromPayload["4"]) {
+      console.log(expense, "gall");
+      const lpoData = getExpensePayload(expense, mainDate);
+      expenseList.push(lpoData);
+    }
+
+    /*############# Getting payloads for bank payment ###############*/
+    const bankList = [];
+    for (let bank of tankFromPayload["5"]) {
+      const bankData = getBankPayload(bank, mainDate);
+      bankList.push(bankData);
+    }
+
+    /*############# Getting payloads for bank payment ###############*/
+    const posList = [];
+    for (let pos of tankFromPayload["6"]) {
+      const posData = getPOSPayload(pos, mainDate);
+      posList.push(posData);
+    }
+
+    /*############# Getting payloads for dipping ###############*/
+    const dippingList = [];
+    for (let dipping of tankFromPayload["7"]) {
+      const dippingData = getDippingPayload(dipping, mainDate);
+      dippingList.push(dippingData);
+    }
+
+    /*############# Getting payloads for dipping ###############*/
+    const tankLevelList = [];
+    for (let level of updatedTankList) {
+      const notUsed = {
+        ...level,
+        afterSales:
+          level.afterSales === 0 ? level.currentLevel : level.afterSales,
+      };
+      const levelData = getTankLevelsPayload(notUsed, mainDate);
+      tankLevelList.push(levelData);
+    }
+
     tankFromPayload["0"] = {
       sales: salesList,
       pumps: pumpUpdates,
@@ -378,7 +427,12 @@ const SummaryRecord = (props) => {
     };
     tankFromPayload["1"] = updatedTanks;
     tankFromPayload["2"] = rtList;
-    tankFromPayload["8"] = updatedTankList;
+    tankFromPayload["3"] = lpoList;
+    tankFromPayload["4"] = expenseList;
+    tankFromPayload["5"] = bankList;
+    tankFromPayload["6"] = posList;
+    tankFromPayload["7"] = dippingList;
+    tankFromPayload["8"] = tankLevelList;
     tankFromPayload["9"] = groupedObject;
     dispatch(updatePayload(tankFromPayload));
   };
@@ -701,7 +755,7 @@ const SummaryRecord = (props) => {
                         </div>
                         <div className="fuel_card_items_right">
                           <div className="volum">
-                            {ApproximateDecimal(data.dippingValue)} Ltrs
+                            {ApproximateDecimal(data.dipping)} Ltrs
                           </div>
                           <div className="vol_label">Stock level</div>
                         </div>
@@ -817,6 +871,105 @@ const getRTPayload = (tank, pump, mainDate) => {
     tankName: tank.tankName,
     outletID: tank.outletID,
     organizationID: tank.organisationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getLPOPayload = (lpo, mainDate) => {
+  return {
+    accountName: lpo.accountName,
+    productType: lpo.productType,
+    truckNo: lpo.truckNo,
+    lpoLitre: lpo.lpoLitre,
+    attachApproval: lpo.attachApproval === null ? "None" : lpo.attachApproval,
+    lpoID: lpo.lpoID,
+    PMSRate: lpo.PMSRate,
+    AGORate: lpo.AGORate,
+    DPKRate: lpo.DPKRate,
+    PMSCost: lpo.PMSCost,
+    AGOCost: lpo.AGOCost,
+    DPKCost: lpo.DPKCost,
+    pumpID: lpo.pumpID,
+    station: lpo.station,
+    outletID: lpo.outletID,
+    organizationID: lpo.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getExpensePayload = (expense, mainDate) => {
+  return {
+    dateCreated: "none",
+    expenseName: expense.expenseName,
+    description: expense.description,
+    expenseAmount: expense.expenseAmount,
+    attachApproval:
+      expense.attachApproval === null ? "None" : expense.attachApproval,
+    outletID: expense.outletID,
+    organizationID: expense.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getBankPayload = (bank, mainDate) => {
+  return {
+    bankName: bank.bankName,
+    tellerNumber: bank.tellerNumber,
+    amountPaid: bank.amountPaid,
+    paymentDate: bank.paymentDate,
+    confirmation: "null",
+    uploadSlip: bank.uploadSlip,
+    outletID: bank.outletID,
+    organizationID: bank.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getPOSPayload = (pos, mainDate) => {
+  return {
+    posName: pos.posName,
+    terminalID: pos.terminalID,
+    amountPaid: pos.amountPaid,
+    paymentDate: pos.paymentDate,
+    confirmation: "null",
+    uploadSlip: pos.uploadSlip,
+    outletID: pos.outletID,
+    organizationID: pos.organizationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getDippingPayload = (dipping, mainDate) => {
+  return {
+    tankID: dipping._id,
+    productType: dipping.productType,
+    currentLevel: dipping.currentLevel,
+    tankCapacity: dipping.tankCapacity,
+    dipping: dipping.dippingValue,
+    afterSales: dipping.afterSales,
+    tankName: dipping.tankName,
+    outletID: dipping.outletID,
+    organizationID: dipping.organisationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getTankLevelsPayload = (level, mainDate) => {
+  return {
+    currentLevel: level.currentLevel,
+    tankName: level.tankName,
+    productType: level.productType,
+    afterSales: level.afterSales,
+    tankCapacity: level.tankCapacity,
+    outletID: level.outletID,
+    tankID: level._id,
+    organizationID: level.organisationID,
     createdAt: mainDate,
     updatedAt: mainDate,
   };
