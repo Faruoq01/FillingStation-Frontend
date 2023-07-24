@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-export default function CustomTable8({
-  header = [],
-  footer = [],
-  data = [],
-  title = "",
-}) {
+export default function CustomTable8({ header = [], footer = [], title = "" }) {
+  const { pms, ago, dpk } = useSelector(
+    (state) => state.comprehensive.balanceCF
+  );
+  const [data, setData] = useState([]);
+  const formatData = () => {
+    let newData = [];
+    let c = {
+      id: `${Math.random()}`,
+      sn: "PMS ",
+      exp: "122,293.00  ",
+      amount: "Oloyode Haruna Ishola ",
+    };
+  };
+  useEffect(() => {
+    formatData();
+  }, []);
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>{title}</span>
