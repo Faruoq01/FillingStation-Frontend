@@ -480,6 +480,10 @@ const headerT8 = [
 const headerT9 = [
   {
     id: `${Math.random()}`,
+    value: "S/N",
+  },
+  {
+    id: `${Math.random()}`,
     value: "Tank Name",
   },
   {
