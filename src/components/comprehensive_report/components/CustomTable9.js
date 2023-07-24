@@ -48,6 +48,9 @@ export default function CustomTable9({
             {dipping.map((item, index) => (
               <tr key={index + 1}>
                 <td style={{ ...Styles.th, width: "", paddingLeft: 10 }}>
+                  {index + 1}
+                </td>
+                <td style={{ ...Styles.th, width: "", paddingLeft: 10 }}>
                   {item.tankName}
                 </td>
                 <td style={{ ...Styles.th }}>{item.productType} </td>
