@@ -465,33 +465,38 @@ const headerT6 = [
 const headerT8 = [
   {
     id: `${Math.random()}`,
-    value: "Product",
+    value: "S/N",
   },
   {
     id: `${Math.random()}`,
-    value: "LTR (QTY)",
+    value: "Product Type",
   },
   {
     id: `${Math.random()}`,
-    value: "Confirmed By",
+    value: "Quantity",
   },
 ];
+
 const headerT9 = [
   {
     id: `${Math.random()}`,
-    value: "Tank",
+    value: "Tank Name",
   },
   {
     id: `${Math.random()}`,
-    value: "PMS",
+    value: "Product Name",
   },
   {
     id: `${Math.random()}`,
-    value: "AGO",
+    value: "Computed Level",
   },
   {
     id: `${Math.random()}`,
-    value: "DPK",
+    value: "Dipping",
+  },
+  {
+    id: `${Math.random()}`,
+    value: "Difference",
   },
 ];
 

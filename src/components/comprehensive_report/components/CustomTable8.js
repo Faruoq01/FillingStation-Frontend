@@ -14,6 +14,19 @@ export default function CustomTable8({ header = [], footer = [], title = "" }) {
       exp: "122,293.00  ",
       amount: "Oloyode Haruna Ishola ",
     };
+    newData.push({
+      product: "PMS",
+      quantity: pms,
+    });
+    newData.push({
+      product: "DPK",
+      quantity: dpk,
+    });
+    newData.push({
+      product: "AGO",
+      quantity: ago,
+    });
+    setData([...newData]);
   };
   useEffect(() => {
     formatData();
@@ -52,12 +65,12 @@ export default function CustomTable8({ header = [], footer = [], title = "" }) {
 
           <tbody>
             {data.map((item, index) => (
-              <tr key={item.id}>
+              <tr key={Math.random()}>
                 <td style={{ ...Styles.th, width: "", paddingLeft: 10 }}>
-                  {item.sn}
+                  {index + 1}
                 </td>
-                <td style={{ ...Styles.th }}>{item.exp} </td>
-                <td style={{ ...Styles.th }}>{item.amount} </td>
+                <td style={{ ...Styles.th }}>{item.product} </td>
+                <td style={{ ...Styles.th }}>{item?.quantity} </td>
               </tr>
             ))}
           </tbody>

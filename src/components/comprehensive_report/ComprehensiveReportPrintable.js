@@ -71,12 +71,7 @@ export default function ComprehensiveReportPrintable() {
           data={dataT8}
           header={headerT8}
         />
-        {/* <CustomTable9
-          title="Dipping"
-          // footer={footerT6}
-          data={dataT9}
-          header={headerT9}
-        /> */}
+        <CustomTable9 title="Dipping" data={dataT9} header={headerT9} />
       </div>
     </div>
   );
