@@ -4,14 +4,21 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThreeDots } from "react-loader-spinner";
 import "../../styles/estation/payment.scss";
 import CloseIcon from "@mui/icons-material/Close";
-import { Button } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
-const CreateExpenseModal = (props) => {
+const CreateLPOModal = (props) => {
   const handleClose = () => props.close(false);
   const [accountName, setAccountName] = useState();
   const [amount, setAmount] = useState();
   const [paymentMethod, setPaymentMethod] = useState();
   const [tellerNo, setTellerNo] = useState();
+  const [product, setProduct] = useState();
   const [recieptImage, setRecieptImage] = useState();
   const mobile = useMediaQuery("(max-width:900px)");
   const handleOnChange = (setState) => (event) => {
@@ -40,25 +47,44 @@ const CreateExpenseModal = (props) => {
       <div className="e-station-payment-modal">
         <div className="cancel-confirm">
           <label for="Confirm Payment" className="title-label-">
-            Create Expenses
+            Create LPO
           </label>
           <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
         </div>
         <div className="form-area-new-pay">
           <form>
             <CustomTextInput
-              placeholder="expense name"
-              title="Expense Name"
+              placeholder="account name"
+              title="Account Name"
               onChange={handleOnChange(setAccountName)}
             />
+
+            <FormControl sx={{ marginBottom: 1 }} fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Product Type
+              </InputLabel>
+              <Select
+                sx={{ height: 35 }}
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={product}
+                label="Product Type"
+                onChange={handleOnChange(setProduct)}
+              >
+                <MenuItem value={1}>PMS</MenuItem>
+                <MenuItem value={2}>DPK</MenuItem>
+                <MenuItem value={3}>AGO</MenuItem>
+              </Select>
+            </FormControl>
+
             <CustomTextInput
-              placeholder="description"
-              title="Description"
+              placeholder="truck no"
+              title="Truck No"
               onChange={handleOnChange(setAmount)}
             />
             <CustomTextInput
-              title="Amount"
-              placeholder="amount"
+              title="litre"
+              placeholder="Litre"
               onChange={handleOnChange(setAmount)}
             />
 
@@ -161,4 +187,4 @@ const styles = (_mobile) => ({
   },
 });
 
-export default CreateExpenseModal;
+export default CreateLPOModal;

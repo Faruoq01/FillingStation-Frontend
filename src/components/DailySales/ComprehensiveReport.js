@@ -36,6 +36,7 @@ import CreateProductDispensedModal from "../Modals/CreateProductDispensedModal";
 import CreateReturnToTankModal from "../Modals/CreateReturnToTankModal";
 import CreateCorporateSaleModal from "../Modals/CreateCorporateSaleModal";
 import CreateExpenseModal from "../Modals/CreateExpenseModal";
+import CreateLPOModal from "../Modals/CreateLPOModal";
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
@@ -44,13 +45,14 @@ const ComprehensiveReport = (props) => {
   const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
   const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
-  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(true);
+  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
   const [
     openCreateCorporateSaleModalModal,
     setOpenCreateCorporateSaleModalModal,
   ] = useState(false);
   const [createExpenseModalStatus, setCreateExpenseModalStatus] =
-    useState(false);
+    useState(true);
+  const [createLpoModalStatus, setCreateLpoModalStatus] = useState(false);
 
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -59,7 +61,6 @@ const ComprehensiveReport = (props) => {
   const user = useSelector((state) => state.auth.user);
   const history = useHistory();
   const dispatch = useDispatch();
-  // const dipping = useSelector(state => state.dailySalesReducer.overages);
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -426,6 +427,10 @@ const ComprehensiveReport = (props) => {
       <CreateExpenseModal
         open={createExpenseModalStatus}
         close={setCreateExpenseModalStatus}
+      />
+      <CreateLPOModal
+        open={createLpoModalStatus}
+        close={setCreateLpoModalStatus}
       />
     </Fragment>
   );
