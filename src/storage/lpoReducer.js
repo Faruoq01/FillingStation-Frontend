@@ -1,12 +1,12 @@
 import { createReducer } from "@reduxjs/toolkit";
 import {
+  SINGLE_LPO,
   CREATE_LPO,
   CREATE_LPO_SALES,
   SEARCH_LPO_LIST,
   SEARCH_LPO,
-  SINGLE_LPO,
   LOGOUT,
-} from "../types";
+} from "../store/types";
 
 const initialState = {
   lpo: [],

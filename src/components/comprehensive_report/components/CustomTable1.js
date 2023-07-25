@@ -1,176 +1,7 @@
-// import React from "react";
-// import TowRow from "../components/customTableOne/TwoRow";
-// import FiveRow from "../components/customTableOne/FiveRow";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../../common/approx";
 
-// const data1 = [
-//   {
-//     id: `${Math.random()}`,
-//     name: "PMS",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "DPK",
-//     price: "12,018",
-//   },
-// ];
-// const data2 = [
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     truck_number: "132KSA-ABJ",
-//     transportation: "Sule Alanimi",
-//     shortage: "Shortage",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     truck_number: "132KSA-ABJ",
-//     transportation: "Sule Alanimi",
-//     shortage: "Shortage",
-//     price: "12,018",
-//   },
-//   {
-//     id: `${Math.random()}`,
-//     name: "AGRO",
-//     truck_number: "132KSA-ABJ",
-//     transportation: "Sule Alanimi",
-//     shortage: "Shortage",
-//     price: "12,018",
-//   },
-// ];
-
-// export default function CustomTable1() {
-//   return (
-//     <div style={{ marginTop: 10, marginBottom: 10 }}>
-//       <span style={Styles.title}>Initial Balance</span>
-//       <div style={Styles.body}>
-//         <TowRow data={data1} header="Balance B/ Forward" />
-//         <FiveRow data={data2} />
-//         <TowRow data={data1} header="Available Balance" />
-//       </div>
-//     </div>
-//   );
-// }
-
-// // const Styles = {
-// //   title: {
-// //     fontFamily: "'Nunito', sans-serif",
-// //     fontStyle: "normal",
-// //     fontWeight: 800,
-// //     lineHeight: "34px",
-// //     color: "#06805B",
-// //     marginTop: "1rem",
-// //     marginBottom: 5,
-// //   },
-// //   body: {
-// //     display: "flex",
-// //     flexDirection: "row",
-// //   },
-// // };
-
-// const Styles = {
-//   header: {
-//     paddingLeft: 10,
-//     fontFamily: "'Nunito', sans-serif",
-//     fontStyle: "normal",
-//     lineHeight: "22px",
-//     textAlign: "start",
-//     width: "130px",
-//     color: "white",
-//     height: "40px",
-//     background: "linear-gradient(266.48deg, #171717 8.34%, #252525 52.9%)",
-//     borderRadius: "4px",
-//   },
-//   title: {
-//     fontFamily: "'Nunito', sans-serif",
-//     fontStyle: "normal",
-//     fontWeight: 800,
-//     lineHeight: "34px",
-//     color: "#06805B",
-//     marginTop: "1rem",
-//     marginBottom: 5,
-//   },
-//   th: {
-//     height: "35px",
-//     background: "#F3F3F3",
-//     borderRadius: "4px",
-//     padding: "5px",
-//     // paddingRight: "auto",
-//     fontFamily: "'Nunito', sans-serif",
-//   },
-// };
-
-import React from "react";
-
-const data = [
-  {
-    id: `${Math.random()}`,
-    product1: "PMS ",
-    product2: "PMS ",
-    qty: "12,018",
-    truck: "132KSA-ABJ ",
-    qty2: "12,018 ",
-    trans: "Sule Alanimi ",
-    shortage: "22,018",
-    product3: "PMS ",
-    qty3: "22,018",
-  },
-  {
-    id: `${Math.random()}`,
-    product1: "PMS ",
-    product2: "PMS ",
-    qty: "12,018",
-    truck: "132KSA-ABJ ",
-    qty2: "12,018 ",
-    trans: "Sule Alanimi ",
-    shortage: "22,018",
-    product3: "PMS ",
-    qty3: "22,018",
-  },
-  {
-    id: `${Math.random()}`,
-    product1: "PMS ",
-    product2: "PMS ",
-    qty: "12,018",
-    truck: "132KSA-ABJ ",
-    qty2: "12,018 ",
-    trans: "Sule Alanimi ",
-    shortage: "22,018",
-    product3: "PMS ",
-    qty3: "22,018",
-  },
-  {
-    id: `${Math.random()}`,
-    product1: "PMS ",
-    product2: "PMS ",
-    qty: "12,018",
-    truck: "132KSA-ABJ ",
-    qty2: "12,018 ",
-    trans: "Sule Alanimi ",
-    shortage: "22,018",
-    product3: "PMS ",
-    qty3: "22,018",
-  },
-  {
-    id: `${Math.random()}`,
-    product1: "PMS ",
-    product2: "PMS ",
-    qty: "12,018",
-    truck: "132KSA-ABJ ",
-    qty2: "12,018 ",
-    trans: "Sule Alanimi ",
-    shortage: "22,018",
-    product3: "PMS ",
-    qty3: "22,018",
-  },
-];
 const header = [
   {
     id: `${Math.random()}`,
@@ -184,21 +15,23 @@ const header = [
     id: `${Math.random()}`,
     value: "Product ",
   },
-  {
-    id: `${Math.random()}`,
-    value: "Truck No ",
-  },
+
   {
     id: `${Math.random()}`,
     value: "Qty (LTR)",
   },
   {
     id: `${Math.random()}`,
-    value: "Transportation",
+    value: "Shortage",
   },
   {
     id: `${Math.random()}`,
-    value: "Shortage",
+    value: "Overage",
+  },
+
+  {
+    id: `${Math.random()}`,
+    value: "Details ",
   },
   {
     id: `${Math.random()}`,
@@ -211,6 +44,70 @@ const header = [
 ];
 
 export default function CustomTable1() {
+  const [initialData, setInitialData] = useState([]);
+  const { balances, supply, sales } = useSelector(
+    (state) => state.comprehensive
+  );
+  const { pms, ago, dpk } = supply;
+
+  const reFcatorData = () => {
+    const array_ = new Array();
+    const arrayOfBalances = Object.entries(balances);
+    for (const [key, value] of arrayOfBalances) {
+      if (key) {
+        let data = {
+          id: `${Math.random()}`,
+          product1: `${key}`.toUpperCase(),
+          product2: `${key}`.toUpperCase(),
+          qty: ApproximateDecimal(Number(value)),
+          Details: "View",
+          qty2:
+            key === "pms" && pms
+              ? ApproximateDecimal(pms.quantity)
+              : key === "dpk" && pms
+              ? ApproximateDecimal(dpk.quantity)
+              : key === "ago" && ago
+              ? ApproximateDecimal(ago.quantity)
+              : 0,
+          overage:
+            key === "pms" && pms
+              ? ApproximateDecimal(pms.overage)
+              : key === "dpk" && pms
+              ? ApproximateDecimal(dpk.overage)
+              : key === "ago" && ago
+              ? ApproximateDecimal(ago.overage)
+              : 0,
+          shortage:
+            key === "pms" && pms
+              ? ApproximateDecimal(pms.shortage)
+              : key === "dpk" && pms
+              ? ApproximateDecimal(dpk.shortage)
+              : key === "ago" && ago
+              ? ApproximateDecimal(ago.shortage)
+              : 0,
+          product3: `${key}`.toUpperCase(),
+          qty3:
+            key === "pms" && pms
+              ? ApproximateDecimal(calculateSum(value, pms))
+              : key === "dpk" && dpk
+              ? ApproximateDecimal(calculateSum(value, dpk))
+              : key === "ago" && ago
+              ? ApproximateDecimal(calculateSum(value, ago))
+              : 0,
+        };
+        array_.push(data);
+      }
+    }
+    setInitialData([...array_]);
+  };
+  const calculateSum = (data, supply) => {
+    const actaulSupply = supply?.quantity;
+    return Number(data) + Number(actaulSupply);
+  };
+  useEffect(() => {
+    reFcatorData();
+  }, []);
+
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>Initial Balance</span>
@@ -296,15 +193,15 @@ export default function CustomTable1() {
           </thead>
 
           <tbody>
-            {data.map((item, index) => (
+            {initialData.map((item) => (
               <tr key={item.id}>
                 <td style={{ ...Styles.th }}>{item.product1} </td>
                 <td style={{ ...Styles.th }}>{item.qty} </td>
                 <td style={{ ...Styles.th }}>{item.product2} </td>
-                <td style={{ ...Styles.th }}>{item.truck} </td>
                 <td style={{ ...Styles.th }}>{item.qty2} </td>
-                <td style={{ ...Styles.th }}>{item.trans} </td>
                 <td style={{ ...Styles.th }}>{item.shortage} </td>
+                <td style={{ ...Styles.th }}>{item.overage} </td>
+                <td style={{ ...Styles.th }}>{item.Details} </td>
                 <td style={{ ...Styles.th }}>{item.product3} </td>
                 <td style={{ ...Styles.th }}>{item.qty3} </td>
               </tr>
@@ -330,6 +227,7 @@ export default function CustomTable1() {
     </div>
   );
 }
+
 const Styles = {
   customHeader: {},
   header: {
@@ -364,4 +262,30 @@ const Styles = {
     // paddingRight: "auto",
     fontFamily: "'Nunito', sans-serif",
   },
+};
+
+let Balance_ = {
+  pms: {
+    _id: "64a82b8cd2847135340900be",
+    balanceCF: "53037.30999999959",
+    productType: "PMS",
+    totalTankCapacity: "200000",
+    outletID: "64a6bd1dbc2fa90b074cb6b6",
+    organizationID: "64a2c3be7d6d9b50290aa100",
+    createdAt: "2023-07-06",
+    updatedAt: "2023-07-06",
+    __v: 0,
+  },
+  ago: {
+    _id: "64a82b8cd2847135340900bf",
+    balanceCF: "36482.23999999996",
+    productType: "AGO",
+    totalTankCapacity: "100000",
+    outletID: "64a6bd1dbc2fa90b074cb6b6",
+    organizationID: "64a2c3be7d6d9b50290aa100",
+    createdAt: "2023-07-06",
+    updatedAt: "2023-07-06",
+    __v: 0,
+  },
+  dpk: 0,
 };

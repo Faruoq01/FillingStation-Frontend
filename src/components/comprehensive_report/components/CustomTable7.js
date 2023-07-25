@@ -1,7 +1,14 @@
 import React, { useId } from "react";
+import { useSelector } from "react-redux";
 
 export default function CustomTable7({ title = "Payment & Net to Bank" }) {
+  const { payments } = useSelector((state) => state.comprehensive);
   const id = useId();
+
+  const formtData = () => {
+    if (payments.bank) {
+    }
+  };
   const dataT7_1 = [
     {
       id,
@@ -77,29 +84,33 @@ export default function CustomTable7({ title = "Payment & Net to Bank" }) {
         }}
       >
         {/* ===================== Table1 =================*/}
-        <table
-          style={{
-            width: "45%",
-            padding: 0,
-            borderSpacing: 5,
-            // marginRight: 10,
-          }}
-        >
-          {dataT7_1.map((item, index) => (
-            <tr key={index}>
-              <th
-                style={
-                  index === dataT7_1.length - 1 || index === dataT7_1.length - 2
-                    ? Styles.th
-                    : Styles.header
-                }
-              >
-                {item.head}
-              </th>
-              <td style={Styles.th}>{item.data}</td>
-            </tr>
-          ))}
-        </table>
+        <div style={{ width: "100%" }}>
+          <table
+            style={{
+              ...Styles.table,
+              borderSpacing: 5,
+              width: "100%",
+              padding: 0,
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={Styles.header}>S/N</th>
+                <th style={Styles.header}>Bank Name</th>
+                <th style={Styles.header}>Teller No</th>
+                <th style={Styles.header}>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={Styles.th}>1</td>
+                <td style={Styles.th}>Wema</td>
+                <td style={Styles.th}>#1234567</td>
+                <td style={Styles.th}>200,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         {/* =========================Table 2 ============== */}
         <table
@@ -131,6 +142,15 @@ export default function CustomTable7({ title = "Payment & Net to Bank" }) {
 }
 
 const Styles = {
+  table: {
+    borderCollapse: "5",
+    width: "100%",
+  },
+  td: {
+    border: "1px solid #dddddd",
+    textAlign: "left",
+    padding: "8px",
+  },
   header: {
     paddingLeft: 10,
     fontFamily: "'Nunito', sans-serif",
@@ -159,6 +179,7 @@ const Styles = {
     borderRadius: "4px",
     fontSize: 14,
     padding: "5px",
+    // paddingRight: "auto",
     fontFamily: "'Nunito', sans-serif",
   },
 };

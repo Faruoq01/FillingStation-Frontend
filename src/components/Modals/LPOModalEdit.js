@@ -127,7 +127,8 @@ const LPOModalEdit = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+    >
       <div className="modalContainer2">
         <div className="inner">
           <div className="head">
@@ -393,7 +394,8 @@ const LPOModalEdit = (props) => {
                 },
               }}
               onClick={submit}
-              variant="contained">
+              variant="contained"
+            >
               {" "}
               Save
             </Button>
