@@ -37,6 +37,8 @@ import CreateReturnToTankModal from "../Modals/CreateReturnToTankModal";
 import CreateCorporateSaleModal from "../Modals/CreateCorporateSaleModal";
 import CreateExpenseModal from "../Modals/CreateExpenseModal";
 import CreateLPOModal from "../Modals/CreateLPOModal";
+import CreateBankPaymentModal from "../Modals/CreateBankPaymentModal";
+import CreatePOSPaymentModal from "../Modals/CreatePOSPaymentModal";
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
@@ -45,13 +47,15 @@ const ComprehensiveReport = (props) => {
   const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
   const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
+  const [bankPaymentModalStatus, setBankPaymentModalStatus] = useState(false);
+  const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(true);
   const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
   const [
     openCreateCorporateSaleModalModal,
     setOpenCreateCorporateSaleModalModal,
   ] = useState(false);
   const [createExpenseModalStatus, setCreateExpenseModalStatus] =
-    useState(true);
+    useState(false);
   const [createLpoModalStatus, setCreateLpoModalStatus] = useState(false);
 
   const [collapsible, setCollapsible] = useState(0);
@@ -414,6 +418,14 @@ const ComprehensiveReport = (props) => {
       <CreateProductDispensedModal
         open={openInitialBalanceModal}
         close={setOpenInitialBalanceModal}
+      />
+      <CreateBankPaymentModal
+        open={bankPaymentModalStatus}
+        close={setBankPaymentModalStatus}
+      />
+      <CreatePOSPaymentModal
+        open={posPaymentModalStatus}
+        close={setPosPaymentModalStatus}
       />
       <CreateReturnToTankModal
         open={openReturnToTankModal}
