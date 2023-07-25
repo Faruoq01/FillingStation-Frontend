@@ -20,6 +20,7 @@ import lpoReducer from "./lpo";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    lpoReducer: lpoReducer,
     dashboard: dashboardReducer,
     outlet: outletReducer,
     dailysales: dailysalesReducer,

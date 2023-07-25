@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../../common/approx";
 
 export default function CustomTable6({
   header = [],
@@ -6,6 +8,12 @@ export default function CustomTable6({
   data = [],
   title = "",
 }) {
+  const { expenses } = useSelector((state) => state.comprehensive);
+  const [total, setTotal] = useState(0);
+  const amount = (data) => {
+    setTotal(data + total);
+    return data;
+  };
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>{title}</span>
@@ -39,13 +47,15 @@ export default function CustomTable6({
           </thead>
 
           <tbody>
-            {data.map((item, index) => (
+            {expenses.map((item, index) => (
               <tr key={item.id}>
                 <td style={{ ...Styles.th, width: "", paddingLeft: 10 }}>
-                  {item.sn}
+                  {index + 1}
                 </td>
-                <td style={{ ...Styles.th }}>{item.exp} </td>
-                <td style={{ ...Styles.th }}>{item.amount} </td>
+                <td style={{ ...Styles.th }}>{item.expenseName} </td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(amount(item.expenseAmount))}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -67,7 +77,9 @@ export default function CustomTable6({
                         }
                   }
                 >
-                  {item.value}
+                  {footer.length - 1 == index
+                    ? ApproximateDecimal(total)
+                    : item.value}
                 </td>
               ))}
             </tr>

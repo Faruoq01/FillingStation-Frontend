@@ -18,6 +18,7 @@ const InitialBalance = () => {
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const balances = useSelector((state) => state.comprehensive.balances);
   const { pms, ago, dpk } = useSelector((state) => state.comprehensive.supply);
+  console.log(ago);
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -155,7 +156,8 @@ const InitialBalance = () => {
 
             <div
               style={{ marginTop: "5px" }}
-              className="header_balance_container">
+              className="header_balance_container"
+            >
               <div style={ins} className="B_forward">
                 <div style={{ marginRight: "5px" }} className="b_child">
                   Product Type
@@ -222,7 +224,8 @@ const InitialBalance = () => {
             </div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}
-              className="balance_mobile_detail">
+              className="balance_mobile_detail"
+            >
               <div className="sups">
                 <div className="slide">
                   <SupplyCard

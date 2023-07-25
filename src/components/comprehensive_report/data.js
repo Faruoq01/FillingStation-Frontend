@@ -138,7 +138,7 @@ const data2 = [
     closing: "122,293 ",
   },
 ];
-const footer = [
+const footer = (data) => [
   {
     id: `${Math.random()}`,
     value: "",
@@ -153,19 +153,16 @@ const footer = [
   },
   {
     id: `${Math.random()}`,
-    value: "283,922 ",
+    value: `${data?.difference}`,
   },
   {
     id: `${Math.random()}`,
-    value: "283.00",
+    value: "",
   },
+
   {
     id: `${Math.random()}`,
-    value: "283,922.00 ",
-  },
-  {
-    id: `${Math.random()}`,
-    value: "283,922.00 ",
+    value: `${data?.total}`,
   },
 ];
 const header = [
@@ -185,10 +182,10 @@ const header = [
     id: `${Math.random()}`,
     value: "Difference",
   },
-  {
-    id: `${Math.random()}`,
-    value: "LP0",
-  },
+  // {
+  //   id: `${Math.random()}`,
+  //   value: "LP0",
+  // },
   {
     id: `${Math.random()}`,
     value: "Rate",
@@ -468,33 +465,42 @@ const headerT6 = [
 const headerT8 = [
   {
     id: `${Math.random()}`,
-    value: "Product",
+    value: "S/N",
   },
   {
     id: `${Math.random()}`,
-    value: "LTR (QTY)",
+    value: "Product Type",
   },
   {
     id: `${Math.random()}`,
-    value: "Confirmed By",
+    value: "Quantity",
   },
 ];
+
 const headerT9 = [
   {
     id: `${Math.random()}`,
-    value: "Tank",
+    value: "S/N",
   },
   {
     id: `${Math.random()}`,
-    value: "PMS",
+    value: "Tank Name",
   },
   {
     id: `${Math.random()}`,
-    value: "AGO",
+    value: "Product Name",
   },
   {
     id: `${Math.random()}`,
-    value: "DPK",
+    value: "Computed Level",
+  },
+  {
+    id: `${Math.random()}`,
+    value: "Dipping",
+  },
+  {
+    id: `${Math.random()}`,
+    value: "Difference",
   },
 ];
 

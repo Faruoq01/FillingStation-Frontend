@@ -25,6 +25,7 @@ const Dipping = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -63,7 +64,7 @@ const Dipping = () => {
 
   useEffect(() => {
     getDippingData(currentDate);
-  }, [getDippingData, currentDate]);
+  }, [getDippingData, currentDate, refresh]);
 
   const updateRecord = (data) => {
     setOpenEdit(true);
@@ -80,7 +81,9 @@ const Dipping = () => {
     }).then((willDelete) => {
       if (willDelete) {
         APIs.post("/sales/delete/dipping", { id: data._id })
-          .then((data) => {})
+          .then((data) => {
+            setRefresh(!refresh);
+          })
           .then(() => {
             swal("Success", "Record deleted successfully", "success");
           });

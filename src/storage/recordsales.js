@@ -7,6 +7,7 @@ const initialState = {
   selectedPumps: [],
   selectedTanks: [],
   load: {
+    0: [],
     1: [],
     2: [],
     3: [],
@@ -16,7 +17,7 @@ const initialState = {
     7: [],
     8: [],
   },
-  currentDate: null,
+  currentDate: "",
   linkedData: { page: 1 },
   lpo: [],
   searchData2: [],
@@ -37,6 +38,7 @@ export const recordsalesSlice = createSlice({
       state.selectedPumps = [];
       state.selectedTanks = [];
       state.load = {
+        0: [],
         1: [],
         2: [],
         3: [],
@@ -90,6 +92,7 @@ export const recordsalesSlice = createSlice({
       state.selectedPumps = removePump();
       state.selectedTanks = removeTank().list;
       state.load = {
+        0: state.load["0"],
         1: removeTank().pay,
         2: state.load["2"],
         3: state.load["3"],
@@ -134,6 +137,9 @@ export const recordsalesSlice = createSlice({
     updateSelectedPumps: (state, action) => {
       state.selectedPumps = action.payload;
     },
+    updateSelectedTanks: (state, action) => {
+      state.selectedTanks = action.payload;
+    },
     updateRecords: (state, action) => {
       state.PMS = action.payload.pms;
       state.AGO = action.payload.ago;
@@ -160,6 +166,7 @@ export const {
   desselectedListPumps,
   selectedListPumps,
   updateSelectedPumps,
+  updateSelectedTanks,
   updateRecords,
   updatePmsList,
   updateAgoList,

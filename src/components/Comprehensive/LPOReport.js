@@ -25,6 +25,7 @@ const LPOReport = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -63,7 +64,7 @@ const LPOReport = () => {
 
   useEffect(() => {
     getLPOData(currentDate);
-  }, [getLPOData, currentDate]);
+  }, [getLPOData, currentDate, refresh]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSRate;
@@ -93,9 +94,13 @@ const LPOReport = () => {
       if (willDelete) {
         APIs.post("/sales/delete/lpo", {
           data: data,
-        }).then(() => {
-          swal("Success", "Record deleted successfully", "success");
-        });
+        })
+          .then(() => {
+            setRefresh(!refresh);
+          })
+          .then(() => {
+            swal("Success", "Record deleted successfully", "success");
+          });
       }
     });
   };
@@ -275,7 +280,8 @@ const LPOReport = () => {
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; LPO</div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}
-              className="balance_mobile_detail">
+              className="balance_mobile_detail"
+            >
               <div className="sups">
                 <div className="slide">
                   {lpo?.length === 0 ? (

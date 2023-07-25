@@ -31,6 +31,15 @@ import swal from "sweetalert";
 import SalesService from "../../services/sales";
 import APIs from "../../services/api";
 import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
+import CreateInitialBalanceModal from "../Modals/CreateProductDispensedModal";
+import CreateProductDispensedModal from "../Modals/CreateProductDispensedModal";
+import CreateReturnToTankModal from "../Modals/CreateReturnToTankModal";
+import CreateCorporateSaleModal from "../Modals/CreateCorporateSaleModal";
+import CreateExpenseModal from "../Modals/CreateExpenseModal";
+import CreateLPOModal from "../Modals/CreateLPOModal";
+import CreateBankPaymentModal from "../Modals/CreateBankPaymentModal";
+import CreatePOSPaymentModal from "../Modals/CreatePOSPaymentModal";
+import CreateDippingModal from "../Modals/CreateDippingModal";
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
@@ -38,6 +47,19 @@ const ComprehensiveReport = (props) => {
   const date2 = moment().format("Do MMM YYYY");
   const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
+  const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
+  const [bankPaymentModalStatus, setBankPaymentModalStatus] = useState(false);
+  const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(false);
+  const [dippingModalStatus, setDippingModalStatus] = useState(true);
+  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
+
+  const [
+    openCreateCorporateSaleModalModal,
+    setOpenCreateCorporateSaleModalModal,
+  ] = useState(false);
+  const [createExpenseModalStatus, setCreateExpenseModalStatus] =
+    useState(false);
+  const [createLpoModalStatus, setCreateLpoModalStatus] = useState(false);
 
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -46,7 +68,6 @@ const ComprehensiveReport = (props) => {
   const user = useSelector((state) => state.auth.user);
   const history = useHistory();
   const dispatch = useDispatch();
-  // const dipping = useSelector(state => state.dailySalesReducer.overages);
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -99,7 +120,7 @@ const ComprehensiveReport = (props) => {
         const getDate =
           updatedDate === ""
             ? moment().format("YYYY-MM-DD").split()[0]
-            : updatedDate.format("YYYY-MM-DD");
+            : updatedDate;
 
         const status = await APIs.post("/sales/delete/checkStatus", {
           org: resolveUserID().id,
@@ -394,6 +415,39 @@ const ComprehensiveReport = (props) => {
           close={setPrintReportStatus}
         />
       )}
+
+      <CreateProductDispensedModal
+        open={openInitialBalanceModal}
+        close={setOpenInitialBalanceModal}
+      />
+      <CreateBankPaymentModal
+        open={bankPaymentModalStatus}
+        close={setBankPaymentModalStatus}
+      />
+      <CreatePOSPaymentModal
+        open={posPaymentModalStatus}
+        close={setPosPaymentModalStatus}
+      />
+      <CreateReturnToTankModal
+        open={openReturnToTankModal}
+        close={setOpenReturnToTankModal}
+      />
+      <CreateCorporateSaleModal
+        open={openCreateCorporateSaleModalModal}
+        close={setOpenCreateCorporateSaleModalModal}
+      />
+      <CreateExpenseModal
+        open={createExpenseModalStatus}
+        close={setCreateExpenseModalStatus}
+      />
+      <CreateLPOModal
+        open={createLpoModalStatus}
+        close={setCreateLpoModalStatus}
+      />
+      <CreateDippingModal
+        open={dippingModalStatus}
+        close={setDippingModalStatus}
+      />
     </Fragment>
   );
 };

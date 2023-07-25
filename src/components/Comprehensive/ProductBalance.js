@@ -25,6 +25,7 @@ const ProductBalance = (props) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -65,7 +66,7 @@ const ProductBalance = (props) => {
 
   useEffect(() => {
     getAllProduct(currentDate);
-  }, [getAllProduct, currentDate]);
+  }, [getAllProduct, currentDate, refresh]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSSellingPrice;
@@ -117,7 +118,7 @@ const ProductBalance = (props) => {
         const getDate =
           currentDate === ""
             ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate.format("YYYY-MM-DD");
+            : currentDate;
 
         const status = await APIs.post("/sales/delete/checkStatus", {
           org: resolveUserID().id,
@@ -137,9 +138,13 @@ const ProductBalance = (props) => {
           DailySalesService.deleteSales({
             record: data,
             station: oneStationData,
-          }).then(() => {
-            swal("Success", "Record deleted successfully", "success");
-          });
+          })
+            .then(() => {
+              setRefresh(!refresh);
+            })
+            .then(() => {
+              swal("Success", "Record deleted successfully", "success");
+            });
         }
       }
     });
@@ -299,16 +304,20 @@ const ProductBalance = (props) => {
             )}
             <div
               style={{ marginTop: "5px" }}
-              className="product_balance_header">
+              className="product_balance_header"
+            >
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells"></div>
+                className="cells"
+              ></div>
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells"></div>
+                className="cells"
+              ></div>
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells">
+                className="cells"
+              >
                 Total
               </div>
               <div style={ins} className="cells">
@@ -320,7 +329,8 @@ const ProductBalance = (props) => {
               </div>
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells"></div>
+                className="cells"
+              ></div>
             </div>
           </div>
 
@@ -329,7 +339,8 @@ const ProductBalance = (props) => {
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; {props.type}</div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}
-              className="balance_mobile_detail">
+              className="balance_mobile_detail"
+            >
               <div className="sups">
                 <div className="slide">
                   {product?.length === 0 ? (

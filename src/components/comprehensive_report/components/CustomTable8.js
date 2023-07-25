@@ -1,11 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-export default function CustomTable8({
-  header = [],
-  footer = [],
-  data = [],
-  title = "",
-}) {
+export default function CustomTable8({ header = [], footer = [], title = "" }) {
+  const { pms, ago, dpk } = useSelector(
+    (state) => state.comprehensive.balanceCF
+  );
+  const [data, setData] = useState([]);
+  const formatData = () => {
+    let newData = [];
+    let c = {
+      id: `${Math.random()}`,
+      sn: "PMS ",
+      exp: "122,293.00  ",
+      amount: "Oloyode Haruna Ishola ",
+    };
+    newData.push({
+      product: "PMS",
+      quantity: pms,
+    });
+    newData.push({
+      product: "DPK",
+      quantity: dpk,
+    });
+    newData.push({
+      product: "AGO",
+      quantity: ago,
+    });
+    setData([...newData]);
+  };
+  useEffect(() => {
+    formatData();
+  }, []);
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>{title}</span>
@@ -40,12 +65,12 @@ export default function CustomTable8({
 
           <tbody>
             {data.map((item, index) => (
-              <tr key={item.id}>
+              <tr key={Math.random()}>
                 <td style={{ ...Styles.th, width: "", paddingLeft: 10 }}>
-                  {item.sn}
+                  {index + 1}
                 </td>
-                <td style={{ ...Styles.th }}>{item.exp} </td>
-                <td style={{ ...Styles.th }}>{item.amount} </td>
+                <td style={{ ...Styles.th }}>{item.product} </td>
+                <td style={{ ...Styles.th }}>{item?.quantity} </td>
               </tr>
             ))}
           </tbody>

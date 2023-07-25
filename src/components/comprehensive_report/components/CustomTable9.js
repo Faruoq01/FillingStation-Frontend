@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import ApproximateDecimal from "../../common/approx";
 
 export default function CustomTable9({
   header = [],
@@ -6,6 +8,11 @@ export default function CustomTable9({
   data = [],
   title = "",
 }) {
+  const dipping = useSelector((state) => state.comprehensive.dipping);
+  const formatFile = () => {};
+  useEffect(() => {
+    formatFile();
+  }, []);
   return (
     <div style={{ marginTop: 10, marginBottom: 10 }}>
       <span style={Styles.title}>{title}</span>
@@ -37,16 +44,24 @@ export default function CustomTable9({
               ))}
             </tr>
           </thead>
-
           <tbody>
-            {data.map((item, index) => (
-              <tr key={item.id}>
+            {dipping.map((item, index) => (
+              <tr key={index + 1}>
                 <td style={{ ...Styles.th, width: "", paddingLeft: 10 }}>
-                  {item.tank}
+                  {index + 1}
                 </td>
-                <td style={{ ...Styles.th }}>{item.pms} </td>
-                <td style={{ ...Styles.th }}>{item.dpk} </td>
-                <td style={{ ...Styles.th }}>{item.ago} </td>
+                <td style={{ ...Styles.th, width: "", paddingLeft: 10 }}>
+                  {item.tankName}
+                </td>
+                <td style={{ ...Styles.th }}>{item.productType} </td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(item.dipping)}
+                </td>
+                <td style={{ ...Styles.th }}>
+                  {ApproximateDecimal(
+                    Number(item.dipping) - Number(item.afterSales)
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

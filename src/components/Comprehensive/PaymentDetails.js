@@ -148,7 +148,8 @@ const PaymentDetails = () => {
         <div className="mobile_header">&nbsp;&nbsp;&nbsp; Bank Payments</div>
         <div
           style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
+          className="balance_mobile_detail"
+        >
           <div className="sups">
             <div className="slide">
               {payments.bank.length === 0 ? (
@@ -170,7 +171,8 @@ const PaymentDetails = () => {
         <div className="mobile_header">&nbsp;&nbsp;&nbsp; POS Payments</div>
         <div
           style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
+          className="balance_mobile_detail"
+        >
           <div className="sups">
             <div className="slide">
               {payments.pos.length === 0 ? (
