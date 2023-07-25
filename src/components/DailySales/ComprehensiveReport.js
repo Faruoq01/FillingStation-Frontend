@@ -83,7 +83,6 @@ const ComprehensiveReport = (props) => {
     if (oneStationData === null) {
       history.push("/home/daily-sales");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateDate = (newValue) => {
