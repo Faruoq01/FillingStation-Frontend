@@ -1,4 +1,3 @@
-
 import React, { Fragment } from "react";
 import "../../styles/comprehensive.scss";
 import pump from "../../assets/comp/pump.png";
@@ -91,6 +90,7 @@ const ComprehensiveReport = (props) => {
     if (oneStationData === null) {
       history.push("/home/daily-sales");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateDate = (newValue) => {
@@ -120,7 +120,7 @@ const ComprehensiveReport = (props) => {
         const getDate =
           updatedDate === ""
             ? moment().format("YYYY-MM-DD").split()[0]
-            : updatedDate.format("YYYY-MM-DD");
+            : updatedDate;
 
         const status = await APIs.post("/sales/delete/checkStatus", {
           org: resolveUserID().id,
@@ -160,8 +160,7 @@ const ComprehensiveReport = (props) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "flex-end",
-              }}
-            >
+              }}>
               <div>
                 <div style={sales}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -194,8 +193,7 @@ const ComprehensiveReport = (props) => {
                   backgroundColor: "blue",
                 },
               }}
-              onClick={resetAllRecords}
-            >
+              onClick={resetAllRecords}>
               Reset
             </Button>
 
@@ -215,8 +213,7 @@ const ComprehensiveReport = (props) => {
               }}
               onClick={() => {
                 setPrintReportStatus(true);
-              }}
-            >
+              }}>
               Print
             </Button>
           </div>
