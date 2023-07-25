@@ -545,11 +545,11 @@ const SummaryRecord = (props) => {
           station: oneStationData,
           tankLevels: records["8"],
         }),
-        SalesService.creditBalance({
-          ...settings,
-          station: oneStationData,
-          debits: records["9"],
-        }),
+        // SalesService.creditBalance({
+        //   ...settings,
+        //   station: oneStationData,
+        //   debits: records["9"],
+        // }),
         SalesService.balanceCF({
           ...settings,
           station: oneStationData,
@@ -559,7 +559,7 @@ const SummaryRecord = (props) => {
       Promise.allSettled(payload)
         .then((results) => {
           handleClose();
-          history.push("/home/daily-sales");
+          // history.push("/home/daily-sales");
           swal("Success!", "Record saved successfully!", "success");
         })
         .catch((error) => {

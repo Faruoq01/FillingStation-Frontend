@@ -25,6 +25,7 @@ const ProductBalance = (props) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -65,7 +66,7 @@ const ProductBalance = (props) => {
 
   useEffect(() => {
     getAllProduct(currentDate);
-  }, [getAllProduct, currentDate]);
+  }, [getAllProduct, currentDate, refresh]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSSellingPrice;
@@ -117,7 +118,7 @@ const ProductBalance = (props) => {
         const getDate =
           currentDate === ""
             ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate.format("YYYY-MM-DD");
+            : currentDate;
 
         const status = await APIs.post("/sales/delete/checkStatus", {
           org: resolveUserID().id,
@@ -137,9 +138,13 @@ const ProductBalance = (props) => {
           DailySalesService.deleteSales({
             record: data,
             station: oneStationData,
-          }).then(() => {
-            swal("Success", "Record deleted successfully", "success");
-          });
+          })
+            .then(() => {
+              setRefresh(!refresh);
+            })
+            .then(() => {
+              swal("Success", "Record deleted successfully", "success");
+            });
         }
       }
     });
