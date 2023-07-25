@@ -44,13 +44,13 @@ const ComprehensiveReport = (props) => {
   const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
   const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
-  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
+  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(true);
   const [
     openCreateCorporateSaleModalModal,
     setOpenCreateCorporateSaleModalModal,
   ] = useState(false);
   const [createExpenseModalStatus, setCreateExpenseModalStatus] =
-    useState(true);
+    useState(false);
 
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);

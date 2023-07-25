@@ -4,7 +4,13 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThreeDots } from "react-loader-spinner";
 import "../../styles/estation/payment.scss";
 import CloseIcon from "@mui/icons-material/Close";
-import { Button } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 const CreateReturnToTankModal = (props) => {
   const handleClose = () => props.close(false);
@@ -13,11 +19,13 @@ const CreateReturnToTankModal = (props) => {
   const [paymentMethod, setPaymentMethod] = useState();
   const [tellerNo, setTellerNo] = useState();
   const [recieptImage, setRecieptImage] = useState();
+  const [product, setProduct] = useState();
   const mobile = useMediaQuery("(max-width:900px)");
   const handleOnChange = (setState) => (event) => {
     setState(event.target.value);
   };
-  const handleSubmitForm = () => {
+  const handleSubmitForm = (e) => {
+    e.preventDefault();
     const data = {
       accountName,
       amount,
@@ -27,12 +35,7 @@ const CreateReturnToTankModal = (props) => {
     };
     console.log(data);
   };
-  // sales;
-  // RTlitre;
-  // pumpID;
-  // openingMeter;
-  // closingMeter;
-  // productType;
+
   return (
     <Modal
       open={props.open}
@@ -51,20 +54,60 @@ const CreateReturnToTankModal = (props) => {
         <div className="form-area-new-pay">
           <form>
             <CustomTextInput
-              placeholder="quantity"
-              title="Quantity"
+              placeholder="return to tank litre"
+              title="Return To Tank Litre"
               onChange={handleOnChange(setAccountName)}
             />
+
+            {product === 1 && (
+              <CustomTextInput
+                placeholder="pms price"
+                title="PMS Price"
+                onChange={handleOnChange(setAccountName)}
+              />
+            )}
+            {product === 3 && (
+              <CustomTextInput
+                placeholder="ago price"
+                title="AGO Price"
+                onChange={handleOnChange(setAccountName)}
+              />
+            )}
+            {product === 2 && (
+              <CustomTextInput
+                placeholder="dpk price"
+                title="DPK Price"
+                onChange={handleOnChange(setAccountName)}
+              />
+            )}
+            <div>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Product Type
+                </InputLabel>
+                <Select
+                  sx={{ height: 35 }}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={product}
+                  label="Product Type"
+                  onChange={handleOnChange(setProduct)}
+                >
+                  <MenuItem value={1}>PMS</MenuItem>
+                  <MenuItem value={2}>DPK</MenuItem>
+                  <MenuItem value={3}>AGO</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
             <div
               style={{
-                marginBottom: "1rem",
-                marginTop: "2rem",
+                // marginBottom: "3rem",
+                marginTop: "1rem",
                 // backgroundColor: "red",
                 padding: 0,
                 display: "flex",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
-                flexDirection: "column",
               }}
               className="footer-section-p"
             >
@@ -72,7 +115,7 @@ const CreateReturnToTankModal = (props) => {
                 variant="contained"
                 onClick={handleSubmitForm}
                 style={{
-                  width: 100,
+                  // width: 100,
                   background: "#06805B",
                   color: "white",
                 }}

@@ -28,11 +28,7 @@ const CreateExpenseModal = (props) => {
     console.log(data);
   };
   // sales;
-  // RTlitre;
-  // pumpID;
-  // openingMeter;
-  // closingMeter;
-  // productType;
+
   return (
     <Modal
       open={props.open}
