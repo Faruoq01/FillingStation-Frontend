@@ -1,3 +1,4 @@
+
 import React, { Fragment } from "react";
 import "../../styles/comprehensive.scss";
 import pump from "../../assets/comp/pump.png";

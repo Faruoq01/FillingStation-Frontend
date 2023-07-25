@@ -26,6 +26,7 @@ const TankLevels = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -64,7 +65,7 @@ const TankLevels = () => {
 
   useEffect(() => {
     getTankLevels(currentDate);
-  }, [getTankLevels, currentDate]);
+  }, [getTankLevels, currentDate, refresh]);
 
   const updateRecord = (data) => {
     // setOpenEdit(true);
@@ -81,7 +82,9 @@ const TankLevels = () => {
     }).then((willDelete) => {
       if (willDelete) {
         APIs.post("/sales/delete/tankLevels", { id: data._id })
-          .then((data) => {})
+          .then((data) => {
+            setRefresh(!refresh);
+          })
           .then(() => {
             swal("Success", "Record deleted successfully", "success");
           });

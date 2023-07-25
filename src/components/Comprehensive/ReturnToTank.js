@@ -12,6 +12,7 @@ import { setReturnToTank } from "../../storage/comprehensive";
 import { useHistory } from "react-router-dom";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
+import { setDateValue } from "../../storage/dailysales";
 
 const ReturnToTank = () => {
   const history = useHistory();
@@ -24,6 +25,7 @@ const ReturnToTank = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -62,7 +64,7 @@ const ReturnToTank = () => {
 
   useEffect(() => {
     getReturnToTankData(currentDate);
-  }, [getReturnToTankData, currentDate]);
+  }, [getReturnToTankData, currentDate, refresh]);
 
   const rate = (data) => {
     if (data.productType === "PMS") return data.PMSPrice;
@@ -91,7 +93,9 @@ const ReturnToTank = () => {
     }).then((willDelete) => {
       if (willDelete) {
         APIs.post("/sales/delete/rt", { id: data._id })
-          .then((data) => {})
+          .then(() => {
+            setRefresh(!refresh);
+          })
           .then(() => {
             swal("Success", "Record deleted successfully", "success");
           });
