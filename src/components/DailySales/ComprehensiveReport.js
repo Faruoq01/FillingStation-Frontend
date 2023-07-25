@@ -39,6 +39,7 @@ import CreateExpenseModal from "../Modals/CreateExpenseModal";
 import CreateLPOModal from "../Modals/CreateLPOModal";
 import CreateBankPaymentModal from "../Modals/CreateBankPaymentModal";
 import CreatePOSPaymentModal from "../Modals/CreatePOSPaymentModal";
+import CreateDippingModal from "../Modals/CreateDippingModal";
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
@@ -48,8 +49,10 @@ const ComprehensiveReport = (props) => {
   const [value, setValue] = React.useState(null);
   const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
   const [bankPaymentModalStatus, setBankPaymentModalStatus] = useState(false);
-  const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(true);
+  const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(false);
+  const [dippingModalStatus, setDippingModalStatus] = useState(true);
   const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
+
   const [
     openCreateCorporateSaleModalModal,
     setOpenCreateCorporateSaleModalModal,
@@ -442,6 +445,10 @@ const ComprehensiveReport = (props) => {
       <CreateLPOModal
         open={createLpoModalStatus}
         close={setCreateLpoModalStatus}
+      />
+      <CreateDippingModal
+        open={dippingModalStatus}
+        close={setDippingModalStatus}
       />
     </Fragment>
   );
