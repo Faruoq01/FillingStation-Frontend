@@ -7,9 +7,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
   FormControl,
+  Input,
   InputLabel,
   MenuItem,
   Select,
+  TextField,
 } from "@mui/material";
 
 const CreateReturnToTankModal = (props) => {
@@ -61,23 +63,26 @@ const CreateReturnToTankModal = (props) => {
 
             {product === 1 && (
               <CustomTextInput
+                disabled
                 placeholder="pms price"
                 title="PMS Price"
-                onChange={handleOnChange(setAccountName)}
+                // onChange={handleOnChange(setAccountName)}
               />
             )}
             {product === 3 && (
               <CustomTextInput
+                disabled
                 placeholder="ago price"
                 title="AGO Price"
-                onChange={handleOnChange(setAccountName)}
+                // onChange={handleOnChange(setAccountName)}
               />
             )}
             {product === 2 && (
               <CustomTextInput
+                disabled
                 placeholder="dpk price"
                 title="DPK Price"
-                onChange={handleOnChange(setAccountName)}
+                // onChange={handleOnChange(setAccountName)}
               />
             )}
             <div>
@@ -136,7 +141,7 @@ const data = {};
 const CustomTextInput = (props) => (
   <Fragment>
     <label>{props.title}</label>
-    <input type={props.type ?? "text"} {...props} />
+    <input {...props} />
   </Fragment>
 );
 
