@@ -44,7 +44,7 @@ const CreateDippingModal = (props) => {
       <div className="e-station-payment-modal">
         <div className="cancel-confirm">
           <label for="Confirm Payment" className="title-label-">
-            Create Bank Payment
+            Create Dipping
           </label>
           <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
         </div>
