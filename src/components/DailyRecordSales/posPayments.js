@@ -8,10 +8,11 @@ import AddIcon from "@mui/icons-material/Add";
 import hr8 from "../../assets/hr8.png";
 import swal from "sweetalert";
 import config from "../../constants";
-import { updatePayload } from "../../storage/recordsales";
+import { posPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 import ApproximateDecimal from "../common/approx";
 import { Button } from "@mui/material";
+import moment from "moment";
 
 const PosPayments = (props) => {
   const dispatch = useDispatch();
@@ -20,8 +21,19 @@ const PosPayments = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   ///////////////////////////////////////////////////////////
-  const records = useSelector((state) => state.recordsales.load);
+  const lpoPayloadData = useSelector((state) => state.recordsales.lpoPayload);
+  const expensesPayloadData = useSelector(
+    (state) => state.recordsales.expensesPayload
+  );
+  const bankPayloadData = useSelector((state) => state.recordsales.bankPayload);
+  const posPayloadData = useSelector((state) => state.recordsales.posPayload);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const user = useSelector((state) => state.auth.user);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const mainDate = moment
+    .tz(currentDate, user.timezone)
+    .format("YYYY-MM-DD HH:mm:ss")
+    .split(" ")[0];
 
   // payload data
   const [posName, setPosName] = useState("");
@@ -32,9 +44,9 @@ const PosPayments = (props) => {
   const [gall, setGall] = useState("null");
 
   const deleteFromList = (index) => {
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["6"].splice(index, 1);
-    dispatch(updatePayload(tankFromPayload));
+    const copyPos = JSON.parse(JSON.stringify(posPayloadData));
+    copyPos.splice(index, 1);
+    dispatch(posPayload(copyPos));
   };
 
   const openCamera = () => {
@@ -87,14 +99,17 @@ const PosPayments = (props) => {
       terminalID: terminalID,
       amountPaid: amountPaid,
       paymentDate: paymentDate,
+      confirmation: "null",
       uploadSlip: gall === null ? cam : gall,
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
+      createdAt: mainDate,
+      updatedAt: mainDate,
     };
 
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["6"].push(payload);
-    dispatch(updatePayload(tankFromPayload));
+    const copyPos = JSON.parse(JSON.stringify(posPayloadData));
+    copyPos.push(payload);
+    dispatch(posPayload(copyPos));
 
     setPosName("");
     setTerminalID("");
@@ -105,10 +120,10 @@ const PosPayments = (props) => {
   };
 
   const getPayments = () => {
-    const bank = records["5"];
-    const pos = records["6"];
+    const bank = bankPayloadData;
+    const pos = posPayloadData;
 
-    const totalExpenses = records["4"].reduce((accum, current) => {
+    const totalExpenses = expensesPayloadData.reduce((accum, current) => {
       return Number(accum) + Number(current.expenseAmount);
     }, 0);
 
@@ -155,7 +170,7 @@ const PosPayments = (props) => {
             Total lpo sales
         ###############################################*/
 
-    const totalLpoPMS = records["3"]
+    const totalLpoPMS = lpoPayloadData
       .filter((data) => data.productType === "PMS")
       .reduce((accum, current) => {
         return (
@@ -163,7 +178,7 @@ const PosPayments = (props) => {
         );
       }, 0);
 
-    const totalLpoAGO = records["3"]
+    const totalLpoAGO = lpoPayloadData
       .filter((data) => data.productType === "AGO")
       .reduce((accum, current) => {
         return (
@@ -171,7 +186,7 @@ const PosPayments = (props) => {
         );
       }, 0);
 
-    const totalLpoDPK = records["3"]
+    const totalLpoDPK = lpoPayloadData
       .filter((data) => data.productType === "DPK")
       .reduce((accum, current) => {
         return (
@@ -183,7 +198,7 @@ const PosPayments = (props) => {
             Return to tank
         ###############################################*/
 
-    const pmsRT = records["2"]
+    const pmsRT = selectedPumps
       .filter((data) => data.productType === "PMS")
       .reduce((accum, current) => {
         return (
@@ -192,7 +207,7 @@ const PosPayments = (props) => {
         );
       }, 0);
 
-    const agoRT = records["2"]
+    const agoRT = selectedPumps
       .filter((data) => data.productType === "AGO")
       .reduce((accum, current) => {
         return (
@@ -201,7 +216,7 @@ const PosPayments = (props) => {
         );
       }, 0);
 
-    const dpkRT = records["2"]
+    const dpkRT = selectedPumps
       .filter((data) => data.productType === "DPK")
       .reduce((accum, current) => {
         return (
@@ -407,10 +422,10 @@ const PosPayments = (props) => {
             <div className="col">Action</div>
           </div>
 
-          {records["6"].length === 0 ? (
+          {posPayloadData.length === 0 ? (
             <div style={{ marginTop: "10px" }}>No data</div>
           ) : (
-            records["6"].map((data, index) => {
+            posPayloadData.map((data, index) => {
               return (
                 <div
                   key={index}

@@ -1,7 +1,7 @@
 import { Autocomplete, Button } from "@mui/material";
 import ReactCamera from "../Modals/ReactCamera";
 import ApproximateDecimal from "../common/approx";
-import { updatePayload } from "../../storage/recordsales";
+import { bankPayload } from "../../storage/recordsales";
 import photo from "../../assets/photo.png";
 import upload from "../../assets/upload.png";
 import { useRef, useState } from "react";
@@ -11,6 +11,7 @@ import axios from "axios";
 import swal from "sweetalert";
 import hr8 from "../../assets/hr8.png";
 import AddIcon from "@mui/icons-material/Add";
+import moment from "moment";
 
 const BankPayment = () => {
   const dispatch = useDispatch();
@@ -20,8 +21,19 @@ const BankPayment = () => {
   const [autoCOM, setAutoCom] = useState(null);
 
   ///////////////////////////////////////////////////////////
-  const records = useSelector((state) => state.recordsales.load);
+  const lpoPayloadData = useSelector((state) => state.recordsales.lpoPayload);
+  const expensesPayloadData = useSelector(
+    (state) => state.recordsales.expensesPayload
+  );
+  const bankPayloadData = useSelector((state) => state.recordsales.bankPayload);
+  const posPayloadData = useSelector((state) => state.recordsales.posPayload);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const user = useSelector((state) => state.auth.user);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const mainDate = moment
+    .tz(currentDate, user.timezone)
+    .format("YYYY-MM-DD HH:mm:ss")
+    .split(" ")[0];
 
   const [bankName, setBankName] = useState("");
   const [tellerID, setTellerID] = useState("");
@@ -31,9 +43,9 @@ const BankPayment = () => {
   const [gall, setGall] = useState("null");
 
   const deleteFromList = (index) => {
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["5"].splice(index, 1);
-    dispatch(updatePayload(tankFromPayload));
+    const copyBank = JSON.parse(JSON.stringify(bankPayloadData));
+    copyBank.splice(index, 1);
+    dispatch(bankPayload(copyBank));
   };
 
   const openCamera = () => {
@@ -86,14 +98,17 @@ const BankPayment = () => {
       tellerNumber: tellerID,
       amountPaid: amountPaid,
       paymentDate: paymentDate,
+      confirmation: "null",
       uploadSlip: gall === null ? cam : gall,
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
+      createdAt: mainDate,
+      updatedAt: mainDate,
     };
 
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["5"].push(payload);
-    dispatch(updatePayload(tankFromPayload));
+    const copyBank = JSON.parse(JSON.stringify(bankPayloadData));
+    copyBank.push(payload);
+    dispatch(bankPayload(copyBank));
 
     setBankName("");
     setTellerID("");
@@ -107,10 +122,10 @@ const BankPayment = () => {
   };
 
   const getPayments = () => {
-    const bank = records["5"];
-    const pos = records["6"];
+    const bank = bankPayloadData;
+    const pos = posPayloadData;
 
-    const totalExpenses = records["4"].reduce((accum, current) => {
+    const totalExpenses = expensesPayloadData.reduce((accum, current) => {
       return Number(accum) + Number(current.expenseAmount);
     }, 0);
 
@@ -157,7 +172,7 @@ const BankPayment = () => {
             Total lpo sales
         ###############################################*/
 
-    const totalLpoPMS = records["3"]
+    const totalLpoPMS = lpoPayloadData
       .filter((data) => data.productType === "PMS")
       .reduce((accum, current) => {
         return (
@@ -165,7 +180,7 @@ const BankPayment = () => {
         );
       }, 0);
 
-    const totalLpoAGO = records["3"]
+    const totalLpoAGO = lpoPayloadData
       .filter((data) => data.productType === "AGO")
       .reduce((accum, current) => {
         return (
@@ -173,7 +188,7 @@ const BankPayment = () => {
         );
       }, 0);
 
-    const totalLpoDPK = records["3"]
+    const totalLpoDPK = lpoPayloadData
       .filter((data) => data.productType === "DPK")
       .reduce((accum, current) => {
         return (
@@ -185,7 +200,7 @@ const BankPayment = () => {
             Return to tank
         ###############################################*/
 
-    const pmsRT = records["2"]
+    const pmsRT = selectedPumps
       .filter((data) => data.productType === "PMS")
       .reduce((accum, current) => {
         return (
@@ -194,7 +209,7 @@ const BankPayment = () => {
         );
       }, 0);
 
-    const agoRT = records["2"]
+    const agoRT = selectedPumps
       .filter((data) => data.productType === "AGO")
       .reduce((accum, current) => {
         return (
@@ -203,7 +218,7 @@ const BankPayment = () => {
         );
       }, 0);
 
-    const dpkRT = records["2"]
+    const dpkRT = selectedPumps
       .filter((data) => data.productType === "DPK")
       .reduce((accum, current) => {
         return (
@@ -457,10 +472,10 @@ const BankPayment = () => {
             <div className="col">Action</div>
           </div>
 
-          {records["5"].length === 0 ? (
+          {bankPayloadData.length === 0 ? (
             <div style={{ marginTop: "10px" }}>No data</div>
           ) : (
-            records["5"].map((data, index) => {
+            bankPayloadData.map((data, index) => {
               return (
                 <div
                   key={index}

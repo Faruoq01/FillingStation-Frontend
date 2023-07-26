@@ -24,7 +24,21 @@ import ReturnToTankComponent from "../DailyRecordSales/ReturnToTankComponent";
 import DippingComponents from "../DailyRecordSales/DippingComponents";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { passRecordSales, updateRecords } from "../../storage/recordsales";
+import {
+  bankPayload,
+  creditPayload,
+  dippingPayload,
+  expensesPayload,
+  lpoPayload,
+  passRecordSales,
+  posPayload,
+  rtPayload,
+  salesPayload,
+  tanksPayload,
+  updateRecords,
+  updateSelectedPumps,
+  updateSelectedTanks,
+} from "../../storage/recordsales";
 import { useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
 import {
@@ -207,6 +221,7 @@ const DailyRecordSales = () => {
   const linkedData = useSelector((state) => state.recordsales.linkedData);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
   const [defaultState, setDefault] = useState(0);
   const [open, setOpen] = useState(false);
   const [openSummary, setOpenSummary] = useState(false);
@@ -283,10 +298,23 @@ const DailyRecordSales = () => {
     dispatch(passRecordSales(list));
     getAllInitialRecords(list);
 
-    // const pendingTasks = localStorage.getItem("machine");
-    // if (pendingTasks) {
-    //   setPending(true);
-    // }
+    dispatch(updateSelectedPumps([]));
+    dispatch(updateSelectedTanks([]));
+    dispatch(
+      salesPayload({
+        sales: [],
+        tanks: [],
+        pumps: [],
+      })
+    );
+    dispatch(rtPayload([]));
+    dispatch(lpoPayload([]));
+    dispatch(creditPayload([]));
+    dispatch(expensesPayload([]));
+    dispatch(bankPayload([]));
+    dispatch(posPayload([]));
+    dispatch(dippingPayload([]));
+    dispatch(tanksPayload([]));
   }, [getAllInitialRecords, dispatch]);
 
   const nextQuestion = () => {
@@ -295,6 +323,8 @@ const DailyRecordSales = () => {
     if (newList.head.next !== null) {
       if (oneStationData === null)
         return swal("Warning!", "Please select a station first", "info");
+      if (typeof currentDate !== "string")
+        return swal("Error", "Please select record date", "error");
       if (!getPerm("3") && newList.page === 1)
         return swal("Warning!", "Permission denied", "info");
       if (!getPerm("4") && newList.page === 2)

@@ -4,10 +4,11 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import me4 from "../../assets/me4.png";
-import { updatePayload } from "../../storage/recordsales";
+import { dippingPayload } from "../../storage/recordsales";
 import ApproximateDecimal from "../common/approx";
 import OutletService from "../../services/outletService";
 import { ThreeDots } from "react-loader-spinner";
+import moment from "moment";
 
 const returnColor = (data, style) => {
   if (data === "PMS") {
@@ -25,13 +26,20 @@ const DippingComponents = (props) => {
   const dispatch = useDispatch();
 
   /////////////////////////////////////////////////////////
-  const records = useSelector((state) => state.recordsales.load);
+  const dippingPayloadData = useSelector(
+    (state) => state.recordsales.dippingPayload
+  );
   const user = useSelector((state) => state.auth.user);
   const [pms, setPMS] = useState([]);
   const [ago, setAGO] = useState([]);
   const [dpk, setDPK] = useState([]);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const mainDate = moment
+    .tz(currentDate, user.timezone)
+    .format("YYYY-MM-DD HH:mm:ss")
+    .split(" ")[0];
 
   // console.log(records["7"].push(2));
 
@@ -136,18 +144,29 @@ const DippingComponents = (props) => {
         newPMSList[index] = clonedPMS;
         setPMS(newPMSList);
 
-        const tankFromPayload = JSON.parse(JSON.stringify(records)); // Create a deep copy
+        const payload = {
+          tankID: item._id,
+          productType: item.productType,
+          currentLevel: item.currentLevel,
+          tankCapacity: item.tankCapacity,
+          dipping: removeSpecialCharacters(e.target.value),
+          afterSales: levelAfterSales,
+          tankName: item,
+          outletID: oneStationData._id,
+          organizationID: oneStationData.organisation,
+          createdAt: mainDate,
+          updatedAt: mainDate,
+        };
 
-        const indices = tankFromPayload["7"].findIndex(
-          (data) => data._id === item._id
-        );
+        const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData)); // Create a deep copy
+        const indices = copyDipping.findIndex((data) => data._id === item._id);
 
         if (indices === -1) {
-          tankFromPayload["7"].push(clonedPMS);
-          dispatch(updatePayload(tankFromPayload));
+          copyDipping.push(payload);
+          dispatch(dippingPayload(copyDipping));
         } else {
-          tankFromPayload["7"][indices] = clonedPMS;
-          dispatch(updatePayload(tankFromPayload));
+          copyDipping[indices] = payload;
+          dispatch(dippingPayload(copyDipping));
         }
         break;
       }
@@ -176,16 +195,28 @@ const DippingComponents = (props) => {
         newAGOList[index] = clonedAGO;
         setAGO(newAGOList);
 
-        const tankFromPayload = JSON.parse(JSON.stringify(records));
-        const indices = tankFromPayload["7"].findIndex(
-          (data) => data._id === item._id
-        );
+        const payload = {
+          tankID: item._id,
+          productType: item.productType,
+          currentLevel: item.currentLevel,
+          tankCapacity: item.tankCapacity,
+          dipping: removeSpecialCharacters(e.target.value),
+          afterSales: levelAfterSales,
+          tankName: item,
+          outletID: oneStationData._id,
+          organizationID: oneStationData.organisation,
+          createdAt: mainDate,
+          updatedAt: mainDate,
+        };
+
+        const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData));
+        const indices = copyDipping.findIndex((data) => data._id === item._id);
         if (indices === -1) {
-          tankFromPayload["7"].push(clonedAGO);
-          dispatch(updatePayload(tankFromPayload));
+          copyDipping.push(payload);
+          dispatch(dippingPayload(copyDipping));
         } else {
-          tankFromPayload["7"][indices] = clonedAGO;
-          dispatch(updatePayload(tankFromPayload));
+          copyDipping[indices] = payload;
+          dispatch(dippingPayload(copyDipping));
         }
         break;
       }
@@ -214,16 +245,28 @@ const DippingComponents = (props) => {
         newDPKList[index] = clonedDPK;
         setDPK(newDPKList);
 
-        const tankFromPayload = JSON.parse(JSON.stringify(records));
-        const indices = tankFromPayload["7"].findIndex(
-          (data) => data._id === item._id
-        );
+        const payload = {
+          tankID: item._id,
+          productType: item.productType,
+          currentLevel: item.currentLevel,
+          tankCapacity: item.tankCapacity,
+          dipping: removeSpecialCharacters(e.target.value),
+          afterSales: levelAfterSales,
+          tankName: item,
+          outletID: oneStationData._id,
+          organizationID: oneStationData.organisation,
+          createdAt: mainDate,
+          updatedAt: mainDate,
+        };
+
+        const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData));
+        const indices = copyDipping.findIndex((data) => data._id === item._id);
         if (indices === -1) {
-          tankFromPayload["7"].push(clonedDPK);
-          dispatch(updatePayload(tankFromPayload));
+          copyDipping.push(payload);
+          dispatch(dippingPayload(copyDipping));
         } else {
-          tankFromPayload["7"][indices] = clonedDPK;
-          dispatch(updatePayload(tankFromPayload));
+          copyDipping[indices] = payload;
+          dispatch(dippingPayload(copyDipping));
         }
         break;
       }

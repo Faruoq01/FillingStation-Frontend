@@ -127,6 +127,7 @@ const ManagerModal = (props) => {
       dateEmployed: dateEmployed,
       dateOfBirth: dateOfBirth,
       role: roleData,
+      timezone: user.timezone,
       alias: alias,
       jobTitle: jobTitle,
       password: password,

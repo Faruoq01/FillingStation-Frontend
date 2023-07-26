@@ -4,7 +4,13 @@ import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@mui/material";
 import swal from "sweetalert";
-import { updatePayload } from "../../storage/recordsales";
+import {
+  creditPayload,
+  rtPayload,
+  salesPayload,
+  tanksPayload,
+  updatePayload,
+} from "../../storage/recordsales";
 import { useHistory } from "react-router-dom";
 import "../../styles/summary.scss";
 import { useState } from "react";
@@ -218,17 +224,45 @@ const ReturnToTank = (props) => {
 };
 
 const SummaryRecord = (props) => {
+  const user = useSelector((state) => state.auth.user);
   const records = useSelector((state) => state.recordsales.load);
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  /////////////////////////////////////////////////////////
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
-  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const salesPayloadData = useSelector(
+    (state) => state.recordsales.salesPayload
+  );
+  const rtPayloadData = useSelector((state) => state.recordsales.rtPayload);
+  const lpoPayloadData = useSelector((state) => state.recordsales.lpoPayload);
+  const creditPayloadData = useSelector(
+    (state) => state.recordsales.creditPayload
+  );
+  const expensesPayloadData = useSelector(
+    (state) => state.recordsales.expensesPayload
+  );
+  const bankPayloadData = useSelector((state) => state.recordsales.bankPayload);
+  const posPayloadData = useSelector((state) => state.recordsales.posPayload);
+  const dippingPayloadData = useSelector(
+    (state) => state.recordsales.dippingPayload
+  );
+  console.log(dippingPayloadData, "dipping");
+  const tanksPayloadData = useSelector(
+    (state) => state.recordsales.tanksPayload
+  );
+
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankList = useSelector((state) => state.outlet.tankList);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const mainDate = moment
+    .tz(currentDate, user.timezone)
+    .format("YYYY-MM-DD HH:mm:ss")
+    .split(" ")[0];
   console.log(records, "summary");
   // console.log(typeof currentDate, "date");
   // console.log(selectedPumps, "Pumps")
@@ -297,8 +331,7 @@ const SummaryRecord = (props) => {
   };
 
   const updateAllTanks = () => {
-    const dippingCheck = [...records["7"]];
-    if (dippingCheck.length === 0) {
+    if (dippingPayloadData.length === 0) {
       handleClose();
       return swal("Error", "Dipping record cannot be empty!", "error");
     }
@@ -328,22 +361,16 @@ const SummaryRecord = (props) => {
       tankSet = tankSet.filter((data) => data._id !== tank._id);
     }
     const updatedTankList = [...updatedSet, ...tankSet];
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
+    const shuttled = updatedTankList.map((data) => {
+      const afterSales =
+        data.afterSales === 0 ? data.currentLevel : data.afterSales;
+      return { ...data, afterSales: afterSales };
+    });
+    const tankLevelsPayload = getTankLevelsPayload(shuttled, mainDate);
+    dispatch(tanksPayload(tankLevelsPayload));
 
     /*############# Creating credit balances ###############*/
-    const lpoCopy = [...records["3"]];
-    const debitList = lpoCopy.map((data) => {
-      return {
-        debit: data.debit,
-        lpoID: data.lpoID,
-        quantity: data.lpoLitre,
-        productType: data.productType,
-        org: data.organizationID,
-        truckNo: data.truckNo,
-      };
-    });
-
-    const groupedObject = debitList.reduce((result, item) => {
+    const groupedObject = creditPayloadData.reduce((result, item) => {
       const { lpoID } = item;
       if (!result[lpoID]) {
         result[lpoID] = [];
@@ -351,6 +378,7 @@ const SummaryRecord = (props) => {
       result[lpoID].push(item);
       return result;
     }, {});
+    dispatch(creditPayload(groupedObject));
 
     /*############# Getting payloads for sales ###############*/
     const salesList = [];
@@ -368,115 +396,33 @@ const SummaryRecord = (props) => {
         tankUpdates.push(tankPayload);
       }
     }
+    const salesLoad = {
+      sales: salesList,
+      pumps: pumpUpdates,
+      tanks: tankUpdates,
+    };
+    dispatch(salesPayload(salesLoad));
 
     /*############# Getting payloads for RT ###############*/
     const rtList = [];
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const rt = getRTPayload(tank, pump, currentDate);
-        rtList.push(rt);
+        if (pump.RTlitre !== 0) {
+          const rt = getRTPayload(tank, pump, currentDate);
+          rtList.push(rt);
+        }
       }
     }
+    dispatch(rtPayload(rtList));
 
-    /*############# Getting payloads for lpo ###############*/
-    const lpoList = [];
-    for (let lpo of tankFromPayload["3"]) {
-      console.log(lpo, "gall");
-      const lpoData = getLPOPayload(lpo, currentDate);
-      lpoList.push(lpoData);
+    /*############# Getting payloads for balanceCF ###############*/
+    const selectedProducts = {};
+    for (const product of updatedTanks) {
+      if (!selectedProducts[product.productType]) {
+        selectedProducts[product.productType] = product;
+      }
     }
-
-    /*############# Getting payloads for expenses ###############*/
-    const expenseList = [];
-    for (let expense of tankFromPayload["4"]) {
-      console.log(expense, "gall");
-      const lpoData = getExpensePayload(expense, currentDate);
-      expenseList.push(lpoData);
-    }
-
-    /*############# Getting payloads for bank payment ###############*/
-    const bankList = [];
-    for (let bank of tankFromPayload["5"]) {
-      const bankData = getBankPayload(bank, currentDate);
-      bankList.push(bankData);
-    }
-
-    /*############# Getting payloads for bank payment ###############*/
-    const posList = [];
-    for (let pos of tankFromPayload["6"]) {
-      const posData = getPOSPayload(pos, currentDate);
-      posList.push(posData);
-    }
-
-    /*############# Getting payloads for dipping ###############*/
-    const dippingList = [];
-    for (let dipping of tankFromPayload["7"]) {
-      const dippingData = getDippingPayload(dipping, currentDate);
-      dippingList.push(dippingData);
-    }
-
-    /*############# Getting payloads for tank levels ###############*/
-    const tankLevelList = [];
-    for (let level of updatedTankList) {
-      const notUsed = {
-        ...level,
-        afterSales:
-          level.afterSales === 0 ? level.currentLevel : level.afterSales,
-      };
-      const levelData = getTankLevelsPayload(notUsed, currentDate);
-      tankLevelList.push(levelData);
-    }
-
-    /*############# Getting payloads for balance CF ###############*/
-    let balanceCF = [];
-    const pmsListing = updatedTanks.filter(
-      (data) => data.productType === "PMS"
-    );
-    const agoListing = updatedTanks.filter(
-      (data) => data.productType === "AGO"
-    );
-    const dpkListing = updatedTanks.filter(
-      (data) => data.productType === "DPK"
-    );
-
-    if (pmsListing.length !== 0) {
-      balanceCF.push(pmsListing[0]);
-    }
-    if (agoListing.length !== 0) {
-      balanceCF.push(agoListing[0]);
-    }
-    if (dpkListing.length !== 0) {
-      balanceCF.push(dpkListing[0]);
-    }
-
-    balanceCF = balanceCF.map((data) => {
-      return {
-        balanceCF: data.balanceCF,
-        totalTankCapacity: data.totalTankCapacity,
-        productType: data.productType,
-        outletID: data.outlet._id,
-        organizationID: data.outletID,
-        createdAt: currentDate,
-        updatedAt: currentDate,
-      };
-    });
-
-    tankFromPayload["0"] = {
-      sales: salesList,
-      pumps: pumpUpdates,
-      tanks: tankUpdates,
-    };
-    tankFromPayload["1"] = updatedTanks;
-    tankFromPayload["2"] = rtList;
-    tankFromPayload["3"] = lpoList;
-    tankFromPayload["4"] = expenseList;
-    tankFromPayload["5"] = bankList;
-    tankFromPayload["6"] = posList;
-    tankFromPayload["7"] = dippingList;
-    tankFromPayload["8"] = tankLevelList;
-    tankFromPayload["9"] = groupedObject;
-    tankFromPayload["10"] = balanceCF;
-    dispatch(updatePayload(tankFromPayload));
+    console.log(selectedProducts, "balance carried forward");
   };
 
   useEffect(() => {
@@ -508,53 +454,53 @@ const SummaryRecord = (props) => {
         SalesService.pumpUpdate({
           ...settings,
           station: oneStationData,
-          sales: records["0"],
+          sales: salesPayloadData,
         }),
         SalesService.returnToTank({
           ...settings,
           station: oneStationData,
-          rt: records["2"],
+          rt: rtPayloadData,
         }),
         SalesService.lpo({
           ...settings,
           station: oneStationData,
-          lpo: records["3"],
+          lpo: lpoPayloadData,
         }),
         SalesService.expenses({
           ...settings,
           station: oneStationData,
-          expenses: records["4"],
+          expenses: expensesPayloadData,
         }),
         SalesService.bankPayment({
           ...settings,
           station: oneStationData,
-          bankpayments: records["5"],
+          bankpayments: bankPayloadData,
         }),
         SalesService.posPayment({
           ...settings,
           station: oneStationData,
-          pospayments: records["6"],
+          pospayments: posPayloadData,
         }),
         SalesService.dipping({
           ...settings,
           station: oneStationData,
-          dipping: records["7"],
+          dipping: dippingPayloadData,
         }),
         SalesService.tankLevels({
           ...settings,
           station: oneStationData,
-          tankLevels: records["8"],
+          tankLevels: tanksPayloadData,
         }),
-        // SalesService.creditBalance({
-        //   ...settings,
-        //   station: oneStationData,
-        //   debits: records["9"],
-        // }),
-        SalesService.balanceCF({
+        SalesService.creditBalance({
           ...settings,
           station: oneStationData,
-          balanceCF: records["10"],
+          debits: creditPayloadData,
         }),
+        // SalesService.balanceCF({
+        //   ...settings,
+        //   station: oneStationData,
+        //   balanceCF: records["10"],
+        // }),
       ];
       Promise.allSettled(payload)
         .then((results) => {
@@ -606,10 +552,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Pump updates and Sales</div>
             </div>
 
-            {records["1"]?.length === 0 ? (
+            {salesPayloadData?.sales?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              records["1"]?.map((data, index) => {
+              salesPayloadData?.sales?.map((data, index) => {
                 return (
                   <FuelCard
                     index={index}
@@ -628,10 +574,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Return To Tank</div>
             </div>
 
-            {records["2"]?.length === 0 ? (
+            {rtPayloadData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              records["2"]?.map((data, index) => {
+              rtPayloadData?.map((data, index) => {
                 return (
                   <ReturnToTank
                     index={index}
@@ -650,10 +596,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>LPO (Corporate Sales)</div>
             </div>
 
-            {records["3"]?.length === 0 ? (
+            {lpoPayloadData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              records["3"]?.map((data, index) => {
+              lpoPayloadData?.map((data, index) => {
                 return (
                   <div className="other_label">
                     <div className="other_inner">
@@ -682,10 +628,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Expenses</div>
             </div>
 
-            {records["4"]?.length === 0 ? (
+            {expensesPayloadData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              records["4"]?.map((data, index) => {
+              expensesPayloadData?.map((data, index) => {
                 return (
                   <div className="other_label">
                     <div className="other_inner">
@@ -714,10 +660,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Bank Payments</div>
             </div>
 
-            {records["5"]?.length === 0 ? (
+            {bankPayloadData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              records["5"]?.map((data, index) => {
+              bankPayloadData?.map((data, index) => {
                 return (
                   <div className="other_label">
                     <div className="other_inner">
@@ -747,10 +693,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>POS Payments</div>
             </div>
 
-            {records["6"]?.length === 0 ? (
+            {posPayloadData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              records["6"]?.map((data, index) => {
+              posPayloadData?.map((data, index) => {
                 return (
                   <div className="other_label">
                     <div className="other_inner">
@@ -780,10 +726,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Dipping</div>
             </div>
 
-            {records["7"]?.length === 0 ? (
+            {dippingPayloadData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              records["7"]?.map((data, index) => {
+              dippingPayloadData?.map((data, index) => {
                 return (
                   <div className="other_label">
                     <div className="other_inner">
@@ -912,90 +858,6 @@ const getRTPayload = (tank, pump, mainDate) => {
     tankName: tank.tankName,
     outletID: tank.outletID,
     organizationID: tank.organisationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
-  };
-};
-
-const getLPOPayload = (lpo, mainDate) => {
-  return {
-    accountName: lpo.accountName,
-    productType: lpo.productType,
-    truckNo: lpo.truckNo,
-    lpoLitre: lpo.lpoLitre,
-    attachApproval: lpo.attachApproval === null ? "None" : lpo.attachApproval,
-    lpoID: lpo.lpoID,
-    PMSRate: lpo.PMSRate,
-    AGORate: lpo.AGORate,
-    DPKRate: lpo.DPKRate,
-    PMSCost: lpo.PMSCost,
-    AGOCost: lpo.AGOCost,
-    DPKCost: lpo.DPKCost,
-    pumpID: lpo.pumpID,
-    station: lpo.station,
-    outletID: lpo.outletID,
-    organizationID: lpo.organizationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
-  };
-};
-
-const getExpensePayload = (expense, mainDate) => {
-  return {
-    dateCreated: "none",
-    expenseName: expense.expenseName,
-    description: expense.description,
-    expenseAmount: expense.expenseAmount,
-    attachApproval:
-      expense.attachApproval === null ? "None" : expense.attachApproval,
-    outletID: expense.outletID,
-    organizationID: expense.organizationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
-  };
-};
-
-const getBankPayload = (bank, mainDate) => {
-  return {
-    bankName: bank.bankName,
-    tellerNumber: bank.tellerNumber,
-    amountPaid: bank.amountPaid,
-    paymentDate: bank.paymentDate,
-    confirmation: "null",
-    uploadSlip: bank.uploadSlip,
-    outletID: bank.outletID,
-    organizationID: bank.organizationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
-  };
-};
-
-const getPOSPayload = (pos, mainDate) => {
-  return {
-    posName: pos.posName,
-    terminalID: pos.terminalID,
-    amountPaid: pos.amountPaid,
-    paymentDate: pos.paymentDate,
-    confirmation: "null",
-    uploadSlip: pos.uploadSlip,
-    outletID: pos.outletID,
-    organizationID: pos.organizationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
-  };
-};
-
-const getDippingPayload = (dipping, mainDate) => {
-  return {
-    tankID: dipping._id,
-    productType: dipping.productType,
-    currentLevel: dipping.currentLevel,
-    tankCapacity: dipping.tankCapacity,
-    dipping: dipping.dippingValue,
-    afterSales: dipping.afterSales,
-    tankName: dipping.tankName,
-    outletID: dipping.outletID,
-    organizationID: dipping.organisationID,
     createdAt: mainDate,
     updatedAt: mainDate,
   };

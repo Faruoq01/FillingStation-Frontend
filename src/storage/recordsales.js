@@ -6,6 +6,19 @@ const initialState = {
   DPK: [],
   selectedPumps: [],
   selectedTanks: [],
+  salesPayload: {
+    sales: [],
+    tanks: [],
+    pumps: [],
+  },
+  rtPayload: [],
+  lpoPayload: [],
+  creditPayload: [],
+  expensesPayload: [],
+  bankPayload: [],
+  posPayload: [],
+  dippingPayload: [],
+  tanksPayload: [],
   load: {
     0: [],
     1: [],
@@ -154,6 +167,33 @@ export const recordsalesSlice = createSlice({
     updateDpkList: (state, action) => {
       state.DPK = action.payload;
     },
+    lpoPayload: (state, action) => {
+      state.lpoPayload = action.payload;
+    },
+    creditPayload: (state, action) => {
+      state.creditPayload = action.payload;
+    },
+    expensesPayload: (state, action) => {
+      state.expensesPayload = action.payload;
+    },
+    bankPayload: (state, action) => {
+      state.bankPayload = action.payload;
+    },
+    posPayload: (state, action) => {
+      state.posPayload = action.payload;
+    },
+    dippingPayload: (state, action) => {
+      state.dippingPayload = action.payload;
+    },
+    tanksPayload: (state, action) => {
+      state.tanksPayload = action.payload;
+    },
+    rtPayload: (state, action) => {
+      state.rtPayload = action.payload;
+    },
+    salesPayload: (state, action) => {
+      state.salesPayload = action.payload;
+    },
   },
 });
 
@@ -171,7 +211,16 @@ export const {
   updatePmsList,
   updateAgoList,
   updateDpkList,
+  salesPayload,
+  rtPayload,
   createLPO,
+  lpoPayload,
+  creditPayload,
+  expensesPayload,
+  bankPayload,
+  posPayload,
+  dippingPayload,
+  tanksPayload,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;

@@ -12,13 +12,16 @@ import swal from "sweetalert";
 import axios from "axios";
 import config from "../../constants";
 import { useEffect } from "react";
-import { updatePayload } from "../../storage/recordsales";
+import { creditPayload, lpoPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
+import moment from "moment";
 
 const LPOComponent = (props) => {
   const dispatch = useDispatch();
   const gallery = useRef();
+  const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
   const lpos = useSelector((state) => state.recordsales.lpo);
   const [selectedPMS, setSelectedPMS] = useState(null);
   const [selectedAGO, setSelectedAGO] = useState(null);
@@ -26,13 +29,18 @@ const LPOComponent = (props) => {
 
   // selections
   const [open, setOpen] = useState(false);
-  const records = useSelector((state) => state.recordsales.load);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
-
-  // console.log(selectedPumps, "selected pumps")
-  // console.log(selectedTanks, "selected tanks")
-  // console.log(records, "records")
+  const lpoPayloadData = useSelector((state) => state.recordsales.lpoPayload);
+  const creditPayloadData = useSelector(
+    (state) => state.recordsales.creditPayload
+  );
+  const mainDate = moment
+    .tz(currentDate, user.timezone)
+    .format("YYYY-MM-DD HH:mm:ss")
+    .split(" ")[0];
+  // console.log(lpoPayloadData, "lpo payload");
+  // console.log(creditPayloadData, "lpo payload");
 
   // payload records
   const [cam, setCam] = useState(null);
@@ -192,10 +200,6 @@ const LPOComponent = (props) => {
         "info"
       );
 
-    const tank = selectedTanks.filter(
-      (data) => data._id === dispensedPump.hostTank
-    )[0];
-
     let balance = 0;
     if (balanceTracker === "") {
       balance =
@@ -212,26 +216,38 @@ const LPOComponent = (props) => {
       productType: productType,
       truckNo: truckNo,
       lpoLitre: quantity,
-      balance: balance,
-      debit: Number(quantity) * getProductDetails(),
       attachApproval: gall === null ? cam : gall,
       lpoID: dispenseLpo._id,
+      PMSRate: oneStationData.PMSPrice,
+      AGORate: oneStationData.AGOPrice,
+      DPKRate: oneStationData.DPKPrice,
+      PMSCost: oneStationData.PMSCost,
+      AGOCost: oneStationData.AGOCost,
+      DPKCost: oneStationData.DPKCost,
       pumpID: dispensedPump._id,
-      tank: tank,
-      PMSRate: oneStationData?.PMSPrice,
-      AGORate: oneStationData?.AGOPrice,
-      DPKRate: oneStationData?.DPKPrice,
-      PMSCost: oneStationData?.PMSCost,
-      AGOCost: oneStationData?.AGOCost,
-      DPKCost: oneStationData?.DPKCost,
-      outletID: oneStationData?._id,
       station: oneStationData?.outletName + " " + oneStationData.alias,
+      outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
+      createdAt: mainDate,
+      updatedAt: mainDate,
     };
 
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["3"].push(payload);
-    dispatch(updatePayload(tankFromPayload));
+    const creditPay = {
+      debit: Number(quantity) * getProductDetails(),
+      lpoID: dispenseLpo._id,
+      quantity: quantity,
+      productType: productType,
+      org: oneStationData?.organisation,
+      truckNo: truckNo,
+    };
+
+    const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));
+    copyPayload.push(payload);
+    dispatch(lpoPayload(copyPayload));
+
+    const copyCredit = JSON.parse(JSON.stringify(creditPayloadData));
+    copyCredit.push(creditPay);
+    dispatch(creditPayload(copyCredit));
 
     setGall(null);
     setCam(null);
@@ -241,9 +257,13 @@ const LPOComponent = (props) => {
   };
 
   const deleteFromList = (index) => {
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["3"].splice(index, 1);
-    dispatch(updatePayload(tankFromPayload));
+    const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));
+    copyPayload.splice(index, 1);
+    dispatch(lpoPayload(copyPayload));
+
+    const copyCredit = JSON.parse(JSON.stringify(creditPayloadData));
+    copyCredit.splice(index, 1);
+    dispatch(creditPayload(copyCredit));
   };
 
   function removeSpecialCharacters(str) {
@@ -251,8 +271,8 @@ const LPOComponent = (props) => {
   }
 
   const updateTankWithLPO = (e) => {
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    const currentLPOs = tankFromPayload["3"];
+    const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));
+    const currentLPOs = copyPayload;
 
     const pmsList = currentLPOs.filter((data) => data.productType === "PMS");
     const agoList = currentLPOs.filter((data) => data.productType === "AGO");
@@ -683,10 +703,10 @@ const LPOComponent = (props) => {
             <div className="col">Action</div>
           </div>
 
-          {records["3"].length === 0 ? (
+          {lpoPayloadData.length === 0 ? (
             <div style={{ marginTop: "10px" }}>No data</div>
           ) : (
-            records["3"].map((data, index) => {
+            lpoPayloadData.map((data, index) => {
               return (
                 <div
                   key={index}

@@ -10,8 +10,9 @@ import config from "../../constants";
 import { useState } from "react";
 import { useRef } from "react";
 import ReactCamera from "../Modals/ReactCamera";
-import { updatePayload } from "../../storage/recordsales";
+import { expensesPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
+import moment from "moment";
 
 const ExpenseComponents = (props) => {
   const gallery = useRef();
@@ -21,13 +22,21 @@ const ExpenseComponents = (props) => {
   const [reg, setReg] = useState(false);
 
   /////////////////////////////////////////////////////////////
-  const records = useSelector((state) => state.recordsales.load);
+  const user = useSelector((state) => state.auth.user);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
+  const expensesPayloadData = useSelector(
+    (state) => state.recordsales.expensesPayload
+  );
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const mainDate = moment
+    .tz(currentDate, user.timezone)
+    .format("YYYY-MM-DD HH:mm:ss")
+    .split(" ")[0];
 
   console.log(selectedPumps, "selected pumps");
   console.log(selectedTanks, "selected tanks");
-  console.log(records, "records");
+  console.log(expensesPayloadData, "records");
 
   // payload data
   const [expenseName, setExpenseName] = useState("");
@@ -37,9 +46,9 @@ const ExpenseComponents = (props) => {
   const [gall, setGall] = useState(null);
 
   const deleteFromList = (index) => {
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["4"].splice(index, 1);
-    dispatch(updatePayload(tankFromPayload));
+    const copyExpenses = JSON.parse(JSON.stringify(expensesPayloadData));
+    copyExpenses.splice(index, 1);
+    dispatch(expensesPayload(copyExpenses));
   };
 
   const openCamera = () => {
@@ -92,17 +101,20 @@ const ExpenseComponents = (props) => {
       );
 
     const payload = {
+      dateCreated: "none",
       expenseName: reg ? "Regulatory payment" : expenseName,
       description: description,
       expenseAmount: expenseAmount,
       attachApproval: gall === null ? cam : gall,
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
+      createdAt: mainDate,
+      updatedAt: mainDate,
     };
 
-    const tankFromPayload = JSON.parse(JSON.stringify(records));
-    tankFromPayload["4"].push(payload);
-    dispatch(updatePayload(tankFromPayload));
+    const copyExpenses = JSON.parse(JSON.stringify(expensesPayloadData));
+    copyExpenses.push(payload);
+    dispatch(expensesPayload(copyExpenses));
 
     setExpenseAmount("");
     setDescription("");
@@ -276,10 +288,10 @@ const ExpenseComponents = (props) => {
             <div className="col">Action</div>
           </div>
 
-          {records["4"].length === 0 ? (
+          {expensesPayloadData.length === 0 ? (
             <div style={{ marginTop: "10px" }}>No data</div>
           ) : (
-            records["4"].map((data, index) => {
+            expensesPayloadData.map((data, index) => {
               return (
                 <div
                   key={index}
