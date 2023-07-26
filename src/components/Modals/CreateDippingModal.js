@@ -28,14 +28,7 @@ const CreateDippingModal = (props) => {
   const handleSubmitForm = () => {
     console.log(data);
   };
-  // let f = {
-  //   productType: dipping.productType,
-  //   currentLevel: dipping.currentLevel,
-  //   tankCapacity: dipping.tankCapacity,
-  //   dipping: dipping.dippingValue,
-  //   afterSales: dipping.afterSales,
-  //   tankName: dipping.tankName,
-  // };
+
   return (
     <Modal
       open={props.open}

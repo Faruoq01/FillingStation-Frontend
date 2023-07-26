@@ -1,10 +1,19 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useRef } from "react";
 import Modal from "@mui/material/Modal";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThreeDots } from "react-loader-spinner";
 import "../../styles/estation/payment.scss";
 import CloseIcon from "@mui/icons-material/Close";
-import { Button, Checkbox, FormControlLabel } from "@mui/material";
+import close from "../../assets/close.png";
+import upload from "../../assets/upload.png";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from "@mui/material";
 
 const CreateBankPaymentModal = (props) => {
   const handleClose = () => props.close(false);
@@ -27,6 +36,28 @@ const CreateBankPaymentModal = (props) => {
     };
     console.log(data);
   };
+  const attach = useRef();
+  const selectedFile = (e) => {
+    // let file = e.target.files[0];
+    // setLoading2(1);
+    // const formData = new FormData();
+    // formData.append("file", file);
+    // const httpConfig = {
+    //   headers: {
+    //     "content-type": "multipart/form-data",
+    //     Authorization: "Bearer " + localStorage.getItem("token"),
+    //   },
+    // };
+    // const url = `${config.BASE_URL}/360-station/api/upload`;
+    // axios
+    //   .post(url, formData, httpConfig)
+    //   .then((data) => {
+    //     setUpload(data.data.path);
+    //   })
+    //   .then(() => {
+    //     setLoading2(2);
+    //   });
+  };
 
   return (
     <Modal
@@ -34,94 +65,193 @@ const CreateBankPaymentModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", border: "none" }}
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
-      <div className="e-station-payment-modal">
-        <div className="cancel-confirm">
-          <label for="Confirm Payment" className="title-label-">
-            Create Bank Payment
-          </label>
-          <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
-        </div>
-        <div className="form-area-new-pay">
-          <form>
+      <div className="modalContainer2">
+        <div className="inner">
+          <div className="head">
+            <div className="head-text"> Create Bank Payment</div>
+            <img
+              onClick={handleClose}
+              style={{ width: "18px", height: "18px" }}
+              src={close}
+              alt={"icon"}
+            />
+          </div>
+
+          <div
+            style={{
+              width: "100%",
+              height: "480px",
+              paddingRight: "5px",
+              overflowX: "hidden",
+              overflowY: "scroll",
+            }}
+          >
             <CustomTextInput
-              placeholder="bank name"
               title="Bank Name"
               onChange={handleOnChange(setAccountName)}
             />
+            {/* ===================== */}
             <CustomTextInput
               type="number"
-              placeholder="teller number"
               title="Teller Number"
               onChange={handleOnChange(setAmount)}
             />
+            {/* =============== */}
             <CustomTextInput
-              placeholder="Amount"
-              title="amount"
+              title="Amount"
               onChange={handleOnChange(setAmount)}
             />
-
+            {/* =============== */}
             <CustomTextInput
-              placeholder="Payment Date"
               title="Payment Date"
               type="date"
               onChange={handleOnChange(setAccountName)}
             />
+            {/* ============ */}
             <FormControlLabel
               control={<Checkbox defaultChecked />}
               label="Confirmation"
             />
+            {/* ================= */}
 
-            <label>Attach Approval</label>
-            <Button variant="contained" className="upload-btn">
+            {/* Attachment */}
+            <Button
+              sx={{
+                width: "100%",
+                height: "35px",
+                background: "#427BBE",
+                borderRadius: "3px",
+                fontSize: "10px",
+                marginTop: "30px",
+                "&:hover": {
+                  backgroundColor: "#427BBE",
+                },
+              }}
+              // onClick={uploadProductOrders}
+              variant="contained"
+            >
               <img
-                src={require("../../assets/estation/upload-icon.svg").default}
+                style={{ width: "25px", height: "20px", marginRight: "10px" }}
+                src={upload}
+                alt={"icon"}
               />
-              Uplaod Image
+              <div>Attachment</div>
+              {/* {loading2 === 0 && }
+              {loading2 === 1 && (
+                <ThreeDots
+                  height="60"
+                  width="50"
+                  radius="9"
+                  color="#076146"
+                  ariaLabel="three-dots-loading"
+                  wrapperStyle={{}}
+                  wrapperClassName=""
+                  visible={true}
+                />
+              )}
+              {loading2 === 2 && (
+                <div style={{ color: "#fff", fontSize: "12px" }}>Success</div>
+              )} */}
+            </Button>
+            <input
+              // onChange={selectedFile}
+              ref={attach}
+              type="file"
+              style={{ visibility: "hidden" }}
+            />
+          </div>
+
+          <div style={{ height: "30px" }} className="butt">
+            <Button
+              // disabled={loadingSpinner}
+              sx={{
+                width: "100px",
+                height: "30px",
+                background: "#427BBE",
+                borderRadius: "3px",
+                fontSize: "10px",
+                marginTop: "00px",
+                "&:hover": {
+                  backgroundColor: "#427BBE",
+                },
+              }}
+              onClick={() => {}}
+              variant="contained"
+            >
+              Save
             </Button>
 
-            <div
-              style={{
-                marginBottom: "1rem",
-                marginTop: "2rem",
-                padding: 0,
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                flexDirection: "column",
-              }}
-              className="footer-section-p"
-            >
-              <Button
-                variant="contained"
-                onClick={handleSubmitForm}
-                style={{
-                  width: 100,
-                  background: "#06805B",
-                  color: "white",
-                }}
-              >
-                Save
-              </Button>
-            </div>
-          </form>
+            {/* {loadingSpinner ? (
+              <ThreeDots
+                height="60"
+                width="50"
+                radius="9"
+                color="#076146"
+                ariaLabel="three-dots-loading"
+                wrapperStyle={{}}
+                wrapperClassName=""
+                visible={true}
+              />
+            ) : null} */}
+          </div>
         </div>
       </div>
     </Modal>
   );
 };
 
-const customDropdown = ({ data }) => <div>{}</div>;
+const CustomDropdown = ({ data, value, onChange, title, ...props }) => {
+  return (
+    <div style={{ marginTop: "15px" }} className="inputs">
+      <div className="head-text2">{title}</div>
+      <Select
+        labelId="demo-select-small"
+        id="demo-select-small"
+        value={value}
+        sx={{
+          width: "100%",
+          height: "35px",
+          marginTop: "5px",
+          background: "#EEF2F1",
+          fontSize: "12px",
+          borderRadius: "0px",
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            border: "1px solid #777777",
+          },
+        }}
+        onChange={onChange}
+      >
+        <MenuItem value={1}>PMS</MenuItem>
+        <MenuItem value={2}>DPK</MenuItem>
+        <MenuItem value={3}>AGO</MenuItem>
+      </Select>
+    </div>
+  );
+};
 const data = {};
 
 const CustomTextInput = (props) => (
-  <Fragment>
-    <label>{props.title}</label>
-    <input type={props.type ?? "text"} {...props} />
-  </Fragment>
+  <div className="inputs">
+    <div className="head-text2">{props.title}</div>
+    <OutlinedInput
+      sx={{
+        width: "100%",
+        height: "35px",
+        marginTop: "5px",
+        background: "#EEF2F1",
+        fontSize: "12px",
+        borderRadius: "0px",
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          border: "1px solid #777777",
+        },
+      }}
+      placeholder={`${props.title.toLowerCase()}`}
+      {...props}
+    />
+  </div>
 );
-
 const inner = {
   width: "100%",
   height: "500px",
