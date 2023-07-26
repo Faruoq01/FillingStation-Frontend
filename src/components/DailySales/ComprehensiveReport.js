@@ -49,9 +49,9 @@ const ComprehensiveReport = (props) => {
   const [value, setValue] = React.useState(null);
   const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
   const [bankPaymentModalStatus, setBankPaymentModalStatus] = useState(false);
-  const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(true);
+  const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(false);
   const [dippingModalStatus, setDippingModalStatus] = useState(false);
-  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
+  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(true);
 
   const [
     openCreateCorporateSaleModalModal,
