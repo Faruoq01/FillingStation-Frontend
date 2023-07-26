@@ -1,4 +1,5 @@
 module.exports = {
-  BASE_URL: process.env.REACT_APP_BASE_URL,
-  API_KEY: process.env.REACT_APP_APP_KEY,
+  BASE_URL: "https://360station.co",
+  // BASE_URL: "http://localhost:5000",
+  API_KEY: "AIzaSyDZnZ15rSQS_2CluQE47CY5MRqAHGdUYZY",
 };
