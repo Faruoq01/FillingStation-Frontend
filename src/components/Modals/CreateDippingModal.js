@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
 } from "@mui/material";
 
@@ -34,95 +35,152 @@ const CreateDippingModal = (props) => {
   //   tankName: dipping.tankName,
   // };
   return (
+    // <Modal
+    //   open={props.open}
+    //   onClose={handleClose}
+    //   aria-labelledby="modal-modal-title"
+    //   aria-describedby="modal-modal-description"
+    //   sx={{ display: "flex", justifyContent: "center", border: "none" }}
+    // >
+    //   <div className="e-station-payment-modal">
+    //     <div className="cancel-confirm">
+    //       <label for="Confirm Payment" className="title-label-">
+    //         Create Dipping
+    //       </label>
+    //       <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
+    //     </div>
+    //     <div className="form-area-new-pay">
+    //       <form>
+    //         <CustomTextInput
+    //           placeholder="Tank Name"
+    //           title="Tank Name"
+    //           onChange={handleOnChange(setCurrentLevel)}
+    //         />
+
+    //         <label for=""> Product Type</label>
+    //         <FormControl
+    //           sx={{
+    //             marginBottom: 1,
+    //           }}
+    //           fullWidth
+    //         >
+    //           <Select
+    //             sx={{ height: 35 }}
+    //             labelId="demo-simple-select-label"
+    //             id="demo-simple-select"
+    //             value={product}
+    //             label="Product Type"
+    //             onChange={handleOnChange(setProduct)}
+    //           >
+    //             <MenuItem value={1}>PMS</MenuItem>
+    //             <MenuItem value={2}>DPK</MenuItem>
+    //             <MenuItem value={3}>AGO</MenuItem>
+    //           </Select>
+    //         </FormControl>
+    //         <CustomTextInput
+    //           placeholder="Current Level"
+    //           title="Current Level"
+    //           onChange={handleOnChange(setCurrentLevel)}
+    //         />
+    //         <CustomTextInput
+    //           placeholder="tank capacity"
+    //           title="Tank Capacity"
+    //           onChange={handleOnChange(setCurrentLevel)}
+    //         />
+    //         <CustomTextInput
+    //           type="number"
+    //           placeholder="dipping value"
+    //           title="Dipping Value"
+    //           onChange={handleOnChange(setCurrentLevel)}
+    //         />
+    //         <CustomTextInput
+    //           placeholder="after sales"
+    //           title="After Sales"
+    //           onChange={handleOnChange(setCurrentLevel)}
+    //         />
+
+    //         <div
+    //           style={{
+    //             marginBottom: "1rem",
+    //             marginTop: "2rem",
+    //             padding: 0,
+    //             display: "flex",
+    //             justifyContent: "flex-start",
+    //             alignItems: "flex-start",
+    //             flexDirection: "column",
+    //           }}
+    //           className="footer-section-p"
+    //         >
+    //           <Button
+    //             variant="contained"
+    //             onClick={handleSubmitForm}
+    //             style={{
+    //               width: 100,
+    //               background: "#06805B",
+    //               color: "white",
+    //             }}
+    //           >
+    //             Save
+    //           </Button>
+    //         </div>
+    //       </form>
+    //     </div>
+    //   </div>
+    // </Modal>
+
     <Modal
-      open={props.open}
+      open={open === 1}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", border: "none" }}
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
-      <div className="e-station-payment-modal">
-        <div className="cancel-confirm">
-          <label for="Confirm Payment" className="title-label-">
-            Create Dipping
-          </label>
-          <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
-        </div>
-        <div className="form-area-new-pay">
-          <form>
-            <CustomTextInput
-              placeholder="Tank Name"
-              title="Tank Name"
-              onChange={handleOnChange(setCurrentLevel)}
+      <div className="modalContainer2">
+        <div className="inner">
+          <div className="head">
+            <div className="head-text">Create Filling Station</div>
+            <img
+              onClick={handleClose}
+              style={{ width: "18px", height: "18px" }}
+              src={close}
+              alt={"icon"}
             />
+          </div>
 
-            <label for=""> Product Type</label>
-            <FormControl
+          <div style={{ height: "30px" }} className="butt">
+            <Button
+              disabled={loadingSpinner}
               sx={{
-                marginBottom: 1,
+                width: "100px",
+                height: "30px",
+                background: "#427BBE",
+                borderRadius: "3px",
+                fontSize: "10px",
+                marginTop: "00px",
+                "&:hover": {
+                  backgroundColor: "#427BBE",
+                },
               }}
-              fullWidth
+              onClick={handleTankModal}
+              variant="contained"
             >
-              <Select
-                sx={{ height: 35 }}
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={product}
-                label="Product Type"
-                onChange={handleOnChange(setProduct)}
-              >
-                <MenuItem value={1}>PMS</MenuItem>
-                <MenuItem value={2}>DPK</MenuItem>
-                <MenuItem value={3}>AGO</MenuItem>
-              </Select>
-            </FormControl>
-            <CustomTextInput
-              placeholder="Current Level"
-              title="Current Level"
-              onChange={handleOnChange(setCurrentLevel)}
-            />
-            <CustomTextInput
-              placeholder="tank capacity"
-              title="Tank Capacity"
-              onChange={handleOnChange(setCurrentLevel)}
-            />
-            <CustomTextInput
-              type="number"
-              placeholder="dipping value"
-              title="Dipping Value"
-              onChange={handleOnChange(setCurrentLevel)}
-            />
-            <CustomTextInput
-              placeholder="after sales"
-              title="After Sales"
-              onChange={handleOnChange(setCurrentLevel)}
-            />
+              {" "}
+              Save
+            </Button>
 
-            <div
-              style={{
-                marginBottom: "1rem",
-                marginTop: "2rem",
-                padding: 0,
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                flexDirection: "column",
-              }}
-              className="footer-section-p"
-            >
-              <Button
-                variant="contained"
-                onClick={handleSubmitForm}
-                style={{
-                  width: 100,
-                  background: "#06805B",
-                  color: "white",
-                }}
-              >
-                Save
-              </Button>
-            </div>
-          </form>
+            {loadingSpinner ? (
+              <ThreeDots
+                height="60"
+                width="50"
+                radius="9"
+                color="#076146"
+                ariaLabel="three-dots-loading"
+                wrapperStyle={{}}
+                wrapperClassName=""
+                visible={true}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     </Modal>
