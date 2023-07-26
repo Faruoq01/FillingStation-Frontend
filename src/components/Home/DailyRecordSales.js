@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import {
   bankPayload,
   creditPayload,
+  creditPayloadObject,
   dippingPayload,
   expensesPayload,
   lpoPayload,
@@ -310,6 +311,7 @@ const DailyRecordSales = () => {
     dispatch(rtPayload([]));
     dispatch(lpoPayload([]));
     dispatch(creditPayload([]));
+    dispatch(creditPayloadObject({}));
     dispatch(expensesPayload([]));
     dispatch(bankPayload([]));
     dispatch(posPayload([]));

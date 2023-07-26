@@ -7,10 +7,10 @@ import swal from "sweetalert";
 import {
   balanceCF,
   creditPayload,
+  creditPayloadObject,
   rtPayload,
   salesPayload,
   tanksPayload,
-  updatePayload,
 } from "../../storage/recordsales";
 import { useHistory } from "react-router-dom";
 import "../../styles/summary.scss";
@@ -242,6 +242,9 @@ const SummaryRecord = (props) => {
   const creditPayloadData = useSelector(
     (state) => state.recordsales.creditPayload
   );
+  const creditPayloadObjectData = useSelector(
+    (state) => state.recordsales.creditPayloadObject
+  );
   const expensesPayloadData = useSelector(
     (state) => state.recordsales.expensesPayload
   );
@@ -253,8 +256,11 @@ const SummaryRecord = (props) => {
   const tanksPayloadData = useSelector(
     (state) => state.recordsales.tanksPayload
   );
-  const balanceCFRecord = useSelector((state) => state.recordsales.balanceCF);
 
+  const balanceCFRecord = useSelector((state) => state.recordsales.balanceCF);
+  const supplyPayloadData = useSelector(
+    (state) => state.recordsales.supplyPayload
+  );
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankList = useSelector((state) => state.outlet.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
@@ -262,7 +268,7 @@ const SummaryRecord = (props) => {
     .tz(currentDate, user.timezone)
     .format("YYYY-MM-DD HH:mm:ss")
     .split(" ")[0];
-  console.log(records, "summary");
+  console.log(balanceCFRecord, "balanceCF");
   // console.log(typeof currentDate, "date");
   // console.log(selectedPumps, "Pumps")
   // console.log(selectedTanks, "Tanks")
@@ -363,10 +369,11 @@ const SummaryRecord = (props) => {
     const shuttled = updatedTankList.map((data) => {
       const afterSales =
         data.afterSales === 0 ? data.currentLevel : data.afterSales;
-      return { ...data, afterSales: afterSales };
+      const updatedTank = { ...data, afterSales: afterSales };
+      const oneTank = getTankLevelsPayload(updatedTank, mainDate);
+      return oneTank;
     });
-    const tankLevelsPayload = getTankLevelsPayload(shuttled, mainDate);
-    dispatch(tanksPayload(tankLevelsPayload));
+    dispatch(tanksPayload(shuttled));
 
     /*############# Creating credit balances ###############*/
     if (creditPayloadData.length !== 0) {
@@ -378,7 +385,7 @@ const SummaryRecord = (props) => {
         result[lpoID].push(item);
         return result;
       }, {});
-      dispatch(creditPayload(groupedObject));
+      dispatch(creditPayloadObject(groupedObject));
     }
 
     /*############# Getting payloads for sales ###############*/
@@ -458,56 +465,56 @@ const SummaryRecord = (props) => {
         currentDate: mainDate,
       };
       const payload = [
-        SalesService.pumpUpdate({
-          ...settings,
-          station: oneStationData,
-          sales: salesPayloadData,
-        }),
-        SalesService.returnToTank({
-          ...settings,
-          station: oneStationData,
-          rt: rtPayloadData,
-        }),
-        SalesService.lpo({
-          ...settings,
-          station: oneStationData,
-          lpo: lpoPayloadData,
-        }),
-        SalesService.expenses({
-          ...settings,
-          station: oneStationData,
-          expenses: expensesPayloadData,
-        }),
-        SalesService.bankPayment({
-          ...settings,
-          station: oneStationData,
-          bankpayments: bankPayloadData,
-        }),
-        SalesService.posPayment({
-          ...settings,
-          station: oneStationData,
-          pospayments: posPayloadData,
-        }),
-        SalesService.dipping({
-          ...settings,
-          station: oneStationData,
-          dipping: dippingPayloadData,
-        }),
-        SalesService.tankLevels({
-          ...settings,
-          station: oneStationData,
-          tankLevels: tanksPayloadData,
-        }),
+        // SalesService.pumpUpdate({
+        //   ...settings,
+        //   station: oneStationData,
+        //   sales: salesPayloadData,
+        // }),
+        // SalesService.returnToTank({
+        //   ...settings,
+        //   station: oneStationData,
+        //   rt: rtPayloadData,
+        // }),
+        // SalesService.lpo({
+        //   ...settings,
+        //   station: oneStationData,
+        //   lpo: lpoPayloadData,
+        // }),
+        // SalesService.expenses({
+        //   ...settings,
+        //   station: oneStationData,
+        //   expenses: expensesPayloadData,
+        // }),
+        // SalesService.bankPayment({
+        //   ...settings,
+        //   station: oneStationData,
+        //   bankpayments: bankPayloadData,
+        // }),
+        // SalesService.posPayment({
+        //   ...settings,
+        //   station: oneStationData,
+        //   pospayments: posPayloadData,
+        // }),
+        // SalesService.dipping({
+        //   ...settings,
+        //   station: oneStationData,
+        //   dipping: dippingPayloadData,
+        // }),
+        // SalesService.tankLevels({
+        //   ...settings,
+        //   station: oneStationData,
+        //   tankLevels: tanksPayloadData,
+        // }),
         SalesService.creditBalance({
           ...settings,
           station: oneStationData,
-          debits: creditPayloadData,
+          debits: creditPayloadObjectData,
         }),
-        SalesService.balanceCF({
-          ...settings,
-          station: oneStationData,
-          balanceCF: balanceCFRecord,
-        }),
+        // SalesService.balanceCF({
+        //   ...settings,
+        //   station: oneStationData,
+        //   balanceCF: balanceCFRecord,
+        // }),
       ];
       Promise.allSettled(payload)
         .then((results) => {
@@ -752,6 +759,90 @@ const SummaryRecord = (props) => {
                             {ApproximateDecimal(data.dipping)} Ltrs
                           </div>
                           <div className="vol_label">Stock level</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <div className="tank_label">
+            <div style={conts}>
+              <div style={nums}>8</div>
+              <div style={texts}>Supply</div>
+            </div>
+
+            {supplyPayloadData?.length === 0 ? (
+              <div style={men}>No records</div>
+            ) : (
+              supplyPayloadData?.map((data, index) => {
+                return (
+                  <div key={index} className="other_label">
+                    <div className="other_inner">
+                      <div className="fuel_card_items">
+                        <div className="fuel_card_items_left">
+                          <div className="volum">{data.transportationName}</div>
+                          <div className="vol_label">Transporter</div>
+                        </div>
+                        <div className="fuel_card_items_right">
+                          <div className="volum">
+                            {ApproximateDecimal(data.quantity)} Ltrs
+                          </div>
+                          <div className="vol_label">Quantity</div>
+                        </div>
+                      </div>
+                      {Object.values(data?.recipeintTanks).map(
+                        (item, index) => {
+                          return (
+                            <div key={index} className="fuel_card_items">
+                              <div className="fuel_card_items_left">
+                                <div className="volum">{item.tankName}</div>
+                                <div className="vol_label">Tank Name</div>
+                              </div>
+                              <div className="fuel_card_items_right">
+                                <div className="volum">
+                                  {ApproximateDecimal(item.quantity)} Ltrs
+                                </div>
+                                <div className="vol_label">Quantity</div>
+                              </div>
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <div className="tank_label">
+            <div style={conts}>
+              <div style={nums}>9</div>
+              <div style={texts}>Balance Carried Forward</div>
+            </div>
+
+            {tanksPayloadData?.length === 0 ? (
+              <div style={men}>No records</div>
+            ) : (
+              tanksPayloadData?.map((data, index) => {
+                return (
+                  <div key={index} className="other_label">
+                    <div className="other_inner">
+                      <div className="fuel_card_items">
+                        <div className="fuel_card_items_left">
+                          <div className="volum">
+                            {`${data.tankName} (${data.productType})`}
+                          </div>
+                          <div className="vol_label">Tank Name</div>
+                        </div>
+                        <div className="fuel_card_items_right">
+                          <div className="volum">
+                            {ApproximateDecimal(data.afterSales)} Ltrs
+                          </div>
+                          <div className="vol_label">After Sales</div>
                         </div>
                       </div>
                     </div>

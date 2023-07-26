@@ -239,6 +239,8 @@ const LPOComponent = (props) => {
       productType: productType,
       org: oneStationData?.organisation,
       truckNo: truckNo,
+      createdAt: mainDate,
+      updatedAt: mainDate,
     };
 
     const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));

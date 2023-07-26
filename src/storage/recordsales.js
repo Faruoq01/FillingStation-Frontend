@@ -14,12 +14,14 @@ const initialState = {
   rtPayload: [],
   lpoPayload: [],
   creditPayload: [],
+  creditPayloadObject: [],
   expensesPayload: [],
   bankPayload: [],
   posPayload: [],
   dippingPayload: [],
   tanksPayload: [],
   balanceCF: [],
+  supplyPayload: [],
   load: {
     0: [],
     1: [],
@@ -51,16 +53,21 @@ export const recordsalesSlice = createSlice({
       state.DPK = [];
       state.selectedPumps = [];
       state.selectedTanks = [];
-      state.load = {
-        0: [],
-        1: [],
-        2: [],
-        3: [],
-        4: [],
-        5: [],
-        6: [],
-        7: [],
+      state.salesPayload = {
+        sales: [],
+        tanks: [],
+        pumps: [],
       };
+      state.rtPayload = [];
+      state.lpoPayload = [];
+      state.creditPayload = [];
+      state.expensesPayload = [];
+      state.bankPayload = [];
+      state.posPayload = [];
+      state.dippingPayload = [];
+      state.tanksPayload = [];
+      state.balanceCF = [];
+      state.supplyPayload = [];
     },
     updatePayload: (state, action) => {
       state.load = action.payload;
@@ -198,6 +205,12 @@ export const recordsalesSlice = createSlice({
     balanceCF: (state, action) => {
       state.balanceCF = action.payload;
     },
+    supplyPayload: (state, action) => {
+      state.supplyPayload = action.payload;
+    },
+    creditPayloadObject: (state, action) => {
+      state.creditPayloadObject = action.payload;
+    },
   },
 });
 
@@ -226,6 +239,8 @@ export const {
   dippingPayload,
   tanksPayload,
   balanceCF,
+  supplyPayload,
+  creditPayloadObject,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;
