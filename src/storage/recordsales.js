@@ -19,6 +19,7 @@ const initialState = {
   posPayload: [],
   dippingPayload: [],
   tanksPayload: [],
+  balanceCF: [],
   load: {
     0: [],
     1: [],
@@ -194,6 +195,9 @@ export const recordsalesSlice = createSlice({
     salesPayload: (state, action) => {
       state.salesPayload = action.payload;
     },
+    balanceCF: (state, action) => {
+      state.balanceCF = action.payload;
+    },
   },
 });
 
@@ -221,6 +225,7 @@ export const {
   posPayload,
   dippingPayload,
   tanksPayload,
+  balanceCF,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;

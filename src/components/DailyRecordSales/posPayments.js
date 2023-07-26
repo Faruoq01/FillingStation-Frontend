@@ -203,7 +203,7 @@ const PosPayments = (props) => {
       .reduce((accum, current) => {
         return (
           Number(accum) +
-          Number(current.rtLitre) * Number(oneStationData.PMSPrice)
+          Number(current.RTlitre) * Number(oneStationData.PMSPrice)
         );
       }, 0);
 
@@ -212,7 +212,7 @@ const PosPayments = (props) => {
       .reduce((accum, current) => {
         return (
           Number(accum) +
-          Number(current.rtLitre) * Number(oneStationData.AGOPrice)
+          Number(current.RTlitre) * Number(oneStationData.AGOPrice)
         );
       }, 0);
 
@@ -221,7 +221,7 @@ const PosPayments = (props) => {
       .reduce((accum, current) => {
         return (
           Number(accum) +
-          Number(current.rtLitre) * Number(oneStationData.DPKPrice)
+          Number(current.RTlitre) * Number(oneStationData.DPKPrice)
         );
       }, 0);
 
@@ -311,7 +311,7 @@ const PosPayments = (props) => {
               <input
                 value={
                   getPayments().outstanding < 0
-                    ? "-" + ApproximateDecimal(getPayments().outstanding)
+                    ? ApproximateDecimal(getPayments().outstanding)
                     : ApproximateDecimal(getPayments().outstanding)
                 }
                 disabled

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@mui/material";
 import swal from "sweetalert";
 import {
+  balanceCF,
   creditPayload,
   rtPayload,
   salesPayload,
@@ -22,7 +23,9 @@ import moment from "moment";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
-  const records = useSelector((state) => state.recordsales.load);
+  const salesPayloadData = useSelector(
+    (state) => state.recordsales.salesPayload
+  );
 
   const removeData = (index) => {
     swal({
@@ -33,11 +36,9 @@ const FuelCard = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        const pumpUpdate = [...records["1"]];
+        const pumpUpdate = JSON.parse(JSON.stringify(salesPayloadData));
         pumpUpdate.splice(index, 1);
-        const cloneRecords = { ...records };
-        cloneRecords["1"] = pumpUpdate;
-        dispatch(updatePayload(cloneRecords));
+        dispatch(salesPayload(pumpUpdate));
       }
     });
   };
@@ -55,8 +56,8 @@ const FuelCard = (props) => {
               fontWeight: "bold",
               color: props.getBackground(props.data.productType),
             }}>
-            {props.data.productType.concat(" ", props.data.tankName)} (
-            {ApproximateDecimal(props.data.tankCapacity) + " ltrs"})
+            {props.data.productType.concat(" ", props.data.tankName)}
+            {/* ({ApproximateDecimal(props.data.tankCapacity) + " ltrs"}) */}
           </span>
           <div
             onClick={() => {
@@ -174,9 +175,7 @@ const ReturnToTank = (props) => {
       if (willDelete) {
         const pumpUpdate = [...records["1"]];
         pumpUpdate.splice(index, 1);
-        const cloneRecords = { ...records };
-        cloneRecords["1"] = pumpUpdate;
-        dispatch(updatePayload(cloneRecords));
+        dispatch(rtPayload(pumpUpdate));
       }
     });
   };
@@ -194,8 +193,8 @@ const ReturnToTank = (props) => {
               fontWeight: "bold",
               color: props.getBackground(props.data.productType),
             }}>
-            {props.data.productType.concat(" ", props.data.tankName)} (
-            {ApproximateDecimal(props.data.tankCapacity) + " ltrs"})
+            {props.data.productType.concat(" ", props.data.tankName)}
+            {/* ({ApproximateDecimal(props.data.tankCapacity) + " ltrs"}) */}
           </span>
           <div
             onClick={() => {
@@ -251,10 +250,10 @@ const SummaryRecord = (props) => {
   const dippingPayloadData = useSelector(
     (state) => state.recordsales.dippingPayload
   );
-  console.log(dippingPayloadData, "dipping");
   const tanksPayloadData = useSelector(
     (state) => state.recordsales.tanksPayload
   );
+  const balanceCFRecord = useSelector((state) => state.recordsales.balanceCF);
 
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankList = useSelector((state) => state.outlet.tankList);
@@ -370,15 +369,17 @@ const SummaryRecord = (props) => {
     dispatch(tanksPayload(tankLevelsPayload));
 
     /*############# Creating credit balances ###############*/
-    const groupedObject = creditPayloadData.reduce((result, item) => {
-      const { lpoID } = item;
-      if (!result[lpoID]) {
-        result[lpoID] = [];
-      }
-      result[lpoID].push(item);
-      return result;
-    }, {});
-    dispatch(creditPayload(groupedObject));
+    if (creditPayloadData.length !== 0) {
+      const groupedObject = creditPayloadData.reduce((result, item) => {
+        const { lpoID } = item;
+        if (!result[lpoID]) {
+          result[lpoID] = [];
+        }
+        result[lpoID].push(item);
+        return result;
+      }, {});
+      dispatch(creditPayload(groupedObject));
+    }
 
     /*############# Getting payloads for sales ###############*/
     const salesList = [];
@@ -387,7 +388,7 @@ const SummaryRecord = (props) => {
 
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const salesPayload = getSalesPayload(tank, pump, currentDate);
+        const salesPayload = getSalesPayload(tank, pump, mainDate);
         const pumpPayload = getPumpPayloads(pump);
         const tankPayload = getTankPayloads(tank);
 
@@ -408,7 +409,7 @@ const SummaryRecord = (props) => {
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
         if (pump.RTlitre !== 0) {
-          const rt = getRTPayload(tank, pump, currentDate);
+          const rt = getRTPayload(tank, pump, mainDate);
           rtList.push(rt);
         }
       }
@@ -422,7 +423,13 @@ const SummaryRecord = (props) => {
         selectedProducts[product.productType] = product;
       }
     }
-    console.log(selectedProducts, "balance carried forward");
+    const getArraysOfCF = Object.values(selectedProducts);
+    const balanceCFData = getArraysOfCF.map((data) => {
+      const done = getBalanceCF(data, mainDate);
+      return done;
+    });
+    dispatch(balanceCF(balanceCFData));
+    console.log(balanceCFData, "balance carried forward");
   };
 
   useEffect(() => {
@@ -436,7 +443,7 @@ const SummaryRecord = (props) => {
     setLoading(true);
 
     const result = await APIs.post("/sales/validateSales", {
-      date: currentDate,
+      date: mainDate,
       organizationID: oneStationData.organisation,
       outletID: oneStationData._id,
     }).then((data) => {
@@ -448,7 +455,7 @@ const SummaryRecord = (props) => {
       swal("Error!", "Record has been saved for this day already!", "error");
     } else {
       const settings = {
-        currentDate: currentDate,
+        currentDate: mainDate,
       };
       const payload = [
         SalesService.pumpUpdate({
@@ -496,11 +503,11 @@ const SummaryRecord = (props) => {
           station: oneStationData,
           debits: creditPayloadData,
         }),
-        // SalesService.balanceCF({
-        //   ...settings,
-        //   station: oneStationData,
-        //   balanceCF: records["10"],
-        // }),
+        SalesService.balanceCF({
+          ...settings,
+          station: oneStationData,
+          balanceCF: balanceCFRecord,
+        }),
       ];
       Promise.allSettled(payload)
         .then((results) => {
@@ -731,7 +738,7 @@ const SummaryRecord = (props) => {
             ) : (
               dippingPayloadData?.map((data, index) => {
                 return (
-                  <div className="other_label">
+                  <div key={index} className="other_label">
                     <div className="other_inner">
                       <div className="fuel_card_items">
                         <div className="fuel_card_items_left">
@@ -873,6 +880,18 @@ const getTankLevelsPayload = (level, mainDate) => {
     outletID: level.outletID,
     tankID: level._id,
     organizationID: level.organisationID,
+    createdAt: mainDate,
+    updatedAt: mainDate,
+  };
+};
+
+const getBalanceCF = (sales, mainDate) => {
+  return {
+    balanceCF: sales.balanceCF,
+    productType: sales.productType,
+    totalTankCapacity: sales.totalTankCapacity,
+    outletID: sales.outletID,
+    organizationID: sales.organisationID,
     createdAt: mainDate,
     updatedAt: mainDate,
   };

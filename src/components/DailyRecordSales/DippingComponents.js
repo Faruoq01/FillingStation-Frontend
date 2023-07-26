@@ -151,7 +151,7 @@ const DippingComponents = (props) => {
           tankCapacity: item.tankCapacity,
           dipping: removeSpecialCharacters(e.target.value),
           afterSales: levelAfterSales,
-          tankName: item,
+          tankName: item.tankName,
           outletID: oneStationData._id,
           organizationID: oneStationData.organisation,
           createdAt: mainDate,
@@ -159,7 +159,9 @@ const DippingComponents = (props) => {
         };
 
         const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData)); // Create a deep copy
-        const indices = copyDipping.findIndex((data) => data._id === item._id);
+        const indices = copyDipping.findIndex(
+          (data) => data.tankID === item._id
+        );
 
         if (indices === -1) {
           copyDipping.push(payload);
