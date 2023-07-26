@@ -91,6 +91,7 @@ const CreateReturnToTankModal = (props) => {
             )}
 
             <CustomDropdown
+              value={product === 3 ? "AGO" : product === 2 ? "DPK" : "PMS"}
               onChange={handleOnChange(setProduct)}
               title={"Product Type"}
             />
