@@ -100,12 +100,18 @@ const ExpenseComponents = (props) => {
         "info"
       );
 
+    const getImage = () => {
+      if (gall === null && cam === null) return "null";
+      if (gall === null) return cam;
+      if (cam === null) return gall;
+    };
+
     const payload = {
       dateCreated: "none",
       expenseName: reg ? "Regulatory payment" : expenseName,
       description: description,
       expenseAmount: expenseAmount,
-      attachApproval: gall === null ? cam : gall,
+      attachApproval: getImage(),
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
       createdAt: mainDate,

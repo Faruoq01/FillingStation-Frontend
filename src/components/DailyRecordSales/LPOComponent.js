@@ -211,12 +211,18 @@ const LPOComponent = (props) => {
       setBalanceTracker(balance);
     }
 
+    const getImage = () => {
+      if (gall === null && cam === null) return "null";
+      if (gall === null) return cam;
+      if (cam === null) return gall;
+    };
+
     const payload = {
       accountName: dispenseLpo.companyName,
       productType: productType,
       truckNo: truckNo,
       lpoLitre: quantity,
-      attachApproval: gall === null ? cam : gall,
+      attachApproval: getImage(),
       lpoID: dispenseLpo._id,
       PMSRate: oneStationData.PMSPrice,
       AGORate: oneStationData.AGOPrice,

@@ -94,13 +94,19 @@ const PosPayments = (props) => {
     if (cam === "null" && gall === "null")
       return swal("Warning!", "Please add reciept", "info");
 
+    const getImage = () => {
+      if (gall === null && cam === null) return "null";
+      if (gall === null) return cam;
+      if (cam === null) return gall;
+    };
+
     const payload = {
       posName: posName,
       terminalID: terminalID,
       amountPaid: amountPaid,
       paymentDate: paymentDate,
       confirmation: "null",
-      uploadSlip: gall === null ? cam : gall,
+      attachApproval: getImage(),
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
       createdAt: mainDate,

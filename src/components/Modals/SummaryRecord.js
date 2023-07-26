@@ -465,61 +465,61 @@ const SummaryRecord = (props) => {
         currentDate: mainDate,
       };
       const payload = [
-        // SalesService.pumpUpdate({
-        //   ...settings,
-        //   station: oneStationData,
-        //   sales: salesPayloadData,
-        // }),
-        // SalesService.returnToTank({
-        //   ...settings,
-        //   station: oneStationData,
-        //   rt: rtPayloadData,
-        // }),
-        // SalesService.lpo({
-        //   ...settings,
-        //   station: oneStationData,
-        //   lpo: lpoPayloadData,
-        // }),
-        // SalesService.expenses({
-        //   ...settings,
-        //   station: oneStationData,
-        //   expenses: expensesPayloadData,
-        // }),
-        // SalesService.bankPayment({
-        //   ...settings,
-        //   station: oneStationData,
-        //   bankpayments: bankPayloadData,
-        // }),
-        // SalesService.posPayment({
-        //   ...settings,
-        //   station: oneStationData,
-        //   pospayments: posPayloadData,
-        // }),
-        // SalesService.dipping({
-        //   ...settings,
-        //   station: oneStationData,
-        //   dipping: dippingPayloadData,
-        // }),
-        // SalesService.tankLevels({
-        //   ...settings,
-        //   station: oneStationData,
-        //   tankLevels: tanksPayloadData,
-        // }),
+        SalesService.pumpUpdate({
+          ...settings,
+          station: oneStationData,
+          sales: salesPayloadData,
+        }),
+        SalesService.returnToTank({
+          ...settings,
+          station: oneStationData,
+          rt: rtPayloadData,
+        }),
+        SalesService.lpo({
+          ...settings,
+          station: oneStationData,
+          lpo: lpoPayloadData,
+        }),
+        SalesService.expenses({
+          ...settings,
+          station: oneStationData,
+          expenses: expensesPayloadData,
+        }),
+        SalesService.bankPayment({
+          ...settings,
+          station: oneStationData,
+          bankpayments: bankPayloadData,
+        }),
+        SalesService.posPayment({
+          ...settings,
+          station: oneStationData,
+          pospayments: posPayloadData,
+        }),
+        SalesService.dipping({
+          ...settings,
+          station: oneStationData,
+          dipping: dippingPayloadData,
+        }),
+        SalesService.tankLevels({
+          ...settings,
+          station: oneStationData,
+          tankLevels: tanksPayloadData,
+        }),
         SalesService.creditBalance({
           ...settings,
           station: oneStationData,
           debits: creditPayloadObjectData,
         }),
-        // SalesService.balanceCF({
-        //   ...settings,
-        //   station: oneStationData,
-        //   balanceCF: balanceCFRecord,
-        // }),
+        SalesService.balanceCF({
+          ...settings,
+          station: oneStationData,
+          balanceCF: balanceCFRecord,
+        }),
       ];
       Promise.allSettled(payload)
         .then((results) => {
           handleClose();
-          // history.push("/home/daily-sales");
+          history.push("/home/daily-sales");
           swal("Success!", "Record saved successfully!", "success");
         })
         .catch((error) => {
