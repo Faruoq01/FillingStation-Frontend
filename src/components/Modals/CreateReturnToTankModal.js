@@ -3,13 +3,14 @@ import Modal from "@mui/material/Modal";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThreeDots } from "react-loader-spinner";
 import "../../styles/estation/payment.scss";
-import CloseIcon from "@mui/icons-material/Close";
+import close from "../../assets/close.png";
 import {
   Button,
   FormControl,
   Input,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
   TextField,
 } from "@mui/material";
@@ -21,7 +22,7 @@ const CreateReturnToTankModal = (props) => {
   const [paymentMethod, setPaymentMethod] = useState();
   const [tellerNo, setTellerNo] = useState();
   const [recieptImage, setRecieptImage] = useState();
-  const [product, setProduct] = useState();
+  const [product, setProduct] = useState(1);
   const mobile = useMediaQuery("(max-width:900px)");
   const handleOnChange = (setState) => (event) => {
     setState(event.target.value);
@@ -44,27 +45,32 @@ const CreateReturnToTankModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", border: "none" }}
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
-      <div className="e-station-payment-modal">
-        <div className="cancel-confirm">
-          <label for="Confirm Payment" className="title-label-">
-            Create Return To Tank
-          </label>
-          <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
-        </div>
-        <div className="form-area-new-pay">
-          <form>
-            <CustomTextInput
-              placeholder="return to tank litre"
-              title="Return To Tank Litre"
-              onChange={handleOnChange(setAccountName)}
+      <div className="modalContainer2">
+        <div className="inner">
+          <div className="head">
+            <div className="head-text">Create Return To Tank</div>
+            <img
+              onClick={handleClose}
+              style={{ width: "18px", height: "18px" }}
+              src={close}
+              alt={"icon"}
             />
+          </div>
 
+          <div
+            style={{
+              width: "100%",
+              height: "480px",
+              paddingRight: "5px",
+              overflowX: "hidden",
+              overflowY: "scroll",
+            }}
+          >
             {product === 1 && (
               <CustomTextInput
                 disabled
-                placeholder="pms price"
                 title="PMS Price"
                 // onChange={handleOnChange(setAccountName)}
               />
@@ -72,7 +78,6 @@ const CreateReturnToTankModal = (props) => {
             {product === 3 && (
               <CustomTextInput
                 disabled
-                placeholder="ago price"
                 title="AGO Price"
                 // onChange={handleOnChange(setAccountName)}
               />
@@ -80,69 +85,106 @@ const CreateReturnToTankModal = (props) => {
             {product === 2 && (
               <CustomTextInput
                 disabled
-                placeholder="dpk price"
                 title="DPK Price"
                 // onChange={handleOnChange(setAccountName)}
               />
             )}
-            <div>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Product Type
-                </InputLabel>
-                <Select
-                  sx={{ height: 35 }}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={product}
-                  label="Product Type"
-                  onChange={handleOnChange(setProduct)}
-                >
-                  <MenuItem value={1}>PMS</MenuItem>
-                  <MenuItem value={2}>DPK</MenuItem>
-                  <MenuItem value={3}>AGO</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <div
-              style={{
-                // marginBottom: "3rem",
-                marginTop: "1rem",
-                // backgroundColor: "red",
-                padding: 0,
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
+
+            <CustomDropdown
+              value={product === 3 ? "AGO" : product === 2 ? "DPK" : "PMS"}
+              onChange={handleOnChange(setProduct)}
+              title={"Product Type"}
+            />
+          </div>
+
+          <div style={{ height: "30px" }} className="butt">
+            <Button
+              // disabled={loadingSpinner}
+              sx={{
+                width: "100px",
+                height: "30px",
+                background: "#427BBE",
+                borderRadius: "3px",
+                fontSize: "10px",
+                marginTop: "00px",
+                "&:hover": {
+                  backgroundColor: "#427BBE",
+                },
               }}
-              className="footer-section-p"
+              onClick={() => {}}
+              variant="contained"
             >
-              <Button
-                variant="contained"
-                onClick={handleSubmitForm}
-                style={{
-                  // width: 100,
-                  background: "#06805B",
-                  color: "white",
-                }}
-              >
-                Save
-              </Button>
-            </div>
-          </form>
+              Save
+            </Button>
+
+            {/* {loadingSpinner ? (
+              <ThreeDots
+                height="60"
+                width="50"
+                radius="9"
+                color="#076146"
+                ariaLabel="three-dots-loading"
+                wrapperStyle={{}}
+                wrapperClassName=""
+                visible={true}
+              />
+            ) : null} */}
+          </div>
         </div>
       </div>
     </Modal>
   );
 };
 
-const customDropdown = ({ data }) => <div>{}</div>;
+const CustomDropdown = ({ data, value, onChange, title, ...props }) => {
+  return (
+    <div style={{ marginTop: "15px" }} className="inputs">
+      <div className="head-text2">{title}</div>
+      <Select
+        labelId="demo-select-small"
+        id="demo-select-small"
+        value={value}
+        sx={{
+          width: "100%",
+          height: "35px",
+          marginTop: "5px",
+          background: "#EEF2F1",
+          fontSize: "12px",
+          borderRadius: "0px",
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            border: "1px solid #777777",
+          },
+        }}
+        onChange={onChange}
+      >
+        <MenuItem value={1}>PMS</MenuItem>
+        <MenuItem value={2}>DPK</MenuItem>
+        <MenuItem value={3}>AGO</MenuItem>
+      </Select>
+    </div>
+  );
+};
 const data = {};
 
 const CustomTextInput = (props) => (
-  <Fragment>
-    <label>{props.title}</label>
-    <input {...props} />
-  </Fragment>
+  <div className="inputs">
+    <div className="head-text2">{props.title}</div>
+    <OutlinedInput
+      sx={{
+        width: "100%",
+        height: "35px",
+        marginTop: "5px",
+        background: "#EEF2F1",
+        fontSize: "12px",
+        borderRadius: "0px",
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          border: "1px solid #777777",
+        },
+      }}
+      placeholder={`${props.title.toLowerCase()}`}
+      {...props}
+    />
+  </div>
 );
 
 const inner = {

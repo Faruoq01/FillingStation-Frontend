@@ -1,14 +1,17 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useRef } from "react";
 import Modal from "@mui/material/Modal";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ThreeDots } from "react-loader-spinner";
 import "../../styles/estation/payment.scss";
 import CloseIcon from "@mui/icons-material/Close";
-import { Button } from "@mui/material";
-
+import { Button, MenuItem, OutlinedInput } from "@mui/material";
+import close from "../../assets/close.png";
+import { Select } from "antd";
 const CreateProductDispensedModal = (props) => {
   const handleClose = () => props.close(false);
   const [accountName, setAccountName] = useState();
+  const [product, setProduct] = useState();
+  const [loadingSpinner, setLoadingSpinner] = useState(false);
   const [amount, setAmount] = useState();
   const [paymentMethod, setPaymentMethod] = useState();
   const [tellerNo, setTellerNo] = useState();
@@ -39,88 +42,148 @@ const CreateProductDispensedModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", border: "none" }}
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
-      <div className="e-station-payment-modal">
-        <div className="cancel-confirm">
-          <label for="Confirm Payment" className="title-label-">
-            Create Product Dispensed
-          </label>
-          <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
-        </div>
-        <div className="form-area-new-pay">
-          <form>
+      <div className="modalContainer2">
+        <div className="inner">
+          <div className="head">
+            <div className="head-text">Create Bank Payment</div>
+            <img
+              onClick={handleClose}
+              style={{ width: "18px", height: "18px" }}
+              src={close}
+              alt={"icon"}
+            />
+          </div>
+
+          <div
+            style={{
+              width: "100%",
+              height: "480px",
+              paddingRight: "5px",
+              overflowX: "hidden",
+              overflowY: "scroll",
+            }}
+          >
             <CustomTextInput
-              placeholder="Sales"
               title="Sales"
               onChange={handleOnChange(setAccountName)}
             />
+            {/* ===================== */}
             <CustomTextInput
-              placeholder="RT litre"
               title="RTlitre"
               onChange={handleOnChange(setAmount)}
             />
+            {/* =============== */}
             <CustomTextInput
               title="Pump ID"
-              placeholder="pump id"
               onChange={handleOnChange(setAmount)}
             />
+            {/* =============== */}
             <CustomTextInput
-              placeholder="opening meter"
               title="Opening Meter"
               onChange={handleOnChange(setAmount)}
             />
+            {/* ============ */}
             <CustomTextInput
-              placeholder="closing meter"
               title="Closing Meter"
               onChange={handleOnChange(setAmount)}
             />
+            {/* ================= */}
             <CustomTextInput
-              placeholder="product type"
               title="Product Type"
               onChange={handleOnChange(setAmount)}
             />
+          </div>
 
-            <div
-              style={{
-                marginBottom: "1rem",
-                marginTop: "2rem",
-                // backgroundColor: "red",
-                padding: 0,
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                flexDirection: "column",
+          <div style={{ height: "30px" }} className="butt">
+            <Button
+              // disabled={loadingSpinner}
+              sx={{
+                width: "100px",
+                height: "30px",
+                background: "#427BBE",
+                borderRadius: "3px",
+                fontSize: "10px",
+                marginTop: "00px",
+                "&:hover": {
+                  backgroundColor: "#427BBE",
+                },
               }}
-              className="footer-section-p"
+              onClick={() => {}}
+              variant="contained"
             >
-              <Button
-                variant="contained"
-                onClick={handleSubmitForm}
-                style={{
-                  width: 100,
-                  background: "#06805B",
-                  color: "white",
-                }}
-              >
-                Save
-              </Button>
-            </div>
-          </form>
+              Save
+            </Button>
+
+            {loadingSpinner ? (
+              <ThreeDots
+                height="60"
+                width="50"
+                radius="9"
+                color="#076146"
+                ariaLabel="three-dots-loading"
+                wrapperStyle={{}}
+                wrapperClassName=""
+                visible={true}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     </Modal>
   );
 };
 
-const customDropdown = ({ data }) => <div>{}</div>;
+const CustomDropdown = ({ data, value, onChange, title, ...props }) => {
+  return (
+    <div style={{ marginTop: "15px" }} className="inputs">
+      <div className="head-text2">{title}</div>
+      <Select
+        labelId="demo-select-small"
+        id="demo-select-small"
+        value={value}
+        sx={{
+          width: "100%",
+          height: "35px",
+          marginTop: "5px",
+          background: "#EEF2F1",
+          fontSize: "12px",
+          borderRadius: "0px",
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            border: "1px solid #777777",
+          },
+        }}
+        onChange={onChange}
+      >
+        <MenuItem value={1}>PMS</MenuItem>
+        <MenuItem value={2}>DPK</MenuItem>
+        <MenuItem value={3}>AGO</MenuItem>
+      </Select>
+    </div>
+  );
+};
 const data = {};
 
 const CustomTextInput = (props) => (
-  <Fragment>
-    <label>{props.title}</label>
-    <input type={props.type ?? "text"} {...props} />
-  </Fragment>
+  <div className="inputs">
+    <div className="head-text2">{props.title}</div>
+    <OutlinedInput
+      sx={{
+        width: "100%",
+        height: "35px",
+        marginTop: "5px",
+        background: "#EEF2F1",
+        fontSize: "12px",
+        borderRadius: "0px",
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          border: "1px solid #777777",
+        },
+      }}
+      placeholder={`${props.title.toLowerCase()}`}
+      {...props}
+    />
+  </div>
 );
 
 const inner = {

@@ -50,8 +50,8 @@ const ComprehensiveReport = (props) => {
   const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
   const [bankPaymentModalStatus, setBankPaymentModalStatus] = useState(false);
   const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(false);
-  const [dippingModalStatus, setDippingModalStatus] = useState(true);
-  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
+  const [dippingModalStatus, setDippingModalStatus] = useState(false);
+  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(true);
 
   const [
     openCreateCorporateSaleModalModal,
