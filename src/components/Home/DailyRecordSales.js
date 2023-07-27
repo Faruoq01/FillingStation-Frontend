@@ -64,6 +64,10 @@ import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PendingSales from "../Modals/PendingSales";
+import SupplyService from "../../services/supplyService";
+import moment from "moment";
+import APIs from "../../services/api";
+import { daySupply } from "../../storage/supply";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
@@ -227,6 +231,7 @@ const DailyRecordSales = () => {
   const [open, setOpen] = useState(false);
   const [openSummary, setOpenSummary] = useState(false);
   const [pending, setPending] = useState(false);
+  const [disableDate, setDisableDate] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -273,7 +278,7 @@ const DailyRecordSales = () => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dispatch, user.outletID, user.userType]
+    []
   );
 
   useEffect(() => {
@@ -317,7 +322,9 @@ const DailyRecordSales = () => {
     dispatch(posPayload([]));
     dispatch(dippingPayload([]));
     dispatch(tanksPayload([]));
-  }, [getAllInitialRecords, dispatch]);
+    setDisableDate(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const nextQuestion = () => {
     let newList = { ...linkedData };
@@ -388,8 +395,15 @@ const DailyRecordSales = () => {
       organisationID: item.organisation,
     };
 
-    OutletService.getAllStationPumps(payload).then((data) => {
-      const copyData = [...data];
+    const stationPumps = OutletService.getAllStationPumps(payload);
+    const stationTanks = OutletService.getAllOutletTanks(payload);
+    const orgLpo = LPOService.getAllLPO(payload);
+
+    Promise.all([stationPumps, stationTanks, orgLpo]).then((data) => {
+      const [pumps, tanks, lpo] = data;
+
+      ///////////////// station pumps //////////////////////
+      const copyData = JSON.parse(JSON.stringify(pumps));
       const updated = copyData.map((data) => {
         let pumps = { ...data };
         return {
@@ -405,10 +419,9 @@ const DailyRecordSales = () => {
       const AGO = updated.filter((data) => data.productType === "AGO");
       const DPK = updated.filter((data) => data.productType === "DPK");
       dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
-    });
 
-    OutletService.getAllOutletTanks(payload).then((data) => {
-      const outletTanks = data.stations.map((data) => {
+      ///////////////// station tanks //////////////////////
+      const outletTanks = tanks.stations.map((data) => {
         const newData = {
           ...data,
           label: data.tankName,
@@ -424,10 +437,9 @@ const DailyRecordSales = () => {
         return newData;
       });
       dispatch(getAllOutletTanks(outletTanks));
-    });
 
-    LPOService.getAllLPO(payload).then((data) => {
-      dispatch(createLPO(data.lpo.lpo));
+      ///////////////// station lpo //////////////////////
+      dispatch(createLPO(lpo.lpo.lpo));
     });
 
     dispatch(adminOutlet(item));
@@ -438,7 +450,26 @@ const DailyRecordSales = () => {
     setValue(newValue);
     const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
 
-    dispatch(changeDate(getDate));
+    const mainDate = moment
+      .tz(getDate, user.timezone)
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
+
+    const payload = {
+      outletID: oneStationData._id,
+      organisationID: oneStationData.organisation,
+      createdAt: mainDate,
+    };
+
+    APIs.post("/supply/dayRecord", payload)
+      .then(({ data }) => {
+        console.log(data, "data");
+        dispatch(daySupply(data.supply));
+      })
+      .then(() => {
+        dispatch(changeDate(getDate));
+        setDisableDate(true);
+      });
   };
 
   const convertDate = (newValue) => {
@@ -535,6 +566,7 @@ const DailyRecordSales = () => {
                 <ButtonDatePicker
                   label={`${value == null || "" ? date2 : convertDate(value)}`}
                   value={value}
+                  disabled={disableDate}
                   onChange={(newValue) => updateDate(newValue)}
                 />
               </Stack>

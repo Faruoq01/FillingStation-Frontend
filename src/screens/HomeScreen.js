@@ -55,7 +55,7 @@ import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { useDispatch, useSelector } from "react-redux";
 import UserService from "../services/user";
-import { updateUser } from "../store/actions/auth";
+import { updateUser } from "../storage/auth";
 import StationTanks from "../components/Home/StationTanks";
 import StationPumps from "../components/Home/StationPumps";
 import HistoryPage from "../components/Home/History";
@@ -174,7 +174,7 @@ const HomeScreen = () => {
     function clearCount(data) {
       if (resolveUserID().id === data.orgID) {
         if (user._id === data.id) {
-          const copyUser = { ...user };
+          const copyUser = JSON.parse(JSON.stringify(user));
           copyUser.noteCount = "0";
           dispatch(updateUser(copyUser));
           localStorage.setItem("user", JSON.stringify(copyUser));

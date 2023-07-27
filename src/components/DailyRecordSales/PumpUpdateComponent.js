@@ -12,6 +12,7 @@ import {
   updatePmsList,
   updateSelectedPumps,
 } from "../../storage/recordsales";
+import moment from "moment";
 
 const mediaMatch = window.matchMedia("(max-width: 500px)");
 
@@ -28,6 +29,8 @@ const PumpUpdateComponent = (props) => {
   const PMS = useSelector((state) => state.recordsales.PMS);
   const AGO = useSelector((state) => state.recordsales.AGO);
   const DPK = useSelector((state) => state.recordsales.DPK);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+
   // console.log(selectedPumps, "selected pumps");
   // console.log(selectedTanks, "selected tanks");
   // console.log(PMS, "pmmmmmmmmssssss");
@@ -223,6 +226,8 @@ const PumpUpdateComponent = (props) => {
   }
 
   const setTotalizer = (e, pump, index) => {
+    if (typeof currentDate !== "string")
+      return swal("Error", "Please select record date", "error");
     if (selectedTanks.length !== 0) {
       const clonedTanks = [...selectedTanks];
       const connectedTank = clonedTanks.filter(
