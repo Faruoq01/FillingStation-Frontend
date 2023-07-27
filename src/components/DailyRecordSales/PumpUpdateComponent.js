@@ -1,5 +1,5 @@
 import { Radio } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,18 +7,18 @@ import swal from "sweetalert";
 import {
   desselectedListPumps,
   selectedListPumps,
+  tankList,
   updateAgoList,
   updateDpkList,
   updatePmsList,
   updateSelectedPumps,
 } from "../../storage/recordsales";
-import moment from "moment";
 
 const mediaMatch = window.matchMedia("(max-width: 500px)");
 
 const PumpUpdateComponent = (props) => {
   const [productType, setProductType] = useState("PMS");
-  const tankList = useSelector((state) => state.outlet.tankList);
+  const tankListData = useSelector((state) => state.recordsales.tankList);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
 
@@ -30,10 +30,12 @@ const PumpUpdateComponent = (props) => {
   const AGO = useSelector((state) => state.recordsales.AGO);
   const DPK = useSelector((state) => state.recordsales.DPK);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const daySupply = useSelector((state) => state.supply.daySupply);
 
   // console.log(selectedPumps, "selected pumps");
   // console.log(selectedTanks, "selected tanks");
-  // console.log(PMS, "pmmmmmmmmssssss");
+  console.log(daySupply, "supplies");
+  console.log(tankListData, "tank list");
 
   const onRadioClick = (data) => {
     if (data === "PMS") {
@@ -51,9 +53,9 @@ const PumpUpdateComponent = (props) => {
 
   const pumpItem = (e, index, pump) => {
     e.preventDefault();
-    if (tankList.lenth === 0)
+    if (tankListData.lenth === 0)
       return swal("Alert", "Please refresh tanks not loaded!", "warning");
-    const tankClone = [...tankList];
+    const tankClone = JSON.parse(JSON.stringify(tankListData));
     const tankID = tankClone.findIndex((data) => data._id === pump.hostTank);
 
     switch (pump.productType) {
@@ -101,7 +103,7 @@ const PumpUpdateComponent = (props) => {
   };
 
   const deselect = (index, pump) => {
-    const tankClone = [...tankList];
+    const tankClone = JSON.parse(JSON.stringify(tankListData));
     const tankID = tankClone.findIndex((data) => data._id === pump.hostTank);
 
     switch (pump.productType) {
@@ -154,7 +156,7 @@ const PumpUpdateComponent = (props) => {
                 Update the pump readings for PMS
             ############################################*/
 
-      const onlyPMS = [...tankList].filter(
+      const onlyPMS = [...tankListData].filter(
         (data) => data.productType === "PMS"
       );
       const totalPMSTankLevel = onlyPMS.reduce((accum, current) => {
@@ -177,7 +179,7 @@ const PumpUpdateComponent = (props) => {
                 Update the pump readings for AGO
             ############################################*/
 
-      const onlyAGO = [...tankList].filter(
+      const onlyAGO = [...tankListData].filter(
         (data) => data.productType === "AGO"
       );
       const totalAG0TankLevel = onlyAGO.reduce((accum, current) => {
@@ -200,7 +202,7 @@ const PumpUpdateComponent = (props) => {
                 Update the pump readings for DPK
             ############################################*/
 
-      const onlyDPK = [...tankList].filter(
+      const onlyDPK = [...tankListData].filter(
         (data) => data.productType === "DPK"
       );
       const totalDPKTankLevel = onlyDPK.reduce((accum, current) => {

@@ -22,6 +22,7 @@ const initialState = {
   tanksPayload: [],
   balanceCF: [],
   supplyPayload: [],
+  tankList: [],
   load: {
     0: [],
     1: [],
@@ -211,6 +212,9 @@ export const recordsalesSlice = createSlice({
     creditPayloadObject: (state, action) => {
       state.creditPayloadObject = action.payload;
     },
+    tankList: (state, action) => {
+      state.tankList = action.payload;
+    },
   },
 });
 
@@ -241,6 +245,7 @@ export const {
   balanceCF,
   supplyPayload,
   creditPayloadObject,
+  tankList,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;

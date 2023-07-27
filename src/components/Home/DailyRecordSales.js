@@ -35,6 +35,7 @@ import {
   posPayload,
   rtPayload,
   salesPayload,
+  tankList,
   tanksPayload,
   updateRecords,
   updateSelectedPumps,
@@ -42,12 +43,7 @@ import {
 } from "../../storage/recordsales";
 import { useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
-import {
-  adminOutlet,
-  getAllOutletTanks,
-  getAllPumps,
-  getAllStations,
-} from "../../storage/outlet";
+import { adminOutlet, getAllPumps, getAllStations } from "../../storage/outlet";
 import LPOService from "../../services/lpo";
 import { createLPO } from "../../storage/recordsales";
 import Backdrop from "@mui/material/Backdrop";
@@ -227,6 +223,7 @@ const DailyRecordSales = () => {
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const tankListData = useSelector((state) => state.recordsales.tankList);
   const [defaultState, setDefault] = useState(0);
   const [open, setOpen] = useState(false);
   const [openSummary, setOpenSummary] = useState(false);
@@ -322,6 +319,8 @@ const DailyRecordSales = () => {
     dispatch(posPayload([]));
     dispatch(dippingPayload([]));
     dispatch(tanksPayload([]));
+    dispatch(tankList([]));
+    dispatch(daySupply([]));
     setDisableDate(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -385,6 +384,7 @@ const DailyRecordSales = () => {
   };
 
   const changeMenu = (index, item) => {
+    setDisableDate(false);
     if (!getPerm("1") && item === null)
       return swal("Warning!", "Permission denied", "info");
     setDefault(index);
@@ -436,7 +436,7 @@ const DailyRecordSales = () => {
         };
         return newData;
       });
-      dispatch(getAllOutletTanks(outletTanks));
+      dispatch(tankList(outletTanks));
 
       ///////////////// station lpo //////////////////////
       dispatch(createLPO(lpo.lpo.lpo));
@@ -445,7 +445,39 @@ const DailyRecordSales = () => {
     dispatch(adminOutlet(item));
   };
 
+  const updateTanksWithSupplies = (tankListData, daySupply) => {
+    if (daySupply.length === 0 || tankListData.length === 0) {
+      dispatch(tankList(tankListData));
+    } else {
+      const copyTanks = JSON.parse(JSON.stringify(tankListData));
+      for (const supply of daySupply) {
+        const recipient = Object.values(supply.recipientTanks);
+        for (const tank of recipient) {
+          const findID = copyTanks.findIndex((data) => data._id === tank.id);
+          if (findID !== -1) {
+            const newLevel =
+              Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
+            copyTanks[findID] = {
+              ...copyTanks[findID],
+              currentLevel: newLevel,
+            };
+          }
+        }
+      }
+      dispatch(tankList(copyTanks));
+    }
+  };
+
   const updateDate = (newValue) => {
+    if (oneStationData === null)
+      return swal("Warning!", "Please select station first", "info");
+
+    if (tankListData.length === null)
+      return swal(
+        "Warning!",
+        "Please check your network settings or reload",
+        "info"
+      );
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
     setValue(newValue);
     const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
@@ -463,8 +495,8 @@ const DailyRecordSales = () => {
 
     APIs.post("/supply/dayRecord", payload)
       .then(({ data }) => {
-        console.log(data, "data");
         dispatch(daySupply(data.supply));
+        updateTanksWithSupplies(tankListData, data.supply);
       })
       .then(() => {
         dispatch(changeDate(getDate));
