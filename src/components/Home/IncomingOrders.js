@@ -525,7 +525,7 @@ const IncomingOrder = () => {
                   ) : (
                     incomingOrder.map((data, index) => {
                       return (
-                        <div key={index} className="table-head2">
+                        <div key={index} className="incoming-row">
                           <div className="column">{index + 1}</div>
                           <div className="column">{data.dateCreated}</div>
                           <div className="column">{data.depotStation}</div>
