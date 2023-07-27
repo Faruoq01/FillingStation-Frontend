@@ -91,7 +91,7 @@ const CreateSupply = (props) => {
     let addedQuantity = Number(removeSpecialCharacters(e.target.value));
 
     if (addedQuantity > room) {
-      swal(
+      return swal(
         "Warning!",
         `This tank doesn't have the capacity, can only accommodate ${room} litres extra. `,
         "info"
@@ -101,11 +101,14 @@ const CreateSupply = (props) => {
       const findID = cloneSelectedTanks.findIndex(
         (item) => item._id === data._id
       );
+
       const total = String(
         Number(cloneSelectedTanks[findID].currentLevel) + addedQuantity
       );
+
       cloneSelectedTanks[findID].newLevel = total;
       cloneSelectedTanks[findID].addedQuantity = addedQuantity;
+      setSelected(cloneSelectedTanks);
 
       const sumOfQuantity = cloneSelectedTanks.reduce((accum, current) => {
         return Number(accum) + Number(current.addedQuantity);
@@ -142,15 +145,28 @@ const CreateSupply = (props) => {
     if (selectedIncomingOrders === "")
       return swal("Warning!", "Incoming order field cannot be empty", "info");
 
-    let discharged = 0;
-    let tanks = {};
-    for (let data of selected) {
-      discharged = discharged + Number(data.addedQuantity);
-      tanks[data._id] = {
+    const discharged = selected.reduce((accum, current) => {
+      return Number(accum) + Number(current.addedQuantity);
+    }, 0);
+
+    const listTanks = selected.map((data) => {
+      return {
+        id: data._id,
         tankName: data.tankName,
         quantity: data.addedQuantity,
       };
-    }
+    });
+
+    const tanks = listTanks.reduce((result, item) => {
+      const { id } = item;
+      if (!result[id]) {
+        result[id] = {};
+      }
+      result[id] = item;
+      return result;
+    }, {});
+
+    console.log(tanks, "hello");
 
     if (typeof discharged === "number" && discharged !== 0) {
       const payload = {
@@ -171,7 +187,6 @@ const CreateSupply = (props) => {
       };
 
       const findID = supplyList.indexOf(payload);
-      console.log(findID, "indexID");
       if (findID === -1) {
         setSupplyList((prev) => [...prev, payload]);
       } else {
@@ -208,7 +223,7 @@ const CreateSupply = (props) => {
   };
 
   const getFilteredTanks = () => {
-    const clonedTanks = [...tankList];
+    const clonedTanks = JSON.parse(JSON.stringify(tankList));
 
     const PMS = clonedTanks?.filter(
       (data) => data.productType === productSupply
@@ -258,6 +273,7 @@ const CreateSupply = (props) => {
       }
 
       default: {
+        return [];
       }
     }
   };
