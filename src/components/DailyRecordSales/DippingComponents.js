@@ -35,43 +35,31 @@ const DippingComponents = (props) => {
   const [dpk, setDPK] = useState([]);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const mainDate = moment
     .tz(currentDate, user.timezone)
     .format("YYYY-MM-DD HH:mm:ss")
     .split(" ")[0];
 
-  // console.log(records["7"].push(2));
-
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
+  // const resolveUserID = () => {
+  //   if (user.userType === "superAdmin") {
+  //     return { id: user._id };
+  //   } else {
+  //     return { id: user.organisationID };
+  //   }
+  // };
 
   const getStationTanks = useCallback(() => {
-    setLoading(true);
-    const payload = {
-      outletID: oneStationData._id,
-      organisationID: resolveUserID().id,
-    };
+    const copyTanks = JSON.parse(JSON.stringify(tankListData));
+    const outletTanks = copyTanks.map((data) => {
+      const newData = { ...data, label: data.tankName, value: data._id };
+      return newData;
+    });
 
-    OutletService.getAllOutletTanks(payload)
-      .then((data) => {
-        const outletTanks = data.stations.map((data) => {
-          const newData = { ...data, label: data.tankName, value: data._id };
-          return newData;
-        });
-
-        setPMS(getPMSPump(outletTanks));
-        setAGO(getAGOPump(outletTanks));
-        setDPK(getDPKPump(outletTanks));
-      })
-      .then(() => {
-        setLoading(false);
-      });
+    setPMS(getPMSPump(outletTanks));
+    setAGO(getAGOPump(outletTanks));
+    setDPK(getDPKPump(outletTanks));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oneStationData._id]);
 

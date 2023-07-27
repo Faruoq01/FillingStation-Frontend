@@ -6,7 +6,6 @@ import { Button } from "@mui/material";
 import swal from "sweetalert";
 import {
   balanceCF,
-  creditPayload,
   creditPayloadObject,
   rtPayload,
   salesPayload,
@@ -224,7 +223,6 @@ const ReturnToTank = (props) => {
 
 const SummaryRecord = (props) => {
   const user = useSelector((state) => state.auth.user);
-  const records = useSelector((state) => state.recordsales.load);
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => props.close(false);
@@ -262,13 +260,13 @@ const SummaryRecord = (props) => {
     (state) => state.recordsales.supplyPayload
   );
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const tankList = useSelector((state) => state.outlet.tankList);
+  const daySupplyData = useSelector((state) => state.supply.daySupply);
+  const tankList = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const mainDate = moment
     .tz(currentDate, user.timezone)
     .format("YYYY-MM-DD HH:mm:ss")
     .split(" ")[0];
-  console.log(balanceCFRecord, "balanceCF");
   // console.log(typeof currentDate, "date");
   // console.log(selectedPumps, "Pumps")
   // console.log(selectedTanks, "Tanks")
@@ -774,10 +772,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Supply</div>
             </div>
 
-            {supplyPayloadData?.length === 0 ? (
+            {daySupplyData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              supplyPayloadData?.map((data, index) => {
+              daySupplyData?.map((data, index) => {
                 return (
                   <div key={index} className="other_label">
                     <div className="other_inner">
@@ -793,7 +791,7 @@ const SummaryRecord = (props) => {
                           <div className="vol_label">Quantity</div>
                         </div>
                       </div>
-                      {Object.values(data?.recipeintTanks).map(
+                      {Object.values(data?.recipientTanks).map(
                         (item, index) => {
                           return (
                             <div key={index} className="fuel_card_items">

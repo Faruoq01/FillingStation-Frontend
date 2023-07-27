@@ -1,5 +1,5 @@
 import { Radio } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,6 @@ import swal from "sweetalert";
 import {
   desselectedListPumps,
   selectedListPumps,
-  tankList,
   updateAgoList,
   updateDpkList,
   updatePmsList,

@@ -60,7 +60,6 @@ import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PendingSales from "../Modals/PendingSales";
-import SupplyService from "../../services/supplyService";
 import moment from "moment";
 import APIs from "../../services/api";
 import { daySupply } from "../../storage/supply";
