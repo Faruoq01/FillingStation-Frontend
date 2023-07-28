@@ -16,6 +16,8 @@ import attendanceReducer from "./attendance";
 import settingsReducer from "./settings";
 import comprehensiveReducer from "./comprehensive";
 import lpoReducer from "./lpo";
+import expenseReducer from "./expenses";
+import paymentReducer from "./payment";
 
 export const store = configureStore({
   reducer: {
@@ -37,5 +39,7 @@ export const store = configureStore({
     settings: settingsReducer,
     comprehensive: comprehensiveReducer,
     lpo: lpoReducer,
+    expenses: expenseReducer,
+    payments: paymentReducer,
   },
 });
