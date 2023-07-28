@@ -3,13 +3,16 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { paymentDetails } from "../../storage/comprehensive";
 
 const PaymentDetails = () => {
-  const payments = useSelector((state) => state.comprehensive.payments);
+  const history = useHistory();
+  const payments = useSelector((state) => state.comprehensive.paymentDetails);
 
   const dispatch = useDispatch();
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
@@ -18,6 +21,7 @@ const PaymentDetails = () => {
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
+  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -33,6 +37,33 @@ const PaymentDetails = () => {
     }
     return user.permission?.dailySales[e];
   };
+
+  const getPaymentDetails = useCallback((updatedDate) => {
+    if (oneStationData === null) return history.push("/home/daily-sales");
+    setLoad(true);
+
+    const payload = {
+      organisation: resolveUserID().id,
+      outletID: oneStationData._id,
+      start: updatedDate,
+      end: updatedDate,
+    };
+
+    APIs.post("/comprehensive/payments", payload)
+      .then(({ data }) => {
+        console.log(data, "payment details");
+        dispatch(paymentDetails(data.netToBank));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getPaymentDetails(currentDate);
+  }, [getPaymentDetails, currentDate]);
 
   const updateRecord = (data, bank) => {
     setOpenEdit(true);
@@ -148,14 +179,13 @@ const PaymentDetails = () => {
         <div className="mobile_header">&nbsp;&nbsp;&nbsp; Bank Payments</div>
         <div
           style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail"
-        >
+          className="balance_mobile_detail">
           <div className="sups">
             <div className="slide">
-              {payments.bank.length === 0 ? (
+              {payments.bankList.length === 0 ? (
                 <div>No record</div>
               ) : (
-                payments.bank.map((item, index) => {
+                payments.bankList.map((item, index) => {
                   return (
                     <MobileBankPayment key={index} data={item} type={"bank"} />
                   );
@@ -171,14 +201,13 @@ const PaymentDetails = () => {
         <div className="mobile_header">&nbsp;&nbsp;&nbsp; POS Payments</div>
         <div
           style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail"
-        >
+          className="balance_mobile_detail">
           <div className="sups">
             <div className="slide">
-              {payments.pos.length === 0 ? (
+              {payments.posList.length === 0 ? (
                 <div>No record</div>
               ) : (
-                payments.pos.map((item, index) => {
+                payments.posList.map((item, index) => {
                   return (
                     <MobileBankPayment key={index} data={item} type={"pos"} />
                   );
@@ -211,10 +240,10 @@ const PaymentDetails = () => {
                 )}
               </div>
 
-              {payments.bank.length === 0 ? (
+              {payments.bankList.length === 0 ? (
                 <div>No record</div>
               ) : (
-                payments.bank.map((item, index) => {
+                payments.bankList.map((item, index) => {
                   return (
                     <div key={index} className="detail_table_header">
                       <div className="detail_table_row2">{index + 1}</div>
@@ -267,10 +296,10 @@ const PaymentDetails = () => {
                 )}
               </div>
 
-              {payments.pos.length === 0 ? (
+              {payments.posList.length === 0 ? (
                 <div>No records</div>
               ) : (
-                payments.pos.map((item, index) => {
+                payments.posList.map((item, index) => {
                   return (
                     <div key={index} className="detail_table_header">
                       <div className="detail_table_row2">{index + 1}</div>
@@ -314,28 +343,28 @@ const PaymentDetails = () => {
             <div className="summary_details">
               <div className="detail_cell">Total Sales</div>
               <div style={vals} className="detail_cell">
-                {ApproximateDecimal(0)}
+                {ApproximateDecimal(payments.totalSales)}
               </div>
             </div>
 
             <div className="summary_details">
               <div className="detail_cell">Sales Amount (no LPO)</div>
               <div style={vals} className="detail_cell">
-                {ApproximateDecimal(0)}
+                {ApproximateDecimal(payments.salesAmount)}
               </div>
             </div>
 
             <div className="summary_details">
               <div className="detail_cell">Net to bank</div>
               <div style={vals} className="detail_cell">
-                {ApproximateDecimal(0)}
+                {ApproximateDecimal(payments.netToBank)}
               </div>
             </div>
 
             <div className="summary_details">
               <div className="detail_cell">Outstanding</div>
               <div style={vals} className="detail_cell">
-                {ApproximateDecimal(0)}
+                {ApproximateDecimal(payments.outstandingBalance)}
               </div>
             </div>
           </div>

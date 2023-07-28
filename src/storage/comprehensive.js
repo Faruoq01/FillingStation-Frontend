@@ -31,11 +31,15 @@ const initialState = {
   rtVolumes: [],
   lpo: [],
   expenses: [],
-  payments: {
-    bank: [],
-    pos: [],
+  paymentDetails: {
+    totalSales: 0,
+    salesAmount: 0,
+    bankPayments: 0,
+    posPayments: 0,
     netToBank: 0,
-    outstanding: 0,
+    outstandingBalance: 0,
+    bankList: [],
+    posList: [],
   },
   balanceCF: {
     pms: 0,
@@ -96,6 +100,9 @@ export const comprehensiveSlice = createSlice({
     setBalanceCF: (state, action) => {
       state.balanceCF = action.payload;
     },
+    paymentDetails: (state, action) => {
+      state.paymentDetails = action.payload;
+    },
   },
 });
 
@@ -111,6 +118,7 @@ export const {
   setTankLevels,
   setRemarkList,
   setBalanceCF,
+  paymentDetails,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;
