@@ -17,22 +17,22 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import Payments from "./Payments";
 import Expenses from "./Expenses";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
-import AnalysisService from "../../services/analysis";
 import { setAnalysisData } from "../../storage/analysis";
 import swal from "sweetalert";
 import ApproximateDecimal from "../common/approx";
 import { Skeleton } from "@mui/material";
 import SalesDisplay from "../Modals/SalesDisplay";
 import Varience from "../Modals/Varience";
-import { overages } from "../../storage/analysis";
 import { dateRange } from "../../storage/analysis";
+import APIs from "../../services/api";
 
 const Analysis = (props) => {
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const analysisData = useSelector((state) => state.analysis.analysisData);
-  const dipping = useSelector((state) => state.analysis.overages);
+  const { expenses, payments, profit, totalSales, totalVarience } = useSelector(
+    (state) => state.analysis.analysisData
+  );
   const updatedDate = useSelector((state) => state.analysis.dateRange);
   const moment = require("moment-timezone");
 
@@ -69,6 +69,8 @@ const Analysis = (props) => {
           (data) => data._id === oneStationData._id
         );
         setDefault(findID + 1);
+        const [start, end] = updatedDate;
+        analysisDataHandler(oneStationData._id, start, end);
         return;
       }
     }
@@ -77,25 +79,30 @@ const Analysis = (props) => {
       organisation: resolveUserID().id,
     };
 
-    OutletService.getAllOutletStations(payload).then((data) => {
-      dispatch(getAllStations(data.station));
-      if (
-        (getPerm("0") || user.userType === "superAdmin") &&
-        oneStationData === null
-      ) {
-        if (!getPerm("1")) setDefault(1);
-        dispatch(adminOutlet(null));
-        return "None";
-      } else {
-        OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-          (data) => {
-            dispatch(adminOutlet(data.station));
-          }
-        );
+    OutletService.getAllOutletStations(payload)
+      .then((data) => {
+        dispatch(getAllStations(data.station));
+        if (
+          (getPerm("0") || user.userType === "superAdmin") &&
+          oneStationData === null
+        ) {
+          if (!getPerm("1")) setDefault(1);
+          dispatch(adminOutlet(null));
+          return "None";
+        } else {
+          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
+            (data) => {
+              dispatch(adminOutlet(data.station));
+            }
+          );
 
-        return user.outletID;
-      }
-    });
+          return user.outletID;
+        }
+      })
+      .then((data) => {
+        const [start, end] = updatedDate;
+        analysisDataHandler(data, start, end);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,35 +110,33 @@ const Analysis = (props) => {
     getAllOutletData();
   }, [getAllOutletData]);
 
+  const analysisDataHandler = (outletID, start, end) => {
+    setLoad(true);
+    const payload = {
+      organisation: resolveUserID().id,
+      outletID: outletID,
+      start: start,
+      end: end,
+    };
+
+    APIs.post("/analysis/analysisData", payload)
+      .then(({ data }) => {
+        dispatch(setAnalysisData(data.analysisData));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+  };
+
   const changeMenu = (index, item) => {
     if (!getPerm("1") && item === null)
       return swal("Warning!", "Permission denied", "info");
     setDefault(index);
     dispatch(adminOutlet(item));
-    setLoad(true);
 
-    const formatOne = moment(new Date(updatedDate[0]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const formatTwo = moment(new Date(updatedDate[1]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    const payload = {
-      organisationID: resolveUserID().id,
-      outletID: item === null ? "None" : item?._id,
-      startDate: formatOne,
-      endDate: formatTwo,
-    };
-
-    AnalysisService.getAnalysisData(payload)
-      .then((data) => {
-        dispatch(setAnalysisData(data.analysisData));
-        dispatch(overages(data.analysisData.dipping));
-      })
-      .then(() => {
-        setLoad(false);
-      });
+    const id = item === null ? "None" : item._id;
+    const [start, end] = updatedDate;
+    analysisDataHandler(id, start, end);
   };
 
   const DashboardImage = (props) => {
@@ -228,23 +233,10 @@ const Analysis = (props) => {
     const formatTwo = moment(new Date(data[1]))
       .format("YYYY-MM-DD HH:mm:ss")
       .split(" ")[0];
-    dispatch(dateRange([new Date(formatOne), new Date(formatTwo)]));
 
-    const payload = {
-      organisationID: resolveUserID().id,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      startDate: formatOne,
-      endDate: formatTwo,
-    };
-
-    AnalysisService.getAnalysisData(payload)
-      .then((data) => {
-        dispatch(setAnalysisData(data.analysisData));
-        dispatch(overages(data.analysisData.dipping));
-      })
-      .then(() => {
-        setLoad(false);
-      });
+    dispatch(dateRange([formatOne, formatTwo]));
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    analysisDataHandler(id, formatOne, formatTwo);
   };
 
   return (
@@ -271,11 +263,9 @@ const Analysis = (props) => {
         />
       )}
       {openDetails && (
-        <SalesDisplay open={openDetails} close={setOpenDetails} dash={0} />
+        <SalesDisplay open={openDetails} close={setOpenDetails} />
       )}
-      {openDetails2 && (
-        <Varience open={openDetails2} close={setOpenDetails2} dash={0} />
-      )}
+      {openDetails2 && <Varience open={openDetails2} close={setOpenDetails2} />}
       {props.activeRoute.split("/").length === 3 && (
         <div style={{ width: "100%", marginTop: "0px" }} className="inner-pay">
           <div className="action">
@@ -378,7 +368,7 @@ const Analysis = (props) => {
                 left={"0px"}
                 image={folder}
                 name={"Expenses"}
-                value={`NGN ${ApproximateDecimal(0)}`}
+                value={`NGN ${ApproximateDecimal(expenses)}`}
               />
               <DashboardImage
                 type={"payments"}
@@ -386,7 +376,7 @@ const Analysis = (props) => {
                 left={"0px"}
                 image={folder2}
                 name={"Payments"}
-                value={`NGN ${ApproximateDecimal(0)}`}
+                value={`NGN ${ApproximateDecimal(payments)}`}
               />
               <DashboardImage
                 type={"none"}
@@ -394,7 +384,7 @@ const Analysis = (props) => {
                 left={"0px"}
                 image={analysis2}
                 name={"Profits"}
-                value={`NGN ${ApproximateDecimal(0)}`}
+                value={`NGN ${ApproximateDecimal(profit)}`}
               />
               <DashboardImage
                 type={"sales"}
@@ -402,7 +392,7 @@ const Analysis = (props) => {
                 left={"0px"}
                 image={folder}
                 name={"Total Sales"}
-                value={`NGN ${ApproximateDecimal(0)}`}
+                value={`NGN ${ApproximateDecimal(totalSales)}`}
               />
               <DashboardImage
                 type={"varience"}
@@ -410,7 +400,7 @@ const Analysis = (props) => {
                 left={"0px"}
                 image={folder2}
                 name={"Varience"}
-                value={`NGN ${ApproximateDecimal(0)}`}
+                value={`NGN ${ApproximateDecimal(totalVarience)}`}
               />
             </div>
           </div>

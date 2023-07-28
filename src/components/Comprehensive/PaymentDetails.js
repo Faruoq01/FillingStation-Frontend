@@ -51,7 +51,6 @@ const PaymentDetails = () => {
 
     APIs.post("/comprehensive/payments", payload)
       .then(({ data }) => {
-        console.log(data, "payment details");
         dispatch(paymentDetails(data.netToBank));
       })
       .then(() => {
