@@ -35,6 +35,7 @@ const initialState = {
     },
   },
   dateRange: [date, date],
+  dipping: [],
 };
 
 export const analysisSlice = createSlice({
@@ -47,10 +48,13 @@ export const analysisSlice = createSlice({
     dateRange: (state, action) => {
       state.dateRange = action.payload;
     },
+    setDipping: (state, action) => {
+      state.dipping = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setAnalysisData, dateRange } = analysisSlice.actions;
+export const { setAnalysisData, dateRange, setDipping } = analysisSlice.actions;
 
 export default analysisSlice.reducer;
