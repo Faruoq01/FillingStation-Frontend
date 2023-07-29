@@ -92,6 +92,12 @@ export const outletSlice = createSlice({
     createTanks: (state, action) => {
       state.newTank = action.payload;
     },
+    setSpinner: (state) => {
+      state.loadingSpinner = true;
+    },
+    removeSpinner: (state) => {
+      state.loadingSpinner = false;
+    },
     searchTanks: (state, action) => {},
   },
 });
@@ -110,6 +116,8 @@ export const {
   searchTanks,
   searchStations,
   createTanks,
+  removeSpinner,
+  setSpinner,
 } = outletSlice.actions;
 
 export default outletSlice.reducer;
