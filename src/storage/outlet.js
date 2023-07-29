@@ -89,6 +89,9 @@ export const outletSlice = createSlice({
       );
       state.allOutlets = search;
     },
+    createTanks: (state, action) => {
+      state.newTank = action.payload;
+    },
     searchTanks: (state, action) => {},
   },
 });
@@ -106,6 +109,7 @@ export const {
   getOneTank,
   searchTanks,
   searchStations,
+  createTanks,
 } = outletSlice.actions;
 
 export default outletSlice.reducer;

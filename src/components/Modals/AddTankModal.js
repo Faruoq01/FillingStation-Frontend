@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { closeModal, createTanks } from "../../store/actions/outlet";
+import { closeModal, createTanks } from "../../storage/outlet";
 import { useSelector } from "react-redux";
 import close from "../../assets/close.png";
 import Button from "@mui/material/Button";
@@ -9,6 +9,7 @@ import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import Radio from "@mui/material/Radio";
 import swal from "sweetalert";
+import OutletService from "../../services/outletService";
 
 const AddTank = (props) => {
   const dispatch = useDispatch();
@@ -80,12 +81,19 @@ const AddTank = (props) => {
       currentLevel: removeSpecialCharacters(currentStock),
     };
 
-    await dispatch(createTanks(data, setWaiting));
-    await props.refresh();
-    setTimeout(() => {
-      props.outRefresh();
-    }, 500);
-    dispatch(closeModal(0));
+    OutletService.registerTanks(data)
+      .then((data) => {
+        dispatch(createTanks(data));
+        props.refresh();
+        props.outRefresh();
+      })
+      .then((data) => {
+        setWaiting(false);
+        dispatch(closeModal(0));
+      })
+      .catch((err) => {
+        setWaiting(false);
+      });
   };
 
   return (
