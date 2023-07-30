@@ -2,6 +2,8 @@ import { Skeleton } from "@mui/material";
 import me6 from "../../assets/me6.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import swal from "sweetalert";
+import { asset } from "../../storage/dashboard";
 
 const DashboardImage = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -16,47 +18,47 @@ const DashboardImage = (props) => {
     return user.permission?.dashboard[e];
   };
 
-  // const goToNextScreen = () => {
-  //   switch (props.screen) {
-  //     case "employee": {
-  //       if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
-  //       if (!getPerm("4" && oneStationData === null))
-  //         return swal("Warning!", "Permission denied", "info");
-  //       history.push("/home/dashEmp");
-  //       break;
-  //     }
+  const goToNextScreen = () => {
+    switch (props.screen) {
+      case "employee": {
+        if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
+        if (!getPerm("4" && oneStationData === null))
+          return swal("Warning!", "Permission denied", "info");
+        history.push("/home/dashEmp");
+        break;
+      }
 
-  //     case "activeTank": {
-  //       if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
-  //       dispatch(utils({ state: "activeTank", station: props?.station }));
-  //       history.push("/home/tank-list");
-  //       break;
-  //     }
+      case "activeTank": {
+        if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
+        dispatch(asset("activeTank"));
+        history.push("/home/tank-list");
+        break;
+      }
 
-  //     case "inactiveTank": {
-  //       if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
-  //       dispatch(utils({ state: "inActiveTank", station: props?.station }));
-  //       history.push("/home/tank-list");
-  //       break;
-  //     }
-  //     case "activePump": {
-  //       if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
-  //       dispatch(utils({ state: "activePump", station: props?.station }));
-  //       history.push("/home/pump-list");
-  //       break;
-  //     }
+      case "inactiveTank": {
+        if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
+        dispatch(asset("inActiveTank"));
+        history.push("/home/tank-list");
+        break;
+      }
+      case "activePump": {
+        if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
+        dispatch(asset("activePump"));
+        history.push("/home/pump-list");
+        break;
+      }
 
-  //     case "inactivePump": {
-  //       if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
-  //       dispatch(utils({ state: "inActivePump", station: props?.station }));
-  //       history.push("/home/pump-list");
-  //       break;
-  //     }
+      case "inactivePump": {
+        if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
+        dispatch(asset("inActivePump"));
+        history.push("/home/pump-list");
+        break;
+      }
 
-  //     default: {
-  //     }
-  //   }
-  // };
+      default: {
+      }
+    }
+  };
 
   return (
     <div className="first-image">
@@ -69,7 +71,11 @@ const DashboardImage = (props) => {
           height={110}
         />
       ) : (
-        <div onClick={() => {}} className="inner-first-image">
+        <div
+          onClick={() => {
+            goToNextScreen();
+          }}
+          className="inner-first-image">
           <div className="top-first-image">
             <div className="top-icon">
               <img className="img" src={props.image} alt="icon" />

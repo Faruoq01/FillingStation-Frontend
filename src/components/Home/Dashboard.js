@@ -3,7 +3,6 @@ import "../../styles/dashboard.scss";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import DashboardGraph from "../DashboardComponents/DashboardGraph";
-import SalesDisplay from "../Modals/SalesDisplay";
 import "@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css";
 import "react-calendar/dist/Calendar.css";
 import Sales from "../DashboardComponents/sales";
@@ -15,6 +14,7 @@ import Expenses from "../DashboardComponents/Expenses";
 import TopStations from "../DashboardComponents/TopStations";
 import IncomingOrder from "../DashboardComponents/IncomingOrder";
 import Controls from "../DashboardComponents/Controls";
+import DashboardSales from "../Modals/DashboardSales";
 
 const Dashboard = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -27,7 +27,7 @@ const Dashboard = (props) => {
 
   return (
     <>
-      <SalesDisplay open={prices} close={closeModal} />
+      <DashboardSales open={prices} close={closeModal} />
       {props.activeRoute.split("/").length === 2 && (
         <div className="dashboardContainer">
           <div className="left-dash">

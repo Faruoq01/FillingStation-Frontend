@@ -107,6 +107,8 @@ const initialState = {
   incoming: [],
   overageType: "PMS",
   dateRange: [today, today],
+  asset: "",
+  assetsList: [],
 };
 
 export const dashboard = createSlice({
@@ -159,6 +161,12 @@ export const dashboard = createSlice({
     overageType: (state, action) => {
       state.overageType = action.payload;
     },
+    asset: (state, action) => {
+      state.asset = action.payload;
+    },
+    assetData: (state, action) => {
+      state.assetsList = action.payload;
+    },
   },
 });
 
@@ -179,6 +187,8 @@ export const {
   incoming,
   dateRange,
   overageType,
+  asset,
+  assetData,
 } = dashboard.actions;
 
 export default dashboard.reducer;
