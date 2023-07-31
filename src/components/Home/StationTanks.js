@@ -7,30 +7,41 @@ import me5 from "../../assets/me5.png";
 import "../../styles/stationTanks.scss";
 import APIs from "../../services/api";
 import { assetData } from "../../storage/dashboard";
+import { ThreeDots } from "react-loader-spinner";
 
 const StationTanks = () => {
   const dispatch = useDispatch();
   const [tabs, setTabs] = useState(0);
-  const [PMSTank, setPMSTank] = useState([]);
-  const [AGOTank, setAGOTank] = useState([]);
-  const [DPKTank, setDPKTank] = useState([]);
-  const [allTanks, setAllTanks] = useState([]);
+  const [load, setLoad] = useState(false);
   const [defaultState] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const asset = useSelector((state) => state.dashboard.asset);
+  const user = useSelector((state) => state.auth.user);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
   const getCurrentAssetData = useCallback((asset, status) => {
+    setLoad(true);
     const payload = {
-      organisationID: oneStationData.organisation,
+      organisationID: resolveUserID().id,
       outletID: oneStationData === null ? "None" : oneStationData._id,
       status: status,
       asset: asset,
     };
 
-    APIs.post("/dashboard/asset", payload).then(({ data }) => {
-      console.log(data, "asset");
-      dispatch(assetData(data.asset));
-    });
+    APIs.post("/dashboard/asset", payload)
+      .then(({ data }) => {
+        dispatch(assetData(data.asset));
+      })
+      .then((data) => {
+        setLoad(false);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -197,7 +208,20 @@ const StationTanks = () => {
     return (
       <div className="space">
         {assetsList.length === 0 ? (
-          <div style={place}>No records of tanks</div>
+          load ? (
+            <ThreeDots
+              height="60"
+              width="50"
+              radius="9"
+              color="#06805B"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{ marginLeft: "20px" }}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <div style={place}>No records of tanks</div>
+          )
         ) : (
           assetsList.map((item, index) => {
             return <CardItem key={index} data={item} />;
@@ -213,7 +237,20 @@ const StationTanks = () => {
     return (
       <div className="space">
         {pmsAsset.length === 0 ? (
-          <div style={place}>No records of tanks</div>
+          load ? (
+            <ThreeDots
+              height="60"
+              width="50"
+              radius="9"
+              color="#06805B"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{ marginLeft: "20px" }}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <div style={place}>No records of tanks</div>
+          )
         ) : (
           pmsAsset.map((item, index) => {
             return <CardItem key={index} data={item} />;
@@ -229,7 +266,20 @@ const StationTanks = () => {
     return (
       <div className="space">
         {agoAsset.length === 0 ? (
-          <div style={place}>No records of tanks</div>
+          load ? (
+            <ThreeDots
+              height="60"
+              width="50"
+              radius="9"
+              color="#06805B"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{ marginLeft: "20px" }}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <div style={place}>No records of tanks</div>
+          )
         ) : (
           agoAsset.map((item, index) => {
             return <CardItem key={index} data={item} />;
@@ -245,7 +295,20 @@ const StationTanks = () => {
     return (
       <div className="space">
         {dpkAsset.length === 0 ? (
-          <div style={place}>No records of tanks</div>
+          load ? (
+            <ThreeDots
+              height="60"
+              width="50"
+              radius="9"
+              color="#06805B"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{ marginLeft: "20px" }}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <div style={place}>No records of tanks</div>
+          )
         ) : (
           dpkAsset.map((item, index) => {
             return <CardItem key={index} data={item} />;
@@ -329,7 +392,7 @@ const StationTanks = () => {
                 }}
                 placeholder=""
                 disabled
-                value={utils?.station?.state}
+                // value={utils?.station?.state}
               />
             </div>
 
@@ -344,7 +407,7 @@ const StationTanks = () => {
                 sx={selectStyle2}
                 disabled>
                 <MenuItem style={menu} value={0}>
-                  {utils?.station?.outletName + ", " + utils?.station?.city}
+                  {/* {utils?.station?.outletName + ", " + utils?.station?.city} */}
                 </MenuItem>
               </Select>
             </div>
@@ -362,7 +425,7 @@ const StationTanks = () => {
                 }}
                 placeholder=""
                 disabled
-                value={utils?.station?.city}
+                // value={utils?.station?.city}
               />
             </div>
 
@@ -379,7 +442,7 @@ const StationTanks = () => {
                 }}
                 placeholder=""
                 disabled
-                value={utils?.station?._id}
+                // value={utils?.station?._id}
               />
             </div>
 
@@ -396,7 +459,7 @@ const StationTanks = () => {
                 }}
                 placeholder=""
                 disabled
-                value={utils?.station?.lga}
+                // value={utils?.station?.lga}
               />
             </div>
 
@@ -413,7 +476,7 @@ const StationTanks = () => {
                 }}
                 placeholder=""
                 disabled
-                value={utils?.station?.area}
+                // value={utils?.station?.area}
               />
             </div>
           </div>

@@ -109,6 +109,7 @@ const initialState = {
   dateRange: [today, today],
   asset: "",
   assetsList: [],
+  employeeList: [],
 };
 
 export const dashboard = createSlice({
@@ -167,6 +168,9 @@ export const dashboard = createSlice({
     assetData: (state, action) => {
       state.assetsList = action.payload;
     },
+    setEmployeeList: (state, action) => {
+      state.employeeList = action.payload;
+    },
   },
 });
 
@@ -189,6 +193,7 @@ export const {
   overageType,
   asset,
   assetData,
+  setEmployeeList,
 } = dashboard.actions;
 
 export default dashboard.reducer;

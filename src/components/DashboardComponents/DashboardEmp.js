@@ -9,14 +9,51 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import PrintStaffRecords from "../Reports/StaffRecord";
 import { searchdashStaffs } from "../../store/actions/dashboard";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import APIs from "../../services/api";
+import { setEmployeeList } from "../../storage/dashboard";
+import { ThreeDots } from "react-loader-spinner";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 
 const DashboardEmployee = () => {
   const [prints, setPrints] = useState(false);
+  const user = useSelector((state) => state.auth.user);
 
-  const employees = useSelector((state) => state.dashboard.employees);
+  const employees = useSelector((state) => state.dashboard.employeeList);
   const dispatch = useDispatch();
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const [load, setLoad] = useState(false);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
+  const getEmployeeList = useCallback(() => {
+    setLoad(true);
+    const payload = {
+      outletID: oneStationData === null ? "None" : oneStationData._id,
+      organisationID: resolveUserID().id,
+    };
+
+    APIs.post("/dashboard/employee", payload)
+      .then(({ data }) => {
+        dispatch(setEmployeeList(data.employee));
+      })
+      .then(() => {
+        setLoad(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getEmployeeList();
+  }, [getEmployeeList]);
 
   const printReport = () => {
     setPrints(true);
@@ -137,7 +174,20 @@ const DashboardEmployee = () => {
 
           <div className="row-container">
             {employees.length === 0 ? (
-              <div style={place}>No data </div>
+              load ? (
+                <ThreeDots
+                  height="60"
+                  width="50"
+                  radius="9"
+                  color="#06805B"
+                  ariaLabel="three-dots-loading"
+                  wrapperStyle={{ marginLeft: "20px" }}
+                  wrapperClassName=""
+                  visible={true}
+                />
+              ) : (
+                <div style={place}>No data </div>
+              )
             ) : (
               employees.map((item, index) => {
                 return (
