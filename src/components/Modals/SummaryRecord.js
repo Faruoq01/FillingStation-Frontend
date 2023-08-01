@@ -434,7 +434,6 @@ const SummaryRecord = (props) => {
       return done;
     });
     dispatch(balanceCF(balanceCFData));
-    console.log(balanceCFData, "balance carried forward");
   };
 
   useEffect(() => {
@@ -977,8 +976,8 @@ const getTankLevelsPayload = (level, mainDate) => {
 const getBalanceCF = (sales, mainDate) => {
   return {
     balanceCF: sales.balanceCF,
+    initialState: "0",
     productType: sales.productType,
-    totalTankCapacity: sales.totalTankCapacity,
     outletID: sales.outletID,
     organizationID: sales.organisationID,
     createdAt: mainDate,

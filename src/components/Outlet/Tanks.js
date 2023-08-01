@@ -33,6 +33,14 @@ const Tank = (props) => {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
       return true;
@@ -113,6 +121,11 @@ const Tank = (props) => {
       if (willDelete) {
         const payload = {
           id: data._id,
+          quantity: data.currentLevel,
+          organisationID: resolveUserID().id,
+          outletID: data.outletID,
+          productType: data.productType,
+          calibrationDate: data.calibrationDate,
         };
         OutletService.deleteTanks(payload).then((data) => {
           if (data.code === 200)

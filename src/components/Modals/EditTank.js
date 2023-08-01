@@ -24,12 +24,14 @@ const EditTank = (props) => {
   const [deadStockLevel, setDeadStockLevel] = useState("");
   const [calibrationDate, setCalibrationDate] = useState("");
   const [currentStock, setCurrentStock] = useState("");
+  const [oldStock, setOldStock] = useState("");
 
   useEffect(() => {
     setTankName(props.data.tankName.split(" ")[1]);
     setTankHeight(props.data.tankHeight);
     setTankCapacity(props.data.tankCapacity);
     setCurrentStock(props.data.currentLevel);
+    setOldStock(props.data.currentLevel);
     setDeadStockLevel(props.data.deadStockLevel);
     setCalibrationDate(props.data.calibrationDate);
     setProductType(props.data.productType);
@@ -75,6 +77,7 @@ const EditTank = (props) => {
       currentLevel: removeSpecialCharacters(currentStock),
       organisationID: oneStation?.organisation,
       outletID: oneStation?._id,
+      oldStock: oldStock,
     };
 
     OutletService.updateTank(payload)

@@ -31,7 +31,6 @@ import swal from "sweetalert";
 import SalesService from "../../services/sales";
 import APIs from "../../services/api";
 import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
-import CreateInitialBalanceModal from "../Modals/CreateProductDispensedModal";
 import CreateProductDispensedModal from "../Modals/CreateProductDispensedModal";
 import CreateReturnToTankModal from "../Modals/CreateReturnToTankModal";
 import CreateCorporateSaleModal from "../Modals/CreateCorporateSaleModal";
@@ -142,6 +141,7 @@ const ComprehensiveReport = (props) => {
             station: oneStationData,
           }).then(() => {
             setLoad(false);
+            dispatch(setDateValue(updatedDate));
             swal("Success", "Record deleted successfully", "success");
           });
         }
