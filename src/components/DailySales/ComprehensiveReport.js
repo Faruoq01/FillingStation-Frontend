@@ -50,7 +50,7 @@ const ComprehensiveReport = (props) => {
   const [bankPaymentModalStatus, setBankPaymentModalStatus] = useState(false);
   const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(false);
   const [dippingModalStatus, setDippingModalStatus] = useState(false);
-  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(true);
+  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
 
   const [
     openCreateCorporateSaleModalModal,
@@ -178,31 +178,21 @@ const ComprehensiveReport = (props) => {
               </div>
             </div>
 
-            <Button
-              variant="contained"
-              sx={{
-                width: "100px",
-                height: "30px",
-                background: "blue",
-                fontSize: "12px",
-                marginLeft: "10px",
-                marginRight: "10px",
-                borderRadius: "0px",
-                textTransform: "capitalize",
-                "&:hover": {
-                  backgroundColor: "blue",
-                },
-              }}
-              onClick={resetAllRecords}>
-              Reset
-            </Button>
+            <div className="resetAll">
+              <Button
+                variant="contained"
+                sx={resetBut}
+                onClick={resetAllRecords}>
+                Reset All
+              </Button>
+            </div>
 
             <Button
               variant="contained"
               sx={{
                 width: "100px",
                 height: "30px",
-                background: "tomato",
+                background: "#2196F3",
                 fontSize: "12px",
                 marginRight: "20px",
                 borderRadius: "0px",
@@ -409,7 +399,7 @@ const ComprehensiveReport = (props) => {
           </div>
         </div>
       </div>
-      {printReportStatus && (
+      {/* {printReportStatus && (
         <ComprehensiveReportModal
           open={printReportStatus}
           close={setPrintReportStatus}
@@ -447,9 +437,23 @@ const ComprehensiveReport = (props) => {
       <CreateDippingModal
         open={dippingModalStatus}
         close={setDippingModalStatus}
-      />
+      /> */}
     </Fragment>
   );
+};
+
+const resetBut = {
+  width: "100%",
+  height: "30px",
+  background: "#E91E63",
+  fontSize: "12px",
+  marginLeft: "10px",
+  marginRight: "10px",
+  borderRadius: "0px",
+  textTransform: "capitalize",
+  "&:hover": {
+    backgroundColor: "#FF9800",
+  },
 };
 
 const sales = {

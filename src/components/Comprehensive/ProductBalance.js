@@ -12,6 +12,7 @@ import { setProduct } from "../../storage/comprehensive";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
+import { Button } from "@mui/material";
 
 const ProductBalance = (props) => {
   const history = useHistory();
@@ -285,6 +286,30 @@ const ProductBalance = (props) => {
             {openEdit && (
               <Sales data={oneRecord} open={openEdit} close={setOpenEdit} />
             )}
+            <div style={{ marginTop: "30px" }} className="butStyle">
+              <Button
+                variant="contained"
+                sx={{
+                  ...resetBut,
+                  background: "#4CAF50",
+                  "&:hover": {
+                    backgroundColor: "#4CAF50",
+                  },
+                }}>
+                Reset
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  ...resetBut,
+                  background: "#f44336",
+                  "&:hover": {
+                    backgroundColor: "#f44336",
+                  },
+                }}>
+                Add
+              </Button>
+            </div>
             <div className="product_balance_header">
               <div className="cells">{props.type}</div>
               <div className="cells">Opening</div>
@@ -304,20 +329,16 @@ const ProductBalance = (props) => {
             )}
             <div
               style={{ marginTop: "5px" }}
-              className="product_balance_header"
-            >
+              className="product_balance_header">
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells"
-              ></div>
+                className="cells"></div>
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells"
-              ></div>
+                className="cells"></div>
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells"
-              >
+                className="cells">
                 Total
               </div>
               <div style={ins} className="cells">
@@ -329,18 +350,40 @@ const ProductBalance = (props) => {
               </div>
               <div
                 style={{ ...ins, background: "transparent" }}
-                className="cells"
-              ></div>
+                className="cells"></div>
             </div>
           </div>
 
           <div className="initial_balance_container_mobile">
             {/* product records */}
+            <div className="butStyle">
+              <Button
+                variant="contained"
+                sx={{
+                  ...resetBut,
+                  background: "#4CAF50",
+                  "&:hover": {
+                    backgroundColor: "#4CAF50",
+                  },
+                }}>
+                Reset
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  ...resetBut,
+                  background: "#f44336",
+                  "&:hover": {
+                    backgroundColor: "#f44336",
+                  },
+                }}>
+                Add
+              </Button>
+            </div>
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; {props.type}</div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}
-              className="balance_mobile_detail"
-            >
+              className="balance_mobile_detail">
               <div className="sups">
                 <div className="slide">
                   {product?.length === 0 ? (
@@ -358,6 +401,15 @@ const ProductBalance = (props) => {
       )}
     </React.Fragment>
   );
+};
+
+const resetBut = {
+  width: "80px",
+  height: "30px",
+  fontSize: "12px",
+  marginLeft: "10px",
+  borderRadius: "0px",
+  textTransform: "capitalize",
 };
 
 const ins = {
