@@ -171,6 +171,7 @@ export const dashboard = createSlice({
     setEmployeeList: (state, action) => {
       state.employeeList = action.payload;
     },
+    clearDashboard: () => initialState,
   },
 });
 
@@ -194,6 +195,7 @@ export const {
   asset,
   assetData,
   setEmployeeList,
+  clearDashboard,
 } = dashboard.actions;
 
 export default dashboard.reducer;

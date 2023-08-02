@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, updateUser } from "../../storage/auth";
+import { updateUser } from "../../storage/auth";
 import swal from "sweetalert";
 import OutletService from "../../services/outletService";
 import { adminOutlet, getAllStations } from "../../storage/outlet";
@@ -17,6 +17,7 @@ import Appearances from "../Settings/Appearance";
 import Logo from "../Settings/Logo";
 import Permissions from "../Settings/Permission";
 import PermissionList from "../Settings/PermissionList";
+import { logout } from "../../storage/logout";
 
 const Password = () => {
   const user = useSelector((state) => state.auth.user);
@@ -354,7 +355,7 @@ const Settings = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        dispatch(logout());
+        logout();
         props.history.push("/login");
       }
     });

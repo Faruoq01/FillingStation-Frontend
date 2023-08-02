@@ -21,10 +21,11 @@ export const salarySlice = createSlice({
       );
       state.staffUsers = search;
     },
+    clearSalary: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { createSalary, searchSalary } = salarySlice.actions;
+export const { createSalary, searchSalary, clearSalary } = salarySlice.actions;
 
 export default salarySlice.reducer;

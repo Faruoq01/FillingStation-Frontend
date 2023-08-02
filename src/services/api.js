@@ -1,6 +1,7 @@
 import axios from "axios";
 import { store } from "../storage/store";
-import { logout, network } from "../store/actions/auth";
+import { logout } from "../storage/logout";
+import { setConnection } from "../storage/auth";
 import swal from "sweetalert";
 import config from "../constants";
 
@@ -19,7 +20,7 @@ APIs.interceptors.response.use(
   (err) => {
     // network error
     if (err.code === "ERR_NETWORK") {
-      store.dispatch(network(false));
+      store.dispatch(setConnection(false));
     }
 
     if (err.response.status === 404) {
@@ -29,14 +30,14 @@ APIs.interceptors.response.use(
     if (err.response.status === 401) {
       if (err.response.data.message !== "Incorrect password!") {
         if (err.response.data.error.name === "TokenExpiredError") {
-          store.dispatch(logout());
+          logout();
           window.location.href = "/login";
           return;
         }
       }
 
       swal("Error!", "Incorrect Password", "error");
-      store.dispatch(logout());
+      logout();
     }
   }
 );

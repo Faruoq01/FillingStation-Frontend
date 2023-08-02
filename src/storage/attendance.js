@@ -23,10 +23,12 @@ export const attendanceSlice = createSlice({
       );
       state.query = search;
     },
+    clearAttendance: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { createAttendance, searchQuery } = attendanceSlice.actions;
+export const { createAttendance, searchQuery, clearAttendance } =
+  attendanceSlice.actions;
 
 export default attendanceSlice.reducer;

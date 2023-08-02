@@ -37,6 +37,7 @@ export const settingSlice = createSlice({
     storeSingleUser: (state, action) => {
       state.singleUser = action.payload;
     },
+    clearSetting: () => initialState,
   },
 });
 
@@ -46,6 +47,7 @@ export const {
   changeEmployeeStatus,
   dashEmployees,
   storeSingleUser,
+  clearSetting,
 } = settingSlice.actions;
 
 export default settingSlice.reducer;

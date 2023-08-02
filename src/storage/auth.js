@@ -17,11 +17,6 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
       state.isLoggedIn = true;
     },
-    logout: (state) => {
-      state.user = {};
-      state.token = "";
-      state.isLoggedIn = false;
-    },
     updateUser: (state, action) => {
       state.user = action.payload;
     },
@@ -31,11 +26,21 @@ export const authSlice = createSlice({
     historyTags: (state, action) => {
       state.historyTag = action.payload;
     },
+    setConnection: (state, action) => {
+      state.connection = action.payload;
+    },
+    clearAuth: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login, logout, updateUser, internetConnection, historyTags } =
-  authSlice.actions;
+export const {
+  login,
+  updateUser,
+  internetConnection,
+  historyTags,
+  clearAuth,
+  setConnection,
+} = authSlice.actions;
 
 export default authSlice.reducer;

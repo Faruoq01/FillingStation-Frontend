@@ -25,11 +25,16 @@ export const productSlice = createSlice({
       );
       state.productorder = search;
     },
+    clearProductOrder: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setProductOrder, singleProductOrderRecord, searchProduct } =
-  productSlice.actions;
+export const {
+  setProductOrder,
+  singleProductOrderRecord,
+  searchProduct,
+  clearProductOrder,
+} = productSlice.actions;
 
 export default productSlice.reducer;

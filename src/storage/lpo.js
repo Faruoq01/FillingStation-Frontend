@@ -35,11 +35,17 @@ export const lpoSlice = createSlice({
       state.lpoSales = action.payload;
       state.searchData = action.payload;
     },
+    clearLpo: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { createLPO, searchLPO, singleLPORecord, createLPOSales } =
-  lpoSlice.actions;
+export const {
+  createLPO,
+  searchLPO,
+  singleLPORecord,
+  createLPOSales,
+  clearLpo,
+} = lpoSlice.actions;
 
 export default lpoSlice.reducer;

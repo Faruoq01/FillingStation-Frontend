@@ -103,6 +103,7 @@ export const comprehensiveSlice = createSlice({
     paymentDetails: (state, action) => {
       state.paymentDetails = action.payload;
     },
+    clearComprehensive: () => initialState,
   },
 });
 
@@ -119,6 +120,7 @@ export const {
   setRemarkList,
   setBalanceCF,
   paymentDetails,
+  clearComprehensive,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;

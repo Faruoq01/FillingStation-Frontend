@@ -215,6 +215,7 @@ export const recordsalesSlice = createSlice({
     tankList: (state, action) => {
       state.tankList = action.payload;
     },
+    clearRecordSales: () => initialState,
   },
 });
 
@@ -246,6 +247,7 @@ export const {
   supplyPayload,
   creditPayloadObject,
   tankList,
+  clearRecordSales,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;

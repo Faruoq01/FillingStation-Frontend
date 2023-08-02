@@ -28,6 +28,7 @@ export const incomingSlice = createSlice({
       );
       state.incomingOrder = search;
     },
+    clearIncomingOrder: () => initialState,
   },
 });
 
@@ -36,6 +37,7 @@ export const {
   createIncomingOrder,
   singleIncomingOrderRecord,
   searchIncoming,
+  clearIncomingOrder,
 } = incomingSlice.actions;
 
 export default incomingSlice.reducer;

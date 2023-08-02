@@ -23,10 +23,12 @@ export const expensesSlice = createSlice({
       );
       state.expense = search;
     },
+    clearExpenses: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { allExpenses, searchExpenses } = expensesSlice.actions;
+export const { allExpenses, searchExpenses, clearExpenses } =
+  expensesSlice.actions;
 
 export default expensesSlice.reducer;

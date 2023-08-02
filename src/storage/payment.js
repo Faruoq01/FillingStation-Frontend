@@ -35,6 +35,7 @@ export const paymentSlice = createSlice({
       );
       state.pos = search;
     },
+    clearPayment: () => initialState,
   },
 });
 
@@ -44,6 +45,7 @@ export const {
   allPosPayment,
   searchBankPayment,
   searchPosPayment,
+  clearPayment,
 } = paymentSlice.actions;
 
 export default paymentSlice.reducer;

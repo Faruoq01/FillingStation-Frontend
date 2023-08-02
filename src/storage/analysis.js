@@ -51,10 +51,11 @@ export const analysisSlice = createSlice({
     setDipping: (state, action) => {
       state.dipping = action.payload;
     },
+    clearAnalysis: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setAnalysisData, dateRange, setDipping } = analysisSlice.actions;
+export const { setAnalysisData, dateRange, setDipping, clearAnalysis } = analysisSlice.actions;
 
 export default analysisSlice.reducer;

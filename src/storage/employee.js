@@ -25,11 +25,12 @@ export const employeeSlice = createSlice({
     singleEmployee: (state, action) => {
       state.singlePayment = action.payload;
     },
+    clearEmployees: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { storeStaffUsers, searchStaffs, singleEmployee } =
+export const { storeStaffUsers, searchStaffs, singleEmployee, clearEmployees } =
   employeeSlice.actions;
 
 export default employeeSlice.reducer;

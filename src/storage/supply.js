@@ -32,11 +32,17 @@ export const supplySlice = createSlice({
     daySupply: (state, action) => {
       state.daySupply = action.payload;
     },
+    clearSupply: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { createSupply, searchSupply, singleSupply, daySupply } =
-  supplySlice.actions;
+export const {
+  createSupply,
+  searchSupply,
+  singleSupply,
+  daySupply,
+  clearSupply,
+} = supplySlice.actions;
 
 export default supplySlice.reducer;

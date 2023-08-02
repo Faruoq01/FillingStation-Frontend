@@ -23,10 +23,11 @@ export const querySlice = createSlice({
       );
       state.query = search;
     },
+    clearQuery: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { createQuery, searchQuery } = querySlice.actions;
+export const { createQuery, searchQuery, clearQuery } = querySlice.actions;
 
 export default querySlice.reducer;

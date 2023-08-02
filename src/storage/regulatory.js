@@ -38,6 +38,7 @@ export const regulatorySlice = createSlice({
     reciepts: (state, action) => {
       state.receipt = action.payload;
     },
+    clearRegulatory: () => initialState,
   },
 });
 
@@ -48,6 +49,7 @@ export const {
   singlePaymentAction,
   certificate,
   reciepts,
+  clearRegulatory,
 } = regulatorySlice.actions;
 
 export default regulatorySlice.reducer;
