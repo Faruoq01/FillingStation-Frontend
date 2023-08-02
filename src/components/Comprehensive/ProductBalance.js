@@ -13,6 +13,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
+import PumpUpdate from "../Modals/comprehensive/pumpupdate";
 
 const ProductBalance = (props) => {
   const history = useHistory();
@@ -27,6 +28,7 @@ const ProductBalance = (props) => {
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -267,6 +269,10 @@ const ProductBalance = (props) => {
     );
   };
 
+  const openSingleSaleModal = () => {
+    setOpenAdd(true);
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -286,6 +292,7 @@ const ProductBalance = (props) => {
             {openEdit && (
               <Sales data={oneRecord} open={openEdit} close={setOpenEdit} />
             )}
+            {openAdd && <PumpUpdate open={openAdd} close={setOpenAdd} />}
             <div style={{ marginTop: "30px" }} className="butStyle">
               <Button
                 variant="contained"
@@ -300,6 +307,7 @@ const ProductBalance = (props) => {
               </Button>
               <Button
                 variant="contained"
+                onClick={openSingleSaleModal}
                 sx={{
                   ...resetBut,
                   background: "#f44336",

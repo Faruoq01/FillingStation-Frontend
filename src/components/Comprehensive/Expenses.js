@@ -11,6 +11,7 @@ import { useHistory } from "react-router-dom";
 import { setExpenses } from "../../storage/comprehensive";
 import { useEffect } from "react";
 import { ThreeDots } from "react-loader-spinner";
+import { Button } from "@mui/material";
 
 const Expenses = () => {
   const history = useHistory();
@@ -193,10 +194,33 @@ const Expenses = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
+          <div style={{ width: "59%" }} className="butStyle">
+            <Button
+              variant="contained"
+              sx={{
+                ...resetBut,
+                background: "#4CAF50",
+                "&:hover": {
+                  backgroundColor: "#4CAF50",
+                },
+              }}>
+              Reset
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                ...resetBut,
+                background: "#f44336",
+                "&:hover": {
+                  backgroundColor: "#f44336",
+                },
+              }}>
+              Add
+            </Button>
+          </div>
           <div
             style={{ maxWidth: "700px" }}
-            className="initial_balance_container"
-          >
+            className="initial_balance_container">
             {openEdit && (
               <UpdateExpenses
                 data={oneRecord}
@@ -225,8 +249,7 @@ const Expenses = () => {
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; Expenses</div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}
-              className="balance_mobile_detail"
-            >
+              className="balance_mobile_detail">
               <div className="sups">
                 <div className="slide">
                   {expenses.length === 0 ? (
@@ -250,6 +273,15 @@ const Expenses = () => {
       )}
     </React.Fragment>
   );
+};
+
+const resetBut = {
+  width: "80px",
+  height: "30px",
+  fontSize: "12px",
+  marginLeft: "10px",
+  borderRadius: "0px",
+  textTransform: "capitalize",
 };
 
 const ins = {

@@ -13,6 +13,7 @@ import { useHistory } from "react-router-dom";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { setDateValue } from "../../storage/dailysales";
+import { Button } from "@mui/material";
 
 const ReturnToTank = () => {
   const history = useHistory();
@@ -244,6 +245,30 @@ const ReturnToTank = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
+          <div style={{ width: "95%" }} className="butStyle">
+            <Button
+              variant="contained"
+              sx={{
+                ...resetBut,
+                background: "#4CAF50",
+                "&:hover": {
+                  backgroundColor: "#4CAF50",
+                },
+              }}>
+              Reset
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                ...resetBut,
+                background: "#f44336",
+                "&:hover": {
+                  backgroundColor: "#f44336",
+                },
+              }}>
+              Add
+            </Button>
+          </div>
           <div className="initial_balance_container">
             {openEdit && (
               <UpdateReturnToTank
@@ -296,6 +321,15 @@ const ReturnToTank = () => {
       )}
     </React.Fragment>
   );
+};
+
+const resetBut = {
+  width: "80px",
+  height: "30px",
+  fontSize: "12px",
+  marginLeft: "10px",
+  borderRadius: "0px",
+  textTransform: "capitalize",
 };
 
 const ins = {

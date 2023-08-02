@@ -63,55 +63,56 @@ import PendingSales from "../Modals/PendingSales";
 import moment from "moment";
 import APIs from "../../services/api";
 import { daySupply } from "../../storage/supply";
+import { useCallback } from "react";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
-function DoublyLinkedListNode(data) {
-  this.data = data;
-  this.next = null;
-  this.prev = null;
-  this.data.ago = [];
-  this.data.pms = [];
-  this.data.dpk = [];
-  this.data.selectedPumps = [];
-  this.data.selectedTanks = [];
-  this.data.lpo = [];
-  this.data.supply = [];
-  this.data.expenses = [];
-  this.data.pay = [];
-  this.data.dipping = [];
-}
+// function DoublyLinkedListNode(data) {
+//   this.data = data;
+//   this.next = null;
+//   this.prev = null;
+//   this.data.ago = [];
+//   this.data.pms = [];
+//   this.data.dpk = [];
+//   this.data.selectedPumps = [];
+//   this.data.selectedTanks = [];
+//   this.data.lpo = [];
+//   this.data.supply = [];
+//   this.data.expenses = [];
+//   this.data.pay = [];
+//   this.data.dipping = [];
+// }
 
-function DoublyLinkedList() {
-  this.head = null;
-  this.currentDate = null;
-  this.size = 0;
-  this.page = 1;
+// function DoublyLinkedList() {
+//   this.head = null;
+//   this.currentDate = null;
+//   this.size = 0;
+//   this.page = 1;
 
-  this.isEmpty = function () {
-    return this.size === 0;
-  };
+//   this.isEmpty = function () {
+//     return this.size === 0;
+//   };
 
-  this.addNode = function (value) {
-    if (this.head === null) {
-      this.head = new DoublyLinkedListNode(value);
-    } else {
-      var temp = new DoublyLinkedListNode(value);
-      temp.next = this.head;
-      this.head.prev = temp;
-      this.head = temp;
-    }
-    this.size++;
-  };
+//   this.addNode = function (value) {
+//     if (this.head === null) {
+//       this.head = new DoublyLinkedListNode(value);
+//     } else {
+//       var temp = new DoublyLinkedListNode(value);
+//       temp.next = this.head;
+//       this.head.prev = temp;
+//       this.head = temp;
+//     }
+//     this.size++;
+//   };
 
-  this.nextPage = function () {
-    this.head = this.head.next;
-  };
+//   this.nextPage = function () {
+//     this.head = this.head.next;
+//   };
 
-  this.previousPage = function () {
-    this.head = this.head.prev;
-  };
-}
+//   this.previousPage = function () {
+//     this.head = this.head.prev;
+//   };
+// }
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -218,7 +219,6 @@ const DailyRecordSales = () => {
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const linkedData = useSelector((state) => state.recordsales.linkedData);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
@@ -227,7 +227,7 @@ const DailyRecordSales = () => {
   const [open, setOpen] = useState(false);
   const [openSummary, setOpenSummary] = useState(false);
   const [pending, setPending] = useState(false);
-  const [disableDate, setDisableDate] = useState(false);
+  const [pages, setPages] = useState(1);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -277,29 +277,7 @@ const DailyRecordSales = () => {
     []
   );
 
-  useEffect(() => {
-    const list = new DoublyLinkedList();
-    for (let i = 6; i > 0; i--) {
-      list.addNode({
-        currentPage: String(i),
-        payload: [],
-      });
-    }
-
-    let loads = {
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-      7: [],
-      8: [],
-    };
-    dispatch(updatePayload(loads));
-    dispatch(passRecordSales(list));
-    getAllInitialRecords(list);
-
+  const resetAllVariables = useCallback(() => {
     dispatch(updateSelectedPumps([]));
     dispatch(updateSelectedTanks([]));
     dispatch(
@@ -320,58 +298,45 @@ const DailyRecordSales = () => {
     dispatch(tanksPayload([]));
     dispatch(tankList([]));
     dispatch(daySupply([]));
-    setDisableDate(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    resetAllVariables();
+  }, [resetAllVariables]);
+
+  useEffect(() => {
+    getAllInitialRecords();
+  }, [dispatch, getAllInitialRecords]);
 
   const nextQuestion = () => {
-    let newList = { ...linkedData };
-
-    if (newList.head.next !== null) {
+    if (pages <= 6) {
       if (oneStationData === null)
         return swal("Warning!", "Please select a station first", "info");
       if (typeof currentDate !== "string")
         return swal("Error", "Please select record date", "error");
-      if (!getPerm("3") && newList.page === 1)
+      if (!getPerm("3") && pages === 1)
         return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("4") && newList.page === 2)
+      if (!getPerm("4") && pages === 2)
         return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("5") && newList.page === 3)
+      if (!getPerm("5") && pages === 3)
         return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("6") && newList.page === 4)
+      if (!getPerm("6") && pages === 4)
         return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("7") && newList.page === 5)
+      if (!getPerm("7") && pages === 5)
         return swal("Warning!", "Permission denied", "info");
 
-      const clonePage = [...pages];
-      clonePage[newList.page] = newList.page;
-      setPages(clonePage);
-
-      newList.nextPage();
-      newList.page++;
-      dispatch(passRecordSales(newList));
-      // console.log(newList, 'next')
+      setPages((prev) => prev + 1);
     }
   };
 
   const prevQuestion = () => {
-    let newList = { ...linkedData };
-    if (newList.head.prev !== null) {
-      const clonePage = [...pages];
-      clonePage[newList.page - 1] = 0;
-      setPages(clonePage);
-
-      newList.previousPage();
-      newList.page--;
-      dispatch(passRecordSales(newList));
-      // console.log(newList, 'prev')
+    if (pages >= 1) {
+      setPages((prev) => prev - 1);
     }
   };
 
   const finishAndSubmit = () => {
-    let newList = { ...linkedData };
-
-    if (!getPerm("8") && newList.page === 6)
+    if (!getPerm("8") && pages === 6)
       return swal("Warning!", "Permission denied", "info");
 
     const pendingTasks = localStorage.getItem("machine");
@@ -382,24 +347,83 @@ const DailyRecordSales = () => {
     }
   };
 
-  const changeMenu = (index, item) => {
-    setDisableDate(false);
+  const changeMenu = async (index, item) => {
     if (!getPerm("1") && item === null)
       return swal("Warning!", "Permission denied", "info");
+    setPages(1);
     setDefault(index);
     dispatch(changeStation());
+    dispatch(adminOutlet(item));
+    getAllRecordDetails(item, currentDate);
+  };
+
+  const updateTanksWithSupplies = (tankListData, daySupply) => {
+    if (daySupply.length === 0 || tankListData.length === 0) {
+      dispatch(tankList(tankListData));
+    } else {
+      const copyTanks = JSON.parse(JSON.stringify(tankListData));
+      for (const supply of daySupply) {
+        const recipient = Object.values(supply.recipientTanks);
+        for (const tank of recipient) {
+          const findID = copyTanks.findIndex((data) => data._id === tank.id);
+          if (findID !== -1) {
+            const newLevel =
+              Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
+            copyTanks[findID] = {
+              ...copyTanks[findID],
+              currentLevel: newLevel,
+            };
+          }
+        }
+      }
+      dispatch(tankList(copyTanks));
+    }
+  };
+
+  const updateDate = (newValue) => {
+    if (oneStationData === null)
+      return swal("Warning!", "Please select station first", "info");
+    setPages(1);
+
+    if (tankListData.length === null)
+      return swal(
+        "Warning!",
+        "Please check your network settings or reload",
+        "info"
+      );
+    if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
+    setValue(newValue);
+    dispatch(changeStation());
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = newValue === "" ? today : newValue.format("YYYY-MM-DD");
+
+    getAllRecordDetails(oneStationData, getDate);
+    return getDate;
+  };
+
+  const getAllRecordDetails = (station, date) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = date === "" ? today : date;
+    const mainDate = moment
+      .tz(getDate, user.timezone)
+      .format("YYYY-MM-DD HH:mm:ss")
+      .split(" ")[0];
 
     const payload = {
-      outletID: item._id,
-      organisationID: item.organisation,
+      outletID: station._id,
+      organisationID: station.organisation,
     };
 
     const stationPumps = OutletService.getAllStationPumps(payload);
     const stationTanks = OutletService.getAllOutletTanks(payload);
     const orgLpo = LPOService.getAllLPO(payload);
+    const supply = APIs.post("/supply/dayRecord", {
+      ...payload,
+      createdAt: mainDate,
+    });
 
-    Promise.all([stationPumps, stationTanks, orgLpo]).then((data) => {
-      const [pumps, tanks, lpo] = data;
+    Promise.all([stationPumps, stationTanks, orgLpo, supply]).then((data) => {
+      const [pumps, tanks, lpo, supply] = data;
 
       ///////////////// station pumps //////////////////////
       const copyData = JSON.parse(JSON.stringify(pumps));
@@ -435,72 +459,15 @@ const DailyRecordSales = () => {
         };
         return newData;
       });
-      dispatch(tankList(outletTanks));
 
       ///////////////// station lpo //////////////////////
       dispatch(createLPO(lpo.lpo.lpo));
+
+      ///////////////// station supplies /////////////////
+      dispatch(daySupply(supply.data.supply));
+      updateTanksWithSupplies(outletTanks, supply.data.supply);
+      dispatch(changeDate(getDate));
     });
-
-    dispatch(adminOutlet(item));
-  };
-
-  const updateTanksWithSupplies = (tankListData, daySupply) => {
-    if (daySupply.length === 0 || tankListData.length === 0) {
-      dispatch(tankList(tankListData));
-    } else {
-      const copyTanks = JSON.parse(JSON.stringify(tankListData));
-      for (const supply of daySupply) {
-        const recipient = Object.values(supply.recipientTanks);
-        for (const tank of recipient) {
-          const findID = copyTanks.findIndex((data) => data._id === tank.id);
-          if (findID !== -1) {
-            const newLevel =
-              Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
-            copyTanks[findID] = {
-              ...copyTanks[findID],
-              currentLevel: newLevel,
-            };
-          }
-        }
-      }
-      dispatch(tankList(copyTanks));
-    }
-  };
-
-  const updateDate = (newValue) => {
-    if (oneStationData === null)
-      return swal("Warning!", "Please select station first", "info");
-
-    if (tankListData.length === null)
-      return swal(
-        "Warning!",
-        "Please check your network settings or reload",
-        "info"
-      );
-    if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
-    setValue(newValue);
-    const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
-
-    const mainDate = moment
-      .tz(getDate, user.timezone)
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    const payload = {
-      outletID: oneStationData._id,
-      organisationID: oneStationData.organisation,
-      createdAt: mainDate,
-    };
-
-    APIs.post("/supply/dayRecord", payload)
-      .then(({ data }) => {
-        dispatch(daySupply(data.supply));
-        updateTanksWithSupplies(tankListData, data.supply);
-      })
-      .then(() => {
-        dispatch(changeDate(getDate));
-        setDisableDate(true);
-      });
   };
 
   const convertDate = (newValue) => {
@@ -512,8 +479,6 @@ const DailyRecordSales = () => {
 
     return finalDate;
   };
-
-  const [pages, setPages] = useState([1, 0, 0, 0, 0, 0]);
 
   return (
     <div className="salesRecordStyle">
@@ -597,7 +562,6 @@ const DailyRecordSales = () => {
                 <ButtonDatePicker
                   label={`${value == null || "" ? date2 : convertDate(value)}`}
                   value={value}
-                  disabled={disableDate}
                   onChange={(newValue) => updateDate(newValue)}
                 />
               </Stack>
@@ -610,7 +574,7 @@ const DailyRecordSales = () => {
         <Stack sx={{ width: "100%", marginTop: "20px" }} spacing={4}>
           <Stepper
             alternativeLabel
-            activeStep={linkedData.page - 1}
+            activeStep={pages - 1}
             connector={<ColorlibConnector />}>
             {steps.map((label) => (
               <Step key={label}>
@@ -624,7 +588,7 @@ const DailyRecordSales = () => {
       </div>
 
       <div className="ttx" style={text}>
-        {steps[linkedData.page - 1]}
+        {steps[pages - 1]}
       </div>
 
       <div className="mob">
@@ -637,23 +601,23 @@ const DailyRecordSales = () => {
             className="cont"
             style={{
               backgroundImage:
-                pages[0] === 0
+                pages >= 1
                   ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
                   : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
             }}>
-            <SanitizerIcon sx={{ color: pages[0] === 0 ? "#000" : "#fff" }} />
+            <SanitizerIcon sx={{ color: pages === 1 ? "#000" : "#fff" }} />
           </div>
 
           <div
             className="cont"
             style={{
               backgroundImage:
-                pages[1] === 0
+                pages >= 2
                   ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
                   : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
             }}>
             <AssignmentReturnedIcon
-              sx={{ color: pages[0] === 0 ? "#000" : "#fff" }}
+              sx={{ color: pages === 2 ? "#000" : "#fff" }}
             />
           </div>
 
@@ -661,44 +625,44 @@ const DailyRecordSales = () => {
             className="cont"
             style={{
               backgroundImage:
-                pages[2] === 0
+                pages >= 3
                   ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
                   : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
             }}>
-            <CreditScoreIcon sx={{ color: pages[0] === 0 ? "#000" : "#fff" }} />
+            <CreditScoreIcon sx={{ color: pages === 3 ? "#000" : "#fff" }} />
           </div>
 
           <div
             className="cont"
             style={{
               backgroundImage:
-                pages[3] === 0
+                pages >= 4
                   ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
                   : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
             }}>
-            <PaidIcon sx={{ color: pages[0] === 0 ? "#000" : "#fff" }} />
+            <PaidIcon sx={{ color: pages === 4 ? "#000" : "#fff" }} />
           </div>
 
           <div
             className="cont"
             style={{
               backgroundImage:
-                pages[4] === 0
+                pages >= 5
                   ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
                   : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
             }}>
-            <AddCardIcon sx={{ color: pages[0] === 0 ? "#000" : "#fff" }} />
+            <AddCardIcon sx={{ color: pages === 5 ? "#000" : "#fff" }} />
           </div>
 
           <div
             className="cont"
             style={{
               backgroundImage:
-                pages[5] === 0
+                pages <= 6
                   ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
                   : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
             }}>
-            <PropaneTankIcon sx={{ color: pages[0] === 0 ? "#000" : "#fff" }} />
+            <PropaneTankIcon sx={{ color: pages === 6 ? "#000" : "#fff" }} />
           </div>
         </div>
 
@@ -708,17 +672,17 @@ const DailyRecordSales = () => {
       </div>
 
       <div className="form-body">
-        {linkedData.page === 1 && <PumpUpdateComponent />}
-        {linkedData.page === 2 && <ReturnToTankComponent />}
-        {linkedData.page === 3 && <LPOComponent />}
-        {linkedData.page === 4 && <ExpenseComponents />}
-        {linkedData.page === 5 && <PaymentsComponents />}
-        {linkedData.page === 6 && <DippingComponents />}
+        {pages === 1 && <PumpUpdateComponent />}
+        {pages === 2 && <ReturnToTankComponent />}
+        {pages === 3 && <LPOComponent />}
+        {pages === 4 && <ExpenseComponents />}
+        {pages === 5 && <PaymentsComponents />}
+        {pages === 6 && <DippingComponents />}
       </div>
 
       <div className="navs">
         <div>
-          {linkedData.head?.prev !== null && (
+          {pages > 1 && (
             <Button
               variant="contained"
               sx={{
@@ -738,7 +702,7 @@ const DailyRecordSales = () => {
           )}
         </div>
 
-        {linkedData.head?.next === null || (
+        {pages < 6 && (
           <Button
             variant="contained"
             sx={{
@@ -757,7 +721,7 @@ const DailyRecordSales = () => {
           </Button>
         )}
 
-        {linkedData.head?.next === null && (
+        {pages === 6 && (
           <Button
             variant="contained"
             sx={{
@@ -813,20 +777,6 @@ const sales = {
   justifyContent: "flex-end",
   position: "relative",
   alignItems: "flex-start",
-};
-
-const cover = {
-  position: "absolute",
-  width: "100px",
-  height: "20px",
-  background: "#054834",
-  fontSize: "12px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: "5px",
-  left: "0px",
-  color: "#fff",
 };
 
 export default DailyRecordSales;

@@ -209,11 +209,7 @@ const OveragesAndShortages = (props) => {
             <div className="labelsOverage">
               <div>
                 <div style={title}>
-                  {ApproximateDecimal(
-                    getDippingResult().currentLevel +
-                      overageData[overageTypeData.toLowerCase()]?.supply
-                  )}{" "}
-                  Ltrs
+                  {ApproximateDecimal(getDippingResult().currentLevel)} Ltrs
                 </div>
                 <div style={label}>Current Level </div>
               </div>
@@ -230,9 +226,7 @@ const OveragesAndShortages = (props) => {
               <div>
                 <div style={title}>
                   {ApproximateDecimal(
-                    getDippingResult().dipping -
-                      (getDippingResult().currentLevel +
-                        overageData[overageTypeData.toLowerCase()]?.supply)
+                    getDippingResult().dipping - getDippingResult().currentLevel
                   )}{" "}
                   Ltrs
                 </div>

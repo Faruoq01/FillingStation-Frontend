@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import swal from "sweetalert";
 
 const initialState = {
   PMS: [],
@@ -47,8 +48,8 @@ export const recordsalesSlice = createSlice({
     changeDate: (state, action) => {
       state.currentDate = action.payload;
     },
-    changeStation: (state, action) => {
-      state.currentDate = action.payload;
+    changeStation: (state) => {
+      state.currentDate = "";
       state.PMS = [];
       state.AGO = [];
       state.DPK = [];
@@ -59,6 +60,7 @@ export const recordsalesSlice = createSlice({
         tanks: [],
         pumps: [],
       };
+      state.tankList = [];
       state.rtPayload = [];
       state.lpoPayload = [];
       state.creditPayload = [];
@@ -69,6 +71,8 @@ export const recordsalesSlice = createSlice({
       state.tanksPayload = [];
       state.balanceCF = [];
       state.supplyPayload = [];
+      state.lpo = [];
+      state.searchData2 = [];
     },
     updatePayload: (state, action) => {
       state.load = action.payload;
@@ -147,14 +151,26 @@ export const recordsalesSlice = createSlice({
         );
 
         if (findID === -1) {
+          if (typeof action.payload.tank === "undefined") {
+            return "notExist";
+          }
           return [...currentList, action.payload.tank];
         } else {
           currentList[findID] = action.payload.tank;
           return currentList;
         }
       };
-      state.selectedPumps = updateSelectedPumps();
-      state.selectedTanks = updateSelectedTanks();
+
+      if (updateSelectedTanks() === "notExist") {
+        swal(
+          "Error",
+          "This pump does not have a tank, may have been deleted",
+          "error"
+        );
+      } else {
+        state.selectedPumps = updateSelectedPumps();
+        state.selectedTanks = updateSelectedTanks();
+      }
     },
     updateSelectedPumps: (state, action) => {
       state.selectedPumps = action.payload;

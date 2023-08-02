@@ -31,10 +31,10 @@ const PumpUpdateComponent = (props) => {
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const daySupply = useSelector((state) => state.supply.daySupply);
 
-  // console.log(selectedPumps, "selected pumps");
-  // console.log(selectedTanks, "selected tanks");
-  console.log(daySupply, "supplies");
-  console.log(tankListData, "tank list");
+  console.log(selectedPumps, "selected pumps");
+  console.log(selectedTanks, "selected tanks");
+  // console.log(daySupply, "supplies");
+  // console.log(tankListData, "tank list");
 
   const onRadioClick = (data) => {
     if (data === "PMS") {
@@ -227,10 +227,11 @@ const PumpUpdateComponent = (props) => {
   }
 
   const setTotalizer = (e, pump, index) => {
+    console.log(currentDate, "current date");
     if (typeof currentDate !== "string")
       return swal("Error", "Please select record date", "error");
     if (selectedTanks.length !== 0) {
-      const clonedTanks = [...selectedTanks];
+      const clonedTanks = JSON.parse(JSON.stringify(selectedTanks));
       const connectedTank = clonedTanks.filter(
         (data) => data._id === pump.hostTank
       );
