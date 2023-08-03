@@ -269,8 +269,29 @@ const ProductBalance = (props) => {
     );
   };
 
-  const openSingleSaleModal = () => {
-    setOpenAdd(true);
+  const openSingleSaleModal = async () => {
+    const getDate =
+      currentDate === ""
+        ? moment().format("YYYY-MM-DD").split()[0]
+        : currentDate;
+
+    const status = await APIs.post("/sales/delete/checkStatus", {
+      org: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: getDate,
+    }).then((data) => {
+      return data.data.data;
+    });
+    console.log(typeof status, "data");
+    if (status) {
+      swal(
+        "Error",
+        "Can only add a pump before the next sale is recorded to maintain data consistency!",
+        "error"
+      );
+    } else {
+      setOpenAdd(true);
+    }
   };
 
   return (

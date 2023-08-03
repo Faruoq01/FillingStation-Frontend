@@ -49,6 +49,8 @@ const initialState = {
   dipping: [],
   tankLevels: [],
   remarks: [],
+  tankList: [],
+  pumpList: [],
 };
 
 export const comprehensiveSlice = createSlice({
@@ -103,6 +105,12 @@ export const comprehensiveSlice = createSlice({
     paymentDetails: (state, action) => {
       state.paymentDetails = action.payload;
     },
+    setTankList: (state, action) => {
+      state.tankList = action.payload;
+    },
+    setPumpList: (state, action) => {
+      state.pumpList = action.payload;
+    },
     clearComprehensive: () => initialState,
   },
 });
@@ -121,6 +129,8 @@ export const {
   setBalanceCF,
   paymentDetails,
   clearComprehensive,
+  setTankList,
+  setPumpList,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;

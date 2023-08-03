@@ -29,7 +29,6 @@ const PumpUpdateComponent = (props) => {
   const AGO = useSelector((state) => state.recordsales.AGO);
   const DPK = useSelector((state) => state.recordsales.DPK);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const daySupply = useSelector((state) => state.supply.daySupply);
 
   console.log(selectedPumps, "selected pumps");
   console.log(selectedTanks, "selected tanks");
@@ -227,7 +226,6 @@ const PumpUpdateComponent = (props) => {
   }
 
   const setTotalizer = (e, pump, index) => {
-    console.log(currentDate, "current date");
     if (typeof currentDate !== "string")
       return swal("Error", "Please select record date", "error");
     if (selectedTanks.length !== 0) {
@@ -687,12 +685,6 @@ const PumpUpdateComponent = (props) => {
       </div>
     </div>
   );
-};
-
-const cap = {
-  fontSize: "14px",
-  marginBottom: "20px",
-  fontWeight: "500",
 };
 
 const rad = {

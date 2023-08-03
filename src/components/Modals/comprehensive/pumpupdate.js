@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import close from "../../../assets/close.png";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import swal from "sweetalert";
 import {
   balanceCF,
@@ -19,6 +19,8 @@ import { ThreeDots } from "react-loader-spinner";
 import SalesService from "../../../services/sales";
 import APIs from "../../../services/api";
 import moment from "moment";
+import OutletService from "../../../services/outletService";
+import { setPumpList, setTankList } from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
@@ -167,14 +169,14 @@ const PumpUpdate = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
+  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const tankListData = useSelector((state) => state.comprehensive.tankList);
+  const pumpListData = useSelector((state) => state.comprehensive.pumpList);
+  const [defaultState, setDefaultState] = useState(0);
   // console.log(typeof currentDate, "date");
-  // console.log(selectedPumps, "Pumps")
-  // console.log(selectedTanks, "Tanks")
+  console.log(tankListData, "Pumps");
+  console.log(pumpListData, "Tanks");
 
   //   const saveRecordSales = async () => {
   //     if (currentDate === null)
@@ -261,6 +263,14 @@ const PumpUpdate = (props) => {
   //     }
   //   };
 
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
   const getBackground = (type) => {
     if (type === "PMS") {
       return "#06805B";
@@ -271,6 +281,52 @@ const PumpUpdate = (props) => {
     }
   };
 
+  const getAllPumpsAndTanks = useCallback(() => {
+    const payload = {
+      outletID: oneStationData._id,
+      organisationID: resolveUserID().id,
+    };
+
+    const stationPumps = OutletService.getAllStationPumps(payload);
+    const stationTanks = OutletService.getAllOutletTanks(payload);
+
+    Promise.all([stationPumps, stationTanks]).then((data) => {
+      const [pumps, tanks] = data;
+
+      ///////////////// station pumps //////////////////////
+      const copyData = JSON.parse(JSON.stringify(pumps));
+      const updated = copyData.map((data) => {
+        let pumps = { ...data };
+        return {
+          ...pumps,
+          closingMeter: 0,
+          newTotalizer: "Enter closing meter",
+          sales: 0,
+        };
+      });
+      dispatch(setPumpList(updated));
+
+      ///////////////// station tanks //////////////////////
+      const outletTanks = tanks.stations.map((data) => {
+        const newData = {
+          ...data,
+          sales: 0,
+          outlet: null,
+          beforeSales: data.currentLevel,
+          afterSales: 0,
+        };
+        return newData;
+      });
+      dispatch(setTankList(outletTanks));
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getAllPumpsAndTanks();
+  }, [getAllPumpsAndTanks]);
+
   const item = {
     productType: "PMS",
     tankName: "Tank 1",
@@ -279,6 +335,10 @@ const PumpUpdate = (props) => {
     totalSales: 100,
     totalTankLevel: 19900,
     balanceCF: 19900,
+  };
+
+  const selectPump = (index, pump) => {
+    setDefaultState(index);
   };
 
   return (
@@ -312,9 +372,33 @@ const PumpUpdate = (props) => {
         </div>
 
         <div style={inner} className="inner">
-          <div className="tank_label">
+          <div style={{ width: "94%" }} className="tank_label">
             <FuelCard data={item} getBackground={getBackground} />
           </div>
+
+          <Select
+            labelId="demo-select-small"
+            id="demo-select-small"
+            value={defaultState}
+            sx={selectStyle2}>
+            <MenuItem style={menu} value={0}>
+              Select Station
+            </MenuItem>
+            {pumpListData.map((item, index) => {
+              return (
+                <MenuItem
+                  key={index}
+                  style={menu}
+                  onClick={() => {
+                    selectPump(index + 1, item);
+                  }}
+                  value={index + 1}>
+                  {`${item.pumpName} ( ${item.productType} ${item.hostTankName})`}
+                </MenuItem>
+              );
+            })}
+          </Select>
+          <input style={imps} placeholder="Please Enter Closing Meter" />
         </div>
 
         <div style={{ ...add, justifyContent: "space-between" }}>
@@ -389,6 +473,17 @@ const getSalesPayload = (tank, pump, currentDate) => {
   };
 };
 
+const imps = {
+  height: "30px",
+  width: "90%",
+  background: "#F2F1F1B2",
+  outline: "none",
+  border: "1px solid #777777",
+  marginTop: "10px",
+  paddingLeft: "10px",
+  color: "#000",
+};
+
 const add = {
   width: "100%",
   height: "auto",
@@ -399,21 +494,27 @@ const add = {
   marginTop: "10px",
 };
 
-const men = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
+const menu = {
   fontSize: "12px",
-  fontWeight: "bold",
-  marginTop: "50px",
+};
+
+const selectStyle2 = {
+  width: "94%",
+  height: "35px",
+  borderRadius: "0px",
+  background: "#F2F1F1B2",
+  marginTop: "10px",
+  color: "#000",
+  fontSize: "12px",
+  outline: "none",
+  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #777777",
+  },
 };
 
 const inner = {
   width: "94%",
   minHeight: "200px",
-  overflowY: "scroll",
-  overflowX: "hidden",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

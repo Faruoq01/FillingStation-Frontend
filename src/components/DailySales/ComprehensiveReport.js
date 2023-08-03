@@ -324,7 +324,7 @@ const ComprehensiveReport = (props) => {
             </div>
           </div>
 
-          <div className="first_layer">
+          {/* <div className="first_layer">
             <div className="first_top_layer">
               <div className="back_layer">
                 <div onClick={() => setCollapsible(6)} className="back_icon">
@@ -341,7 +341,7 @@ const ComprehensiveReport = (props) => {
             <div className="first_mid_layer">
               {collapsible === 6 && <BalanceCF />}
             </div>
-          </div>
+          </div> */}
 
           <div className="first_layer">
             <div className="first_top_layer">
