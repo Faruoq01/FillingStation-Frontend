@@ -25,7 +25,6 @@ const FuelCard = (props) => {
   const salesPayloadData = useSelector(
     (state) => state.recordsales.salesPayload
   );
-  console.log(props.data, "payloads here");
 
   const removeData = (index) => {
     swal({
@@ -37,7 +36,7 @@ const FuelCard = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         const pumpUpdate = JSON.parse(JSON.stringify(salesPayloadData));
-        pumpUpdate.sales.splice(index, 1);
+        pumpUpdate.tanks.splice(index, 1);
         dispatch(salesPayload(pumpUpdate));
       }
     });
@@ -495,6 +494,11 @@ const SummaryRecord = (props) => {
           ...settings,
           station: oneStationData,
           balanceCF: balanceCFRecord,
+        }),
+        SalesService.balanceCF({
+          ...settings,
+          station: oneStationData,
+          supply: daySupplyData,
         }),
       ];
       Promise.allSettled(payload)

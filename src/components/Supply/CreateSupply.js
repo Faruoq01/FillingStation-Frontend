@@ -33,8 +33,8 @@ const CreateSupply = (props) => {
   const [truckNo, setTruckNo] = useState("");
   const [productSupply, setProductSupply] = useState("");
   const [quantityLoaded, setQuantityLoaded] = useState("");
-  const [overage, setOverage] = useState("");
-  const [shortage, setShortage] = useState("");
+  const [overage, setOverage] = useState(0);
+  const [shortage, setShortage] = useState(0);
   const [supplyDate, setSupplyDate] = useState("");
   const [stop, setStop] = useState(false);
 
@@ -116,15 +116,15 @@ const CreateSupply = (props) => {
 
       if (sumOfQuantity > Number(quantityLoaded)) {
         const shortage = sumOfQuantity - Number(quantityLoaded);
-        setShortage("None");
+        setShortage(0);
         setOverage(shortage);
       } else if (sumOfQuantity < Number(quantityLoaded)) {
         const overage = Number(quantityLoaded) - sumOfQuantity;
-        setOverage("None");
+        setOverage(0);
         setShortage(overage);
       } else if (Number(quantityLoaded) === sumOfQuantity) {
-        setOverage("None");
-        setShortage("None");
+        setOverage(0);
+        setShortage(0);
       }
     }
   };
@@ -165,8 +165,6 @@ const CreateSupply = (props) => {
       result[id] = item;
       return result;
     }, {});
-
-    console.log(tanks, "hello");
 
     if (typeof discharged === "number" && discharged !== 0) {
       const payload = {

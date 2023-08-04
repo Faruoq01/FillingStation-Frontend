@@ -420,6 +420,7 @@ const DailyRecordSales = () => {
     const supply = APIs.post("/supply/dayRecord", {
       ...payload,
       createdAt: mainDate,
+      done: "0",
     });
 
     Promise.all([stationPumps, stationTanks, orgLpo, supply]).then((data) => {

@@ -277,7 +277,7 @@ const Supply = (props) => {
       setDeleteLoad(false);
       return swal("Warning!", "You can't delete this product order", "info");
     }
-    console.log(singleSupplyDetails);
+
     setTimeout(() => {
       setDeleteLoad(false);
       setConfirmDeleteModalStatus(false);
@@ -688,7 +688,10 @@ const Supply = (props) => {
           <div style={{ width: "100%", marginTop: "30px" }}>
             <Switch>
               <Route path="/home/supply/create">
-                <CreateSupply refresh={refresh} history={props.history} />
+                <CreateSupply
+                  refresh={getAllSupplyData}
+                  history={props.history}
+                />
               </Route>
             </Switch>
           </div>
