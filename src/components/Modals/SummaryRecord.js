@@ -25,6 +25,7 @@ const FuelCard = (props) => {
   const salesPayloadData = useSelector(
     (state) => state.recordsales.salesPayload
   );
+  console.log(props.data, "payloads here");
 
   const removeData = (index) => {
     swal({
@@ -36,7 +37,7 @@ const FuelCard = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         const pumpUpdate = JSON.parse(JSON.stringify(salesPayloadData));
-        pumpUpdate.splice(index, 1);
+        pumpUpdate.sales.splice(index, 1);
         dispatch(salesPayload(pumpUpdate));
       }
     });
@@ -70,13 +71,13 @@ const FuelCard = (props) => {
         <div className="fuel_card_items">
           <div className="fuel_card_items_left">
             <div className="volum">
-              {ApproximateDecimal(props.data.currentLevel)} ltrs
+              {ApproximateDecimal(props.data.previousLevel)} ltrs
             </div>
             <div className="vol_label">Current stock</div>
           </div>
           <div className="fuel_card_items_right">
             <div className="volum">
-              {ApproximateDecimal(props.data.afterSales)} ltrs
+              {ApproximateDecimal(props.data.currentLevel)} ltrs
             </div>
             <div className="vol_label">Level after sales</div>
           </div>
@@ -85,7 +86,7 @@ const FuelCard = (props) => {
         <div className="fuel_card_items">
           <div className="fuel_card_items_left">
             <div className="volum">
-              {ApproximateDecimal(props.data.totalSales)}
+              {ApproximateDecimal(props.data.tankSales)}
             </div>
             <div className="vol_label">Total Sales</div>
           </div>
@@ -256,9 +257,6 @@ const SummaryRecord = (props) => {
   );
 
   const balanceCFRecord = useSelector((state) => state.recordsales.balanceCF);
-  const supplyPayloadData = useSelector(
-    (state) => state.recordsales.supplyPayload
-  );
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const daySupplyData = useSelector((state) => state.supply.daySupply);
   const tankList = useSelector((state) => state.recordsales.tankList);
@@ -268,8 +266,8 @@ const SummaryRecord = (props) => {
     .format("YYYY-MM-DD HH:mm:ss")
     .split(" ")[0];
   // console.log(typeof currentDate, "date");
-  // console.log(selectedPumps, "Pumps")
-  // console.log(selectedTanks, "Tanks")
+  // console.log(selectedPumps, "Pumps");
+  // console.log(selectedTanks, "Tanks");
 
   const updateTankDetails = (product, tank) => {
     const onlyPMS = [...tankList].filter(
@@ -289,45 +287,31 @@ const SummaryRecord = (props) => {
       return { ...data, sales: newSales };
     });
 
-    const allPumps = updatedPumps.filter((pump) => pump.hostTank === tank._id);
     const allProductPumps = updatedPumps.filter(
       (pump) => pump.productType === product
     );
 
-    const sales = allPumps.reduce((accum, current) => {
-      return (
-        Number(accum) +
-        Number(current.newTotalizer) -
-        Number(current.totalizerReading)
-      );
-    }, 0);
-
-    const salesRT = allPumps.reduce((accum, current) => {
-      return Number(accum) + Number(current.RTlitre);
-    }, 0);
+    const allTankPumps = updatedPumps.filter(
+      (pump) => pump.hostTank === tank._id
+    );
 
     const productSales = allProductPumps.reduce((accum, current) => {
-      return (
-        Number(accum) +
-        Number(current.newTotalizer) -
-        Number(current.totalizerReading)
-      );
+      return Number(accum) + Number(current.sales);
     }, 0);
 
-    const productSalesRT = allProductPumps.reduce((accum, current) => {
-      return Number(accum) + Number(current.RTlitre);
+    const tankSales = allTankPumps.reduce((accum, current) => {
+      return Number(accum) + Number(current.sales);
     }, 0);
 
     const finalUpdate = {
       ...tank,
-      pumps: allPumps,
-      totalSales: sales - salesRT,
-      productSales: productSales - productSalesRT,
-      afterSales: Number(tank.currentLevel) - sales + salesRT,
+      pumps: allProductPumps,
+      tankSales: tankSales,
+      afterSales: Number(tank.currentLevel) - tankSales,
       outlet: oneStationData,
-      totalTankLevel: totalTankLevel,
       totalTankCapacity: totalTankCapacity,
-      balanceCF: totalTankLevel - productSales + productSalesRT,
+      totalTankLevel: totalTankLevel,
+      balanceCF: totalTankLevel - productSales,
     };
 
     return finalUpdate;
@@ -563,10 +547,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Pump updates and Sales</div>
             </div>
 
-            {salesPayloadData?.sales?.length === 0 ? (
+            {salesPayloadData?.tanks?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              salesPayloadData?.sales?.map((data, index) => {
+              salesPayloadData?.tanks?.map((data, index) => {
                 return (
                   <FuelCard
                     index={index}
@@ -926,8 +910,14 @@ const getPumpPayloads = (pump) => {
 const getTankPayloads = (tank) => {
   return {
     id: tank._id,
+    productType: tank.productType,
+    tankName: tank.tankName,
     previousLevel: tank.currentLevel,
     currentLevel: Number(tank.afterSales),
+    tankSales: tank.tankSales,
+    totalTankLevel: tank.totalTankLevel,
+    balanceCF: tank.balanceCF,
+    pumps: tank.pumps,
   };
 };
 
