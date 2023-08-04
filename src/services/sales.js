@@ -44,6 +44,9 @@ const SalesService = {
   deleteAllRecords: (data) => {
     return APIs.post("/sales/delete/deleteAll", data);
   },
+  supply: (data) => {
+    return APIs.post("/sales/supply", data);
+  },
 };
 
 export default SalesService;

@@ -495,7 +495,7 @@ const SummaryRecord = (props) => {
           station: oneStationData,
           balanceCF: balanceCFRecord,
         }),
-        SalesService.balanceCF({
+        SalesService.supply({
           ...settings,
           station: oneStationData,
           supply: daySupplyData,

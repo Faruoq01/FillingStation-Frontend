@@ -41,6 +41,7 @@ const Supply = (props) => {
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+
   const supply = useSelector((state) => state.supply.supply);
   const [prints, setPrints] = useState(false);
   const [entries, setEntries] = useState(10);
@@ -688,10 +689,7 @@ const Supply = (props) => {
           <div style={{ width: "100%", marginTop: "30px" }}>
             <Switch>
               <Route path="/home/supply/create">
-                <CreateSupply
-                  refresh={getAllSupplyData}
-                  history={props.history}
-                />
+                <CreateSupply refresh={refresh} history={props.history} />
               </Route>
             </Switch>
           </div>
