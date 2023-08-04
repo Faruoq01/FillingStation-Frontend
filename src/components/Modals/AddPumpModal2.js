@@ -84,9 +84,6 @@ const AddPump = (props) => {
         setLoader(false);
         props.close(false);
         props.refresh();
-        setTimeout(() => {
-          props.outRefresh();
-        }, 500);
       });
   };
 

@@ -570,6 +570,7 @@ const CreateFillingStation = (props) => {
                 }}
                 placeholder=""
                 value={longitude}
+                onChange={(e) => setLongitude(e.target.value)}
               />
             </div>
 
@@ -589,6 +590,7 @@ const CreateFillingStation = (props) => {
                 }}
                 placeholder=""
                 value={latitude}
+                onChange={(e) => setLatitude(e.target.value)}
               />
             </div>
 

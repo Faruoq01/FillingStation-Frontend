@@ -85,7 +85,6 @@ const AddTank = (props) => {
       .then((data) => {
         dispatch(createTanks(data));
         props.refresh();
-        props.outRefresh();
       })
       .then((data) => {
         setWaiting(false);

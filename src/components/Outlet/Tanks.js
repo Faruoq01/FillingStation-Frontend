@@ -76,6 +76,13 @@ const Tank = (props) => {
     getSeparateTanks(tankList);
   }, [tankList]);
 
+  useEffect(() => {
+    return () => {
+      props.refresh();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getSeparateTanks = (data) => {
     const PMS = [];
     const AGO = [];
@@ -523,12 +530,9 @@ const Tank = (props) => {
           tabs={tabs}
           data={oneStation?.state}
           refresh={getAllStationTanks}
-          outRefresh={props.refresh}
         />
       )}
-      {open === 3 && (
-        <AddPump tabs={tabs} allTank={tankList} outRefresh={props.refresh} />
-      )}
+      {open === 3 && <AddPump tabs={tabs} allTank={tankList} />}
       {openEditTank && (
         <EditTank
           tabs={tabs}
@@ -536,7 +540,6 @@ const Tank = (props) => {
           close={setOpenEditTank}
           data={currentTank}
           refresh={getAllStationTanks}
-          outRefresh={props.refresh}
         />
       )}
       <div className="pump-container">

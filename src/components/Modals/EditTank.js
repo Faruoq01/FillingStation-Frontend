@@ -86,7 +86,6 @@ const EditTank = (props) => {
           swal("Warning!", data.message, "info");
         } else {
           setLoader(false);
-          props.outRefresh();
           props.refresh();
         }
       })

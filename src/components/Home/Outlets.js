@@ -33,7 +33,6 @@ import activeList from "../../assets/activeList.png";
 import inactiveList from "../../assets/inactiveList.png";
 import activeGrid from "../../assets/activeGrid.png";
 import inactiveGrid from "../../assets/inactiveGrid.png";
-import ListAllTanks from "../Outlet/TankList";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 

@@ -74,9 +74,6 @@ const AddPump = (props) => {
         handleClose();
         setWaiting(false);
         setLoadingSpinner(false);
-        setTimeout(() => {
-          props.outRefresh();
-        }, 2000);
       });
   };
 

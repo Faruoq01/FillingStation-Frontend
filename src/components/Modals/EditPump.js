@@ -61,7 +61,6 @@ const EditPump = (props) => {
         swal("Success", data.message, "success");
       })
       .then(() => {
-        props.outRefresh();
         handleClose();
       });
   };

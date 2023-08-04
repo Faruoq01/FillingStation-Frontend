@@ -163,7 +163,19 @@ const FuelCard = (props) => {
 const PumpUpdate = (props) => {
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
-  const [salesPayloadData, setSalesPayload] = useState([]);
+  const [reading, setReading] = useState("");
+  const [currentTank, setCurrentTank] = useState(null);
+  const [currentPump, setCurrentPump] = useState(null);
+  const [item, setItem] = useState({
+    productType: "Type",
+    tankName: "Tank Name",
+    currentLevel: 0,
+    afterSales: 0,
+    totalSales: 0,
+    totalTankLevel: 0,
+    balanceCF: 0,
+    openingMeter: 0,
+  });
 
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
@@ -175,8 +187,8 @@ const PumpUpdate = (props) => {
   const pumpListData = useSelector((state) => state.comprehensive.pumpList);
   const [defaultState, setDefaultState] = useState(0);
   // console.log(typeof currentDate, "date");
-  console.log(tankListData, "Pumps");
-  console.log(pumpListData, "Tanks");
+  //   console.log(tankListData, "Pumps");
+  //   console.log(pumpListData, "Tanks");
 
   //   const saveRecordSales = async () => {
   //     if (currentDate === null)
@@ -327,18 +339,75 @@ const PumpUpdate = (props) => {
     getAllPumpsAndTanks();
   }, [getAllPumpsAndTanks]);
 
-  const item = {
-    productType: "PMS",
-    tankName: "Tank 1",
-    currentLevel: 20000,
-    afterSales: 19900,
-    totalSales: 100,
-    totalTankLevel: 19900,
-    balanceCF: 19900,
-  };
-
   const selectPump = (index, pump) => {
     setDefaultState(index);
+    setReading("");
+    const tankListClone = JSON.parse(JSON.stringify(tankListData));
+    const extractType = tankListClone.filter(
+      (data) => data.productType === pump.productType
+    );
+    const totalLevels = extractType.reduce((accum, current) => {
+      return Number(accum) + Number(current.currentLevel);
+    }, 0);
+    const hostTank = tankListClone.filter((data) => data._id === pump.hostTank);
+    if (hostTank.length === 0) {
+      swal(
+        "Error",
+        "Tank connecting pump not found, may have been deleted",
+        "error"
+      );
+    } else {
+      const [tank] = hostTank;
+      setCurrentTank(tank);
+      setCurrentPump(pump);
+      const itemClone = { ...item };
+      itemClone.productType = tank.productType;
+      itemClone.tankName = tank.tankName;
+      itemClone.currentLevel = tank.currentLevel;
+      itemClone.totalSales = 0;
+      itemClone.afterSales = tank.currentLevel;
+      itemClone.totalTankLevel = totalLevels;
+      itemClone.balanceCF = totalLevels;
+      itemClone.openingMeter = pump.totalizerReading;
+      setItem(itemClone);
+    }
+  };
+
+  const updateSalesVariables = (e) => {
+    if (currentPump === null || currentTank === null) {
+      swal(
+        "Error",
+        "Pump not selected or connecting tank does not exist",
+        "error"
+      );
+    } else {
+      setReading(e.target.value);
+      const itemClone = { ...item };
+      const openingMeter = Number(itemClone.openingMeter);
+      const closingMeter = Number(e.target.value);
+      const sales = closingMeter - openingMeter;
+
+      const newLevel = Number(itemClone.currentLevel) - sales;
+      const totalProductLevel = Number(itemClone.totalTankLevel) - sales;
+      itemClone.totalSales = sales;
+      itemClone.afterSales = newLevel;
+      itemClone.balanceCF = totalProductLevel;
+      setItem(itemClone);
+    }
+  };
+
+  const saveRecordSales = () => {
+    if (reading === "")
+      return swal("Error", "Closing meter cannot be empty", "error");
+
+    const getSalesLoad = getSalesPayload(
+      currentTank,
+      currentPump,
+      item,
+      currentDate
+    );
+
+    console.log(getSalesLoad, "load");
   };
 
   return (
@@ -398,7 +467,13 @@ const PumpUpdate = (props) => {
               );
             })}
           </Select>
-          <input style={imps} placeholder="Please Enter Closing Meter" />
+          <input
+            onChange={updateSalesVariables}
+            style={imps}
+            type={"number"}
+            value={reading}
+            placeholder="Please Enter Closing Meter"
+          />
         </div>
 
         <div style={{ ...add, justifyContent: "space-between" }}>
@@ -430,7 +505,7 @@ const PumpUpdate = (props) => {
                 backgroundColor: "#427BBE",
               },
             }}
-            // onClick={saveRecordSales}
+            onClick={saveRecordSales}
             variant="contained">
             Save
           </Button>
@@ -440,22 +515,16 @@ const PumpUpdate = (props) => {
   );
 };
 
-const getSalesPayload = (tank, pump, currentDate) => {
+const getSalesPayload = (tank, pump, data, currentDate) => {
   return {
     sales: pump.sales,
-    RTlitre: pump.RTlitre,
-    productSales: tank.productSales,
-    totalSales: tank.totalSales,
-    previousLevel: tank.previousLevel,
-    currentLevel: tank.currentLevel,
+    RTlitre: 0,
     tankID: tank._id,
     tankName: tank.tankName,
-    totalTankLevel: tank.totalTankLevel,
     pumpID: pump._id,
     pumpName: pump.pumpName,
     beforeSales: tank.beforeSales,
     afterSales: tank.afterSales,
-    balanceCF: tank.balanceCF,
     openingMeter: pump.totalizerReading,
     closingMeter: pump.newTotalizer,
     productType: pump.productType,

@@ -204,7 +204,6 @@ const HomeScreen = () => {
             "DPKPrice" in data ? data.DPKPrice : stationCopy["DPKPrice"];
 
           dispatch(adminOutlet(stationCopy));
-          console.log(stationCopy, "updated station");
         }
       }
     }
