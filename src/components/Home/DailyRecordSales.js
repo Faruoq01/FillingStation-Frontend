@@ -31,7 +31,6 @@ import {
   dippingPayload,
   expensesPayload,
   lpoPayload,
-  passRecordSales,
   posPayload,
   rtPayload,
   salesPayload,
@@ -50,11 +49,7 @@ import Backdrop from "@mui/material/Backdrop";
 import { BallTriangle } from "react-loader-spinner";
 import { useState } from "react";
 import SummaryRecord from "../Modals/SummaryRecord";
-import {
-  changeDate,
-  changeStation,
-  updatePayload,
-} from "../../storage/recordsales";
+import { changeDate, changeStation } from "../../storage/recordsales";
 import swal from "sweetalert";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -66,53 +61,6 @@ import { daySupply } from "../../storage/supply";
 import { useCallback } from "react";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
-
-// function DoublyLinkedListNode(data) {
-//   this.data = data;
-//   this.next = null;
-//   this.prev = null;
-//   this.data.ago = [];
-//   this.data.pms = [];
-//   this.data.dpk = [];
-//   this.data.selectedPumps = [];
-//   this.data.selectedTanks = [];
-//   this.data.lpo = [];
-//   this.data.supply = [];
-//   this.data.expenses = [];
-//   this.data.pay = [];
-//   this.data.dipping = [];
-// }
-
-// function DoublyLinkedList() {
-//   this.head = null;
-//   this.currentDate = null;
-//   this.size = 0;
-//   this.page = 1;
-
-//   this.isEmpty = function () {
-//     return this.size === 0;
-//   };
-
-//   this.addNode = function (value) {
-//     if (this.head === null) {
-//       this.head = new DoublyLinkedListNode(value);
-//     } else {
-//       var temp = new DoublyLinkedListNode(value);
-//       temp.next = this.head;
-//       this.head.prev = temp;
-//       this.head = temp;
-//     }
-//     this.size++;
-//   };
-
-//   this.nextPage = function () {
-//     this.head = this.head.next;
-//   };
-
-//   this.previousPage = function () {
-//     this.head = this.head.prev;
-//   };
-// }
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -420,7 +368,6 @@ const DailyRecordSales = () => {
     const supply = APIs.post("/supply/dayRecord", {
       ...payload,
       createdAt: mainDate,
-      done: "0",
     });
 
     Promise.all([stationPumps, stationTanks, orgLpo, supply]).then((data) => {

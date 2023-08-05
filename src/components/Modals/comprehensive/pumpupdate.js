@@ -20,7 +20,11 @@ import SalesService from "../../../services/sales";
 import APIs from "../../../services/api";
 import moment from "moment";
 import OutletService from "../../../services/outletService";
-import { setPumpList, setTankList } from "../../../storage/comprehensive";
+import {
+  setPumpList,
+  setStockList,
+  setTankList,
+} from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
@@ -89,6 +93,19 @@ const FuelCard = (props) => {
               {ApproximateDecimal(props.data.totalSales)}
             </div>
             <div className="vol_label">Total Sales</div>
+          </div>
+          <div className="fuel_card_items_right">
+            <div className="volum">{props.data.supply}</div>
+            <div className="vol_label">Supply</div>
+          </div>
+        </div>
+
+        <div className="fuel_card_items">
+          <div className="fuel_card_items_left">
+            <div className="volum">
+              {ApproximateDecimal(props.data.openingMeter)}
+            </div>
+            <div className="vol_label">Opening Meter</div>
           </div>
           <div className="fuel_card_items_right">
             <div className="volum"></div>
@@ -186,8 +203,12 @@ const PumpUpdate = (props) => {
   const tankListData = useSelector((state) => state.comprehensive.tankList);
   const pumpListData = useSelector((state) => state.comprehensive.pumpList);
   const [defaultState, setDefaultState] = useState(0);
-  // console.log(typeof currentDate, "date");
-  //   console.log(tankListData, "Pumps");
+  const mainDate = moment
+    .tz(currentDate, user.timezone)
+    .format("YYYY-MM-DD HH:mm:ss")
+    .split(" ")[0];
+  //   console.log(currentDate, "date");
+  console.log(tankListData, "Tanks");
   //   console.log(pumpListData, "Tanks");
 
   //   const saveRecordSales = async () => {
@@ -293,6 +314,31 @@ const PumpUpdate = (props) => {
     }
   };
 
+  const updateTanksWithSupplies = (tankListData, daySupply) => {
+    if (daySupply.length === 0 || tankListData.length === 0) {
+      dispatch(setTankList(tankListData));
+    } else {
+      const copyTanks = JSON.parse(JSON.stringify(tankListData));
+      for (const supply of daySupply) {
+        const recipient = Object.values(supply.recipientTanks);
+        for (const tank of recipient) {
+          const findID = copyTanks.findIndex((data) => data._id === tank.id);
+          if (findID !== -1) {
+            const newLevel =
+              Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
+            copyTanks[findID] = {
+              ...copyTanks[findID],
+              beforeSales: newLevel,
+              currentLevel: newLevel,
+              supply: copyTanks[findID].supply + Number(tank.quantity),
+            };
+          }
+        }
+      }
+      dispatch(setTankList(copyTanks));
+    }
+  };
+
   const getAllPumpsAndTanks = useCallback(() => {
     const payload = {
       outletID: oneStationData._id,
@@ -301,9 +347,14 @@ const PumpUpdate = (props) => {
 
     const stationPumps = OutletService.getAllStationPumps(payload);
     const stationTanks = OutletService.getAllOutletTanks(payload);
+    const stationSupply = APIs.post("/supply/dayRecord", {
+      ...payload,
+      createdAt: mainDate,
+    });
 
-    Promise.all([stationPumps, stationTanks]).then((data) => {
-      const [pumps, tanks] = data;
+    Promise.all([stationPumps, stationTanks, stationSupply]).then((data) => {
+      const [pumps, tanks, supply] = data;
+      console.log(supply, "supply");
 
       ///////////////// station pumps //////////////////////
       const copyData = JSON.parse(JSON.stringify(pumps));
@@ -326,10 +377,14 @@ const PumpUpdate = (props) => {
           outlet: null,
           beforeSales: data.currentLevel,
           afterSales: 0,
+          supply: 0,
         };
         return newData;
       });
       dispatch(setTankList(outletTanks));
+
+      ///////////////// station supply //////////////////////
+      updateTanksWithSupplies(outletTanks, supply.data.supply);
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -368,6 +423,7 @@ const PumpUpdate = (props) => {
       itemClone.afterSales = tank.currentLevel;
       itemClone.totalTankLevel = totalLevels;
       itemClone.balanceCF = totalLevels;
+      itemClone.supply = tank.supply;
       itemClone.openingMeter = pump.totalizerReading;
       setItem(itemClone);
     }
@@ -386,10 +442,11 @@ const PumpUpdate = (props) => {
       const openingMeter = Number(itemClone.openingMeter);
       const closingMeter = Number(e.target.value);
       const sales = closingMeter - openingMeter;
+      const actualSale = sales < 0 ? 0 : sales;
 
-      const newLevel = Number(itemClone.currentLevel) - sales;
-      const totalProductLevel = Number(itemClone.totalTankLevel) - sales;
-      itemClone.totalSales = sales;
+      const newLevel = Number(itemClone.currentLevel) - actualSale;
+      const totalProductLevel = Number(itemClone.totalTankLevel) - actualSale;
+      itemClone.totalSales = actualSale;
       itemClone.afterSales = newLevel;
       itemClone.balanceCF = totalProductLevel;
       setItem(itemClone);
