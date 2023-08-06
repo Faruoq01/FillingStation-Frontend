@@ -20,33 +20,13 @@ import SalesService from "../../../services/sales";
 import APIs from "../../../services/api";
 import moment from "moment";
 import OutletService from "../../../services/outletService";
-import {
-  setPumpList,
-  setStockList,
-  setTankList,
-} from "../../../storage/comprehensive";
+import { setPumpList, setTankList } from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {
-  const dispatch = useDispatch();
-  const salesPayloadData = useSelector(
-    (state) => state.recordsales.salesPayload
-  );
-
-  const removeData = (index) => {
-    swal({
-      title: "Alert!",
-      text: "Are you sure you want to delete this record?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        const pumpUpdate = JSON.parse(JSON.stringify(salesPayloadData));
-        pumpUpdate.splice(index, 1);
-        dispatch(salesPayload(pumpUpdate));
-      }
-    });
-  };
+  //   const dispatch = useDispatch();
+  //   const salesPayloadData = useSelector(
+  //     (state) => state.recordsales.salesPayload
+  //   );
 
   return (
     <div
@@ -64,11 +44,9 @@ const FuelCard = (props) => {
             {props.data.productType.concat(" ", props.data.tankName)}
           </span>
           <div
-            onClick={() => {
-              removeData(props.index);
-            }}
+            style={{ background: props.getBackground(props.data.productType) }}
             className="fuel_delete">
-            Delete
+            {props.data.productType}
           </div>
         </div>
 
@@ -192,6 +170,7 @@ const PumpUpdate = (props) => {
     totalTankLevel: 0,
     balanceCF: 0,
     openingMeter: 0,
+    closingMeter: 0,
   });
 
   const handleClose = () => props.close(false);
@@ -208,7 +187,7 @@ const PumpUpdate = (props) => {
     .format("YYYY-MM-DD HH:mm:ss")
     .split(" ")[0];
   //   console.log(currentDate, "date");
-  console.log(tankListData, "Tanks");
+  //   console.log(tankListData, "Tanks");
   //   console.log(pumpListData, "Tanks");
 
   //   const saveRecordSales = async () => {
@@ -354,7 +333,6 @@ const PumpUpdate = (props) => {
 
     Promise.all([stationPumps, stationTanks, stationSupply]).then((data) => {
       const [pumps, tanks, supply] = data;
-      console.log(supply, "supply");
 
       ///////////////// station pumps //////////////////////
       const copyData = JSON.parse(JSON.stringify(pumps));
@@ -449,6 +427,7 @@ const PumpUpdate = (props) => {
       itemClone.totalSales = actualSale;
       itemClone.afterSales = newLevel;
       itemClone.balanceCF = totalProductLevel;
+      itemClone.closingMeter = closingMeter;
       setItem(itemClone);
     }
   };
@@ -456,15 +435,30 @@ const PumpUpdate = (props) => {
   const saveRecordSales = () => {
     if (reading === "")
       return swal("Error", "Closing meter cannot be empty", "error");
+    if (currentTank === null)
+      return swal("Error", "Connecting tank cannot be found", "error");
 
     const getSalesLoad = getSalesPayload(
       currentTank,
       currentPump,
+      oneStationData,
+      currentDate,
+      item
+    );
+
+    const getTankList = getTankListPayload(
+      tankListData,
+      currentTank,
       item,
       currentDate
     );
 
-    console.log(getSalesLoad, "load");
+    const payload = {
+      sales: getSalesLoad,
+      tankLevels: getTankList,
+    };
+
+    console.log(payload, "tankList");
   };
 
   return (
@@ -526,7 +520,11 @@ const PumpUpdate = (props) => {
           </Select>
           <input
             onChange={updateSalesVariables}
-            style={imps}
+            style={{
+              ...imps,
+              borderColor:
+                item.openingMeter > item.closingMeter ? "red" : "#777777",
+            }}
             type={"number"}
             value={reading}
             placeholder="Please Enter Closing Meter"
@@ -572,31 +570,64 @@ const PumpUpdate = (props) => {
   );
 };
 
-const getSalesPayload = (tank, pump, data, currentDate) => {
+const getSalesPayload = (tank, pump, station, currentDate, item) => {
   return {
-    sales: pump.sales,
+    sales: item.totalSales,
     RTlitre: 0,
     tankID: tank._id,
     tankName: tank.tankName,
     pumpID: pump._id,
     pumpName: pump.pumpName,
     beforeSales: tank.beforeSales,
-    afterSales: tank.afterSales,
-    openingMeter: pump.totalizerReading,
-    closingMeter: pump.newTotalizer,
+    afterSales: item.afterSales,
+    openingMeter: item.openingMeter,
+    closingMeter: item.closingMeter,
     productType: pump.productType,
-    PMSCostPrice: tank.outlet.PMSCost,
-    PMSSellingPrice: tank.outlet.PMSPrice,
-    AGOCostPrice: tank.outlet.AGOCost,
-    AGOSellingPrice: tank.outlet.AGOPrice,
-    DPKCostPrice: tank.outlet.DPKCost,
-    DPKSellingPrice: tank.outlet.DPKPrice,
-    outletID: tank.outlet._id,
-    outletName: tank.outlet.outletName.concat(", ", tank.outlet.alias),
-    organisationID: tank.outlet.organisation,
+    PMSCostPrice: station.PMSCost,
+    PMSSellingPrice: station.PMSPrice,
+    AGOCostPrice: station.AGOCost,
+    AGOSellingPrice: station.AGOPrice,
+    DPKCostPrice: station.DPKCost,
+    DPKSellingPrice: station.DPKPrice,
+    outletID: station._id,
+    outletName: station.outletName.concat(", ", station.alias),
+    organisationID: station.organisation,
     createdAt: currentDate,
     updatedAt: currentDate,
   };
+};
+
+const getTankListPayload = (tankList, currentTank, item, currentDate) => {
+  const otherTanks = tankList.filter((data) => data._id !== currentTank._id);
+  const otherTankList = otherTanks.map((data) => {
+    return {
+      currentLevel: data.currentLevel,
+      tankName: data.tankName,
+      productType: data.productType,
+      afterSales: data.currentLevel,
+      tankID: data._id,
+      tankCapacity: data.tankCapacity,
+      outletID: data.outletID,
+      organizationID: data.organisationID,
+      createdAt: currentDate,
+      updatedAt: currentDate,
+    };
+  });
+
+  const presentTank = {
+    currentLevel: currentTank.currentLevel,
+    tankName: currentTank.tankName,
+    productType: currentTank.productType,
+    afterSales: item.afterSales,
+    tankID: currentTank._id,
+    tankCapacity: currentTank.tankCapacity,
+    outletID: currentTank.outletID,
+    organizationID: currentTank.organisationID,
+    createdAt: currentDate,
+    updatedAt: currentDate,
+  };
+
+  return [...otherTankList, presentTank];
 };
 
 const imps = {
