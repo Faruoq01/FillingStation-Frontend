@@ -4,30 +4,16 @@ import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, MenuItem, Select } from "@mui/material";
 import swal from "sweetalert";
-import {
-  balanceCF,
-  creditPayloadObject,
-  rtPayload,
-  salesPayload,
-  tanksPayload,
-} from "../../../storage/recordsales";
-import { useHistory } from "react-router-dom";
 import "../../../styles/summary.scss";
 import { useState } from "react";
 import ApproximateDecimal from "../../common/approx";
 import { ThreeDots } from "react-loader-spinner";
-import SalesService from "../../../services/sales";
 import APIs from "../../../services/api";
 import moment from "moment";
 import OutletService from "../../../services/outletService";
 import { setPumpList, setTankList } from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {
-  //   const dispatch = useDispatch();
-  //   const salesPayloadData = useSelector(
-  //     (state) => state.recordsales.salesPayload
-  //   );
-
   return (
     <div
       key={props.index}
@@ -105,51 +91,6 @@ const FuelCard = (props) => {
             <div className="vol_label">Balance carried forward</div>
           </div>
         </div>
-
-        {/* {props.data?.pumps?.length === 0 ? (
-          <div style={men}>No records</div>
-        ) : (
-          props.data?.pumps?.map((item, index) => {
-            return (
-              <div
-                key={index}
-                style={{
-                  background: "#F5F5F5",
-                  marginTop: "5px",
-                  borderRadius: "10px",
-                }}
-                className="fuel_card_items">
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  className="fuel_card_items_left">
-                  <div
-                    style={{ marginLeft: "10px", fontSize: "14px" }}
-                    className="volum">
-                    {item.pumpName}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                  className="fuel_card_items_right">
-                  <div
-                    style={{ marginRight: "10px", fontSize: "14px" }}
-                    className="volum">
-                    {ApproximateDecimal(item.sales)} ltrs
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )} */}
       </div>
     </div>
   );
@@ -175,7 +116,6 @@ const PumpUpdate = (props) => {
 
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -186,94 +126,6 @@ const PumpUpdate = (props) => {
     .tz(currentDate, user.timezone)
     .format("YYYY-MM-DD HH:mm:ss")
     .split(" ")[0];
-  //   console.log(currentDate, "date");
-  //   console.log(tankListData, "Tanks");
-  //   console.log(pumpListData, "Tanks");
-
-  //   const saveRecordSales = async () => {
-  //     if (currentDate === null)
-  //       return swal("Warning!", "Please select date!", "info");
-  //     setLoading(true);
-
-  //     const result = await APIs.post("/sales/validateSales", {
-  //       date: mainDate,
-  //       organizationID: oneStationData.organisation,
-  //       outletID: oneStationData._id,
-  //     }).then((data) => {
-  //       return data.data.data;
-  //     });
-
-  //     if (result) {
-  //       handleClose();
-  //       swal("Error!", "Record has been saved for this day already!", "error");
-  //     } else {
-  //       const settings = {
-  //         currentDate: mainDate,
-  //       };
-  //       const payload = [
-  //         SalesService.pumpUpdate({
-  //           ...settings,
-  //           station: oneStationData,
-  //           sales: salesPayloadData,
-  //         }),
-  //         SalesService.returnToTank({
-  //           ...settings,
-  //           station: oneStationData,
-  //           rt: rtPayloadData,
-  //         }),
-  //         SalesService.lpo({
-  //           ...settings,
-  //           station: oneStationData,
-  //           lpo: lpoPayloadData,
-  //         }),
-  //         SalesService.expenses({
-  //           ...settings,
-  //           station: oneStationData,
-  //           expenses: expensesPayloadData,
-  //         }),
-  //         SalesService.bankPayment({
-  //           ...settings,
-  //           station: oneStationData,
-  //           bankpayments: bankPayloadData,
-  //         }),
-  //         SalesService.posPayment({
-  //           ...settings,
-  //           station: oneStationData,
-  //           pospayments: posPayloadData,
-  //         }),
-  //         SalesService.dipping({
-  //           ...settings,
-  //           station: oneStationData,
-  //           dipping: dippingPayloadData,
-  //         }),
-  //         SalesService.tankLevels({
-  //           ...settings,
-  //           station: oneStationData,
-  //           tankLevels: tanksPayloadData,
-  //         }),
-  //         SalesService.creditBalance({
-  //           ...settings,
-  //           station: oneStationData,
-  //           debits: creditPayloadObjectData,
-  //         }),
-  //         SalesService.balanceCF({
-  //           ...settings,
-  //           station: oneStationData,
-  //           balanceCF: balanceCFRecord,
-  //         }),
-  //       ];
-  //       Promise.allSettled(payload)
-  //         .then((results) => {
-  //           handleClose();
-  //           history.push("/home/daily-sales");
-  //           swal("Success!", "Record saved successfully!", "success");
-  //         })
-  //         .catch((error) => {
-  //           // Handle any other errors that may occur
-  //           console.log(error, "form catch");
-  //         });
-  //     }
-  //   };
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -523,7 +375,9 @@ const PumpUpdate = (props) => {
             style={{
               ...imps,
               borderColor:
-                item.openingMeter > item.closingMeter ? "red" : "#777777",
+                item.openingMeter > item.closingMeter && item.closingMeter > 0
+                  ? "red"
+                  : "#777777",
             }}
             type={"number"}
             value={reading}
@@ -533,7 +387,6 @@ const PumpUpdate = (props) => {
 
         <div style={{ ...add, justifyContent: "space-between" }}>
           <div style={{ marginLeft: "10px" }}>
-            {/* {loading && <div style={prog}>{progress}</div>} */}
             {loading ? (
               <ThreeDots
                 height="30"
