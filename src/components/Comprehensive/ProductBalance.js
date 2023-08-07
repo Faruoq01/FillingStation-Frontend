@@ -294,6 +294,59 @@ const ProductBalance = (props) => {
     }
   };
 
+  const resetAll = () => {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to delete all record?, this will erase all records on the current selected date only.",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        const getDate =
+          currentDate === ""
+            ? moment().format("YYYY-MM-DD").split()[0]
+            : currentDate;
+
+        const payload = {
+          org: resolveUserID().id,
+          outletID: oneStationData._id,
+          date: getDate,
+        };
+
+        APIs.post("/sales/delete/checkStatus", payload).then((data) => {
+          if (data.data.data) {
+            swal(
+              "Error!",
+              "You can only delete from latest record as balance calculations depends on it!",
+              "error"
+            );
+          } else {
+            const load = {
+              date: getDate,
+              station: oneStationData,
+            };
+            APIs.post("/sales/delete/reset-sales", load).then(({ data }) => {
+              if (data.status !== "empty") {
+                APIs.post("/sales/delete/supply", load)
+                  .then(() => {
+                    swal("Success", "Record deleted successfully", "success");
+                  })
+                  .then((data) => {
+                    swal("Success", "Record deleted successfully", "success");
+                    setRefresh(!refresh);
+                  });
+              } else {
+                swal("Success", "Record deleted successfully", "success");
+                setRefresh(!refresh);
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -323,6 +376,7 @@ const ProductBalance = (props) => {
             <div style={{ marginTop: "30px" }} className="butStyle">
               <Button
                 variant="contained"
+                onClick={resetAll}
                 sx={{
                   ...resetBut,
                   background: "#4CAF50",
