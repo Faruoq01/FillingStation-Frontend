@@ -322,10 +322,10 @@ const PumpUpdate = (props) => {
     };
 
     await APIs.post("/comprehensive/create-sales", payload);
-    props.refresh();
     setLoading(false);
-    handleClose();
+    props.update((prev) => !prev);
     swal("Success!", "Record saved successfully!", "success");
+    handleClose();
   };
 
   return (

@@ -120,11 +120,13 @@ const ComprehensiveReport = (props) => {
             ? moment().format("YYYY-MM-DD").split()[0]
             : updatedDate;
 
-        APIs.post("/sales/delete/checkStatus", {
+        const payload = {
           org: resolveUserID().id,
           outletID: oneStationData._id,
           date: getDate,
-        }).then((data) => {
+        };
+
+        APIs.post("/sales/delete/checkStatus", payload).then((data) => {
           if (data.data.data) {
             swal(
               "Error!",
@@ -132,12 +134,15 @@ const ComprehensiveReport = (props) => {
               "error"
             );
           } else {
-            SalesService.deleteAllRecords({
+            const load = {
               date: getDate,
               station: oneStationData,
-            }).then(() => {
-              setCollapsible(0);
-              swal("Success", "Record deleted successfully", "success");
+            };
+            SalesService.deleteAllRecords(load).then(() => {
+              APIs.post("/sales/delete/supply", load).then(() => {
+                setCollapsible(0);
+                swal("Success", "Record deleted successfully", "success");
+              });
             });
           }
         });

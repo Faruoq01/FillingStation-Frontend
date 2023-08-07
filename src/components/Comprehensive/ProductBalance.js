@@ -315,7 +315,7 @@ const ProductBalance = (props) => {
             )}
             {openAdd && (
               <PumpUpdate
-                refresh={ProductBalance}
+                update={setRefresh}
                 open={openAdd}
                 close={setOpenAdd}
               />
