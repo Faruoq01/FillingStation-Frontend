@@ -11,7 +11,11 @@ import { ThreeDots } from "react-loader-spinner";
 import APIs from "../../../services/api";
 import moment from "moment";
 import OutletService from "../../../services/outletService";
-import { setPumpList, setTankList } from "../../../storage/comprehensive";
+import {
+  setPumpList,
+  setSupplyList,
+  setTankList,
+} from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {
   return (
@@ -121,6 +125,8 @@ const PumpUpdate = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListData = useSelector((state) => state.comprehensive.tankList);
   const pumpListData = useSelector((state) => state.comprehensive.pumpList);
+  const supplyListData = useSelector((state) => state.comprehensive.supplyList);
+
   const [defaultState, setDefaultState] = useState(0);
   const mainDate = moment
     .tz(currentDate, user.timezone)
@@ -215,6 +221,7 @@ const PumpUpdate = (props) => {
 
       ///////////////// station supply //////////////////////
       updateTanksWithSupplies(outletTanks, supply.data.supply);
+      dispatch(setSupplyList(supply.data.supply));
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -284,11 +291,12 @@ const PumpUpdate = (props) => {
     }
   };
 
-  const saveRecordSales = () => {
+  const saveRecordSales = async () => {
     if (reading === "")
       return swal("Error", "Closing meter cannot be empty", "error");
     if (currentTank === null)
       return swal("Error", "Connecting tank cannot be found", "error");
+    setLoading(true);
 
     const getSalesLoad = getSalesPayload(
       currentTank,
@@ -308,9 +316,16 @@ const PumpUpdate = (props) => {
     const payload = {
       sales: getSalesLoad,
       tankLevels: getTankList,
+      date: currentDate,
+      station: oneStationData,
+      supply: supplyListData,
     };
 
-    console.log(payload, "tankList");
+    await APIs.post("/comprehensive/create-sales", payload);
+    props.refresh();
+    setLoading(false);
+    handleClose();
+    swal("Success!", "Record saved successfully!", "success");
   };
 
   return (

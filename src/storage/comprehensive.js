@@ -51,6 +51,7 @@ const initialState = {
   remarks: [],
   tankList: [],
   pumpList: [],
+  supplyList: [],
 };
 
 export const comprehensiveSlice = createSlice({
@@ -111,6 +112,9 @@ export const comprehensiveSlice = createSlice({
     setPumpList: (state, action) => {
       state.pumpList = action.payload;
     },
+    setSupplyList: (state, action) => {
+      state.supplyList = action.payload;
+    },
     clearComprehensive: () => initialState,
   },
 });
@@ -131,6 +135,7 @@ export const {
   clearComprehensive,
   setTankList,
   setPumpList,
+  setSupplyList,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;

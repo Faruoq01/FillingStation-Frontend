@@ -313,7 +313,13 @@ const ProductBalance = (props) => {
             {openEdit && (
               <Sales data={oneRecord} open={openEdit} close={setOpenEdit} />
             )}
-            {openAdd && <PumpUpdate open={openAdd} close={setOpenAdd} />}
+            {openAdd && (
+              <PumpUpdate
+                refresh={ProductBalance}
+                open={openAdd}
+                close={setOpenAdd}
+              />
+            )}
             <div style={{ marginTop: "30px" }} className="butStyle">
               <Button
                 variant="contained"

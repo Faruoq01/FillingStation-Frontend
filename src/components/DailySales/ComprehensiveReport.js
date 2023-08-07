@@ -67,7 +67,6 @@ const ComprehensiveReport = (props) => {
   const user = useSelector((state) => state.auth.user);
   const history = useHistory();
   const dispatch = useDispatch();
-  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -114,37 +113,34 @@ const ComprehensiveReport = (props) => {
       icon: "warning",
       buttons: true,
       dangerMode: true,
-    }).then(async (willDelete) => {
+    }).then((willDelete) => {
       if (willDelete) {
         const getDate =
           updatedDate === ""
             ? moment().format("YYYY-MM-DD").split()[0]
             : updatedDate;
 
-        const status = await APIs.post("/sales/delete/checkStatus", {
+        APIs.post("/sales/delete/checkStatus", {
           org: resolveUserID().id,
           outletID: oneStationData._id,
           date: getDate,
         }).then((data) => {
-          return data.data.data;
+          if (data.data.data) {
+            swal(
+              "Error!",
+              "You can only delete from latest record as balance calculations depends on it!",
+              "error"
+            );
+          } else {
+            SalesService.deleteAllRecords({
+              date: getDate,
+              station: oneStationData,
+            }).then(() => {
+              setCollapsible(0);
+              swal("Success", "Record deleted successfully", "success");
+            });
+          }
         });
-
-        if (status) {
-          swal(
-            "Error!",
-            "You can only delete from latest record as balance calculations depends on it!",
-            "error"
-          );
-        } else {
-          SalesService.deleteAllRecords({
-            date: getDate,
-            station: oneStationData,
-          }).then(() => {
-            setLoad(false);
-            dispatch(setDateValue(updatedDate));
-            swal("Success", "Record deleted successfully", "success");
-          });
-        }
       }
     });
   };
