@@ -103,6 +103,7 @@ const ReturnToTankModal = (props) => {
     balanceBF: 0,
     balanceCF: 0,
   });
+  const [payload, setPayload] = useState(null);
 
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
@@ -262,8 +263,7 @@ const ReturnToTankModal = (props) => {
           balanceCF: balanceClone,
           sales: salesClone,
         };
-        console.log(updatedRecord);
-        // dispatch(setRTSales(updatedRecord));
+        setPayload(updatedRecord);
       }
     }
   };
@@ -273,22 +273,30 @@ const ReturnToTankModal = (props) => {
       return swal("Error", "Closing meter cannot be empty", "error");
     if (currentPump === null)
       return swal("Error", "Please select a pump!", "error");
+    if (payload === null)
+      return swal("Error", "Please enter correct details!", "error");
     setLoading(true);
 
-    console.log(recordSales, "sales mehn");
+    const rtLoad = getRTLoad(reading, oneStationData, currentPump, mainDate);
 
-    // const payload = {
-    //   sales: getSalesLoad,
-    //   tankLevels: getTankList,
-    //   date: currentDate,
-    //   station: oneStationData,
-    // };
+    const data = {
+      sales: payload.sales,
+      tanks: payload.tanks,
+      tankLevels: payload.tankLevels,
+      dipping: payload.dipping,
+      balanceCF: payload.balanceCF,
+      rtLoad: rtLoad,
+    };
 
-    // await APIs.post("/comprehensive/create-sales", payload);
-    // setLoading(false);
-    // props.update((prev) => !prev);
-    // swal("Success!", "Record saved successfully!", "success");
-    // handleClose();
+    try {
+      await APIs.post("/comprehensive/create-rt", data);
+      setLoading(false);
+      props.update((prev) => !prev);
+      swal("Success!", "Record saved successfully!", "success");
+      handleClose();
+    } catch (e) {
+      console.log(e, "error");
+    }
   };
 
   return (
@@ -401,64 +409,25 @@ const ReturnToTankModal = (props) => {
   );
 };
 
-const getSalesPayload = (tank, pump, station, currentDate, item) => {
+const getRTLoad = (reading, oneStationData, currentPump, mainDate) => {
   return {
-    sales: item.totalSales,
-    RTlitre: 0,
-    tankID: tank._id,
-    tankName: tank.tankName,
-    pumpID: pump._id,
-    pumpName: pump.pumpName,
-    beforeSales: tank.beforeSales,
-    afterSales: item.afterSales,
-    openingMeter: item.openingMeter,
-    closingMeter: item.closingMeter,
-    productType: pump.productType,
-    PMSCostPrice: station.PMSCost,
-    PMSSellingPrice: station.PMSPrice,
-    AGOCostPrice: station.AGOCost,
-    AGOSellingPrice: station.AGOPrice,
-    DPKCostPrice: station.DPKCost,
-    DPKSellingPrice: station.DPKPrice,
-    outletID: station._id,
-    outletName: station.outletName.concat(", ", station.alias),
-    organisationID: station.organisation,
-    createdAt: currentDate,
-    updatedAt: currentDate,
+    rtLitre: reading,
+    PMSCost: oneStationData.PMSCost,
+    AGOCost: oneStationData.AGOCost,
+    DPKCost: oneStationData.DPKCost,
+    PMSPrice: oneStationData.PMSPrice,
+    AGOPrice: oneStationData.AGOPrice,
+    DPKPrice: oneStationData.DPKPrice,
+    productType: currentPump.productType,
+    pumpID: currentPump.pumpID,
+    tankID: currentPump.tankID,
+    pumpName: currentPump.pumpName,
+    tankName: currentPump.tankName,
+    outletID: oneStationData._id,
+    organizationID: oneStationData.organisation,
+    createdAt: mainDate,
+    updatedAt: mainDate,
   };
-};
-
-const getTankListPayload = (tankList, currentTank, item, currentDate) => {
-  const otherTanks = tankList.filter((data) => data._id !== currentTank._id);
-  const otherTankList = otherTanks.map((data) => {
-    return {
-      currentLevel: data.currentLevel,
-      tankName: data.tankName,
-      productType: data.productType,
-      afterSales: data.currentLevel,
-      tankID: data._id,
-      tankCapacity: data.tankCapacity,
-      outletID: data.outletID,
-      organizationID: data.organisationID,
-      createdAt: currentDate,
-      updatedAt: currentDate,
-    };
-  });
-
-  const presentTank = {
-    currentLevel: currentTank.currentLevel,
-    tankName: currentTank.tankName,
-    productType: currentTank.productType,
-    afterSales: item.afterSales,
-    tankID: currentTank._id,
-    tankCapacity: currentTank.tankCapacity,
-    outletID: currentTank.outletID,
-    organizationID: currentTank.organisationID,
-    createdAt: currentDate,
-    updatedAt: currentDate,
-  };
-
-  return [...otherTankList, presentTank];
 };
 
 const imps = {

@@ -308,7 +308,13 @@ const ReturnToTank = () => {
                 close={setOpenEdit}
               />
             )}
-            {addRT && <ReturnToTankModal open={addRT} close={setAddRT} />}
+            {addRT && (
+              <ReturnToTankModal
+                update={setRefresh}
+                open={addRT}
+                close={setAddRT}
+              />
+            )}
             <div className="product_balance_header">
               <div className="cells">Pump Name</div>
               <div className="cells">Tank Name</div>
