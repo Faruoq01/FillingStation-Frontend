@@ -9,10 +9,12 @@ import APIs from "../../services/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { setLpo } from "../../storage/comprehensive";
+import { setLpo, setSalesList } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
+import LPOSalesModal from "../Modals/comprehensive/lpo";
+import moment from "moment";
 
 const LPOReport = () => {
   const history = useHistory();
@@ -27,6 +29,7 @@ const LPOReport = () => {
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [openLPO, setOpenLPO] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -235,6 +238,29 @@ const LPOReport = () => {
     );
   };
 
+  const openLPOForToday = async () => {
+    const getDate =
+      currentDate === ""
+        ? moment().format("YYYY-MM-DD").split()[0]
+        : currentDate;
+
+    const status = await APIs.post("/comprehensive/check-sales-today", {
+      org: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: getDate,
+      rt: false,
+    }).then(({ data }) => {
+      dispatch(setSalesList(data.data));
+      return data.data;
+    });
+
+    if (status.length === 0) {
+      swal("Error", "Can only add lpo if there was sales today!", "error");
+    } else {
+      setOpenLPO(true);
+    }
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -264,6 +290,7 @@ const LPOReport = () => {
             </Button>
             <Button
               variant="contained"
+              onClick={openLPOForToday}
               sx={{
                 ...resetBut,
                 background: "#f44336",
@@ -278,6 +305,7 @@ const LPOReport = () => {
             {openEdit && (
               <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />
             )}
+            {openLPO && <LPOSalesModal open={openLPO} close={setOpenLPO} />}
             <div className="product_balance_header">
               <div className="cells">S/N</div>
               <div style={{ width: "150%" }} className="cells">

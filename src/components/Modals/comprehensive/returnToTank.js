@@ -11,12 +11,7 @@ import { ThreeDots } from "react-loader-spinner";
 import APIs from "../../../services/api";
 import moment from "moment";
 import OutletService from "../../../services/outletService";
-import {
-  setPumpList,
-  setRTSales,
-  setSupplyList,
-  setTankList,
-} from "../../../storage/comprehensive";
+import { setTankList } from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {
   return (
@@ -110,7 +105,6 @@ const ReturnToTankModal = (props) => {
 
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const tankListData = useSelector((state) => state.comprehensive.tankList);
   const recordSales = useSelector((state) => state.comprehensive.rtMetrics);
 
   const [defaultState, setDefaultState] = useState(0);

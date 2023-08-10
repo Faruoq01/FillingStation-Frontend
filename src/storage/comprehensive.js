@@ -59,6 +59,8 @@ const initialState = {
     balanceCF: [],
     sales: [],
   },
+  salesList: [],
+  lpoAccount: [],
 };
 
 export const comprehensiveSlice = createSlice({
@@ -125,6 +127,12 @@ export const comprehensiveSlice = createSlice({
     setRTSales: (state, action) => {
       state.rtMetrics = action.payload;
     },
+    setSalesList: (state, action) => {
+      state.salesList = action.payload;
+    },
+    setLPOAccount: (state, action) => {
+      state.lpoAccount = action.payload;
+    },
     clearComprehensive: () => initialState,
   },
 });
@@ -147,6 +155,8 @@ export const {
   setPumpList,
   setSupplyList,
   setRTSales,
+  setSalesList,
+  setLPOAccount,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;

@@ -12,7 +12,6 @@ import { setRTSales, setReturnToTank } from "../../storage/comprehensive";
 import { useHistory } from "react-router-dom";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
-import { setDateValue } from "../../storage/dailysales";
 import { Button } from "@mui/material";
 import moment from "moment";
 import ReturnToTankModal from "../Modals/comprehensive/returnToTank";
