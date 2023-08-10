@@ -8,12 +8,14 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import { useCallback } from "react";
 import { useEffect } from "react";
-import { setReturnToTank } from "../../storage/comprehensive";
+import { setRTSales, setReturnToTank } from "../../storage/comprehensive";
 import { useHistory } from "react-router-dom";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { setDateValue } from "../../storage/dailysales";
 import { Button } from "@mui/material";
+import moment from "moment";
+import ReturnToTankModal from "../Modals/comprehensive/returnToTank";
 
 const ReturnToTank = () => {
   const history = useHistory();
@@ -27,6 +29,7 @@ const ReturnToTank = () => {
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [addRT, setAddRT] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -230,6 +233,33 @@ const ReturnToTank = () => {
     );
   };
 
+  const openSingleSaleModal = async () => {
+    const getDate =
+      currentDate === ""
+        ? moment().format("YYYY-MM-DD").split()[0]
+        : currentDate;
+
+    const status = await APIs.post("/comprehensive/check-sales-today", {
+      org: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: getDate,
+      rt: true,
+    }).then(({ data }) => {
+      dispatch(setRTSales(data.data));
+      return data.data;
+    });
+
+    if (status.sales.length === 0) {
+      swal(
+        "Error",
+        "Can only add return to tank if there was sales today!",
+        "error"
+      );
+    } else {
+      setAddRT(true);
+    }
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -259,6 +289,7 @@ const ReturnToTank = () => {
             </Button>
             <Button
               variant="contained"
+              onClick={openSingleSaleModal}
               sx={{
                 ...resetBut,
                 background: "#f44336",
@@ -277,6 +308,7 @@ const ReturnToTank = () => {
                 close={setOpenEdit}
               />
             )}
+            {addRT && <ReturnToTankModal open={addRT} close={setAddRT} />}
             <div className="product_balance_header">
               <div className="cells">Pump Name</div>
               <div className="cells">Tank Name</div>

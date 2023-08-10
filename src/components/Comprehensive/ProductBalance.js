@@ -282,7 +282,7 @@ const ProductBalance = (props) => {
     }).then((data) => {
       return data.data.data;
     });
-    console.log(typeof status, "data");
+
     if (status) {
       swal(
         "Error",

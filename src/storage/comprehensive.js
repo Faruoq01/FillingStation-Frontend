@@ -52,6 +52,13 @@ const initialState = {
   tankList: [],
   pumpList: [],
   supplyList: [],
+  rtMetrics: {
+    tanks: [],
+    tankLevels: [],
+    dipping: [],
+    balanceCF: [],
+    sales: [],
+  },
 };
 
 export const comprehensiveSlice = createSlice({
@@ -115,6 +122,9 @@ export const comprehensiveSlice = createSlice({
     setSupplyList: (state, action) => {
       state.supplyList = action.payload;
     },
+    setRTSales: (state, action) => {
+      state.rtMetrics = action.payload;
+    },
     clearComprehensive: () => initialState,
   },
 });
@@ -136,6 +146,7 @@ export const {
   setTankList,
   setPumpList,
   setSupplyList,
+  setRTSales,
 } = comprehensiveSlice.actions;
 
 export default comprehensiveSlice.reducer;

@@ -150,6 +150,13 @@ const ComprehensiveReport = (props) => {
     });
   };
 
+  const openPrintModal = () => {
+    setPrintReportStatus(true);
+    APIs.get("/test").then(({ data }) => {
+      console.log(data.response, "lookups");
+    });
+  };
+
   return (
     <Fragment>
       <div className="comprehensive_container">
@@ -202,9 +209,7 @@ const ComprehensiveReport = (props) => {
                   backgroundColor: "tomato",
                 },
               }}
-              onClick={() => {
-                setPrintReportStatus(true);
-              }}>
+              onClick={openPrintModal}>
               Print
             </Button>
           </div>
