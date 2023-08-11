@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import LPOService from "../../../services/lpo";
 import { setLPOAccount } from "../../../storage/comprehensive";
+import APIs from "../../../services/api";
 
 const LPOSalesModal = (props) => {
   const attach = useRef();
@@ -62,7 +63,7 @@ const LPOSalesModal = (props) => {
     getAllAccounts();
   }, [getAllAccounts]);
 
-  const submit = () => {
+  const submit = async () => {
     if (oneStationData === null)
       return swal("Warning!", "Please select a station", "info");
     if (account === null)
@@ -89,7 +90,15 @@ const LPOSalesModal = (props) => {
       currentPump
     );
 
-    console.log(payload, "loads");
+    try {
+      await APIs.post("/comprehensive/create-lpo", payload);
+      setLoading(false);
+      props.update((prev) => !prev);
+      swal("Success!", "Record saved successfully!", "success");
+      handleClose();
+    } catch (e) {
+      console.log(e, "error");
+    }
   };
 
   const changeAccount = (index, item) => {
@@ -431,9 +440,9 @@ const lpoPayload = (
     PMSCost: oneStationData.PMSCost,
     AGOCost: oneStationData.AGOCost,
     DPKCost: oneStationData.DPKCost,
-    PMSPrice: oneStationData.PMSPrice,
-    AGOPrice: oneStationData.AGOPrice,
-    DPKPrice: oneStationData.DPKPrice,
+    PMSRate: oneStationData.PMSPrice,
+    AGORate: oneStationData.AGOPrice,
+    DPKRate: oneStationData.DPKPrice,
     station: oneStationData.outletName.concat(" ", oneStationData.alias),
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
@@ -463,14 +472,6 @@ const inner = {
   width: "100%",
   height: "500px",
   overflowY: "scroll",
-};
-
-const photos = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-  marginTop: "10px",
 };
 
 export default LPOSalesModal;

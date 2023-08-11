@@ -305,7 +305,13 @@ const LPOReport = () => {
             {openEdit && (
               <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />
             )}
-            {openLPO && <LPOSalesModal open={openLPO} close={setOpenLPO} />}
+            {openLPO && (
+              <LPOSalesModal
+                update={setRefresh}
+                open={openLPO}
+                close={setOpenLPO}
+              />
+            )}
             <div className="product_balance_header">
               <div className="cells">S/N</div>
               <div style={{ width: "150%" }} className="cells">
