@@ -9,6 +9,8 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { paymentDetails } from "../../storage/comprehensive";
+import { Button } from "@mui/material";
+import PaymentsModal from "../Modals/comprehensive/payments";
 
 const PaymentDetails = () => {
   const history = useHistory();
@@ -21,6 +23,8 @@ const PaymentDetails = () => {
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
+  const [openPayments, setOpenPayments] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -62,7 +66,7 @@ const PaymentDetails = () => {
 
   useEffect(() => {
     getPaymentDetails(currentDate);
-  }, [getPaymentDetails, currentDate]);
+  }, [getPaymentDetails, currentDate, refresh]);
 
   const updateRecord = (data, bank) => {
     setOpenEdit(true);
@@ -171,8 +175,37 @@ const PaymentDetails = () => {
     );
   };
 
+  const openAddPayments = () => {
+    setOpenPayments(true);
+  };
+
   return (
     <div style={{ width: "100%" }}>
+      <div style={{ width: "90%" }} className="butStyle">
+        <Button
+          variant="contained"
+          sx={{
+            ...resetBut,
+            background: "#4CAF50",
+            "&:hover": {
+              backgroundColor: "#4CAF50",
+            },
+          }}>
+          Reset
+        </Button>
+        <Button
+          variant="contained"
+          onClick={openAddPayments}
+          sx={{
+            ...resetBut,
+            background: "#f44336",
+            "&:hover": {
+              backgroundColor: "#f44336",
+            },
+          }}>
+          Add
+        </Button>
+      </div>
       <div className="initial_balance_container_mobile">
         {/* Supply records */}
         <div className="mobile_header">&nbsp;&nbsp;&nbsp; Bank Payments</div>
@@ -223,6 +256,13 @@ const PaymentDetails = () => {
             data={oneRecord}
             open={openEdit}
             close={setOpenEdit}
+          />
+        )}
+        {openPayments && (
+          <PaymentsModal
+            update={setRefresh}
+            open={openPayments}
+            close={setOpenPayments}
           />
         )}
         <div className="details_containser">
@@ -371,6 +411,15 @@ const PaymentDetails = () => {
       </div>
     </div>
   );
+};
+
+const resetBut = {
+  width: "80px",
+  height: "30px",
+  fontSize: "12px",
+  marginLeft: "10px",
+  borderRadius: "0px",
+  textTransform: "capitalize",
 };
 
 const vals = {

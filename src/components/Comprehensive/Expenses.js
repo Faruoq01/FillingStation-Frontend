@@ -8,10 +8,12 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { setExpenses } from "../../storage/comprehensive";
+import { setExpenses, setSalesList } from "../../storage/comprehensive";
 import { useEffect } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
+import ExpensesModal from "../Modals/comprehensive/expenses";
+import moment from "moment";
 
 const Expenses = () => {
   const history = useHistory();
@@ -23,6 +25,8 @@ const Expenses = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [openEdit, setOpenEdit] = useState(false);
+  const [openExpenses, setOpenExpenses] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
 
@@ -63,7 +67,7 @@ const Expenses = () => {
 
   useEffect(() => {
     getExpensesData(currentDate);
-  }, [getExpensesData, currentDate]);
+  }, [getExpensesData, currentDate, refresh]);
 
   const updateRecord = (data) => {
     setOpenEdit(true);
@@ -179,6 +183,10 @@ const Expenses = () => {
     );
   };
 
+  const openAddExpenses = () => {
+    setOpenExpenses(true);
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -208,6 +216,7 @@ const Expenses = () => {
             </Button>
             <Button
               variant="contained"
+              onClick={openAddExpenses}
               sx={{
                 ...resetBut,
                 background: "#f44336",
@@ -226,6 +235,13 @@ const Expenses = () => {
                 data={oneRecord}
                 open={openEdit}
                 close={setOpenEdit}
+              />
+            )}
+            {openExpenses && (
+              <ExpensesModal
+                update={setRefresh}
+                open={openExpenses}
+                close={setOpenExpenses}
               />
             )}
             <div className="product_balance_header">
