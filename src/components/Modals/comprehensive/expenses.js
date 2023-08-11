@@ -356,23 +356,6 @@ const lpoPayload = (
   };
 };
 
-const selectStyle2 = {
-  width: "100%",
-  height: "35px",
-  borderRadius: "0px",
-  background: "#EEF2F1",
-  color: "#000",
-  fontSize: "12px",
-  outline: "none",
-  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #777777",
-  },
-};
-
-const menu = {
-  fontSize: "12px",
-};
-
 const inner = {
   width: "100%",
   height: "500px",

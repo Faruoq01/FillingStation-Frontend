@@ -9,9 +9,12 @@ import APIs from "../../services/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { setDipping } from "../../storage/comprehensive";
+import { setDipping, setSalesList } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
+import { Button } from "@mui/material";
+import DippingModal from "../Modals/comprehensive/dipping";
+import moment from "moment";
 
 const Dipping = () => {
   const history = useHistory();
@@ -23,6 +26,7 @@ const Dipping = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [openEdit, setOpenEdit] = useState(false);
+  const [openDipping, setOpenDipping] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -211,6 +215,29 @@ const Dipping = () => {
     );
   };
 
+  const openAddDipping = async () => {
+    const getDate =
+      currentDate === ""
+        ? moment().format("YYYY-MM-DD").split()[0]
+        : currentDate;
+
+    const status = await APIs.post("/comprehensive/check-sales-today", {
+      org: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: getDate,
+      rt: false,
+    }).then(({ data }) => {
+      dispatch(setSalesList(data.data));
+      return data.data;
+    });
+
+    if (status.length === 0) {
+      swal("Error", "Can only add lpo if there was sales today!", "error");
+    } else {
+      setOpenDipping(true);
+    }
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -226,12 +253,44 @@ const Dipping = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
+          <div style={{ width: "95%" }} className="butStyle">
+            <Button
+              variant="contained"
+              sx={{
+                ...resetBut,
+                background: "#4CAF50",
+                "&:hover": {
+                  backgroundColor: "#4CAF50",
+                },
+              }}>
+              Reset
+            </Button>
+            <Button
+              variant="contained"
+              onClick={openAddDipping}
+              sx={{
+                ...resetBut,
+                background: "#f44336",
+                "&:hover": {
+                  backgroundColor: "#f44336",
+                },
+              }}>
+              Add
+            </Button>
+          </div>
           <div className="initial_balance_container">
             {openEdit && (
               <UpdateDipping
                 data={oneRecord}
                 open={openEdit}
                 close={setOpenEdit}
+              />
+            )}
+            {openDipping && (
+              <DippingModal
+                update={setRefresh}
+                open={openDipping}
+                close={setOpenDipping}
               />
             )}
             <div className="product_balance_header">
@@ -282,6 +341,15 @@ const Dipping = () => {
       )}
     </React.Fragment>
   );
+};
+
+const resetBut = {
+  width: "80px",
+  height: "30px",
+  fontSize: "12px",
+  marginLeft: "10px",
+  borderRadius: "0px",
+  textTransform: "capitalize",
 };
 
 const ins = {
