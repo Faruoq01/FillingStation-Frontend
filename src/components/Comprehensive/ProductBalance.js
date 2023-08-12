@@ -328,14 +328,10 @@ const ProductBalance = (props) => {
             };
             APIs.post("/sales/delete/reset-sales", load).then(({ data }) => {
               if (data.status !== "empty") {
-                APIs.post("/sales/delete/supply", load)
-                  .then(() => {
-                    swal("Success", "Record deleted successfully", "success");
-                  })
-                  .then((data) => {
-                    swal("Success", "Record deleted successfully", "success");
-                    setRefresh(!refresh);
-                  });
+                APIs.post("/sales/delete/supply", load).then(() => {
+                  setRefresh(!refresh);
+                  swal("Success", "Record deleted successfully", "success");
+                });
               } else {
                 swal("Success", "Record deleted successfully", "success");
                 setRefresh(!refresh);
