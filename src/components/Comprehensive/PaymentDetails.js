@@ -11,6 +11,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { paymentDetails } from "../../storage/comprehensive";
 import { Button } from "@mui/material";
 import PaymentsModal from "../Modals/comprehensive/payments";
+import moment from "moment";
 
 const PaymentDetails = () => {
   const history = useHistory();
@@ -179,11 +180,41 @@ const PaymentDetails = () => {
     setOpenPayments(true);
   };
 
+  const resetAll = () => {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to delete all record?, this will erase all records on the current selected date only.",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const getDate =
+          currentDate === ""
+            ? moment().format("YYYY-MM-DD").split()[0]
+            : currentDate;
+        const payload = {
+          date: getDate,
+          station: oneStationData,
+        };
+
+        const bank = APIs.post("/sales/delete/reset-bank", payload);
+        const pos = APIs.post("/sales/delete/reset-pos", payload);
+
+        Promise.all(bank, pos).then(() => {
+          setRefresh(!refresh);
+          swal("Success", "Record deleted successfully", "success");
+        });
+      }
+    });
+  };
+
   return (
     <div style={{ width: "100%" }}>
       <div style={{ width: "90%" }} className="butStyle">
         <Button
           variant="contained"
+          onClick={resetAll}
           sx={{
             ...resetBut,
             background: "#4CAF50",

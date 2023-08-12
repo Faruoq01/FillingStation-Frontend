@@ -238,6 +238,31 @@ const Dipping = () => {
     }
   };
 
+  const resetAll = () => {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to delete all record?, this will erase all records on the current selected date only.",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const getDate =
+          currentDate === ""
+            ? moment().format("YYYY-MM-DD").split()[0]
+            : currentDate;
+
+        APIs.post("/sales/delete/reset-dipping", {
+          date: getDate,
+          station: oneStationData,
+        }).then(() => {
+          setRefresh(!refresh);
+          swal("Success", "Record deleted successfully", "success");
+        });
+      }
+    });
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -256,6 +281,7 @@ const Dipping = () => {
           <div style={{ width: "95%" }} className="butStyle">
             <Button
               variant="contained"
+              onClick={resetAll}
               sx={{
                 ...resetBut,
                 background: "#4CAF50",
