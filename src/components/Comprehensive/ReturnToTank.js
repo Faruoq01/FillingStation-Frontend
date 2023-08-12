@@ -81,9 +81,30 @@ const ReturnToTank = () => {
     if (type === "DPK") return data.DPKPrice * data.rtLitre;
   };
 
-  const updateRecord = (data) => {
-    setOpenEdit(true);
+  const updateRecord = async (data) => {
     setOneRecord(data);
+    const getDate =
+      currentDate === ""
+        ? moment().format("YYYY-MM-DD").split()[0]
+        : currentDate;
+
+    const status = await APIs.post("/sales/delete/checkStatus", {
+      org: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: getDate,
+    }).then((data) => {
+      return data.data.data;
+    });
+
+    if (status) {
+      swal(
+        "Error!",
+        "You can only delete from latest record as balance calculations depends on it!",
+        "error"
+      );
+    } else {
+      setOpenEdit(true);
+    }
   };
 
   const deleteRecord = (data) => {
@@ -329,6 +350,7 @@ const ReturnToTank = () => {
             {openEdit && (
               <UpdateReturnToTank
                 data={oneRecord}
+                update={setRefresh}
                 open={openEdit}
                 close={setOpenEdit}
               />

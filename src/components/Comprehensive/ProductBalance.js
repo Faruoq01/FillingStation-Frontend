@@ -135,12 +135,11 @@ const ProductBalance = (props) => {
             "error"
           );
         } else {
-          DailySalesService.deleteSales({
+          APIs.post("/sales/delete/pumpUpdate", {
             record: data,
             station: oneStationData,
           })
-            .then((data) => {
-              console.log(data, "sub");
+            .then(({ data }) => {
               if (data.status === "last") {
                 APIs.post("/sales/delete/supply", {
                   date: getDate,
@@ -335,8 +334,8 @@ const ProductBalance = (props) => {
                   swal("Success", "Record deleted successfully", "success");
                 });
               } else {
-                swal("Success", "Record deleted successfully", "success");
                 setRefresh(!refresh);
+                swal("Success", "Record deleted successfully", "success");
               }
             });
           }

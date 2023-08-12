@@ -139,7 +139,6 @@ const ComprehensiveReport = (props) => {
               station: oneStationData,
             };
             SalesService.deleteAllRecords(load).then(({ data }) => {
-              console.log(data);
               if (data.status !== "empty") {
                 APIs.post("/sales/delete/supply", load).then(() => {
                   setCollapsible(0);
