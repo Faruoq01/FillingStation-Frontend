@@ -142,10 +142,16 @@ const ProductBalance = (props) => {
             record: data,
             station: oneStationData,
           })
-            .then(() => {
-              setRefresh(!refresh);
+            .then(({ data }) => {
+              if (data.status === "last") {
+                APIs.post("/sales/delete/supply", {
+                  date: getDate,
+                  station: oneStationData,
+                });
+              }
             })
             .then(() => {
+              setRefresh(!refresh);
               swal("Success", "Record deleted successfully", "success");
             });
         }
