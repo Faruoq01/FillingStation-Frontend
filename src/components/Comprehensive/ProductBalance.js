@@ -362,7 +362,12 @@ const ProductBalance = (props) => {
         <div style={{ width: "100%" }}>
           <div className="initial_balance_container">
             {openEdit && (
-              <Sales data={oneRecord} open={openEdit} close={setOpenEdit} />
+              <Sales
+                data={oneRecord}
+                update={setRefresh}
+                open={openEdit}
+                close={setOpenEdit}
+              />
             )}
             {openAdd && (
               <PumpUpdate

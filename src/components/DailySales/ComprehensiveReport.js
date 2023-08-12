@@ -138,11 +138,17 @@ const ComprehensiveReport = (props) => {
               date: getDate,
               station: oneStationData,
             };
-            SalesService.deleteAllRecords(load).then(() => {
-              APIs.post("/sales/delete/supply", load).then(() => {
+            SalesService.deleteAllRecords(load).then(({ data }) => {
+              console.log(data);
+              if (data.status !== "empty") {
+                APIs.post("/sales/delete/supply", load).then(() => {
+                  setCollapsible(0);
+                  swal("Success", "Record deleted successfully", "success");
+                });
+              } else {
                 setCollapsible(0);
                 swal("Success", "Record deleted successfully", "success");
-              });
+              }
             });
           }
         });
