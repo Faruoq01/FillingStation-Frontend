@@ -75,39 +75,33 @@ const PaymentDetails = () => {
   };
 
   const deleteRecord = (data, type) => {
-    if (type === "bank") {
-      swal({
-        title: "Alert!",
-        text: "Are you sure you want to delete this record?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to delete this record?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        if (type === "bank") {
           APIs.post("/sales/delete/bankPayment", { id: data._id })
-            .then((data) => {})
+            .then(() => {
+              setRefresh(!refresh);
+            })
             .then(() => {
               swal("Success", "Record deleted successfully", "success");
             });
-        }
-      });
-    } else {
-      swal({
-        title: "Alert!",
-        text: "Are you sure you want to delete this record?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
+        } else {
           APIs.post("/sales/delete/posPayment", { id: data._id })
-            .then((data) => {})
+            .then((data) => {
+              setRefresh(!refresh);
+            })
             .then(() => {
               swal("Success", "Record deleted successfully", "success");
             });
         }
-      });
-    }
+      }
+    });
   };
 
   const MobileBankPayment = ({ data, type }) => {
@@ -201,7 +195,7 @@ const PaymentDetails = () => {
         const bank = APIs.post("/sales/delete/reset-bank", payload);
         const pos = APIs.post("/sales/delete/reset-pos", payload);
 
-        Promise.all(bank, pos).then(() => {
+        Promise.all([bank, pos]).then(() => {
           setRefresh(!refresh);
           swal("Success", "Record deleted successfully", "success");
         });

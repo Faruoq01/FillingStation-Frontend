@@ -84,7 +84,9 @@ const Expenses = () => {
     }).then((willDelete) => {
       if (willDelete) {
         APIs.post("/sales/delete/expenses", { id: data._id })
-          .then((data) => {})
+          .then(() => {
+            setRefresh(!refresh);
+          })
           .then(() => {
             swal("Success", "Record deleted successfully", "success");
           });
