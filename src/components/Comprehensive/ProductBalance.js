@@ -78,7 +78,7 @@ const ProductBalance = (props) => {
   };
 
   const amount = (row, type) => {
-    const diff = Number(row.closingMeter) - Number(row.openingMeter);
+    const diff = row.sales;
 
     if (type === "PMS") return row.PMSSellingPrice * diff;
     if (type === "AGO") return row.AGOSellingPrice * diff;
@@ -87,10 +87,7 @@ const ProductBalance = (props) => {
 
   const sumOfDifference = () => {
     const totalDifference = product.reduce((accum, current) => {
-      return (
-        Number(accum) +
-        (Number(current.closingMeter) - Number(current.openingMeter))
-      );
+      return accum + current.sales;
     }, 0);
 
     return totalDifference;
@@ -142,7 +139,8 @@ const ProductBalance = (props) => {
             record: data,
             station: oneStationData,
           })
-            .then(({ data }) => {
+            .then((data) => {
+              console.log(data, "sub");
               if (data.status === "last") {
                 APIs.post("/sales/delete/supply", {
                   date: getDate,
@@ -172,9 +170,7 @@ const ProductBalance = (props) => {
           {data.closingMeter}
         </div>
         <div style={ins} className="cells">
-          {ApproximateDecimal(
-            Number(data.closingMeter) - Number(data.openingMeter)
-          )}
+          {ApproximateDecimal(data.sales)}
         </div>
         <div style={ins} className="cells">
           {rate(data, props.type)}

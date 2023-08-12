@@ -45,10 +45,6 @@ const EditTank = (props) => {
     props.data.tankName,
   ]);
 
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
-
   const handleAddPump = async () => {
     if (tankName === "")
       return swal("Warning!", "Tank name field cannot be empty", "info");
@@ -69,12 +65,12 @@ const EditTank = (props) => {
     const payload = {
       id: props.data._id,
       tankName: tankName,
-      tankHeight: removeSpecialCharacters(tankHeight),
+      tankHeight: tankHeight,
       productType: productType,
-      tankCapacity: removeSpecialCharacters(tankCapacity),
-      deadStockLevel: removeSpecialCharacters(deadStockLevel),
+      tankCapacity: tankCapacity,
+      deadStockLevel: deadStockLevel,
       calibrationDate: calibrationDate,
-      currentLevel: removeSpecialCharacters(currentStock),
+      currentLevel: currentStock,
       organisationID: oneStation?.organisation,
       outletID: oneStation?._id,
       oldStock: oldStock,
@@ -196,7 +192,7 @@ const EditTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type="number"
                 value={tankHeight}
                 onChange={(e) => setTankHeight(e.target.value)}
               />
@@ -217,7 +213,7 @@ const EditTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type="number"
                 value={tankCapacity}
                 onChange={(e) => setTankCapacity(e.target.value)}
               />
@@ -238,7 +234,7 @@ const EditTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type={"text"}
+                type={"number"}
                 value={currentStock}
                 onChange={(e) => setCurrentStock(e.target.value)}
               />
@@ -259,7 +255,7 @@ const EditTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type="number"
                 value={deadStockLevel}
                 onChange={(e) => setDeadStockLevel(e.target.value)}
               />

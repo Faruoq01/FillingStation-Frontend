@@ -226,6 +226,7 @@ const ReturnToTankModal = (props) => {
       /////////////////////// update variables ////////////////////////
       if (salesID !== -1) {
         salesClone[salesID].RTlitre = rtValue;
+        salesClone[salesID].sales -= rtValue;
       }
       if (tankID !== -1) {
         tanksClone[tankID].currentLevel =
