@@ -88,25 +88,29 @@ const LPOReport = () => {
   };
 
   const deleteRecord = (data) => {
-    swal({
-      title: "Alert!",
-      text: "Are you sure you want to delete this record?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        APIs.post("/sales/delete/lpo", {
-          data: data,
-        })
-          .then(() => {
-            setRefresh(!refresh);
-          })
-          .then(() => {
-            swal("Success", "Record deleted successfully", "success");
-          });
-      }
-    });
+    return swal(
+      "Error!",
+      "You can only reset all but cannot delete one record!"
+    );
+    // swal({
+    //   title: "Alert!",
+    //   text: "Are you sure you want to delete this record?",
+    //   icon: "warning",
+    //   buttons: true,
+    //   dangerMode: true,
+    // }).then((willDelete) => {
+    //   if (willDelete) {
+    //     APIs.post("/sales/delete/lpo", {
+    //       data: data,
+    //     })
+    //       .then(() => {
+    //         setRefresh(!refresh);
+    //       })
+    //       .then(() => {
+    //         swal("Success", "Record deleted successfully", "success");
+    //       });
+    //   }
+    // });
   };
 
   const LPORows = (props) => {
@@ -329,7 +333,12 @@ const LPOReport = () => {
           </div>
           <div className="initial_balance_container">
             {openEdit && (
-              <UpdateLPO data={oneRecord} open={openEdit} close={setOpenEdit} />
+              <UpdateLPO
+                data={oneRecord}
+                update={setRefresh}
+                open={openEdit}
+                close={setOpenEdit}
+              />
             )}
             {openLPO && (
               <LPOSalesModal

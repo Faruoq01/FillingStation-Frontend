@@ -307,6 +307,7 @@ const Dipping = () => {
           <div className="initial_balance_container">
             {openEdit && (
               <UpdateDipping
+                update={setRefresh}
                 data={oneRecord}
                 open={openEdit}
                 close={setOpenEdit}

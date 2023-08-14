@@ -19,7 +19,7 @@ import DashboardService from "../../services/dashboard";
 import {
   changeAllEmployeeStatus,
   changeEmployeeStatus,
-  dashEmployees,
+  settingsEmployee,
   storeSingleUser,
 } from "../../storage/settings";
 import { ThreeDots } from "react-loader-spinner";
@@ -167,7 +167,7 @@ const Permissions = (props) => {
   const [defaultState, setDefault] = useState(0);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const employees = useSelector((state) => state.settings.employees);
+  const employees = useSelector((state) => state.settings.orgEmployee);
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const [loading, setLoading] = useState(false);
 
@@ -194,7 +194,7 @@ const Permissions = (props) => {
 
         APIs.post("/dashboard/employee", payload)
           .then(({ data }) => {
-            dispatch(dashEmployees(data.employee));
+            dispatch(settingsEmployee(data.employee));
           })
           .then(() => {
             setLoading(false);
@@ -236,7 +236,7 @@ const Permissions = (props) => {
 
         APIs.post("/dashboard/employee", payload)
           .then(({ data }) => {
-            dispatch(dashEmployees(data.employee));
+            dispatch(settingsEmployee(data.employee));
           })
           .then(() => {
             setLoading(false);
@@ -262,7 +262,7 @@ const Permissions = (props) => {
 
     APIs.post("/dashboard/employee", payload)
       .then(({ data }) => {
-        dispatch(dashEmployees(data.employee));
+        dispatch(settingsEmployee(data.employee));
       })
       .then(() => {
         setLoading(false);

@@ -279,6 +279,7 @@ const PaymentDetails = () => {
         {openEdit && (
           <UpdatePayments
             data={oneRecord}
+            update={setRefresh}
             open={openEdit}
             close={setOpenEdit}
           />

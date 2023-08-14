@@ -2,11 +2,12 @@ import "../../styles/permList.scss";
 import { styled } from "@mui/material/styles";
 import { Button, Switch } from "@mui/material";
 import data from "./permissionsHelper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import DashboardService from "../../services/dashboard";
 import { useState } from "react";
 import { useEffect } from "react";
+import { saveSelectedUsers } from "../../storage/settings";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -41,12 +42,11 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const ListCards = ({ item, section, data, users }) => {
-  const employees = useSelector((state) => state.employee.employees);
+const ListCards = ({ item, section, data }) => {
+  const dispatch = useDispatch();
   const singleUser = useSelector((state) => state.settings.singleUser);
-  const selectedUsers = employees.filter((data) => data.selected === "1");
+  const selectedUsers = useSelector((state) => state.settings.selectedUsers);
   const [updatedUser, setUpdatedUser] = useState(null);
-  // console.log(updatedUser, "nnnnnnsr")
 
   const getPerm = () => {
     if (updatedUser !== null) {
@@ -132,21 +132,23 @@ const ListCards = ({ item, section, data, users }) => {
         "info"
       );
 
-    let updatePerm = [];
+    let updatePerm = JSON.parse(JSON.stringify(selectedUsers));
     let keyData = section.toLowerCase().split(" ").join(",").replace(",", "");
 
     switch (keyData) {
       case "dashboard": {
-        updatePerm = [...selectedUsers].map((data) => {
+        updatePerm = updatePerm.map((data) => {
           const copy = { ...data };
           copy.permission.dashboard[item] = e.target.checked;
           return copy;
         });
+        console.log(updatePerm, "logs mehn");
         break;
       }
 
       case "dailysales": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.dailySales[item] = e.target.checked;
           return copy;
@@ -155,7 +157,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "mystations": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.myStation[item] = e.target.checked;
           return copy;
@@ -164,7 +167,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "recordsales": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.recordSales[item] = e.target.checked;
           return copy;
@@ -173,7 +177,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "analysis": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.analysis[item] = e.target.checked;
           return copy;
@@ -182,7 +187,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "payments": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.payments[item] = e.target.checked;
           return copy;
@@ -191,7 +197,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "expenses": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.expenses[item] = e.target.checked;
           return copy;
@@ -200,7 +207,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "corporatesales": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.corporateSales[item] = e.target.checked;
           return copy;
@@ -209,7 +217,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "productorders": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.productOrder[item] = e.target.checked;
           return copy;
@@ -218,7 +227,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "incomingorders": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.incomingOrder[item] = e.target.checked;
           return copy;
@@ -227,7 +237,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "supply": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.supply[item] = e.target.checked;
           return copy;
@@ -236,7 +247,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "regulatorypayment": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.regPay[item] = e.target.checked;
           return copy;
@@ -245,7 +257,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "tankupdate": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.tankUpdate[item] = e.target.checked;
           return copy;
@@ -254,7 +267,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "humanresources": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.hr[item] = e.target.checked;
           return copy;
@@ -263,7 +277,8 @@ const ListCards = ({ item, section, data, users }) => {
       }
 
       case "settings": {
-        updatePerm = [...selectedUsers].map((data) => {
+        const users = JSON.parse(JSON.stringify(selectedUsers));
+        updatePerm = users.map((data) => {
           const copy = { ...data };
           copy.permission.settings[item] = e.target.checked;
           return copy;
@@ -274,7 +289,7 @@ const ListCards = ({ item, section, data, users }) => {
       default: {
       }
     }
-    users(updatePerm);
+    dispatch(saveSelectedUsers(updatePerm));
     const latestUser = updatePerm.filter((data) => data._id === singleUser._id);
     setUpdatedUser(latestUser[0]?.permission);
   };
@@ -312,7 +327,7 @@ const PermissionListItems = (props) => {
               item={item}
               section={props.data.name}
               data={props.data.permissions[item]}
-              users={props.users}
+              userList={props.users}
             />
           );
         })}
@@ -322,7 +337,7 @@ const PermissionListItems = (props) => {
 };
 
 const PermissionList = (props) => {
-  const [allUsers, setAllUsers] = useState([]);
+  const allUsers = useSelector((state) => state.settings.selectedUsers);
 
   const goBack = () => {
     props.nav(1);
@@ -333,7 +348,7 @@ const PermissionList = (props) => {
       permissions: allUsers,
     };
 
-    DashboardService.updateUserPermission(payload).then((data) => {
+    DashboardService.updateUserPermission(payload).then(() => {
       swal("Success", "Records updated successfully!", "success");
     });
   };
@@ -366,14 +381,7 @@ const PermissionList = (props) => {
 
       <div className="perm_list">
         {data.map((item, index) => {
-          return (
-            <PermissionListItems
-              key={index}
-              data={item}
-              index={index}
-              users={setAllUsers}
-            />
-          );
+          return <PermissionListItems key={index} data={item} index={index} />;
         })}
       </div>
     </div>

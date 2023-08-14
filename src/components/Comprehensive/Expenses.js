@@ -260,6 +260,7 @@ const Expenses = () => {
             className="initial_balance_container">
             {openEdit && (
               <UpdateExpenses
+                update={setRefresh}
                 data={oneRecord}
                 open={openEdit}
                 close={setOpenEdit}

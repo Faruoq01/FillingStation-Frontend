@@ -102,6 +102,11 @@ const HomeScreen = () => {
       dispatch(getAllStations(data.station));
     });
 
+    UserService.getOneUser({ id: user._id }).then((data) => {
+      localStorage.setItem("user", JSON.stringify(data.user));
+      dispatch(updateUser(data.user));
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user._id, user.userType, user.outletID, dispatch]);
 
