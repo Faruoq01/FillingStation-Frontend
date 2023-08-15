@@ -268,6 +268,8 @@ const SummaryRecord = (props) => {
   // console.log(selectedPumps, "Pumps");
   // console.log(selectedTanks, "Tanks");
 
+  console.log(salesPayloadData, "sales mehn");
+
   const updateTankDetails = (product, tank) => {
     const onlyPMS = [...tankList].filter(
       (data) => data.productType === product
@@ -304,7 +306,7 @@ const SummaryRecord = (props) => {
 
     const finalUpdate = {
       ...tank,
-      pumps: allProductPumps,
+      pumps: allTankPumps,
       tankSales: tankSales,
       afterSales: Number(tank.currentLevel) - tankSales,
       outlet: oneStationData,
@@ -385,10 +387,26 @@ const SummaryRecord = (props) => {
         tankUpdates.push(tankPayload);
       }
     }
+
+    const uniqueSales = salesList.filter(
+      (obj, index, self) =>
+        index === self.findIndex((item) => item.pumpID === obj.pumpID)
+    );
+
+    const uniquePumps = pumpUpdates.filter(
+      (obj, index, self) =>
+        index === self.findIndex((item) => item.id === obj.id)
+    );
+
+    const uniqueTanks = tankUpdates.filter(
+      (obj, index, self) =>
+        index === self.findIndex((item) => item.id === obj.id)
+    );
+
     const salesLoad = {
-      sales: salesList,
-      pumps: pumpUpdates,
-      tanks: tankUpdates,
+      sales: uniqueSales,
+      pumps: uniquePumps,
+      tanks: uniqueTanks,
     };
     dispatch(salesPayload(salesLoad));
 
@@ -402,7 +420,13 @@ const SummaryRecord = (props) => {
         }
       }
     }
-    dispatch(rtPayload(rtList));
+
+    const uniqueRTPumps = rtList.filter(
+      (obj, index, self) =>
+        index === self.findIndex((item) => item.pumpID === obj.pumpID)
+    );
+
+    dispatch(rtPayload(uniqueRTPumps));
 
     /*############# Getting payloads for balanceCF ###############*/
     const selectedProducts = {};
