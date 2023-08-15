@@ -418,7 +418,7 @@ const HomeScreen = () => {
           <img
             onClick={goToEsales}
             className="home-logo"
-            src={user.image === null ? homeLogo : config.BASE_URL + user.image}
+            src={homeLogo}
             alt="icon"
           />
           <SideItems

@@ -214,6 +214,7 @@ const DailyRecordSales = () => {
             (data) => {
               dispatch(adminOutlet(data.station));
               dispatch(changeStation());
+              changeMenu(0, data.station);
             }
           );
 
