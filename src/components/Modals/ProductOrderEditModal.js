@@ -17,45 +17,47 @@ const ProductOrderEditModal = (props) => {
     (state) => state?.productorder.singleProductOrder
   );
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.auth.user);
-
-  const [dateCreated, setDateCreated] = useState(
-    singleProductOrder.dateCreated
-  );
-  const [depot, setDepot] = useState(singleProductOrder.depot);
-  const [depotAddress, setDepotAddress] = useState(
-    singleProductOrder.depotAddress
-  );
-  const [quantity, setQuantity] = useState(singleProductOrder.quantity);
-  const [uploadFile, setUpload] = useState(
-    singleProductOrder.attachCertificate
-  );
-  const [loading2, setLoading2] = useState(0);
-  const [defaults, setDefaults] = useState(10);
-  const [productType, setProductType] = useState(
-    singleProductOrder.productType
-  );
-  const [costPerLitre, setCostPerLitre] = useState(
-    singleProductOrder.costPerLitre
-  );
-
   const attach = useRef();
 
-  const handleClose = () => props.close(false);
+  const [dateCreated, setDateCreated] = useState("");
+  const [depot, setDepot] = useState("");
+  const [depotAddress, setDepotAddress] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [uploadFile, setUpload] = useState("");
+  const [loading2, setLoading2] = useState(0);
+  const [defaults, setDefaults] = useState(10);
+  const [productType, setProductType] = useState("");
+  const [costPerLitre, setCostPerLitre] = useState("");
 
-  useEffect(() => {
-    console.log("=============edit========================");
-    console.log(singleProductOrder);
-    console.log("===============edit======================");
-  }, [singleProductOrder]);
-
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
+  const setType = () => {
+    switch (singleProductOrder.productType) {
+      case "PMS": {
+        return 20;
+      }
+      case "AGO": {
+        return 30;
+      }
+      case "DPK": {
+        return 40;
+      }
+      default: {
+      }
     }
   };
+
+  useEffect(() => {
+    setDateCreated(singleProductOrder.dateCreated);
+    setDepot(singleProductOrder.depot);
+    setDepotAddress(singleProductOrder.depotAddress);
+    setQuantity(singleProductOrder.quantity);
+    setUpload(singleProductOrder.attachCertificate);
+    setDefaults(setType());
+    setProductType(singleProductOrder.productType);
+    setCostPerLitre(singleProductOrder.costPerLitre);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClose = () => props.close(false);
 
   const submit = () => {
     if (dateCreated === "")
@@ -78,27 +80,47 @@ const ProductOrderEditModal = (props) => {
     if (isNaN(Number(costPerLitre)))
       return swal("Warning!", "Cost field is not a number", "info");
 
+    const gap =
+      Number(singleProductOrder.quantity) -
+      Number(singleProductOrder.currentBalance);
+
+    if (quantity < gap)
+      return swal(
+        "Warning!",
+        `${gap} litres has already been loaded, please new quantity should be greater than this.`,
+        "info"
+      );
+
+    const currentBalance = Number(quantity) - gap;
+
     setLoading(true);
 
     const payload = {
+      id: singleProductOrder._id,
       dateCreated: dateCreated,
       depot: depot,
       depotAddress: depotAddress,
       quantity: quantity,
       costPerLitre: costPerLitre,
       productType: productType,
+      quantityLoaded: singleProductOrder.quantityLoaded,
+      currentBalance: currentBalance,
       attachCertificate: uploadFile,
-      organizationID: resolveUserID().id,
+      organizationID: singleProductOrder.organizationID,
     };
 
-    ProductService.createProductOrder(payload)
-      .then((data) => {
-        swal("Success", "Product order created successfully!", "success");
-      })
+    ProductService.updateProductOrder(payload)
       .then(() => {
         setLoading(false);
         setLoading2(0);
         props.refresh();
+      })
+      .then(() => {
+        swal(
+          "Success",
+          "Product order has been updated successfully!",
+          "success"
+        );
         handleClose();
       });
   };
@@ -352,6 +374,7 @@ const ProductOrderEditModal = (props) => {
 
           <div style={{ marginTop: "10px", height: "30px" }} className="butt">
             <Button
+              disabled={loading}
               sx={{
                 width: "100px",
                 height: "30px",

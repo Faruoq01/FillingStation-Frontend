@@ -16,7 +16,6 @@ import {
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
-// import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import ProductReport from "../Reports/ProductReport";
@@ -490,16 +489,21 @@ const ProductOrders = () => {
           </div>
         </div>
       </div>
-      <ConfirmDeleteModal
-        deleteStatus={deleteLoad}
-        handleDelete={handleDelete}
-        open={confirmDeleteModalStatus}
-        close={setConfirmDeleteModalStatus}
-      />
-      <ProductOrderEditModal
-        open={productOrderEditModal}
-        close={setProductOrderEditModal}
-      />
+      {confirmDeleteModalStatus && (
+        <ConfirmDeleteModal
+          deleteStatus={deleteLoad}
+          handleDelete={handleDelete}
+          open={confirmDeleteModalStatus}
+          close={setConfirmDeleteModalStatus}
+        />
+      )}
+      {productOrderEditModal && (
+        <ProductOrderEditModal
+          refresh={refresh}
+          open={productOrderEditModal}
+          close={setProductOrderEditModal}
+        />
+      )}
     </Fragment>
   );
 };
@@ -539,7 +543,7 @@ const styles = {
   icons: {
     cursor: "pointer",
     color: "#fff",
-    padding: 2,
+    padding: 3,
     backgroundColor: "#06805b",
     borderRadius: "100%",
   },
