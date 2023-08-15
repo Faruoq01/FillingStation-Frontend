@@ -127,12 +127,9 @@ const Tank = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         const payload = {
+          ...data,
           id: data._id,
           quantity: data.currentLevel,
-          organisationID: resolveUserID().id,
-          outletID: data.outletID,
-          productType: data.productType,
-          calibrationDate: data.calibrationDate,
         };
         OutletService.deleteTanks(payload).then((data) => {
           if (data.code === 200)
