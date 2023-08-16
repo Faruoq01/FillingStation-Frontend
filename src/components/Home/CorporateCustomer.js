@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, Fragment } from "react";
 import LazyLoaderScreen from "../LazyLoaderScreen";
 import { Switch, Route } from "react-router-dom";
-const AirBnBTotal = lazy(() => import("./e-station/AirBnBTotal"));
+const AirBnBTotal = lazy(() => import("./AirBnBTotal"));
 const CorporateCustomerindex = lazy(() =>
   import("../corporate-customer/CorporateCustomerindex")
 );

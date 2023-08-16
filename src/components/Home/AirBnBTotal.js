@@ -1,9 +1,7 @@
 import React, { Suspense, lazy } from "react";
-import LazyLoaderScreen from "../../LazyLoaderScreen";
+import LazyLoaderScreen from "../LazyLoaderScreen";
 
-const AirBnBTotalIndex = lazy(() =>
-  import("../../AirBnBTotal/AirBnBTotalIndex")
-);
+const AirBnBTotalIndex = lazy(() => import("../AirBnBTotal/AirBnBTotalIndex"));
 
 export default function AirBnBTotal() {
   return (

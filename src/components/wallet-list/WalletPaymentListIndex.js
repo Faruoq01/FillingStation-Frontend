@@ -27,8 +27,7 @@ export default function WalletPaymentListIndex({ ...props }) {
         className="individual-sale-container-"
         style={{
           paddingTop: "1rem",
-        }}
-      >
+        }}>
         <div className="tb-inner-payment">
           <div className="wrap-btn-wrap">
             <div className="btn-wrap-">
@@ -46,8 +45,7 @@ export default function WalletPaymentListIndex({ ...props }) {
                     backgroundColor: "#58A0DF",
                   },
                 }}
-                variant="contained"
-              >
+                variant="contained">
                 Individual
               </Button>
 
@@ -69,8 +67,7 @@ export default function WalletPaymentListIndex({ ...props }) {
                     color: "white",
                   },
                 }}
-                variant="contained"
-              >
+                variant="contained">
                 Corporate
               </Button>
             </div>
@@ -103,8 +100,7 @@ export default function WalletPaymentListIndex({ ...props }) {
                   },
                 }}
                 variant="contained"
-                onClick={openCreatePaymentModal}
-              >
+                onClick={openCreatePaymentModal}>
                 Register Payment
               </Button>
             </div>

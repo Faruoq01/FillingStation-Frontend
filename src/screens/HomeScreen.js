@@ -59,7 +59,6 @@ import { updateUser } from "../storage/auth";
 import StationTanks from "../components/Home/StationTanks";
 import StationPumps from "../components/Home/StationPumps";
 import HistoryPage from "../components/Home/History";
-import config from "../constants";
 import DailyRecordSales from "../components/Home/DailyRecordSales";
 import DashboardEmployee from "../components/DashboardComponents/DashboardEmp";
 import { useHistory } from "react-router-dom";
@@ -70,10 +69,7 @@ import { adminOutlet, getAllStations } from "../store/actions/outlet";
 import OverageList from "../components/DailySales/OverageList";
 import { Badge } from "@mui/material";
 import NotificationDrawer from "../components/common/NotificationDrawer";
-import EStation from "../components/Home/e-station/EStation";
-
-import EStationIndividualIncomingOrder from "../components/Home/e-station/EStationIndividualIncomingOrder";
-import AirBnBTotal from "../components/Home/e-station/AirBnBTotal";
+import AirBnBTotal from "../components/Home/AirBnBTotal";
 import Transactions from "../components/Home/Transactions";
 import ListAllTanks from "../components/Outlet/TankList";
 
@@ -722,42 +718,6 @@ const HomeScreen = () => {
               {name === "Human Resources" ? "" : getStationDetails()}
             </span>
           </div>
-          {/* {oneStationData !== null &&
-            <div style={prices}>
-              <div style={products}>
-                <div style={main}>
-                  <div style={{
-                    width: '15px',
-                    height: '15px',
-                    borderRadius: '15px',
-                    background: '#399A19',
-                    marginRight: '5px',
-                  }}></div>
-                  <div>PMS: N{oneStationData?.PMSSellingPrice}</div>
-                </div>
-                <div style={main}>
-                  <div style={{
-                    width: '15px',
-                    height: '15px',
-                    borderRadius: '15px',
-                    background: '#FFA010',
-                    marginRight: '5px',
-                  }}></div>
-                  <div>AGO: N535</div>
-                </div>
-                <div style={main}>
-                  <div style={{
-                    width: '15px',
-                    height: '15px',
-                    borderRadius: '15px',
-                    background: '#35393E',
-                    marginRight: '5px',
-                  }}></div>
-                  <div>DPK: N535</div>
-                </div>
-              </div>
-            </div>
-          } */}
           <div className="right-lobe">
             <div className="search-icon">
               <input
@@ -842,18 +802,12 @@ const HomeScreen = () => {
             <Route path="/home/lpo">
               <LPO history={history} activeRoute={activeRoute} />
             </Route>
-            <Route path="/home/estation">
-              <EStation activeRoute={activeRoute} />
-            </Route>
 
             <Route path="/home/supply">
               <Supply activeRoute={activeRoute} />
             </Route>
             <Route path="/home/daily-record-sales">
               <DailyRecordSales history={history} />
-            </Route>
-            <Route path="/home/estation-individual-orders">
-              <EStationIndividualIncomingOrder history={history} />
             </Route>
 
             <Route path="/home/regulatory">
@@ -905,28 +859,5 @@ const inner = {
   flexDirection: "column",
   alignItems: "center",
 };
-
-// const prices = {
-//   width: "100%",
-//   height: "100%",
-//   display: "flex",
-//   flexDirection: "row",
-//   alignItems: "center",
-//   justifyContent: "center",
-// };
-
-// const products = {
-//   display: "flex",
-//   flexDirection: "row",
-// };
-
-// const main = {
-//   marginRight: "15px",
-//   fontFamily: "Poppins",
-//   fontSize: "12px",
-//   fontWeight: "bold",
-//   display: "flex",
-//   flexDirection: "row",
-// };
 
 export default withRouter(HomeScreen);
