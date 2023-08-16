@@ -45,7 +45,7 @@ const CreditBalance = (props) => {
     };
 
     LPOService.credit(payload)
-      .then((data) => {
+      .then(() => {
         swal("Success!", "Account has been credited successfully!", "success");
       })
       .then(() => {

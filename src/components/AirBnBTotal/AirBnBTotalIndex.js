@@ -7,7 +7,6 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import SmallCardLeft from "./SmallCardLeft";
 import AirbnbTable from "./AirbnbTable";
 import Profile from "./Profile";
-import Transactions from "../Modals/Transactions";
 import CreditBalance from "../Modals/CreditLPO";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useDispatch, useSelector } from "react-redux";

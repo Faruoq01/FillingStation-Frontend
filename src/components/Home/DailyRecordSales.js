@@ -288,12 +288,7 @@ const DailyRecordSales = () => {
     if (!getPerm("8") && pages === 6)
       return swal("Warning!", "Permission denied", "info");
 
-    const pendingTasks = localStorage.getItem("machine");
-    if (pendingTasks) {
-      setPending(true);
-    } else {
-      setOpenSummary(true);
-    }
+    setOpenSummary(true);
   };
 
   const changeMenu = async (index, item) => {

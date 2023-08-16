@@ -244,6 +244,7 @@ const LPOComponent = (props) => {
       quantity: quantity,
       productType: productType,
       org: oneStationData?.organisation,
+      outletID: oneStationData._id,
       truckNo: truckNo,
       createdAt: mainDate,
       updatedAt: mainDate,
