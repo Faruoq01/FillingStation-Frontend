@@ -13,15 +13,10 @@ import { useHistory } from "react-router-dom";
 const Controls = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const moment = require("moment-timezone");
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  // const currentDate2 = useSelector(
-  //   (state) => state.dailySalesReducer.currentDate
-  // );
   const [defaultState, setDefault] = useState(0);
-  const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -85,7 +80,6 @@ const Controls = () => {
   };
 
   const openDailySales = () => {
-    if (load) return;
     if (oneStationData === null)
       return swal("Warning!", "Please select a station", "info");
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");

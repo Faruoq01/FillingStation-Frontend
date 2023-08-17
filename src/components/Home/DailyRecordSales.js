@@ -343,6 +343,7 @@ const DailyRecordSales = () => {
       );
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
     setValue(newValue);
+    setPending(true);
     dispatch(changeStation());
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
     const getDate = newValue === "" ? today : newValue.format("YYYY-MM-DD");
@@ -441,7 +442,14 @@ const DailyRecordSales = () => {
           close={setOpenSummary}
         />
       )}
-      {pending && <PendingSales date={setValue} pages={setPages} open={pending} close={setPending} />}
+      {pending && (
+        <PendingSales
+          date={setValue}
+          pages={setPages}
+          open={pending}
+          close={setPending}
+        />
+      )}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}

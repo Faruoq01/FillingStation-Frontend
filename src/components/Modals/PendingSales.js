@@ -22,6 +22,7 @@ import moment from "moment";
 import OutletService from "../../services/outletService";
 import LPOService from "../../services/lpo";
 import APIs from "../../services/api";
+import { useHistory } from "react-router-dom";
 
 const PendingSales = (props) => {
   const date = new Date();
@@ -30,6 +31,7 @@ const PendingSales = (props) => {
   const date2 = `${day} ${month} ${year}`;
   const [value, setValue] = React.useState(null);
   const dispatch = useDispatch();
+  const history = useHistory();
   const user = useSelector((state) => state.auth.user);
 
   const handleClose = () => props.close(false);
@@ -51,6 +53,8 @@ const PendingSales = (props) => {
 
     if (result) {
       swal("Error!", "Record has been saved for this day already!", "error");
+    } else {
+      handleClose();
     }
   };
 
@@ -185,6 +189,10 @@ const PendingSales = (props) => {
     return finalDate;
   };
 
+  const goToSales = () => {
+    history.push("/home");
+  };
+
   return (
     <Modal
       open={props.open}
@@ -199,7 +207,7 @@ const PendingSales = (props) => {
           <div className="head">
             <div className="head-text">Please select sales date</div>
             <img
-              onClick={handleClose}
+              onClick={goToSales}
               style={{ width: "18px", height: "18px" }}
               src={close}
               alt={"icon"}
@@ -209,7 +217,7 @@ const PendingSales = (props) => {
           <div className="middleDiv" style={inner}>
             <div style={row}>
               <div style={left}>Station name</div>
-              <div style={right}>{`${oneStationData.alias}`}</div>
+              <div style={right}>{`${oneStationData?.alias}`}</div>
             </div>
 
             <div style={row}>

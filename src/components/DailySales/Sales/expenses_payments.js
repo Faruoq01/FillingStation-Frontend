@@ -92,7 +92,7 @@ const ExpensesAndPayments = () => {
   };
 
   const updateDate = (newValue) => {
-    if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
+    if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
     setValue(newValue);
 
     const getDate = newValue === "" ? initial : newValue.format("YYYY-MM-DD");
