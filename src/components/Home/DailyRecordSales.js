@@ -250,8 +250,13 @@ const DailyRecordSales = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (oneStationData === null) {
+      setPending(false);
+    } else {
+      setPending(true);
+    }
     resetAllVariables();
-  }, [resetAllVariables]);
+  }, [oneStationData, resetAllVariables]);
 
   useEffect(() => {
     getAllInitialRecords();
@@ -298,6 +303,7 @@ const DailyRecordSales = () => {
     setDefault(index);
     dispatch(changeStation());
     dispatch(adminOutlet(item));
+    setPending(true);
     getAllRecordDetails(item, currentDate);
   };
 
@@ -435,7 +441,7 @@ const DailyRecordSales = () => {
           close={setOpenSummary}
         />
       )}
-      {pending && <PendingSales open={pending} close={setPending} />}
+      {pending && <PendingSales date={setValue} pages={setPages} open={pending} close={setPending} />}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
