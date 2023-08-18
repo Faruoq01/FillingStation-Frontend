@@ -236,8 +236,7 @@ const PumpUpdateComponent = (props) => {
 
       if (connectedTank.length !== 0) {
         const totalizerDiff =
-          Number(removeSpecialCharacters(e.target.value)) -
-          Number(pump.totalizerReading);
+          Number(e.target.value) - Number(pump.totalizerReading);
         const quantity =
           Number(connectedTank[0].currentLevel) -
           Number(connectedTank[0].deadStockLevel);

@@ -268,8 +268,6 @@ const SummaryRecord = (props) => {
   // console.log(selectedPumps, "Pumps");
   // console.log(selectedTanks, "Tanks");
 
-  console.log(salesPayloadData, "sales mehn");
-
   const updateTankDetails = (product, tank) => {
     const onlyPMS = [...tankList].filter(
       (data) => data.productType === product
@@ -767,7 +765,19 @@ const SummaryRecord = (props) => {
                           <div className="volum">
                             {ApproximateDecimal(data.dipping)} Ltrs
                           </div>
-                          <div className="vol_label">Stock level</div>
+                          <div className="vol_label">Dipping level</div>
+                        </div>
+                      </div>
+                      <div className="fuel_card_items">
+                        <div className="fuel_card_items_left">
+                          <div className="volum"></div>
+                          <div className="vol_label"></div>
+                        </div>
+                        <div className="fuel_card_items_right">
+                          <div className="volum">
+                            {ApproximateDecimal(data.afterSales)} Ltrs
+                          </div>
+                          <div className="vol_label">After Sales</div>
                         </div>
                       </div>
                     </div>
