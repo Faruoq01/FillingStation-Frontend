@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { adminOutlet, getAllStations } from "../../storage/outlet";
 import OutletService from "../../services/outletService";
 import PaymentService from "../../services/paymentService";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import PaymentEditModal from "../Modals/PaymentEditModal";
 
 import {
@@ -44,12 +43,9 @@ const Regulatory = () => {
   const [openPayment, setOpenPayment] = useState(false);
   const [description, setDescription] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [deleteLoad, setDeleteLoad] = useState(false);
   const singleRegulatoryDetails = useSelector(
     (state) => state.regulatory.singlePayment
   );
-  const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
-    useState(false);
   const history = useHistory();
   const [paymentEditModalStatus, setPaymentEditModalStatus] = useState(false);
 
@@ -224,19 +220,7 @@ const Regulatory = () => {
     history.push("/home/history");
   };
 
-  const handleDelete = () => {
-    setDeleteLoad(true);
-    if (!singleRegulatoryDetails) {
-      setDeleteLoad(false);
-      return swal("Warning!", "You can't delete this product order", "info");
-    }
-
-    setTimeout(() => {
-      setDeleteLoad(false);
-      setConfirmDeleteModalStatus(false);
-      refresh();
-    }, 8000);
-  };
+  const handleDelete = () => {};
 
   return (
     <>
@@ -637,12 +621,7 @@ const Regulatory = () => {
                                 }}
                               />
                               <DeleteIcon
-                                onClick={() => {
-                                  dispatch(singlePaymentAction(item));
-                                  setConfirmDeleteModalStatus(
-                                    !confirmDeleteModalStatus
-                                  );
-                                }}
+                                onClick={handleDelete}
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "red",
@@ -689,17 +668,13 @@ const Regulatory = () => {
           </div>
         </div>
       </div>
-      <ConfirmDeleteModal
-        deleteStatus={deleteLoad}
-        handleDelete={handleDelete}
-        open={confirmDeleteModalStatus}
-        close={setConfirmDeleteModalStatus}
-      />
-      <PaymentEditModal
-        singleRegulatoryDetails={singleRegulatoryDetails}
-        open={paymentEditModalStatus}
-        close={setPaymentEditModalStatus}
-      />
+      {paymentEditModalStatus && (
+        <PaymentEditModal
+          singleRegulatoryDetails={singleRegulatoryDetails}
+          open={paymentEditModalStatus}
+          close={setPaymentEditModalStatus}
+        />
+      )}
     </>
   );
 };
@@ -742,7 +717,6 @@ const styles = {
     padding: 2,
     backgroundColor: "#06805b",
     borderRadius: "100%",
-    cursor: "pointer",
   },
 };
 

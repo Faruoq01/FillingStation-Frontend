@@ -20,7 +20,6 @@ import IncomingReport from "../Reports/IncomingReport";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import IncomingOrderEditModal from "../Modals/IncomingOrderEditModal";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
@@ -31,6 +30,7 @@ const IncomingOrder = () => {
   const incomingOrder = useSelector(
     (state) => state.incomingorder.incomingOrder
   );
+  const [incomingOrderEditModal, setIncomingOrderEditModal] = useState(false);
   const dispatch = useDispatch();
   const [defaultState, setDefault] = useState(0);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
@@ -41,7 +41,6 @@ const IncomingOrder = () => {
   const [total, setTotal] = useState(0);
   const [prints, setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [deleteLoad, setDeleteLoad] = useState(false);
   const history = useHistory();
 
   const resolveUserID = () => {
@@ -60,11 +59,6 @@ const IncomingOrder = () => {
   };
 
   const [open, setOpen] = useState(false);
-  const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
-    useState(false);
-  const singleIncomingOrder = useSelector(
-    (state) => state?.incomingorder.singleIncomingOrder
-  );
 
   const openCreateModal = () => {
     if (oneStationData === null)
@@ -219,19 +213,7 @@ const IncomingOrder = () => {
     history.push("/home/history");
   };
 
-  const handleDelete = () => {
-    setDeleteLoad(true);
-    if (!singleIncomingOrder) {
-      setDeleteLoad(false);
-      return swal("Warning!", "You can't delete this product order", "info");
-    }
-    setTimeout(() => {
-      setDeleteLoad(false);
-      setConfirmDeleteModalStatus(false);
-      refresh();
-    }, 8000);
-  };
-  const [incomingOrderEditModal, setIncomingOrderEditModal] = useState(false);
+  const handleDelete = () => {};
 
   return (
     <Fragment>
@@ -556,12 +538,7 @@ const IncomingOrder = () => {
                                 }}
                               />
                               <DeleteIcon
-                                onClick={() => {
-                                  dispatch(singleIncomingOrderRecord(data));
-                                  setConfirmDeleteModalStatus(
-                                    !confirmDeleteModalStatus
-                                  );
-                                }}
+                                onClick={handleDelete}
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "red",
@@ -608,16 +585,12 @@ const IncomingOrder = () => {
           </div>
         </div>
       </div>
-      <ConfirmDeleteModal
-        deleteStatus={deleteLoad}
-        handleDelete={handleDelete}
-        open={confirmDeleteModalStatus}
-        close={setConfirmDeleteModalStatus}
-      />
-      <IncomingOrderEditModal
-        open={incomingOrderEditModal}
-        close={setIncomingOrderEditModal}
-      />
+      {incomingOrderEditModal && (
+        <IncomingOrderEditModal
+          open={incomingOrderEditModal}
+          close={setIncomingOrderEditModal}
+        />
+      )}
     </Fragment>
   );
 };
@@ -660,7 +633,6 @@ const styles = {
     padding: 2,
     backgroundColor: "#06805b",
     borderRadius: "100%",
-    cursor: "pointer",
   },
 };
 export default IncomingOrder;

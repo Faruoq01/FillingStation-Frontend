@@ -23,7 +23,6 @@ import IncomingList from "../Modals/IncomingList";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import ProductOrderEditModal from "../Modals/ProductOrderEditModal";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
@@ -31,15 +30,12 @@ const mobile = window.matchMedia("(max-width: 600px)");
 
 const ProductOrders = () => {
   const [open, setOpen] = React.useState(false);
-  const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
-    useState(false);
+  const [productOrderEditModal, setProductOrderEditModal] = useState(false);
   const [open2, setOpen2] = React.useState({ id: "", trigger: false });
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const productOrder = useSelector((state) => state.productorder.productorder);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const { singleProductOrder } = useSelector((state) => state?.productorder);
-  const [deleteLoad, setDeleteLoad] = useState(false);
 
   const [entries, setEntries] = useState(10);
 
@@ -145,19 +141,8 @@ const ProductOrders = () => {
     history.push("/home/history");
   };
 
-  const handleDelete = () => {
-    setDeleteLoad(true);
-    if (!singleProductOrder) {
-      setDeleteLoad(false);
-      return swal("Warning!", "You can't delete this product order", "info");
-    }
-    setTimeout(() => {
-      setDeleteLoad(false);
-      setConfirmDeleteModalStatus(false);
-      refresh();
-    }, 8000);
-  };
-  const [productOrderEditModal, setProductOrderEditModal] = useState(false);
+  const handleDelete = () => {};
+
   return (
     <Fragment>
       <div data-aos="zoom-in-down" className="paymentsCaontainer">
@@ -428,12 +413,7 @@ const ProductOrders = () => {
                                 }}
                               />
                               <DeleteIcon
-                                onClick={() => {
-                                  dispatch(singleProductOrderRecord(data));
-                                  setConfirmDeleteModalStatus(
-                                    !confirmDeleteModalStatus
-                                  );
-                                }}
+                                onClick={handleDelete}
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "red",
@@ -489,14 +469,6 @@ const ProductOrders = () => {
           </div>
         </div>
       </div>
-      {confirmDeleteModalStatus && (
-        <ConfirmDeleteModal
-          deleteStatus={deleteLoad}
-          handleDelete={handleDelete}
-          open={confirmDeleteModalStatus}
-          close={setConfirmDeleteModalStatus}
-        />
-      )}
       {productOrderEditModal && (
         <ProductOrderEditModal
           refresh={refresh}

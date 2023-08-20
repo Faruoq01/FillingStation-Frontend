@@ -12,7 +12,6 @@ import OutletService from "../../services/outletService";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import AdminUserService from "../../services/adminUsers";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import {
   searchStaffs,
   singleEmployee,
@@ -49,12 +48,6 @@ const Employee = () => {
     "Staff",
   ]);
   const [loading, setLoading] = useState(false);
-  const [deleteLoad, setDeleteLoad] = useState(false);
-  const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
-    useState(false);
-  const singleEmployeeDetails = useSelector(
-    (state) => state?.employee?.singleEmployee
-  );
 
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
@@ -290,19 +283,7 @@ const Employee = () => {
     });
   };
 
-  const handleDelete = () => {
-    setDeleteLoad(true);
-    if (!singleEmployeeDetails) {
-      setDeleteLoad(false);
-      return swal("Warning!", "You can't delete this product order", "info");
-    }
-
-    setTimeout(() => {
-      setDeleteLoad(false);
-      setConfirmDeleteModalStatus(false);
-      refresh();
-    }, 8000);
-  };
+  const handleDelete = () => {};
 
   return (
     <>
@@ -678,12 +659,7 @@ const Employee = () => {
                                 }}
                               />
                               <DeleteIcon
-                                onClick={() => {
-                                  dispatch(singleEmployee(item));
-                                  setConfirmDeleteModalStatus(
-                                    !confirmDeleteModalStatus
-                                  );
-                                }}
+                                onClick={handleDelete}
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "red",
@@ -730,17 +706,13 @@ const Employee = () => {
           </div>
         </div>
       </div>
-      <ConfirmDeleteModal
-        deleteStatus={deleteLoad}
-        handleDelete={handleDelete}
-        open={confirmDeleteModalStatus}
-        close={setConfirmDeleteModalStatus}
-      />
-      <EditStaffModal
-        allOutlets={allOutlets}
-        open={editStaffModalStatus}
-        close={setEditStaffModalStatus}
-      />
+      {editStaffModalStatus && (
+        <EditStaffModal
+          allOutlets={allOutlets}
+          open={editStaffModalStatus}
+          close={setEditStaffModalStatus}
+        />
+      )}
     </>
   );
 };

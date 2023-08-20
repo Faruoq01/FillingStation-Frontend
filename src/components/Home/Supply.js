@@ -23,17 +23,12 @@ import swal from "sweetalert";
 import IncomingService from "../../services/IncomingService";
 import { createIncomingOrder } from "../../storage/incomingOrder";
 import { ThreeDots } from "react-loader-spinner";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import EditSupply from "../Supply/EditSupply";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const Supply = (props) => {
-  const singleSupplyDetails = useSelector((state) => state.supply.singleSupply);
-  const [deleteLoad, setDeleteLoad] = useState(false);
-  const [confirmDeleteModalStatus, setConfirmDeleteModalStatus] =
-    useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -272,19 +267,7 @@ const Supply = (props) => {
   const goToHistory = () => {
     history.push("/home/history");
   };
-  const handleDelete = () => {
-    setDeleteLoad(true);
-    if (!singleSupplyDetails) {
-      setDeleteLoad(false);
-      return swal("Warning!", "You can't delete this product order", "info");
-    }
-
-    setTimeout(() => {
-      setDeleteLoad(false);
-      setConfirmDeleteModalStatus(false);
-      refresh();
-    }, 8000);
-  };
+  const handleDelete = () => {};
 
   return (
     <>
@@ -632,12 +615,7 @@ const Supply = (props) => {
                                   }}
                                 />
                                 <DeleteIcon
-                                  onClick={() => {
-                                    dispatch(singleSupply(data));
-                                    setConfirmDeleteModalStatus(
-                                      !confirmDeleteModalStatus
-                                    );
-                                  }}
+                                  onClick={handleDelete}
                                   style={{
                                     ...styles.icons,
                                     backgroundColor: "red",
@@ -704,12 +682,6 @@ const Supply = (props) => {
           </div>
         )}
       </div>
-      <ConfirmDeleteModal
-        deleteStatus={deleteLoad}
-        handleDelete={handleDelete}
-        open={confirmDeleteModalStatus}
-        close={setConfirmDeleteModalStatus}
-      />
     </>
   );
 };
@@ -752,7 +724,6 @@ const styles = {
     padding: 2,
     backgroundColor: "#06805b",
     borderRadius: "100%",
-    cursor: "pointer",
   },
 };
 export default Supply;
