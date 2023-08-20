@@ -141,7 +141,39 @@ const ProductOrders = () => {
     history.push("/home/history");
   };
 
-  const handleDelete = () => {};
+  const handleDelete = (data) => {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to delete this record?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        const gap = Number(data.quantity) - Number(data.currentBalance);
+
+        console.log(gap, "dnbjvgjvgv");
+
+        if (gap > 0)
+          return swal(
+            "Warning!",
+            `${gap} litres has already been loaded, please new quantity should be greater than this.`,
+            "info"
+          );
+
+        ProductService.deleteProductOrder({ ...data, id: data._id }).then(
+          () => {
+            refresh();
+            swal(
+              "Success",
+              "Product order has been updated successfully!",
+              "success"
+            );
+          }
+        );
+      }
+    });
+  };
 
   return (
     <Fragment>
@@ -413,7 +445,9 @@ const ProductOrders = () => {
                                 }}
                               />
                               <DeleteIcon
-                                onClick={handleDelete}
+                                onClick={() => {
+                                  handleDelete(data);
+                                }}
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "red",
