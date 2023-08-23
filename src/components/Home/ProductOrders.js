@@ -152,8 +152,6 @@ const ProductOrders = () => {
       if (willDelete) {
         const gap = Number(data.quantity) - Number(data.currentBalance);
 
-        console.log(gap, "dnbjvgjvgv");
-
         if (gap > 0)
           return swal(
             "Warning!",

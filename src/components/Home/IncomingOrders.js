@@ -174,7 +174,6 @@ const IncomingOrder = () => {
 
     IncomingService.getAllIncoming(payload)
       .then((data) => {
-        console.log(data, "incoming");
         setTotal(data.incoming.count);
         dispatch(createIncomingOrder(data.incoming.incoming));
       })
@@ -213,7 +212,26 @@ const IncomingOrder = () => {
     history.push("/home/history");
   };
 
-  const handleDelete = () => {};
+  const handleDelete = (data) => {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to delete this record?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        IncomingService.deleteIncoming({
+          id: data._id,
+          quantity: data.quantity,
+          productOrderID: data.productOrderID,
+        }).then(() => {
+          refresh();
+          swal("Success", "Incoming order deleted successfully!", "success");
+        });
+      }
+    });
+  };
 
   return (
     <Fragment>
@@ -538,7 +556,9 @@ const IncomingOrder = () => {
                                 }}
                               />
                               <DeleteIcon
-                                onClick={handleDelete}
+                                onClick={() => {
+                                  handleDelete(data);
+                                }}
                                 style={{
                                   ...styles.icons,
                                   backgroundColor: "red",
@@ -589,6 +609,7 @@ const IncomingOrder = () => {
         <IncomingOrderEditModal
           open={incomingOrderEditModal}
           close={setIncomingOrderEditModal}
+          refresh={refresh}
         />
       )}
     </Fragment>

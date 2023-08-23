@@ -1,83 +1,83 @@
-import APIs from './api';
+import APIs from "./api";
 
 const IncomingService = {
+  createIncoming: (data) => {
+    return APIs.post("/incoming-order/create", data)
+      .then(({ data }) => {
+        return data.incoming;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
 
-    createIncoming: (data) => {
-        return APIs.post('/incoming-order/create', data)
-        .then(({data}) => {
-            return data.incoming;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        });
-    },
+  updateIncoming: async (data) => {
+    return APIs.post("/incoming-order/update", data).then(({ data }) => {
+      return data;
+    });
+  },
 
-    updateIncoming: (data) => {
-        return APIs.post('/incoming-order/update', data)
-        .then(({data}) => {
-            return data;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        });
-    },
+  deleteIncoming: async (data) => {
+    return APIs.post("/incoming-order/delete", data).then(({ data }) => {
+      return data;
+    });
+  },
 
-    getAllIncoming: (data) => {
-        return APIs.post('/incoming-order/allRecords', data)
-        .then(({data}) => {
-            return data;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        });
-    },
+  getAllIncoming: (data) => {
+    return APIs.post("/incoming-order/allRecords", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
 
-    getAllIncoming2: (data) => {
-        return APIs.post('/incoming-order/allRecords2', data)
-        .then(({data}) => {
-            return data;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        });
-    },
+  getAllIncoming2: (data) => {
+    return APIs.post("/incoming-order/allRecords2", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
 
-    getAllIncoming3: (data) => {
-        return APIs.post('/incoming-order/allRecords3', data)
-        .then(({data}) => {
-            return data;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        });
-    },
+  getAllIncoming3: (data) => {
+    return APIs.post("/incoming-order/allRecords3", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
 
-    getAllIncoming4: (data) => {
-        return APIs.post('/incoming-order/allRecords4', data)
-        .then(({data}) => {
-            return data;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        });
-    },
+  getAllIncoming4: (data) => {
+    return APIs.post("/incoming-order/allRecords4", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
 
-    getOneIncoming: (data) => {
-        return APIs.post('/incoming-order/oneIncoming', data)
-        .then(({data}) => {
-            return data;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        });
-    },
-}
+  getOneIncoming: (data) => {
+    return APIs.post("/incoming-order/oneIncoming", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+};
 
 export default IncomingService;
