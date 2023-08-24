@@ -9,7 +9,7 @@ import config from "../../constants";
 import APIs from "../../services/api";
 
 const ReactCamera = (props) => {
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () => props.close(false);
   const [face, setFace] = useState(true);
@@ -27,12 +27,17 @@ const ReactCamera = (props) => {
   };
 
   const getImageLink = (getScreenshot) => {
+    setLoading(true);
     const imageSrc = getScreenshot();
     const url = `${config.BASE_URL}/360-station/api/uploadFromCamera`;
-    APIs.post(url, { image: imageSrc }).then(({ data }) => {
-      props.setDataUri(data.path);
-    });
-    handleClose();
+    APIs.post(url, { image: imageSrc })
+      .then(({ data }) => {
+        props.setDataUri(data.path);
+      })
+      .then(() => {
+        setLoading(false);
+        handleClose();
+      });
   };
 
   return (
@@ -103,7 +108,7 @@ const ReactCamera = (props) => {
             </div>
           </div>
 
-          <div style={{ marginTop: "10px" }} className="butt">
+          <div style={{ marginTop: "40px" }} className="butt">
             {loading ? (
               <ThreeDots
                 height="60"

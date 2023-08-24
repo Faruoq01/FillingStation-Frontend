@@ -342,7 +342,7 @@ const IncomingOrderModal = (props) => {
             )}
 
             <div className="inputs">
-              <div className="head-text2">Loading Depot</div>
+              <div className="head-text2">Supplier</div>
               <OutlinedInput
                 sx={{
                   width: "100%",

@@ -555,10 +555,10 @@ const DailyRecordSales = () => {
             style={{
               backgroundImage:
                 pages >= 1
-                  ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
-                  : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
+                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
+                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
             }}>
-            <SanitizerIcon sx={{ color: pages === 1 ? "#000" : "#fff" }} />
+            <SanitizerIcon sx={{ color: "#fff" }} />
           </div>
 
           <div
@@ -566,12 +566,10 @@ const DailyRecordSales = () => {
             style={{
               backgroundImage:
                 pages >= 2
-                  ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
-                  : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
+                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
+                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
             }}>
-            <AssignmentReturnedIcon
-              sx={{ color: pages === 2 ? "#000" : "#fff" }}
-            />
+            <AssignmentReturnedIcon sx={{ color: "#fff" }} />
           </div>
 
           <div
@@ -579,10 +577,10 @@ const DailyRecordSales = () => {
             style={{
               backgroundImage:
                 pages >= 3
-                  ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
-                  : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
+                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
+                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
             }}>
-            <CreditScoreIcon sx={{ color: pages === 3 ? "#000" : "#fff" }} />
+            <CreditScoreIcon sx={{ color: "#fff" }} />
           </div>
 
           <div
@@ -590,10 +588,10 @@ const DailyRecordSales = () => {
             style={{
               backgroundImage:
                 pages >= 4
-                  ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
-                  : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
+                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
+                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
             }}>
-            <PaidIcon sx={{ color: pages === 4 ? "#000" : "#fff" }} />
+            <PaidIcon sx={{ color: "#fff" }} />
           </div>
 
           <div
@@ -601,21 +599,21 @@ const DailyRecordSales = () => {
             style={{
               backgroundImage:
                 pages >= 5
-                  ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
-                  : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
+                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
+                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
             }}>
-            <AddCardIcon sx={{ color: pages === 5 ? "#000" : "#fff" }} />
+            <AddCardIcon sx={{ color: "#fff" }} />
           </div>
 
           <div
             className="cont"
             style={{
               backgroundImage:
-                pages <= 6
-                  ? "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)"
-                  : "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
+                pages === 6
+                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
+                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
             }}>
-            <PropaneTankIcon sx={{ color: pages === 6 ? "#000" : "#fff" }} />
+            <PropaneTankIcon sx={{ color: "#fff" }} />
           </div>
         </div>
 

@@ -390,7 +390,9 @@ const ComprehensiveReport = (props) => {
                   />
                 </div>
               </div>
-              <div className="topic_name">Tank Levels After Sale</div>
+              <div className="topic_name">
+                Tank Levels (Balance Carried Forward)
+              </div>
             </div>
 
             <div className="first_mid_layer">
