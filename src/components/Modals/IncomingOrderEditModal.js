@@ -8,6 +8,7 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import IncomingService from "../../services/IncomingService";
+import ModalNumberInput from "../controls/ModalNumberInput";
 
 const IncomingOrderEditModal = (props) => {
   const incomingOrder = useSelector(
@@ -182,25 +183,7 @@ const IncomingOrderEditModal = (props) => {
               />
             </div>
 
-            <div className="inputs">
-              <div className="head-text2">Quantity</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-              />
-            </div>
+            <ModalNumberInput value={quantity} setValue={setQuantity} />
 
             <div className="inputs">
               <div className="head-text2">Date created</div>

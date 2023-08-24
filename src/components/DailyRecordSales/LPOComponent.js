@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { creditPayload, lpoPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 import moment from "moment";
+import SingleNumberInput from "../controls/SingleNumberInput";
 
 const LPOComponent = (props) => {
   const dispatch = useDispatch();
@@ -615,6 +616,7 @@ const LPOComponent = (props) => {
               />
             </div>
           </div>
+          {/* <SingleNumberInput value={quantity} setValue={updateTankWithLPO} /> */}
 
           <div style={{ marginTop: "40px" }} className="double-form">
             <div className="input-d">
