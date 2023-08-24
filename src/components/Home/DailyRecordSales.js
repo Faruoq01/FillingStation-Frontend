@@ -210,15 +210,16 @@ const DailyRecordSales = () => {
           dispatch(changeStation());
           return "None";
         } else {
-          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-            (data) => {
-              dispatch(adminOutlet(data.station));
-              dispatch(changeStation());
-              changeMenu(0, data.station);
-            }
-          );
-
-          return user.outletID;
+          if (user.userType === "staff") {
+            OutletService.getOneOutletStation({ outletID: user.outletID }).then(
+              (data) => {
+                dispatch(adminOutlet(data.station));
+                dispatch(changeStation());
+                changeMenu(0, data.station);
+              }
+            );
+            return user.outletID;
+          }
         }
       });
     },
@@ -247,14 +248,10 @@ const DailyRecordSales = () => {
     dispatch(tanksPayload([]));
     dispatch(tankList([]));
     dispatch(daySupply([]));
+    dispatch(changeDate(""));
   }, [dispatch]);
 
   useEffect(() => {
-    if (oneStationData === null) {
-      setPending(false);
-    } else {
-      setPending(true);
-    }
     resetAllVariables();
   }, [oneStationData, resetAllVariables]);
 
@@ -347,8 +344,6 @@ const DailyRecordSales = () => {
     dispatch(changeStation());
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
     const getDate = newValue === "" ? today : newValue.format("YYYY-MM-DD");
-
-    getAllRecordDetails(oneStationData, getDate);
     return getDate;
   };
 
@@ -417,7 +412,7 @@ const DailyRecordSales = () => {
       ///////////////// station supplies /////////////////
       dispatch(daySupply(supply.data.supply));
       updateTanksWithSupplies(outletTanks, supply.data.supply);
-      dispatch(changeDate(getDate));
+      dispatch(changeDate(date));
     });
   };
 

@@ -253,9 +253,15 @@ const ComprehensiveReport = (props) => {
             </div>
 
             <div className="first_mid_layer">
-              {collapsible === 1 && <ProductBalance type={"PMS"} />}
-              {collapsible === 1 && <ProductBalance type={"AGO"} />}
-              {collapsible === 1 && <ProductBalance type={"DPK"} />}
+              {collapsible === 1 && (
+                <ProductBalance type={"PMS"} sales={true} />
+              )}
+              {collapsible === 1 && (
+                <ProductBalance type={"AGO"} sales={true} />
+              )}
+              {collapsible === 1 && (
+                <ProductBalance type={"DPK"} sales={true} />
+              )}
             </div>
           </div>
 

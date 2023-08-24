@@ -1,5 +1,6 @@
 import React from "react";
 import "../../styles/dailySales.scss";
+import ProductBalance from "../Comprehensive/ProductBalance";
 // import { useSelector } from 'react-redux';
 
 const mobile = window.matchMedia("(max-width: 950px)");
@@ -19,54 +20,7 @@ const DPKDailySales = (props) => {
           <div></div>
         </div>
 
-        <div style={mainSales}>
-          <div style={inner}>
-            <div style={tableHeads}>
-              <div style={col}>Pump Name</div>
-              <div style={col}>Opening</div>
-              <div style={col}>Closing</div>
-              <div style={col}>Difference</div>
-              <div style={col}>LPO</div>
-              <div style={col}>Rate</div>
-              <div style={col}>R/T</div>
-              <div style={{ ...col, marginRight: "0px" }}>Amount</div>
-            </div>
-
-            {[].length === 0 ? (
-              <div style={dats}> No Data </div>
-            ) : (
-              [].map((data, index) => {
-                return (
-                  <div key={index} style={tableHeads2}>
-                    <div style={cols}>{data.pumpName}</div>
-                    <div style={cols}>{data.openingMeter}</div>
-                    <div style={cols}>{data.closingMeter}</div>
-                    <div style={cols}>{data.difference}</div>
-                    <div style={cols}>{data.lpoLitre}</div>
-                    <div style={cols}>{data.PMSRate}</div>
-                    <div style={cols}>{data.rtLitre}</div>
-                    <div style={{ ...cols, marginRight: "0px" }}>
-                      {data.amount}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-
-            {[].length === 0 || (
-              <div style={tableHeads2}>
-                <div style={{ ...cols, background: "transparent" }}></div>
-                <div style={{ ...cols, background: "transparent" }}></div>
-                <div style={cols}>Total</div>
-                <div style={cols}>{0}</div>
-                <div style={cols}>{0}</div>
-                <div style={cols}></div>
-                <div style={cols}>{0}</div>
-                <div style={{ ...cols, marginRight: "0px" }}>{0}</div>
-              </div>
-            )}
-          </div>
-        </div>
+        <ProductBalance sales={false} type={"DPK"} />
       </div>
     </div>
   );

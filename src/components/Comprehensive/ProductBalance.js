@@ -344,6 +344,13 @@ const ProductBalance = (props) => {
     });
   };
 
+  const salesStyle = () => {
+    const salesPage = { width: "100%", marginLeft: "0px" };
+    const comprehensivePage = { fontSize: "12px" };
+    const currentPage = !props.sales ? salesPage : comprehensivePage;
+    return currentPage;
+  };
+
   return (
     <React.Fragment>
       {load ? (
@@ -359,7 +366,7 @@ const ProductBalance = (props) => {
         />
       ) : (
         <div style={{ width: "100%" }}>
-          <div className="initial_balance_container">
+          <div style={salesStyle()} className="initial_balance_container">
             {openEdit && (
               <Sales
                 data={oneRecord}
@@ -375,32 +382,34 @@ const ProductBalance = (props) => {
                 close={setOpenAdd}
               />
             )}
-            <div style={{ marginTop: "30px" }} className="butStyle">
-              <Button
-                variant="contained"
-                onClick={resetAll}
-                sx={{
-                  ...resetBut,
-                  background: "#4CAF50",
-                  "&:hover": {
-                    backgroundColor: "#4CAF50",
-                  },
-                }}>
-                Reset
-              </Button>
-              <Button
-                variant="contained"
-                onClick={openSingleSaleModal}
-                sx={{
-                  ...resetBut,
-                  background: "#f44336",
-                  "&:hover": {
-                    backgroundColor: "#f44336",
-                  },
-                }}>
-                Add
-              </Button>
-            </div>
+            {props.sales && (
+              <div style={{ marginTop: "30px" }} className="butStyle">
+                <Button
+                  variant="contained"
+                  onClick={resetAll}
+                  sx={{
+                    ...resetBut,
+                    background: "#4CAF50",
+                    "&:hover": {
+                      backgroundColor: "#4CAF50",
+                    },
+                  }}>
+                  Reset
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={openSingleSaleModal}
+                  sx={{
+                    ...resetBut,
+                    background: "#f44336",
+                    "&:hover": {
+                      backgroundColor: "#f44336",
+                    },
+                  }}>
+                  Add
+                </Button>
+              </div>
+            )}
             <div className="product_balance_header">
               <div className="cells">{props.type}</div>
               <div className="cells">Opening</div>
@@ -447,30 +456,34 @@ const ProductBalance = (props) => {
 
           <div className="initial_balance_container_mobile">
             {/* product records */}
-            <div className="butStyle">
-              <Button
-                variant="contained"
-                sx={{
-                  ...resetBut,
-                  background: "#4CAF50",
-                  "&:hover": {
-                    backgroundColor: "#4CAF50",
-                  },
-                }}>
-                Reset
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  ...resetBut,
-                  background: "#f44336",
-                  "&:hover": {
-                    backgroundColor: "#f44336",
-                  },
-                }}>
-                Add
-              </Button>
-            </div>
+            {props.sales && (
+              <div className="butStyle">
+                <Button
+                  variant="contained"
+                  onClick={resetAll}
+                  sx={{
+                    ...resetBut,
+                    background: "#4CAF50",
+                    "&:hover": {
+                      backgroundColor: "#4CAF50",
+                    },
+                  }}>
+                  Reset
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={openSingleSaleModal}
+                  sx={{
+                    ...resetBut,
+                    background: "#f44336",
+                    "&:hover": {
+                      backgroundColor: "#f44336",
+                    },
+                  }}>
+                  Add
+                </Button>
+              </div>
+            )}
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; {props.type}</div>
             <div
               style={{ marginBottom: "20px", marginTop: "10px" }}

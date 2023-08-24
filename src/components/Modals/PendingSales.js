@@ -23,6 +23,7 @@ import OutletService from "../../services/outletService";
 import LPOService from "../../services/lpo";
 import APIs from "../../services/api";
 import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 
 const PendingSales = (props) => {
   const date = new Date();
@@ -36,11 +37,18 @@ const PendingSales = (props) => {
 
   const handleClose = () => props.close(false);
   const [loading, setLoading] = useState(false);
+  const [dateLoader, setDateLoader] = useState(false);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const tankListData = useSelector((state) => state.recordsales.tankList);
 
+  useEffect(() => {
+    return () => dispatch(changeDate(""));
+  }, [dispatch]);
+
   const submit = async () => {
+    if (currentDate === "")
+      return swal("Error", "Please select a valid date", "error");
     setLoading(true);
     const result = await APIs.post("/sales/validateSales", {
       date: currentDate,
@@ -111,6 +119,7 @@ const PendingSales = (props) => {
   };
 
   const getAllRecordDetails = (station, date) => {
+    setDateLoader(true);
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
     const getDate = date === "" ? today : date;
     const mainDate = moment
@@ -176,6 +185,7 @@ const PendingSales = (props) => {
       dispatch(daySupply(supply.data.supply));
       updateTanksWithSupplies(outletTanks, supply.data.supply);
       dispatch(changeDate(getDate));
+      setDateLoader(false);
     });
   };
 
@@ -222,7 +232,22 @@ const PendingSales = (props) => {
 
             <div style={row}>
               <div style={left}>Current date set on </div>
-              <div style={right}>{currentDate}</div>
+              <div style={right}>
+                {dateLoader ? (
+                  <ThreeDots
+                    height="30"
+                    width="50"
+                    radius="9"
+                    color="#076146"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClassName=""
+                    visible={true}
+                  />
+                ) : (
+                  currentDate
+                )}
+              </div>
             </div>
 
             <p style={{ marginTop: "30px", fontWeight: "600" }}>
@@ -258,6 +283,7 @@ const PendingSales = (props) => {
                 ) : null}
               </div>
               <Button
+                disabled={dateLoader}
                 sx={{
                   width: "100px",
                   height: "30px",
