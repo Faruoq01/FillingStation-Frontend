@@ -1,7 +1,7 @@
 import { OutlinedInput } from "@mui/material";
 import ApproximateDecimal from "../common/approx";
 
-const ModalInputControl = ({ value, setValue, type, label, disabled }) => {
+const ModalInputField = ({ value, setValue, type, label, disabled }) => {
   const handleInput = (e) => {
     if (type !== "number") return setValue(e.target.value);
     const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
@@ -45,4 +45,4 @@ const style = {
   },
 };
 
-export default ModalInputControl;
+export default ModalInputField;

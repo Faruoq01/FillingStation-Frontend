@@ -274,10 +274,6 @@ const BankPayment = () => {
     "Zenith Bank",
   ];
 
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
-
   return (
     <div
       style={{
@@ -343,9 +339,9 @@ const BankPayment = () => {
             <div className="input-d">
               <span>Amount Paid</span>
               <input
-                value={amountPaid}
+                value={ApproximateDecimal(amountPaid)}
                 onChange={(e) =>
-                  setAmountPaid(removeSpecialCharacters(e.target.value))
+                  setAmountPaid(e.target.value.replace(/^0|[^.\w\s]/gi, ""))
                 }
                 className="lpo-inputs"
                 type={"text"}

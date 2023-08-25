@@ -13,6 +13,7 @@ import ReactCamera from "../Modals/ReactCamera";
 import { expensesPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 import moment from "moment";
+import ApproximateDecimal from "../common/approx";
 
 const ExpenseComponents = (props) => {
   const gallery = useRef();
@@ -75,10 +76,6 @@ const ExpenseComponents = (props) => {
       setGall(data.data.path);
     });
   };
-
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
 
   const addDetailsToList = () => {
     if (oneStationData === null)
@@ -188,9 +185,9 @@ const ExpenseComponents = (props) => {
               <span>Expense Amount</span>
               <input
                 style={{ width: "98%" }}
-                value={expenseAmount}
+                value={ApproximateDecimal(expenseAmount)}
                 onChange={(e) =>
-                  setExpenseAmount(removeSpecialCharacters(e.target.value))
+                  setExpenseAmount(e.target.value.replace(/^0|[^.\w\s]/gi, ""))
                 }
                 className="lpo-inputs"
                 type={"text"}

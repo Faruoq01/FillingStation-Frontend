@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import IncomingService from "../../services/IncomingService";
-import ModalInputControl from "../controls/ModalInputControl";
 import ModalBackground from "../controls/ModalBackground";
+import ModalInputField from "../controls/ModalInputField";
 
 const IncomingOrderEditModal = (props) => {
   const incomingOrder = useSelector(
@@ -110,42 +110,42 @@ const IncomingOrderEditModal = (props) => {
       submit={submit}
       loading={loading}
       label={"Edit Incoming Order"}>
-      <ModalInputControl
+      <ModalInputField
         value={depotStation}
         setValue={setDepotStation}
         type={"text"}
         label={"Loading Depot"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={transporter}
         setValue={setTransporter}
         type={"text"}
         label={"Transporter"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={destination}
         setValue={setDestination}
         type={"text"}
         label={"Destination"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={quantity}
         setValue={setQuantity}
         type={"number"}
         label={"Quantity"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={dateCreated}
         setValue={setDateCreated}
         type={"date"}
         label={"Date created"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={productOrderID}
         setValue={setProductOrderID}
         type={"text"}
@@ -153,28 +153,28 @@ const IncomingOrderEditModal = (props) => {
         disabled={true}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={truckNo}
         setValue={setTruckNo}
         type={"text"}
         label={"Truck No"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={wayBillNo}
         setValue={setWayBillNo}
         type={"text"}
         label={"Waybill No"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={driverName}
         setValue={setDriverName}
         type={"text"}
         label={"Driver's Name"}
       />
 
-      <ModalInputControl
+      <ModalInputField
         value={phoneNo}
         setValue={setPhoneNumber}
         type={"text"}

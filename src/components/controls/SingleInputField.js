@@ -1,6 +1,6 @@
 import ApproximateDecimal from "../common/approx";
 
-const SingleNumberInput = ({ value, setValue }) => {
+const SingleInputField = ({ value, setValue }) => {
   const handleInput = (e) => {
     const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
     setValue(removeFormat);
@@ -21,4 +21,4 @@ const SingleNumberInput = ({ value, setValue }) => {
   );
 };
 
-export default SingleNumberInput;
+export default SingleInputField;

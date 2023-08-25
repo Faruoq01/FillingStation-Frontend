@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import { creditPayload, lpoPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 import moment from "moment";
-import SingleNumberInput from "../controls/SingleNumberInput";
+import ApproximateDecimal from "../common/approx";
 
 const LPOComponent = (props) => {
   const dispatch = useDispatch();
@@ -276,11 +276,11 @@ const LPOComponent = (props) => {
     dispatch(creditPayload(copyCredit));
   };
 
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
-
   const updateTankWithLPO = (e) => {
+    if (dispenseLpo === null)
+      return swal("Error!", "Please select LPO account", "error");
+
+    const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
     const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));
     const currentLPOs = copyPayload;
 
@@ -299,14 +299,11 @@ const LPOComponent = (props) => {
     }, 0);
     const currentRate =
       productType === "PMS"
-        ? Number(removeSpecialCharacters(e.target.value)) *
-          oneStationData.PMSPrice
+        ? Number(removeFormat) * oneStationData.PMSPrice
         : productType === "AGO"
-        ? Number(removeSpecialCharacters(e.target.value)) *
-          oneStationData.AGOPrice
+        ? Number(removeFormat) * oneStationData.AGOPrice
         : productType === "DPK"
-        ? Number(removeSpecialCharacters(e.target.value)) *
-          oneStationData.DPKPrice
+        ? Number(removeFormat) * oneStationData.DPKPrice
         : 0;
 
     const combinedTotal =
@@ -339,7 +336,7 @@ const LPOComponent = (props) => {
         setQuantity("");
         swal("Warning!", "This selected pump has not been used", "info");
       } else {
-        setQuantity(removeSpecialCharacters(e.target.value));
+        setQuantity(removeFormat);
       }
     }
   };
@@ -607,7 +604,7 @@ const LPOComponent = (props) => {
             <div className="input-d">
               <span style={{ color: "green" }}>Quantity (Litres)</span>
               <input
-                value={quantity}
+                value={ApproximateDecimal(quantity)}
                 onChange={(e) => {
                   updateTankWithLPO(e);
                 }}

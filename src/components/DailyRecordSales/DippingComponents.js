@@ -102,11 +102,8 @@ const DippingComponents = (props) => {
     }
   };
 
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
-
   const setTotalizer = (e, item, index) => {
+    const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
     switch (item.productType) {
       case "PMS": {
         const connectedPumps = selectedPumps.filter(
@@ -125,7 +122,7 @@ const DippingComponents = (props) => {
         let clonedPMS = { ...item };
         clonedPMS = {
           ...clonedPMS,
-          dippingValue: removeSpecialCharacters(e.target.value),
+          dippingValue: removeFormat,
           afterSales: levelAfterSales,
         };
         const newPMSList = [...pms];
@@ -137,7 +134,7 @@ const DippingComponents = (props) => {
           productType: item.productType,
           currentLevel: item.currentLevel,
           tankCapacity: item.tankCapacity,
-          dipping: removeSpecialCharacters(e.target.value),
+          dipping: removeFormat,
           afterSales: levelAfterSales,
           tankName: item.tankName,
           PMSCostPrice: oneStationData.PMSCost,
@@ -184,7 +181,7 @@ const DippingComponents = (props) => {
         let clonedAGO = { ...item };
         clonedAGO = {
           ...clonedAGO,
-          dippingValue: removeSpecialCharacters(e.target.value),
+          dippingValue: removeFormat,
           afterSales: levelAfterSales,
         };
         const newAGOList = [...ago];
@@ -196,7 +193,7 @@ const DippingComponents = (props) => {
           productType: item.productType,
           currentLevel: item.currentLevel,
           tankCapacity: item.tankCapacity,
-          dipping: removeSpecialCharacters(e.target.value),
+          dipping: removeFormat,
           afterSales: levelAfterSales,
           tankName: item.tankName,
           PMSCostPrice: oneStationData.PMSCost,
@@ -242,7 +239,7 @@ const DippingComponents = (props) => {
         let clonedDPK = { ...item };
         clonedDPK = {
           ...clonedDPK,
-          dippingValue: removeSpecialCharacters(e.target.value),
+          dippingValue: removeFormat,
           afterSales: levelAfterSales,
         };
         const newDPKList = [...dpk];
@@ -254,7 +251,7 @@ const DippingComponents = (props) => {
           productType: item.productType,
           currentLevel: item.currentLevel,
           tankCapacity: item.tankCapacity,
-          dipping: removeSpecialCharacters(e.target.value),
+          dipping: removeFormat,
           afterSales: levelAfterSales,
           tankName: item.tankName,
           PMSCostPrice: oneStationData.PMSCost,
@@ -401,7 +398,7 @@ const DippingComponents = (props) => {
                   </div>
 
                   <input
-                    value={item.dippingValue}
+                    value={ApproximateDecimal(item.dippingValue)}
                     onChange={(e) => setTotalizer(e, item, index)}
                     style={imps}
                     type="text"
@@ -461,7 +458,7 @@ const DippingComponents = (props) => {
                   </div>
 
                   <input
-                    value={item.dippingValue}
+                    value={ApproximateDecimal(item.dippingValue)}
                     onChange={(e) => setTotalizer(e, item, index)}
                     style={imps}
                     type="text"
@@ -521,7 +518,7 @@ const DippingComponents = (props) => {
                   </div>
 
                   <input
-                    value={item.dippingValue}
+                    value={ApproximateDecimal(item.dippingValue)}
                     onChange={(e) => setTotalizer(e, item, index)}
                     style={imps}
                     type="text"
