@@ -15,7 +15,7 @@ import {
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
-import { adminOutlet, getAllStations } from "../../store/actions/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import IncomingReport from "../Reports/IncomingReport";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
@@ -43,6 +43,7 @@ const IncomingOrder = () => {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
+  console.log(allOutlets, "all stations");
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
       return { id: user._id };
