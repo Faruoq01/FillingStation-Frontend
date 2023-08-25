@@ -46,8 +46,17 @@ const PendingSales = (props) => {
     return () => dispatch(changeDate(""));
   }, [dispatch]);
 
+  const isValidDateFormat = (dateString) => {
+    const parsedDate = moment(dateString, "YYYY-MM-DD", true);
+    return (
+      parsedDate.isValid() && parsedDate.format("YYYY-MM-DD") === dateString
+    );
+  };
+
   const submit = async () => {
     if (currentDate === "")
+      return swal("Error", "Please select a valid date", "error");
+    if (!isValidDateFormat(currentDate))
       return swal("Error", "Please select a valid date", "error");
     setLoading(true);
     const result = await APIs.post("/sales/validateSales", {
@@ -113,6 +122,8 @@ const PendingSales = (props) => {
     dispatch(changeStation());
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
     const getDate = newValue === "" ? today : newValue.format("YYYY-MM-DD");
+    if (!isValidDateFormat(getDate))
+      return swal("Error", "Please select a valid date", "error");
 
     getAllRecordDetails(oneStationData, getDate);
     return getDate;
@@ -120,12 +131,6 @@ const PendingSales = (props) => {
 
   const getAllRecordDetails = (station, date) => {
     setDateLoader(true);
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-    const getDate = date === "" ? today : date;
-    const mainDate = moment
-      .tz(getDate, user.timezone)
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
 
     const payload = {
       outletID: station._id,
@@ -137,7 +142,7 @@ const PendingSales = (props) => {
     const orgLpo = LPOService.getAllLPO(payload);
     const supply = APIs.post("/supply/dayRecord", {
       ...payload,
-      createdAt: mainDate,
+      createdAt: date,
     });
 
     Promise.all([stationPumps, stationTanks, orgLpo, supply]).then((data) => {
@@ -184,7 +189,7 @@ const PendingSales = (props) => {
       ///////////////// station supplies /////////////////
       dispatch(daySupply(supply.data.supply));
       updateTanksWithSupplies(outletTanks, supply.data.supply);
-      dispatch(changeDate(getDate));
+      dispatch(changeDate(date));
       setDateLoader(false);
     });
   };
