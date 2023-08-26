@@ -29,7 +29,6 @@ const DippingComponents = (props) => {
   const dippingPayloadData = useSelector(
     (state) => state.recordsales.dippingPayload
   );
-  const user = useSelector((state) => state.auth.user);
   const [pms, setPMS] = useState([]);
   const [ago, setAGO] = useState([]);
   const [dpk, setDPK] = useState([]);
@@ -37,10 +36,6 @@ const DippingComponents = (props) => {
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
 
   // const resolveUserID = () => {
   //   if (user.userType === "superAdmin") {
@@ -145,8 +140,8 @@ const DippingComponents = (props) => {
           DPKSellingPrice: oneStationData.DPKPrice,
           outletID: oneStationData._id,
           organizationID: oneStationData.organisation,
-          createdAt: mainDate,
-          updatedAt: mainDate,
+          createdAt: currentDate,
+          updatedAt: currentDate,
         };
 
         const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData)); // Create a deep copy
@@ -204,8 +199,8 @@ const DippingComponents = (props) => {
           DPKSellingPrice: oneStationData.DPKPrice,
           outletID: oneStationData._id,
           organizationID: oneStationData.organisation,
-          createdAt: mainDate,
-          updatedAt: mainDate,
+          createdAt: currentDate,
+          updatedAt: currentDate,
         };
 
         const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData));
@@ -262,8 +257,8 @@ const DippingComponents = (props) => {
           DPKSellingPrice: oneStationData.DPKPrice,
           outletID: oneStationData._id,
           organizationID: oneStationData.organisation,
-          createdAt: mainDate,
-          updatedAt: mainDate,
+          createdAt: currentDate,
+          updatedAt: currentDate,
         };
 
         const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData));

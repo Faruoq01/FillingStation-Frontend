@@ -9,7 +9,6 @@ import { useState } from "react";
 import ApproximateDecimal from "../../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import APIs from "../../../services/api";
-import moment from "moment";
 import OutletService from "../../../services/outletService";
 import { setTankList } from "../../../storage/comprehensive";
 
@@ -108,10 +107,6 @@ const ReturnToTankModal = (props) => {
   const recordSales = useSelector((state) => state.comprehensive.rtMetrics);
 
   const [defaultState, setDefaultState] = useState(0);
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -272,7 +267,7 @@ const ReturnToTankModal = (props) => {
       return swal("Error", "Please enter correct details!", "error");
     setLoading(true);
 
-    const rtLoad = getRTLoad(reading, oneStationData, currentPump, mainDate);
+    const rtLoad = getRTLoad(reading, oneStationData, currentPump, currentDate);
 
     const data = {
       sales: payload.sales,
@@ -404,7 +399,7 @@ const ReturnToTankModal = (props) => {
   );
 };
 
-const getRTLoad = (reading, oneStationData, currentPump, mainDate) => {
+const getRTLoad = (reading, oneStationData, currentPump, currentDate) => {
   return {
     rtLitre: reading,
     PMSCost: oneStationData.PMSCost,
@@ -420,8 +415,8 @@ const getRTLoad = (reading, oneStationData, currentPump, mainDate) => {
     tankName: currentPump.tankName,
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
-    createdAt: mainDate,
-    updatedAt: mainDate,
+    createdAt: currentDate,
+    updatedAt: currentDate,
   };
 };
 

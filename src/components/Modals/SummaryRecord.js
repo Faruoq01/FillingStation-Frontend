@@ -18,7 +18,6 @@ import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import SalesService from "../../services/sales";
 import APIs from "../../services/api";
-import moment from "moment";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
@@ -222,7 +221,6 @@ const ReturnToTank = (props) => {
 };
 
 const SummaryRecord = (props) => {
-  const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => props.close(false);
@@ -260,10 +258,6 @@ const SummaryRecord = (props) => {
   const daySupplyData = useSelector((state) => state.supply.daySupply);
   const tankList = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
   // console.log(typeof currentDate, "date");
   // console.log(selectedPumps, "Pumps");
   // console.log(selectedTanks, "Tanks");
@@ -351,7 +345,7 @@ const SummaryRecord = (props) => {
       const afterSales =
         data.afterSales === 0 ? data.currentLevel : data.afterSales;
       const updatedTank = { ...data, afterSales: afterSales };
-      const oneTank = getTankLevelsPayload(updatedTank, mainDate);
+      const oneTank = getTankLevelsPayload(updatedTank, currentDate);
       return oneTank;
     });
     dispatch(tanksPayload(shuttled));
@@ -376,7 +370,7 @@ const SummaryRecord = (props) => {
 
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const salesPayload = getSalesPayload(tank, pump, mainDate);
+        const salesPayload = getSalesPayload(tank, pump, currentDate);
         const pumpPayload = getPumpPayloads(pump);
         const tankPayload = getTankPayloads(tank);
 
@@ -413,7 +407,7 @@ const SummaryRecord = (props) => {
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
         if (pump.RTlitre !== 0) {
-          const rt = getRTPayload(tank, pump, mainDate);
+          const rt = getRTPayload(tank, pump, currentDate);
           rtList.push(rt);
         }
       }
@@ -435,7 +429,7 @@ const SummaryRecord = (props) => {
     }
     const getArraysOfCF = Object.values(selectedProducts);
     const balanceCFData = getArraysOfCF.map((data) => {
-      const done = getBalanceCF(data, mainDate);
+      const done = getBalanceCF(data, currentDate);
       return done;
     });
     dispatch(balanceCF(balanceCFData));
@@ -452,7 +446,7 @@ const SummaryRecord = (props) => {
     setLoading(true);
 
     const result = await APIs.post("/sales/validateSales", {
-      date: mainDate,
+      date: currentDate,
       organizationID: oneStationData.organisation,
       outletID: oneStationData._id,
     }).then((data) => {
@@ -464,7 +458,7 @@ const SummaryRecord = (props) => {
       swal("Error!", "Record has been saved for this day already!", "error");
     } else {
       const settings = {
-        currentDate: mainDate,
+        currentDate: currentDate,
       };
       const payload = [
         SalesService.pumpUpdate({
@@ -959,7 +953,7 @@ const getTankPayloads = (tank) => {
   };
 };
 
-const getRTPayload = (tank, pump, mainDate) => {
+const getRTPayload = (tank, pump, currentDate) => {
   return {
     rtLitre: pump.RTlitre,
     PMSCost: tank.outlet.PMSCost,
@@ -975,12 +969,12 @@ const getRTPayload = (tank, pump, mainDate) => {
     tankName: tank.tankName,
     outletID: tank.outletID,
     organizationID: tank.organisationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
+    createdAt: currentDate,
+    updatedAt: currentDate,
   };
 };
 
-const getTankLevelsPayload = (level, mainDate) => {
+const getTankLevelsPayload = (level, currentDate) => {
   return {
     currentLevel: level.currentLevel,
     tankName: level.tankName,
@@ -990,20 +984,20 @@ const getTankLevelsPayload = (level, mainDate) => {
     outletID: level.outletID,
     tankID: level._id,
     organizationID: level.organisationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
+    createdAt: currentDate,
+    updatedAt: currentDate,
   };
 };
 
-const getBalanceCF = (sales, mainDate) => {
+const getBalanceCF = (sales, currentDate) => {
   return {
     balanceCF: sales.balanceCF,
     initialState: "0",
     productType: sales.productType,
     outletID: sales.outletID,
     organizationID: sales.organisationID,
-    createdAt: mainDate,
-    updatedAt: mainDate,
+    createdAt: currentDate,
+    updatedAt: currentDate,
   };
 };
 

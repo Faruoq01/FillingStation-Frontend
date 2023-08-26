@@ -28,12 +28,7 @@ const BankPayment = () => {
   const bankPayloadData = useSelector((state) => state.recordsales.bankPayload);
   const posPayloadData = useSelector((state) => state.recordsales.posPayload);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
-  const user = useSelector((state) => state.auth.user);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
 
   const [bankName, setBankName] = useState("");
   const [tellerID, setTellerID] = useState("");
@@ -108,8 +103,8 @@ const BankPayment = () => {
       attachApproval: getImage(),
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
-      createdAt: mainDate,
-      updatedAt: mainDate,
+      createdAt: currentDate,
+      updatedAt: currentDate,
     };
 
     const copyBank = JSON.parse(JSON.stringify(bankPayloadData));

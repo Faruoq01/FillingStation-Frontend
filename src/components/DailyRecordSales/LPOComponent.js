@@ -14,13 +14,11 @@ import config from "../../constants";
 import { useEffect } from "react";
 import { creditPayload, lpoPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
-import moment from "moment";
 import ApproximateDecimal from "../common/approx";
 
 const LPOComponent = (props) => {
   const dispatch = useDispatch();
   const gallery = useRef();
-  const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const lpos = useSelector((state) => state.recordsales.lpo);
@@ -36,10 +34,6 @@ const LPOComponent = (props) => {
   const creditPayloadData = useSelector(
     (state) => state.recordsales.creditPayload
   );
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
   // console.log(lpoPayloadData, "lpo payload");
   // console.log(creditPayloadData, "lpo payload");
 
@@ -235,8 +229,8 @@ const LPOComponent = (props) => {
       station: oneStationData?.outletName + " " + oneStationData.alias,
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
-      createdAt: mainDate,
-      updatedAt: mainDate,
+      createdAt: currentDate,
+      updatedAt: currentDate,
     };
 
     const creditPay = {
@@ -247,8 +241,8 @@ const LPOComponent = (props) => {
       org: oneStationData?.organisation,
       outletID: oneStationData._id,
       truckNo: truckNo,
-      createdAt: mainDate,
-      updatedAt: mainDate,
+      createdAt: currentDate,
+      updatedAt: currentDate,
     };
 
     const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));

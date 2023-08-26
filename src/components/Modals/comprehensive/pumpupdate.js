@@ -9,7 +9,6 @@ import { useState } from "react";
 import ApproximateDecimal from "../../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import APIs from "../../../services/api";
-import moment from "moment";
 import OutletService from "../../../services/outletService";
 import {
   setPumpList,
@@ -128,10 +127,6 @@ const PumpUpdate = (props) => {
   const supplyListData = useSelector((state) => state.comprehensive.supplyList);
 
   const [defaultState, setDefaultState] = useState(0);
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -186,7 +181,7 @@ const PumpUpdate = (props) => {
     const stationTanks = OutletService.getAllOutletTanks(payload);
     const stationSupply = APIs.post("/supply/dayRecord", {
       ...payload,
-      createdAt: mainDate,
+      createdAt: currentDate,
     });
 
     Promise.all([stationPumps, stationTanks, stationSupply]).then((data) => {

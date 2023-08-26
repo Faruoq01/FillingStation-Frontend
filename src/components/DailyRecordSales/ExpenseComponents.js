@@ -23,17 +23,12 @@ const ExpenseComponents = (props) => {
   const [reg, setReg] = useState(false);
 
   /////////////////////////////////////////////////////////////
-  const user = useSelector((state) => state.auth.user);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
   const expensesPayloadData = useSelector(
     (state) => state.recordsales.expensesPayload
   );
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const mainDate = moment
-    .tz(currentDate, user.timezone)
-    .format("YYYY-MM-DD HH:mm:ss")
-    .split(" ")[0];
 
   console.log(selectedPumps, "selected pumps");
   console.log(selectedTanks, "selected tanks");
@@ -111,8 +106,8 @@ const ExpenseComponents = (props) => {
       attachApproval: getImage(),
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
-      createdAt: mainDate,
-      updatedAt: mainDate,
+      createdAt: currentDate,
+      updatedAt: currentDate,
     };
 
     const copyExpenses = JSON.parse(JSON.stringify(expensesPayloadData));

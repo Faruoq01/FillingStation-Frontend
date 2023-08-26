@@ -263,8 +263,6 @@ const DailyRecordSales = () => {
     if (pages <= 6) {
       if (oneStationData === null)
         return swal("Warning!", "Please select a station first", "info");
-      if (typeof currentDate !== "string")
-        return swal("Error", "Please select record date", "error");
       if (!getPerm("3") && pages === 1)
         return swal("Warning!", "Permission denied", "info");
       if (!getPerm("4") && pages === 2)
@@ -350,10 +348,6 @@ const DailyRecordSales = () => {
   const getAllRecordDetails = (station, date) => {
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
     const getDate = date === "" ? today : date;
-    const mainDate = moment
-      .tz(getDate, user.timezone)
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
 
     const payload = {
       outletID: station._id,
@@ -365,7 +359,7 @@ const DailyRecordSales = () => {
     const orgLpo = LPOService.getAllLPO(payload);
     const supply = APIs.post("/supply/dayRecord", {
       ...payload,
-      createdAt: mainDate,
+      createdAt: getDate,
     });
 
     Promise.all([stationPumps, stationTanks, orgLpo, supply]).then((data) => {
