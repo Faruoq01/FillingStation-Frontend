@@ -35,8 +35,25 @@ import activeGrid from "../../assets/activeGrid.png";
 import inactiveGrid from "../../assets/inactiveGrid.png";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
+import TablePageBackground from "../controls/PageLayout/TablePageBackground";
+import TableNavigation from "../controls/PageLayout/TableNavigation";
+import {
+  DesktopTableRows,
+  TableViewForDesktop,
+} from "../controls/PageLayout/TableViewForDesktop";
 
 const mobile = window.matchMedia("(max-width: 600px)");
+
+const columns = [
+  "S/N",
+  "Name",
+  "Outlet Code",
+  "No Of Tanks",
+  "No Of Pumps",
+  "Alias",
+  "City",
+  "Actions",
+];
 
 const Outlets = (props) => {
   const history = useHistory();
@@ -133,21 +150,21 @@ const Outlets = (props) => {
     setSearchKey(data);
   };
 
-  const getStations = (data) => {
-    const stationsCopy = [...data];
+  // const getStations = (data) => {
+  //   const stationsCopy = [...data];
 
-    if (searchKey === "") {
-      return stationsCopy;
-    } else {
-      const search = stationsCopy.filter(
-        (data) =>
-          !data.outletName.toUpperCase().indexOf(searchKey.toUpperCase()) ||
-          !data.alias.toUpperCase().indexOf(searchKey.toUpperCase()) ||
-          !data.city.toUpperCase().indexOf(searchKey.toUpperCase())
-      );
-      return search;
-    }
-  };
+  //   if (searchKey === "") {
+  //     return stationsCopy;
+  //   } else {
+  //     const search = stationsCopy.filter(
+  //       (data) =>
+  //         !data.outletName.toUpperCase().indexOf(searchKey.toUpperCase()) ||
+  //         !data.alias.toUpperCase().indexOf(searchKey.toUpperCase()) ||
+  //         !data.city.toUpperCase().indexOf(searchKey.toUpperCase())
+  //     );
+  //     return search;
+  //   }
+  // };
 
   const CardItem = (props) => {
     return (
@@ -213,420 +230,368 @@ const Outlets = (props) => {
     history.push("/home/history");
   };
 
+  const Action = ({ item }) => {
+    return (
+      <div className="actions">
+        <img
+          onClick={() => {
+            goToSales(item);
+          }}
+          style={{ width: "27px", height: "27px" }}
+          src={eye}
+          alt="icon"
+        />
+        <img
+          onClick={() => {
+            goToPumps(item);
+          }}
+          style={{ width: "27px", height: "27px" }}
+          src={filling}
+          alt="icon"
+        />
+        <img
+          onClick={() => {
+            goToTanks(item);
+          }}
+          style={{ width: "27px", height: "27px" }}
+          src={tan}
+          alt="icon"
+        />
+      </div>
+    );
+  };
+
   return (
     <>
       {props.activeRoute.split("/").length === 3 && (
-        <div data-aos="zoom-in-down" className="paymentsCaontainer">
-          <div className="inner-pay">
-            {open === 1 && (
-              <CreateFillingStation getStations={getAllStationData} />
-            )}
-            {open === 4 && <AddTankSuccess />}
-            {open === 5 && <AddPumpSuccess />}
-            {open === 6 && <AddPumpMore />}
-            {prints && (
-              <PrintOutLetsModal
-                allOutlets={allOutlets}
-                open={prints}
-                close={setPrints}
-              />
-            )}
-            <div className="action">
-              <div style={{ width: "150px" }} className="butt2">
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={10}
+        <TablePageBackground>
+          {open === 1 && (
+            <CreateFillingStation getStations={getAllStationData} />
+          )}
+          {open === 4 && <AddTankSuccess />}
+          {open === 5 && <AddPumpSuccess />}
+          {open === 6 && <AddPumpMore />}
+          {prints && (
+            <PrintOutLetsModal
+              allOutlets={allOutlets}
+              open={prints}
+              close={setPrints}
+            />
+          )}
+          <div className="action">
+            <div style={{ width: "150px" }} className="butt2">
+              <Select
+                labelId="demo-select-small"
+                id="demo-select-small"
+                value={10}
+                sx={{
+                  ...selectStyle2,
+                  backgroundColor: "#06805B",
+                  color: "#fff",
+                  fontSize: "12px",
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    border: "1px solid #777777",
+                  },
+                }}>
+                <MenuItem style={menu} value={10}>
+                  Action
+                </MenuItem>
+                <MenuItem
+                  style={menu}
+                  onClick={() => {
+                    handleOpenModal(1);
+                  }}
+                  value={20}>
+                  Create new filling station
+                </MenuItem>
+                <MenuItem style={menu} onClick={printTable} value={30}>
+                  Download PDF
+                </MenuItem>
+                <MenuItem style={menu} onClick={preview} value={40}>
+                  Print
+                </MenuItem>
+              </Select>
+            </div>
+          </div>
+
+          <div className="search">
+            <div className="input-cont">
+              <div className="second-select">
+                <OutlinedInput
+                  placeholder="Search"
                   sx={{
-                    ...selectStyle2,
-                    backgroundColor: "#06805B",
-                    color: "#fff",
+                    width: "100%",
+                    height: "35px",
                     fontSize: "12px",
+                    background: "#F2F1F1",
+                    color: "#000",
+                    borderRadius: "0px",
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                       border: "1px solid #777777",
                     },
-                  }}>
-                  <MenuItem style={menu} value={10}>
-                    Action
-                  </MenuItem>
-                  <MenuItem
-                    style={menu}
-                    onClick={() => {
-                      handleOpenModal(1);
-                    }}
-                    value={20}>
-                    Create new filling station
-                  </MenuItem>
-                  <MenuItem style={menu} onClick={printTable} value={30}>
-                    Download PDF
-                  </MenuItem>
-                  <MenuItem style={menu} onClick={preview} value={40}>
-                    Print
-                  </MenuItem>
-                </Select>
+                  }}
+                  onChange={(e) => {
+                    searchStation(e.target.value);
+                  }}
+                />
               </div>
             </div>
+            <div style={{ width: "190px" }} className="butt">
+              <Button
+                sx={{
+                  width: "100%",
+                  height: "30px",
+                  background: "#427BBE",
+                  borderRadius: "0px",
+                  fontSize: "12px",
+                  textTransform: "capitalize",
+                  "&:hover": {
+                    backgroundColor: "#427BBE",
+                  },
+                }}
+                onClick={() => {
+                  handleOpenModal(1);
+                }}
+                variant="contained">
+                {" "}
+                Create new filling station
+              </Button>
+            </div>
+          </div>
 
-            <div className="search">
-              <div className="input-cont">
-                <div className="second-select">
-                  <OutlinedInput
-                    placeholder="Search"
-                    sx={{
-                      width: "100%",
-                      height: "35px",
-                      fontSize: "12px",
-                      background: "#F2F1F1",
-                      color: "#000",
-                      borderRadius: "0px",
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        border: "1px solid #777777",
-                      },
+          <div className="search2">
+            <div className="butt2">
+              <Select
+                labelId="demo-select-small"
+                id="demo-select-small"
+                value={10}
+                sx={{ ...selectStyle2, borderRadius: "0px" }}>
+                <MenuItem style={menu} value={10}>
+                  Show entries
+                </MenuItem>
+                <MenuItem style={menu} value={20}>
+                  Twenty
+                </MenuItem>
+                <MenuItem style={menu} value={30}>
+                  Thirty
+                </MenuItem>
+              </Select>
+            </div>
+            <div
+              style={{
+                width: mobile.matches ? "100%" : "295px",
+                marginTop: mobile.matches ? "20px" : "auto",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+              className="input-cont2">
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {switchTabs || (
+                  <img
+                    onClick={changeSwitch}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      marginRight: "6px",
                     }}
-                    onChange={(e) => {
-                      searchStation(e.target.value);
-                    }}
+                    src={activeList}
+                    alt="icon"
                   />
-                </div>
+                )}
+                {switchTabs && (
+                  <img
+                    onClick={changeSwitch}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      marginRight: "6px",
+                    }}
+                    src={inactiveList}
+                    alt="icon"
+                  />
+                )}
+                {switchTabs || (
+                  <img
+                    onClick={changeSwitch}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      marginRight: "6px",
+                    }}
+                    src={inactiveGrid}
+                    alt="icon"
+                  />
+                )}
+                {switchTabs && (
+                  <img
+                    onClick={changeSwitch}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      marginRight: "6px",
+                    }}
+                    src={activeGrid}
+                    alt="icon"
+                  />
+                )}
               </div>
-              <div style={{ width: "190px" }} className="butt">
+              <div className="second-select2">
+                <Button
+                  sx={{
+                    width: "120px",
+                    height: "30px",
+                    background: "#58A0DF",
+                    borderRadius: "0px",
+                    fontSize: "10px",
+                    "&:hover": {
+                      backgroundColor: "#58A0DF",
+                    },
+                  }}
+                  onClick={goToHistory}
+                  variant="contained">
+                  {" "}
+                  History
+                </Button>
+              </div>
+              <div className="second-select3">
                 <Button
                   sx={{
                     width: "100%",
                     height: "30px",
-                    background: "#427BBE",
+                    background: "#F36A4C",
                     borderRadius: "0px",
-                    fontSize: "12px",
-                    textTransform: "capitalize",
+                    fontSize: "10px",
                     "&:hover": {
-                      backgroundColor: "#427BBE",
+                      backgroundColor: "#F36A4C",
                     },
                   }}
-                  onClick={() => {
-                    handleOpenModal(1);
-                  }}
+                  onClick={preview}
                   variant="contained">
                   {" "}
-                  Create new filling station
+                  Print
                 </Button>
               </div>
             </div>
+          </div>
 
-            <div className="search2">
-              <div className="butt2">
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={10}
-                  sx={{ ...selectStyle2, borderRadius: "0px" }}>
-                  <MenuItem style={menu} value={10}>
-                    Show entries
-                  </MenuItem>
-                  <MenuItem style={menu} value={20}>
-                    Twenty
-                  </MenuItem>
-                  <MenuItem style={menu} value={30}>
-                    Thirty
-                  </MenuItem>
-                </Select>
-              </div>
-              <div
-                style={{
-                  width: mobile.matches ? "100%" : "295px",
-                  marginTop: mobile.matches ? "20px" : "auto",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-                className="input-cont2">
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  {switchTabs || (
-                    <img
-                      onClick={changeSwitch}
-                      style={{
-                        width: "30px",
-                        height: "30px",
-                        marginRight: "6px",
-                      }}
-                      src={activeList}
-                      alt="icon"
-                    />
-                  )}
-                  {switchTabs && (
-                    <img
-                      onClick={changeSwitch}
-                      style={{
-                        width: "30px",
-                        height: "30px",
-                        marginRight: "6px",
-                      }}
-                      src={inactiveList}
-                      alt="icon"
-                    />
-                  )}
-                  {switchTabs || (
-                    <img
-                      onClick={changeSwitch}
-                      style={{
-                        width: "30px",
-                        height: "30px",
-                        marginRight: "6px",
-                      }}
-                      src={inactiveGrid}
-                      alt="icon"
-                    />
-                  )}
-                  {switchTabs && (
-                    <img
-                      onClick={changeSwitch}
-                      style={{
-                        width: "30px",
-                        height: "30px",
-                        marginRight: "6px",
-                      }}
-                      src={activeGrid}
-                      alt="icon"
-                    />
-                  )}
-                </div>
-                <div className="second-select2">
-                  <Button
-                    sx={{
-                      width: "120px",
-                      height: "30px",
-                      background: "#58A0DF",
-                      borderRadius: "0px",
-                      fontSize: "10px",
-                      "&:hover": {
-                        backgroundColor: "#58A0DF",
-                      },
-                    }}
-                    onClick={goToHistory}
-                    variant="contained">
-                    {" "}
-                    History
-                  </Button>
-                </div>
-                <div className="second-select3">
-                  <Button
-                    sx={{
-                      width: "100%",
-                      height: "30px",
-                      background: "#F36A4C",
-                      borderRadius: "0px",
-                      fontSize: "10px",
-                      "&:hover": {
-                        backgroundColor: "#F36A4C",
-                      },
-                    }}
-                    onClick={preview}
-                    variant="contained">
-                    {" "}
-                    Print
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {!switchTabs ? (
-              mobile.matches ? (
-                !loading ? (
-                  allOutlets.length === 0 ? (
-                    <div style={place}>No data</div>
-                  ) : (
-                    getStations(allOutlets).map((item, index) => {
-                      return (
-                        <div key={index} className="mobile-table-container">
-                          <div className="inner-container">
-                            <div className="row">
-                              <div className="left-text">
-                                <div className="heads">{item.outletName}</div>
-                                <div className="foots">Station Name</div>
-                              </div>
-                              <div className="right-text">
-                                <div className="heads">{item.noOfTanks}</div>
-                                <div className="foots">No Of Tanks</div>
-                              </div>
+          {!switchTabs ? (
+            mobile.matches ? (
+              !loading ? (
+                allOutlets.length === 0 ? (
+                  <div style={place}>No data</div>
+                ) : (
+                  allOutlets.map((item, index) => {
+                    return (
+                      <div key={index} className="mobile-table-container">
+                        <div className="inner-container">
+                          <div className="row">
+                            <div className="left-text">
+                              <div className="heads">{item.outletName}</div>
+                              <div className="foots">Station Name</div>
                             </div>
-
-                            <div className="row">
-                              <div className="left-text">
-                                <div className="heads">{item.alias}</div>
-                                <div className="foots">Alias</div>
-                              </div>
-                              <div className="right-text">
-                                <div className="heads">{item.noOfPumps}</div>
-                                <div className="foots">No Of Pumps</div>
-                              </div>
+                            <div className="right-text">
+                              <div className="heads">{item.noOfTanks}</div>
+                              <div className="foots">No Of Tanks</div>
                             </div>
+                          </div>
 
-                            <div className="row">
-                              <div className="left-text">
-                                <div className="heads">{item.state}</div>
-                                <div className="foots">State</div>
-                              </div>
-                              <div
-                                style={{ justifyContent: "center" }}
-                                className="right-text">
-                                <div className="actions">
-                                  <img
-                                    onClick={() => {
-                                      goToSales(item);
-                                    }}
-                                    style={{
-                                      width: "27px",
-                                      height: "27px",
-                                      marginRight: "7px",
-                                    }}
-                                    src={eye}
-                                    alt="icon"
-                                  />
-                                  <img
-                                    onClick={() => {
-                                      goToPumps(item);
-                                    }}
-                                    style={{
-                                      width: "27px",
-                                      height: "27px",
-                                      marginRight: "7px",
-                                    }}
-                                    src={filling}
-                                    alt="icon"
-                                  />
-                                  <img
-                                    onClick={() => {
-                                      goToTanks(item);
-                                    }}
-                                    style={{ width: "27px", height: "27px" }}
-                                    src={tan}
-                                    alt="icon"
-                                  />
-                                </div>
+                          <div className="row">
+                            <div className="left-text">
+                              <div className="heads">{item.alias}</div>
+                              <div className="foots">Alias</div>
+                            </div>
+                            <div className="right-text">
+                              <div className="heads">{item.noOfPumps}</div>
+                              <div className="foots">No Of Pumps</div>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="left-text">
+                              <div className="heads">{item.state}</div>
+                              <div className="foots">State</div>
+                            </div>
+                            <div
+                              style={{ justifyContent: "center" }}
+                              className="right-text">
+                              <div className="actions">
+                                <img
+                                  onClick={() => {
+                                    goToSales(item);
+                                  }}
+                                  style={{
+                                    width: "27px",
+                                    height: "27px",
+                                    marginRight: "7px",
+                                  }}
+                                  src={eye}
+                                  alt="icon"
+                                />
+                                <img
+                                  onClick={() => {
+                                    goToPumps(item);
+                                  }}
+                                  style={{
+                                    width: "27px",
+                                    height: "27px",
+                                    marginRight: "7px",
+                                  }}
+                                  src={filling}
+                                  alt="icon"
+                                />
+                                <img
+                                  onClick={() => {
+                                    goToTanks(item);
+                                  }}
+                                  style={{ width: "27px", height: "27px" }}
+                                  src={tan}
+                                  alt="icon"
+                                />
                               </div>
                             </div>
                           </div>
                         </div>
-                      );
-                    })
-                  )
-                ) : (
-                  <div style={load}>
-                    <ThreeDots
-                      height="60"
-                      width="50"
-                      radius="9"
-                      color="#076146"
-                      ariaLabel="three-dots-loading"
-                      wrapperStyle={{}}
-                      wrapperClassName=""
-                      visible={true}
-                    />
-                  </div>
+                      </div>
+                    );
+                  })
                 )
               ) : (
-                <div ref={tablePrints} className="table-container">
-                  <div className="table-head">
-                    <div className="column">S/N</div>
-                    <div className="column">State</div>
-                    <div className="column">Name</div>
-                    <div className="column">Outlet Code</div>
-                    <div className="column">No of Tanks</div>
-                    <div className="column">No of Pumps</div>
-                    <div className="column">Alias</div>
-                    <div className="column">city</div>
-                    <div className="column">Actions</div>
-                  </div>
-
-                  {!loading ? (
-                    allOutlets.length === 0 ? (
-                      <div style={place}>No data</div>
-                    ) : (
-                      getStations(allOutlets).map((item, index) => {
-                        return (
-                          <div key={index} className="row-container">
-                            <div className="table-head2">
-                              <div className="column">{index + 1}</div>
-                              <div className="column">{item.state}</div>
-                              <div className="column">{item.outletName}</div>
-                              <div className="column">
-                                {item._id.substring(0, 6)}
-                              </div>
-                              <div className="column">{item.noOfTanks}</div>
-                              <div className="column">{item.noOfPumps}</div>
-                              <div className="column">{item.alias}</div>
-                              <div className="column">{item.city}</div>
-                              <div className="column">
-                                <div className="actions">
-                                  <img
-                                    onClick={() => {
-                                      goToSales(item);
-                                    }}
-                                    style={{ width: "27px", height: "27px" }}
-                                    src={eye}
-                                    alt="icon"
-                                  />
-                                  <img
-                                    onClick={() => {
-                                      goToPumps(item);
-                                    }}
-                                    style={{ width: "27px", height: "27px" }}
-                                    src={filling}
-                                    alt="icon"
-                                  />
-                                  <img
-                                    onClick={() => {
-                                      goToTanks(item);
-                                    }}
-                                    style={{ width: "27px", height: "27px" }}
-                                    src={tan}
-                                    alt="icon"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })
-                    )
-                  ) : (
-                    <div style={load}>
-                      <ThreeDots
-                        height="60"
-                        width="50"
-                        radius="9"
-                        color="#076146"
-                        ariaLabel="three-dots-loading"
-                        wrapperStyle={{}}
-                        wrapperClassName=""
-                        visible={true}
-                      />
-                    </div>
-                  )}
+                <div style={load}>
+                  <ThreeDots
+                    height="60"
+                    width="50"
+                    radius="9"
+                    color="#076146"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClassName=""
+                    visible={true}
+                  />
                 </div>
               )
             ) : (
-              <div className="gridCard">
-                {allOutlets.length === 0 ? (
-                  <div style={place}>No data</div>
-                ) : (
-                  getStations(allOutlets).map((item, index) => {
-                    return <CardItem data={item} index={index} />;
-                  })
-                )}
-              </div>
-            )}
-
-            <div className="footer">
-              <div style={{ fontSize: "12px" }}>
-                Showing 1 to 11 of 38 entries
-              </div>
-              <div className="nav">
-                <button className="but">Previous</button>
-                <div className="num">1</div>
-                <button className="but2">Next</button>
-              </div>
+              <TableViewForDesktop columns={columns} ref={tablePrints}>
+                <DesktopTableRows
+                  rows={allOutlets}
+                  Action={Action}
+                  loading={loading}
+                />
+              </TableViewForDesktop>
+            )
+          ) : (
+            <div className="gridCard">
+              {allOutlets.length === 0 ? (
+                <div style={place}>No data</div>
+              ) : (
+                allOutlets.map((item, index) => {
+                  return <CardItem data={item} index={index} />;
+                })
+              )}
             </div>
-          </div>
-        </div>
+          )}
+
+          <TableNavigation />
+        </TablePageBackground>
       )}
 
       {props.activeRoute.split("/").length === 4 && (

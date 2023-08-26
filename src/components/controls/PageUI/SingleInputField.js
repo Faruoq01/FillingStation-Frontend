@@ -1,4 +1,4 @@
-import ApproximateDecimal from "../common/approx";
+import ApproximateDecimal from "../../common/approx";
 
 const SingleInputField = ({ value, setValue }) => {
   const handleInput = (e) => {

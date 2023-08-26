@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import IncomingService from "../../services/IncomingService";
-import ModalBackground from "../controls/ModalBackground";
-import ModalInputField from "../controls/ModalInputField";
+import ModalBackground from "../controls/Modal/ModalBackground";
+import ModalInputField from "../controls/Modal/ModalInputField";
 
 const IncomingOrderEditModal = (props) => {
   const incomingOrder = useSelector(

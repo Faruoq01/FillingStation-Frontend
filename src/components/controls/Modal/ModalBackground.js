@@ -1,6 +1,6 @@
 import { Button, Modal } from "@mui/material";
 import { ThreeDots } from "react-loader-spinner";
-import close from "../../assets/close.png";
+import close from "../../../assets/close.png";
 
 const ModalBackground = ({
   children,

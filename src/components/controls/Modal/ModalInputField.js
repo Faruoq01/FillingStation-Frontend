@@ -1,5 +1,5 @@
 import { OutlinedInput } from "@mui/material";
-import ApproximateDecimal from "../common/approx";
+import ApproximateDecimal from "../../common/approx";
 
 const ModalInputField = ({ value, setValue, type, label, disabled }) => {
   const handleInput = (e) => {
