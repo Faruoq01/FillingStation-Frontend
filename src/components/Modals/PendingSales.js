@@ -39,12 +39,13 @@ const PendingSales = (props) => {
   const [loading, setLoading] = useState(false);
   const [dateLoader, setDateLoader] = useState(false);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.recordsales.currentDate);
   const tankListData = useSelector((state) => state.recordsales.tankList);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
 
   useEffect(() => {
-    return () => dispatch(changeDate(""));
-  }, [dispatch]);
+    dispatch(changeDate(""));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isValidDateFormat = (dateString) => {
     const parsedDate = moment(dateString, "YYYY-MM-DD", true);
@@ -205,6 +206,7 @@ const PendingSales = (props) => {
   };
 
   const goToSales = () => {
+    dispatch(changeDate(""));
     history.push("/home");
   };
 

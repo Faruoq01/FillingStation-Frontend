@@ -258,7 +258,8 @@ const SummaryRecord = (props) => {
   const daySupplyData = useSelector((state) => state.supply.daySupply);
   const tankList = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  // console.log(typeof currentDate, "date");
+  // console.log(currentDate, "date");
+  // console.log(dippingPayloadData, "dipping");
   // console.log(selectedPumps, "Pumps");
   // console.log(selectedTanks, "Tanks");
 

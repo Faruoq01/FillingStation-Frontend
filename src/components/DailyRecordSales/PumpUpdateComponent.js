@@ -30,8 +30,8 @@ const PumpUpdateComponent = (props) => {
   const DPK = useSelector((state) => state.recordsales.DPK);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
 
-  console.log(selectedPumps, "selected pumps");
-  console.log(selectedTanks, "selected tanks");
+  // console.log(selectedPumps, "selected pumps");
+  // console.log(selectedTanks, "selected tanks");
   // console.log(daySupply, "supplies");
   // console.log(tankListData, "tank list");
 

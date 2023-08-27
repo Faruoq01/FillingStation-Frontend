@@ -248,12 +248,12 @@ const DailyRecordSales = () => {
     dispatch(tanksPayload([]));
     dispatch(tankList([]));
     dispatch(daySupply([]));
-    dispatch(changeDate(""));
   }, [dispatch]);
 
   useEffect(() => {
     resetAllVariables();
-  }, [oneStationData, resetAllVariables]);
+    return () => dispatch(changeDate(""));
+  }, [dispatch, oneStationData, resetAllVariables]);
 
   useEffect(() => {
     getAllInitialRecords();
