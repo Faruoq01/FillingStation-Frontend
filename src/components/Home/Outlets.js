@@ -34,13 +34,20 @@ import inactiveList from "../../assets/inactiveList.png";
 import activeGrid from "../../assets/activeGrid.png";
 import inactiveGrid from "../../assets/inactiveGrid.png";
 import swal from "sweetalert";
-import { ThreeDots } from "react-loader-spinner";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import {
+  DesktopTableCell,
+  DesktopTableRowContainer,
   DesktopTableRows,
   TableViewForDesktop,
 } from "../controls/PageLayout/TableViewForDesktop";
+import {
+  MobileTableCell,
+  MobileTableRows,
+  TableViewForMobile,
+} from "../controls/PageLayout/TableViewForMobile";
+import CardItem from "../Outlet/CardItem";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -166,66 +173,6 @@ const Outlets = (props) => {
   //   }
   // };
 
-  const CardItem = (props) => {
-    return (
-      <div
-        style={{ width: mobile.matches ? "100%" : "auto" }}
-        key={props.index}
-        className="cardRapper">
-        <div
-          style={{ width: mobile.matches ? "94%" : "auto" }}
-          className="cardItem">
-          <div className="inner">
-            <div className="row">
-              <div className="rowdata">License Code</div>
-              <div className="detail">{props.data.licenseCode}</div>
-            </div>
-            <div style={{ marginTop: "10px" }} className="row">
-              <div className="rowdata">Name</div>
-              <div className="detail">{props.data.outletName}</div>
-            </div>
-            <div style={{ marginTop: "10px" }} className="row">
-              <div className="rowdata">Outlet Code</div>
-              <div className="detail">{props.data._id}</div>
-            </div>
-            <div style={{ marginTop: "10px" }} className="row">
-              <div className="rowdata">No Of Tanks</div>
-              <div className="detail">{props.data.noOfTanks}</div>
-            </div>
-            <div style={{ marginTop: "10px" }} className="row">
-              <div className="rowdata">No Of Pumps</div>
-              <div className="detail">{props.data.noOfPumps}</div>
-            </div>
-            <div style={{ marginTop: "10px" }} className="row">
-              <div className="rowdata">Town/City</div>
-              <div className="detail">{props.data.city}</div>
-            </div>
-            <div style={{ marginTop: "10px" }} className="row">
-              <div className="rowdata">Actions</div>
-              <div className="detail">
-                <img
-                  style={{ width: "27px", height: "27px", marginRight: "10px" }}
-                  src={eye}
-                  alt="icon"
-                />
-                <img
-                  style={{ width: "27px", height: "27px", marginRight: "10px" }}
-                  src={filling}
-                  alt="icon"
-                />
-                <img
-                  style={{ width: "27px", height: "27px", marginRight: "10px" }}
-                  src={tan}
-                  alt="icon"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const goToHistory = () => {
     history.push("/home/history");
   };
@@ -237,7 +184,7 @@ const Outlets = (props) => {
           onClick={() => {
             goToSales(item);
           }}
-          style={{ width: "27px", height: "27px" }}
+          style={icon}
           src={eye}
           alt="icon"
         />
@@ -245,7 +192,7 @@ const Outlets = (props) => {
           onClick={() => {
             goToPumps(item);
           }}
-          style={{ width: "27px", height: "27px" }}
+          style={icon}
           src={filling}
           alt="icon"
         />
@@ -253,7 +200,7 @@ const Outlets = (props) => {
           onClick={() => {
             goToTanks(item);
           }}
-          style={{ width: "27px", height: "27px" }}
+          style={icon}
           src={tan}
           alt="icon"
         />
@@ -476,106 +423,45 @@ const Outlets = (props) => {
 
           {!switchTabs ? (
             mobile.matches ? (
-              !loading ? (
-                allOutlets.length === 0 ? (
-                  <div style={place}>No data</div>
-                ) : (
-                  allOutlets.map((item, index) => {
-                    return (
-                      <div key={index} className="mobile-table-container">
-                        <div className="inner-container">
-                          <div className="row">
-                            <div className="left-text">
-                              <div className="heads">{item.outletName}</div>
-                              <div className="foots">Station Name</div>
-                            </div>
-                            <div className="right-text">
-                              <div className="heads">{item.noOfTanks}</div>
-                              <div className="foots">No Of Tanks</div>
-                            </div>
-                          </div>
-
-                          <div className="row">
-                            <div className="left-text">
-                              <div className="heads">{item.alias}</div>
-                              <div className="foots">Alias</div>
-                            </div>
-                            <div className="right-text">
-                              <div className="heads">{item.noOfPumps}</div>
-                              <div className="foots">No Of Pumps</div>
-                            </div>
-                          </div>
-
-                          <div className="row">
-                            <div className="left-text">
-                              <div className="heads">{item.state}</div>
-                              <div className="foots">State</div>
-                            </div>
-                            <div
-                              style={{ justifyContent: "center" }}
-                              className="right-text">
-                              <div className="actions">
-                                <img
-                                  onClick={() => {
-                                    goToSales(item);
-                                  }}
-                                  style={{
-                                    width: "27px",
-                                    height: "27px",
-                                    marginRight: "7px",
-                                  }}
-                                  src={eye}
-                                  alt="icon"
-                                />
-                                <img
-                                  onClick={() => {
-                                    goToPumps(item);
-                                  }}
-                                  style={{
-                                    width: "27px",
-                                    height: "27px",
-                                    marginRight: "7px",
-                                  }}
-                                  src={filling}
-                                  alt="icon"
-                                />
-                                <img
-                                  onClick={() => {
-                                    goToTanks(item);
-                                  }}
-                                  style={{ width: "27px", height: "27px" }}
-                                  src={tan}
-                                  alt="icon"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )
-              ) : (
-                <div style={load}>
-                  <ThreeDots
-                    height="60"
-                    width="50"
-                    radius="9"
-                    color="#076146"
-                    ariaLabel="three-dots-loading"
-                    wrapperStyle={{}}
-                    wrapperClassName=""
-                    visible={true}
-                  />
-                </div>
-              )
+              <TableViewForMobile rows={allOutlets} loading={loading}>
+                {allOutlets.map((item, index) => {
+                  return (
+                    <MobileTableRows index={index}>
+                      <MobileTableCell
+                        columns={["Station Name", "No Of Tanks"]}
+                        cellData={[item.outletName, item.noOfTanks]}
+                      />
+                      <MobileTableCell
+                        columns={["Alias", "No Of Pumps"]}
+                        cellData={[item.alias, item.noOfPumps]}
+                      />
+                      <MobileTableCell
+                        columns={["State", "action"]}
+                        cellData={[item.state, <Action />]}
+                      />
+                    </MobileTableRows>
+                  );
+                })}
+              </TableViewForMobile>
             ) : (
               <TableViewForDesktop columns={columns} ref={tablePrints}>
-                <DesktopTableRows
-                  rows={allOutlets}
-                  Action={Action}
-                  loading={loading}
-                />
+                <DesktopTableRowContainer rows={allOutlets} loading={loading}>
+                  {allOutlets.map((item, index) => {
+                    return (
+                      <DesktopTableRows index={index}>
+                        <DesktopTableCell data={index + 1} />
+                        <DesktopTableCell data={item.state} />
+                        <DesktopTableCell data={item.outletName} />
+                        <DesktopTableCell data={item._id.substring(0, 6)} />
+                        <DesktopTableCell data={item.noOfTanks} />
+                        <DesktopTableCell data={item.noOfPumps} />
+                        <DesktopTableCell data={item.alias} />
+                        <DesktopTableCell data={item.city} />
+                        <DesktopTableCell data={<Action item={item} />} />
+                      </DesktopTableRows>
+                    );
+                  })}
+                </DesktopTableRowContainer>
               </TableViewForDesktop>
             )
           ) : (
@@ -612,6 +498,8 @@ const Outlets = (props) => {
     </>
   );
 };
+
+const icon = { width: "27px", height: "27px", marginLeft: "5px" };
 
 const selectStyle2 = {
   width: "100%",
