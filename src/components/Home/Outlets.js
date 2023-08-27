@@ -424,43 +424,45 @@ const Outlets = (props) => {
           {!switchTabs ? (
             mobile.matches ? (
               <TableViewForMobile rows={allOutlets} loading={loading}>
-                {allOutlets.map((item, index) => {
-                  return (
-                    <MobileTableRows index={index}>
-                      <MobileTableCell
-                        columns={["Station Name", "No Of Tanks"]}
-                        cellData={[item.outletName, item.noOfTanks]}
-                      />
-                      <MobileTableCell
-                        columns={["Alias", "No Of Pumps"]}
-                        cellData={[item.alias, item.noOfPumps]}
-                      />
-                      <MobileTableCell
-                        columns={["State", "action"]}
-                        cellData={[item.state, <Action />]}
-                      />
-                    </MobileTableRows>
-                  );
-                })}
+                {!loading &&
+                  allOutlets.map((item, index) => {
+                    return (
+                      <MobileTableRows index={index}>
+                        <MobileTableCell
+                          columns={["Station Name", "No Of Tanks"]}
+                          cellData={[item.outletName, item.noOfTanks]}
+                        />
+                        <MobileTableCell
+                          columns={["Alias", "No Of Pumps"]}
+                          cellData={[item.alias, item.noOfPumps]}
+                        />
+                        <MobileTableCell
+                          columns={["State", "action"]}
+                          cellData={[item.state, <Action />]}
+                        />
+                      </MobileTableRows>
+                    );
+                  })}
               </TableViewForMobile>
             ) : (
               <TableViewForDesktop columns={columns} ref={tablePrints}>
                 <DesktopTableRowContainer rows={allOutlets} loading={loading}>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <DesktopTableRows index={index}>
-                        <DesktopTableCell data={index + 1} />
-                        <DesktopTableCell data={item.state} />
-                        <DesktopTableCell data={item.outletName} />
-                        <DesktopTableCell data={item._id.substring(0, 6)} />
-                        <DesktopTableCell data={item.noOfTanks} />
-                        <DesktopTableCell data={item.noOfPumps} />
-                        <DesktopTableCell data={item.alias} />
-                        <DesktopTableCell data={item.city} />
-                        <DesktopTableCell data={<Action item={item} />} />
-                      </DesktopTableRows>
-                    );
-                  })}
+                  {!loading &&
+                    allOutlets.map((item, index) => {
+                      return (
+                        <DesktopTableRows index={index}>
+                          <DesktopTableCell data={index + 1} />
+                          <DesktopTableCell data={item.state} />
+                          <DesktopTableCell data={item.outletName} />
+                          <DesktopTableCell data={item._id.substring(0, 6)} />
+                          <DesktopTableCell data={item.noOfTanks} />
+                          <DesktopTableCell data={item.noOfPumps} />
+                          <DesktopTableCell data={item.alias} />
+                          <DesktopTableCell data={item.city} />
+                          <DesktopTableCell data={<Action item={item} />} />
+                        </DesktopTableRows>
+                      );
+                    })}
                 </DesktopTableRowContainer>
               </TableViewForDesktop>
             )
@@ -530,13 +532,6 @@ const place = {
 const menu = {
   fontSize: "12px",
   fontFamily: "Poppins",
-};
-
-const load = {
-  width: "100%",
-  height: "30px",
-  display: "flex",
-  justifyContent: "center",
 };
 
 export default Outlets;
