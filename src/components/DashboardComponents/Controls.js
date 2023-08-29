@@ -36,7 +36,11 @@ const Controls = () => {
         onChange={onChangeRange}
         value={updatedDate}
       />
-      <SelectStation oneStation={getPerm("0")} allStation={getPerm("1")} />
+      <SelectStation
+        ml={"10px"}
+        oneStation={getPerm("0")}
+        allStation={getPerm("1")}
+      />
     </div>
   );
 };

@@ -9,7 +9,7 @@ import swal from "sweetalert";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
-const SelectStation = ({ oneStation, allStation }) => {
+const SelectStation = ({ ml, oneStation, allStation }) => {
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const SelectStation = ({ oneStation, allStation }) => {
   };
 
   return (
-    <div style={style}>
+    <div style={{ ...style, marginLeft: ml }}>
       {oneStation && (
         <Select
           labelId="demo-select-small"
