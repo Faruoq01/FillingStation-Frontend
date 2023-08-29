@@ -3,7 +3,7 @@ const mobile = window.matchMedia("(max-width: 600px)");
 export const TableControls = ({ children, mt }) => {
   const getStyle = () => {
     const style = {
-      marginTop: mobile.matches ? "0px" : "mt",
+      marginTop: mobile.matches ? "0px" : mt,
     };
     return style;
   };
