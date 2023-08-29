@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
-import close from "../../assets/close.png";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { closeModal } from "../../../storage/outlet";
+import { useSelector } from "react-redux";
+import close from "../../../assets/close.png";
 import Button from "@mui/material/Button";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Modal from "@mui/material/Modal";
@@ -8,50 +11,29 @@ import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import swal from "sweetalert";
-import OutletService from "../../services/outletService";
-import { useSelector } from "react-redux";
+import OutletService from "../../../services/outletService";
 
-const AddPump = (props) => {
+const CreateNewPump = (props) => {
+  const dispatch = useDispatch();
+  const open = useSelector((state) => state.outlet.openModal);
+  const oneTank = useSelector((state) => state.outlet.oneTank);
+
   const [defaultState, setDefaultState] = useState(0);
-  const [productType, setProduct] = useState("PMS");
+  const [productType, setProduct] = useState("");
   const [pumpName, setPumpName] = useState("");
   const [totalizer, setTotalizer] = useState("");
-  const [currentTank, setCurrentTank] = useState();
-  const [allTanks, setAllTanks] = useState([]);
-  const [loadingSpinner, setLoader] = useState(false);
-  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const [waiting, setWaiting] = useState(false);
+  const [loadingSpinner, setLoadingSpinner] = useState(false);
 
-  const handleClose = () => props.close(false);
-
-  useEffect(() => {
-    if (props.tabs === 0) {
-      setProduct("PMS");
-    } else if (props.tabs === 1) {
-      setProduct("PMS");
-    } else if (props.tabs === 2) {
-      setProduct("AGO");
-    } else if (props.tabs === 3) {
-      setProduct("DPK");
-    }
-  }, [props.tabs]);
-
-  useEffect(() => {
-    setAllTanks([]);
-    const payload = {
-      organisationID: oneStationData.organisation,
-      outletID: oneStationData._id,
-      productType: productType,
-    };
-    OutletService.getAllOutletTanks2(payload).then((data) => {
-      setAllTanks(data.stations);
-    });
-  }, [oneStationData._id, oneStationData.organisation, productType]);
+  const handleClose = () => dispatch(closeModal(0));
 
   function removeSpecialCharacters(str) {
     return str.replace(/[^0-9.]/g, "");
   }
 
   const handleOpen = () => {
+    if (oneTank === null)
+      return swal("Warning!", "Please create a station", "info");
     if (pumpName === "")
       return swal("Warning!", "Pump name field cannot be empty", "info");
     if (defaultState === "")
@@ -60,46 +42,49 @@ const AddPump = (props) => {
       return swal("Warning!", "Product type field cannot be empty", "info");
     if (totalizer === "")
       return swal("Warning!", "Totalizer field cannot be empty", "info");
-    setLoader(true);
+    setWaiting(true);
+    setLoadingSpinner(true);
 
     const payload = {
       pumpName: pumpName,
-      hostTank: currentTank._id,
-      hostTankName: currentTank.tankName,
+      hostTank: oneTank?._id,
+      hostTankName: oneTank?.tankName,
       productType: productType,
       totalizerReading: removeSpecialCharacters(totalizer),
-      organisationID: currentTank.organisationID,
-      outletID: currentTank.outletID,
+      organisationID: oneTank?.organisationID,
+      outletID: oneTank?.outletID,
     };
 
     OutletService.registerPumps(payload)
       .then((data) => {
         if (data.status === "exist") {
+          setWaiting(false);
+          setLoadingSpinner(false);
+          handleClose();
           swal("Warning!", data.message, "info");
         } else {
+          setWaiting(false);
+          setLoadingSpinner(false);
+          handleClose();
           swal("Success!", "Pump created successfully!", "success");
         }
       })
       .then(() => {
-        setLoader(false);
-        props.close(false);
         props.refresh();
+        handleClose();
+        setWaiting(false);
+        setLoadingSpinner(false);
       });
   };
 
-  const selectMenu = (index, item) => {
-    setDefaultState(index);
-    setProduct(item.productType);
-    setCurrentTank(item);
-  };
-
-  const changeType = (data) => {
-    setProduct(data);
-  };
+  useEffect(() => {
+    setDefaultState(oneTank?.tankName);
+    setProduct(oneTank?.productType);
+  }, [oneTank?.tankName, oneTank?.productType]);
 
   return (
     <Modal
-      open={props.open}
+      open={open === 3}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -107,7 +92,7 @@ const AddPump = (props) => {
       <div style={{ height: "430px" }} className="modalContainer2">
         <div className="inner">
           <div className="head">
-            <div className="head-text">Add Pumps</div>
+            <div className="head-text">Add Pump</div>
             <img
               onClick={handleClose}
               style={{ width: "18px", height: "18px" }}
@@ -119,53 +104,33 @@ const AddPump = (props) => {
           <div style={{ marginTop: "15px" }} className="inputs">
             <div className="head-text2">Choose product type</div>
             <div className="radio">
-              {(props.tabs === 1 || props.tabs === 0) && (
-                <div className="rad-item">
-                  <Radio
-                    onClick={() => {
-                      changeType("PMS");
-                    }}
-                    checked={
-                      productType === "PMS" || props.tabs === 1 ? true : false
-                    }
-                  />
-                  <div className="head-text2" style={{ marginRight: "5px" }}>
-                    PMS
+              {(props.tabs === 1 || props.tabs === 0) &&
+                productType === "PMS" && (
+                  <div className="rad-item">
+                    <Radio checked={productType === "PMS" ? true : false} />
+                    <div className="head-text2" style={{ marginRight: "5px" }}>
+                      PMS
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {(props.tabs === 2 || props.tabs === 0) && (
-                <div className="rad-item">
-                  <Radio
-                    onClick={() => {
-                      changeType("AGO");
-                    }}
-                    checked={
-                      productType === "AGO" || props.tabs === 2 ? true : false
-                    }
-                  />
-                  <div className="head-text2" style={{ marginRight: "5px" }}>
-                    AGO
+                )}
+              {(props.tabs === 2 || props.tabs === 0) &&
+                productType === "AGO" && (
+                  <div className="rad-item">
+                    <Radio checked={productType === "AGO" ? true : false} />
+                    <div className="head-text2" style={{ marginRight: "5px" }}>
+                      AGO
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {(props.tabs === 3 || props.tabs === 0) && (
-                <div className="rad-item">
-                  <Radio
-                    onClick={() => {
-                      changeType("DPK");
-                    }}
-                    checked={
-                      productType === "DPK" || props.tabs === 3 ? true : false
-                    }
-                  />
-                  <div className="head-text2" style={{ marginRight: "5px" }}>
-                    DPK
+                )}
+              {(props.tabs === 3 || props.tabs === 0) &&
+                productType === "DPK" && (
+                  <div className="rad-item">
+                    <Radio checked={productType === "DPK" ? true : false} />
+                    <div className="head-text2" style={{ marginRight: "5px" }}>
+                      DPK
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
 
@@ -206,27 +171,9 @@ const AddPump = (props) => {
                   border: "1px solid #777777",
                 },
               }}>
-              <MenuItem style={menu} value={0}>
-                Please select a tank
+              <MenuItem style={menu} value={oneTank?.tankName}>
+                {oneTank?.productType} {oneTank?.tankName}
               </MenuItem>
-              {allTanks.length === 0 ? (
-                <MenuItem style={menu} value={0}>
-                  No available tanks
-                </MenuItem>
-              ) : (
-                allTanks.map((item, index) => {
-                  return (
-                    <MenuItem
-                      onClick={() => {
-                        selectMenu(index + 1, item);
-                      }}
-                      style={menu}
-                      value={index + 1}>
-                      {item.productType} {item.tankName}
-                    </MenuItem>
-                  );
-                })
-              )}
             </Select>
           </div>
 
@@ -245,14 +192,14 @@ const AddPump = (props) => {
                 },
               }}
               placeholder=""
-              type="text"
+              type={"text"}
               onChange={(e) => setTotalizer(e.target.value)}
             />
           </div>
 
-          <div className="butt" style={{ height: "30px" }}>
+          <div style={{ height: "30px" }} className="butt">
             <Button
-              disabled={loadingSpinner}
+              disabled={waiting}
               sx={{
                 width: "100px",
                 height: "30px",
@@ -293,4 +240,4 @@ const menu = {
   fontSize: "14px",
 };
 
-export default AddPump;
+export default CreateNewPump;

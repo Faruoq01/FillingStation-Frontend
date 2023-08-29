@@ -3,56 +3,42 @@ import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import tan from "../../assets/tan.png";
-import eye from "../../assets/eye.png";
-import filling from "../../assets/filling.png";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import { useSelector } from "react-redux";
-import {
-  openModal,
-  getAllStations,
-  tankListType,
-  adminOutlet,
-} from "../../storage/outlet";
+import { openModal, getAllStations, tankListType } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
 import Tank from "../Outlet/Tanks";
 import Pumps from "../Outlet/Pumps";
 import Sales from "../Outlet/Sales";
 import { Switch, Route, useHistory } from "react-router-dom";
-import CreateFillingStation from "../Modals/CreateStationModal";
-import AddTankSuccess from "../Modals/AddTankSuccess";
-import AddPumpSuccess from "../Modals/AddPumpSuccess";
-import AddPumpMore from "../Modals/AddMorePumps";
 import OutletService from "../../services/outletService";
 import { useEffect } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import PrintOutLetsModal from "../Modals/PrintOutlets";
 import { useState } from "react";
-import activeList from "../../assets/activeList.png";
-import inactiveList from "../../assets/inactiveList.png";
-import activeGrid from "../../assets/activeGrid.png";
-import inactiveGrid from "../../assets/inactiveGrid.png";
 import swal from "sweetalert";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
-import {
-  DesktopTableCell,
-  DesktopTableRowContainer,
-  DesktopTableRows,
-  TableViewForDesktop,
-} from "../controls/PageLayout/TableViewForDesktop";
-import {
-  MobileTableCell,
-  MobileTableRows,
-  TableViewForMobile,
-} from "../controls/PageLayout/TableViewForMobile";
 import CardItem from "../Outlet/CardItem";
+import { OutletDesktopTable, OutletMobileTable } from "../tables/outlet";
+import CreateStation from "../Modals/outlet/createstationmodal";
+import CreateStationAssets from "../Modals/outlet/stationsuccess";
+import { Action } from "../tables/outlet/tableactions";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
+import { CreateButton, HistoryButton, PrintButton } from "../common/buttons";
+import { SearchField } from "../common/searchfields";
+import { LimitSelect } from "../common/customselect";
+import OutletGridSwitch from "../common/outletgrid";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const columns = [
   "S/N",
+  "State",
   "Name",
   "Outlet Code",
   "No Of Tanks",
@@ -72,7 +58,6 @@ const Outlets = (props) => {
   const tablePrints = useRef();
   const [switchTabs, setSwitchTabs] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [searchKey, setSearchKey] = useState("");
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -92,23 +77,6 @@ const Outlets = (props) => {
   const handleOpenModal = (value) => {
     if (!getPerm("0")) return swal("Warning!", "Permission denied", "info");
     dispatch(openModal(value));
-  };
-
-  const goToSales = (item) => {
-    dispatch(adminOutlet(item));
-    props.history.push("/home/outlets/sales");
-  };
-
-  const goToTanks = (item) => {
-    if (!getPerm("1")) return swal("Warning!", "Permission denied", "info");
-    dispatch(adminOutlet(item));
-    props.history.push("/home/outlets/tanks");
-  };
-
-  const goToPumps = (item) => {
-    if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
-    dispatch(adminOutlet(item));
-    props.history.push("/home/outlets/pumps");
   };
 
   const goToTankList = (item) => {
@@ -153,71 +121,45 @@ const Outlets = (props) => {
     setSwitchTabs(!switchTabs);
   };
 
-  const searchStation = (data) => {
-    setSearchKey(data);
+  const getStations = (data) => {
+    // const stationsCopy = [...data];
+    // if (searchKey === "") {
+    //   return stationsCopy;
+    // } else {
+    //   const search = stationsCopy.filter(
+    //     (data) =>
+    //       !data.outletName.toUpperCase().indexOf(searchKey.toUpperCase()) ||
+    //       !data.alias.toUpperCase().indexOf(searchKey.toUpperCase()) ||
+    //       !data.city.toUpperCase().indexOf(searchKey.toUpperCase())
+    //   );
+    //   return search;
+    // }
   };
-
-  // const getStations = (data) => {
-  //   const stationsCopy = [...data];
-
-  //   if (searchKey === "") {
-  //     return stationsCopy;
-  //   } else {
-  //     const search = stationsCopy.filter(
-  //       (data) =>
-  //         !data.outletName.toUpperCase().indexOf(searchKey.toUpperCase()) ||
-  //         !data.alias.toUpperCase().indexOf(searchKey.toUpperCase()) ||
-  //         !data.city.toUpperCase().indexOf(searchKey.toUpperCase())
-  //     );
-  //     return search;
-  //   }
-  // };
 
   const goToHistory = () => {
     history.push("/home/history");
   };
 
-  const Action = ({ item }) => {
-    return (
-      <div className="actions">
-        <img
-          onClick={() => {
-            goToSales(item);
-          }}
-          style={icon}
-          src={eye}
-          alt="icon"
-        />
-        <img
-          onClick={() => {
-            goToPumps(item);
-          }}
-          style={icon}
-          src={filling}
-          alt="icon"
-        />
-        <img
-          onClick={() => {
-            goToTanks(item);
-          }}
-          style={icon}
-          src={tan}
-          alt="icon"
-        />
-      </div>
-    );
+  const desktopTableData = {
+    columns: columns,
+    tablePrints: tablePrints,
+    allOutlets: allOutlets,
+    loading: loading,
+    Action: Action,
+  };
+
+  const mobileTableData = {
+    allOutlets: allOutlets,
+    loading: loading,
+    Action: Action,
   };
 
   return (
     <>
       {props.activeRoute.split("/").length === 3 && (
         <TablePageBackground>
-          {open === 1 && (
-            <CreateFillingStation getStations={getAllStationData} />
-          )}
-          {open === 4 && <AddTankSuccess />}
-          {open === 5 && <AddPumpSuccess />}
-          {open === 6 && <AddPumpMore />}
+          {open === 1 && <CreateStation getStations={getAllStationData} />}
+          {open === 2 && <CreateStationAssets />}
           {prints && (
             <PrintOutLetsModal
               allOutlets={allOutlets}
@@ -261,210 +203,37 @@ const Outlets = (props) => {
             </div>
           </div>
 
-          <div className="search">
-            <div className="input-cont">
-              <div className="second-select">
-                <OutlinedInput
-                  placeholder="Search"
-                  sx={{
-                    width: "100%",
-                    height: "35px",
-                    fontSize: "12px",
-                    background: "#F2F1F1",
-                    color: "#000",
-                    borderRadius: "0px",
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "1px solid #777777",
-                    },
-                  }}
-                  onChange={(e) => {
-                    searchStation(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
-            <div style={{ width: "190px" }} className="butt">
-              <Button
-                sx={{
-                  width: "100%",
-                  height: "30px",
-                  background: "#427BBE",
-                  borderRadius: "0px",
-                  fontSize: "12px",
-                  textTransform: "capitalize",
-                  "&:hover": {
-                    backgroundColor: "#427BBE",
-                  },
-                }}
-                onClick={() => {
-                  handleOpenModal(1);
-                }}
-                variant="contained">
-                {" "}
-                Create new filling station
-              </Button>
-            </div>
-          </div>
+          <TableControls>
+            <LeftControls>
+              <SearchField callback={getStations} />
+            </LeftControls>
+            <RightControls>
+              <CreateButton
+                callback={handleOpenModal}
+                label={"Create new filling station"}
+              />
+            </RightControls>
+          </TableControls>
 
-          <div className="search2">
-            <div className="butt2">
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={10}
-                sx={{ ...selectStyle2, borderRadius: "0px" }}>
-                <MenuItem style={menu} value={10}>
-                  Show entries
-                </MenuItem>
-                <MenuItem style={menu} value={20}>
-                  Twenty
-                </MenuItem>
-                <MenuItem style={menu} value={30}>
-                  Thirty
-                </MenuItem>
-              </Select>
-            </div>
-            <div
-              style={{
-                width: mobile.matches ? "100%" : "295px",
-                marginTop: mobile.matches ? "20px" : "auto",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-              className="input-cont2">
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {switchTabs || (
-                  <img
-                    onClick={changeSwitch}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "6px",
-                    }}
-                    src={activeList}
-                    alt="icon"
-                  />
-                )}
-                {switchTabs && (
-                  <img
-                    onClick={changeSwitch}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "6px",
-                    }}
-                    src={inactiveList}
-                    alt="icon"
-                  />
-                )}
-                {switchTabs || (
-                  <img
-                    onClick={changeSwitch}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "6px",
-                    }}
-                    src={inactiveGrid}
-                    alt="icon"
-                  />
-                )}
-                {switchTabs && (
-                  <img
-                    onClick={changeSwitch}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "6px",
-                    }}
-                    src={activeGrid}
-                    alt="icon"
-                  />
-                )}
-              </div>
-              <div className="second-select2">
-                <Button
-                  sx={{
-                    width: "120px",
-                    height: "30px",
-                    background: "#58A0DF",
-                    borderRadius: "0px",
-                    fontSize: "10px",
-                    "&:hover": {
-                      backgroundColor: "#58A0DF",
-                    },
-                  }}
-                  onClick={goToHistory}
-                  variant="contained">
-                  {" "}
-                  History
-                </Button>
-              </div>
-              <div className="second-select3">
-                <Button
-                  sx={{
-                    width: "100%",
-                    height: "30px",
-                    background: "#F36A4C",
-                    borderRadius: "0px",
-                    fontSize: "10px",
-                    "&:hover": {
-                      backgroundColor: "#F36A4C",
-                    },
-                  }}
-                  onClick={preview}
-                  variant="contained">
-                  {" "}
-                  Print
-                </Button>
-              </div>
-            </div>
-          </div>
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <LimitSelect />
+            </LeftControls>
+            <RightControls>
+              <OutletGridSwitch
+                switchTabs={switchTabs}
+                callback={changeSwitch}
+              />
+              <HistoryButton callback={goToHistory} />
+              <PrintButton callback={preview} />
+            </RightControls>
+          </TableControls>
 
           {!switchTabs ? (
             mobile.matches ? (
-              <TableViewForMobile rows={allOutlets} loading={loading}>
-                {!loading &&
-                  allOutlets.map((item, index) => {
-                    return (
-                      <MobileTableRows index={index}>
-                        <MobileTableCell
-                          columns={["Station Name", "No Of Tanks"]}
-                          cellData={[item.outletName, item.noOfTanks]}
-                        />
-                        <MobileTableCell
-                          columns={["Alias", "No Of Pumps"]}
-                          cellData={[item.alias, item.noOfPumps]}
-                        />
-                        <MobileTableCell
-                          columns={["State", "action"]}
-                          cellData={[item.state, <Action />]}
-                        />
-                      </MobileTableRows>
-                    );
-                  })}
-              </TableViewForMobile>
+              <OutletMobileTable data={mobileTableData} />
             ) : (
-              <TableViewForDesktop columns={columns} ref={tablePrints}>
-                <DesktopTableRowContainer rows={allOutlets} loading={loading}>
-                  {!loading &&
-                    allOutlets.map((item, index) => {
-                      return (
-                        <DesktopTableRows index={index}>
-                          <DesktopTableCell data={index + 1} />
-                          <DesktopTableCell data={item.state} />
-                          <DesktopTableCell data={item.outletName} />
-                          <DesktopTableCell data={item._id.substring(0, 6)} />
-                          <DesktopTableCell data={item.noOfTanks} />
-                          <DesktopTableCell data={item.noOfPumps} />
-                          <DesktopTableCell data={item.alias} />
-                          <DesktopTableCell data={item.city} />
-                          <DesktopTableCell data={<Action item={item} />} />
-                        </DesktopTableRows>
-                      );
-                    })}
-                </DesktopTableRowContainer>
-              </TableViewForDesktop>
+              <OutletDesktopTable data={desktopTableData} />
             )
           ) : (
             <div className="gridCard">
@@ -500,8 +269,6 @@ const Outlets = (props) => {
     </>
   );
 };
-
-const icon = { width: "27px", height: "27px", marginLeft: "5px" };
 
 const selectStyle2 = {
   width: "100%",

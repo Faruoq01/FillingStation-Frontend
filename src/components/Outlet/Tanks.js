@@ -8,13 +8,13 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Button from "@mui/material/Button";
 import { openModal, getAllOutletTanks, getOneTank } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
-import AddTank from "../Modals/AddTankModal";
+import AddTank from "../Modals/outlet/createnewtank";
 import { useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
 import swal from "sweetalert";
-import AddPump from "../Modals/AddPumpModal";
-import EditTank from "../Modals/EditTank";
+import EditTank from "../Modals/outlet/edittank";
 import { ThreeDots } from "react-loader-spinner";
+import CreateNewPump from "../Modals/outlet/createnewpump";
 
 const Tank = (props) => {
   const [tabs, setTabs] = useState(0);
@@ -32,14 +32,6 @@ const Tank = (props) => {
   const [currentTank, setCurrentTank] = useState({});
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
-
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -529,7 +521,7 @@ const Tank = (props) => {
           refresh={getAllStationTanks}
         />
       )}
-      {open === 3 && <AddPump tabs={tabs} allTank={tankList} />}
+      {open === 3 && <CreateNewPump tabs={tabs} allTank={tankList} />}
       {openEditTank && (
         <EditTank
           tabs={tabs}

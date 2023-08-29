@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { closeModal, createTanks } from "../../storage/outlet";
 import { useSelector } from "react-redux";
-import close from "../../assets/close.png";
+import close from "../../../assets/close.png";
 import Button from "@mui/material/Button";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import Radio from "@mui/material/Radio";
 import swal from "sweetalert";
-import OutletService from "../../services/outletService";
+import { useEffect } from "react";
+import OutletService from "../../../services/outletService";
 
-const AddTank = (props) => {
+const EditTank = (props) => {
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.outlet.openModal);
   const oneStation = useSelector((state) => state.outlet.adminOutlet);
+  const [loader, setLoader] = useState(false);
 
-  const handleClose = () => dispatch(closeModal(0));
+  const handleClose = () => dispatch(props.close(false));
   const [tankName, setTankName] = useState("");
   const [tankHeight, setTankHeight] = useState("");
   const [productType, setProductType] = useState("PMS");
@@ -24,23 +24,26 @@ const AddTank = (props) => {
   const [deadStockLevel, setDeadStockLevel] = useState("");
   const [calibrationDate, setCalibrationDate] = useState("");
   const [currentStock, setCurrentStock] = useState("");
-  const [waiting, setWaiting] = useState(false);
+  const [oldStock, setOldStock] = useState("");
 
   useEffect(() => {
-    if (props.tabs === 0) {
-      setProductType("PMS");
-    } else if (props.tabs === 1) {
-      setProductType("PMS");
-    } else if (props.tabs === 2) {
-      setProductType("AGO");
-    } else if (props.tabs === 3) {
-      setProductType("DPK");
-    }
-  }, [props.tabs]);
-
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
+    setTankName(props.data.tankName.split(" ")[1]);
+    setTankHeight(props.data.tankHeight);
+    setTankCapacity(props.data.tankCapacity);
+    setCurrentStock(props.data.currentLevel);
+    setOldStock(props.data.currentLevel);
+    setDeadStockLevel(props.data.deadStockLevel);
+    setCalibrationDate(props.data.calibrationDate);
+    setProductType(props.data.productType);
+  }, [
+    props.data.calibrationDate,
+    props.data.currentLevel,
+    props.data.deadStockLevel,
+    props.data.productType,
+    props.data.tankCapacity,
+    props.data.tankHeight,
+    props.data.tankName,
+  ]);
 
   const handleAddPump = async () => {
     if (tankName === "")
@@ -57,47 +60,40 @@ const AddTank = (props) => {
       return swal("Warning!", "Current stock field cannot be empty", "info");
     if (oneStation === null)
       return swal("Warning!", "Please create a station", "info");
-    setWaiting(true);
+    setLoader(true);
 
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, "0");
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const yy = today.getFullYear();
-    const day = mm + "/" + dd + "/" + yy;
-
-    const data = {
+    const payload = {
+      id: props.data._id,
       tankName: tankName,
-      tankHeight: removeSpecialCharacters(tankHeight),
+      tankHeight: tankHeight,
       productType: productType,
-      tankCapacity: removeSpecialCharacters(tankCapacity),
-      deadStockLevel: removeSpecialCharacters(deadStockLevel),
+      tankCapacity: tankCapacity,
+      deadStockLevel: deadStockLevel,
       calibrationDate: calibrationDate,
+      currentLevel: currentStock,
       organisationID: oneStation?.organisation,
       outletID: oneStation?._id,
-      dateUpdated: day,
-      station: oneStation?.outletName,
-      previousLevel: "None",
-      quantityAdded: "None",
-      currentLevel: removeSpecialCharacters(currentStock),
+      oldStock: oldStock,
     };
 
-    OutletService.registerTanks(data)
+    OutletService.updateTank(payload)
       .then((data) => {
-        dispatch(createTanks(data));
-        props.refresh();
+        if (data.status === "exist") {
+          swal("Warning!", data.message, "info");
+        } else {
+          setLoader(false);
+          props.refresh();
+        }
       })
-      .then((data) => {
-        setWaiting(false);
-        dispatch(closeModal(0));
-      })
-      .catch((err) => {
-        setWaiting(false);
+      .then(() => {
+        handleClose();
+        swal("Success", "records updated successfully!", "success");
       });
   };
 
   return (
     <Modal
-      open={open === 2}
+      open={props.open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -105,7 +101,7 @@ const AddTank = (props) => {
       <div className="modalContainer2">
         <div className="inner">
           <div className="head">
-            <div className="head-text">Add Tank</div>
+            <div className="head-text">Edit Tank</div>
             <img
               onClick={handleClose}
               style={{ width: "18px", height: "18px" }}
@@ -124,9 +120,7 @@ const AddTank = (props) => {
                       onClick={() => {
                         setProductType("PMS");
                       }}
-                      checked={
-                        productType === "PMS" || props.tabs === 1 ? true : false
-                      }
+                      checked={productType === "PMS" ? true : false}
                     />
                     <div className="head-text2" style={{ marginRight: "5px" }}>
                       PMS
@@ -139,9 +133,7 @@ const AddTank = (props) => {
                       onClick={() => {
                         setProductType("AGO");
                       }}
-                      checked={
-                        productType === "AGO" || props.tabs === 2 ? true : false
-                      }
+                      checked={productType === "AGO" ? true : false}
                     />
                     <div className="head-text2" style={{ marginRight: "5px" }}>
                       AGO
@@ -154,9 +146,7 @@ const AddTank = (props) => {
                       onClick={() => {
                         setProductType("DPK");
                       }}
-                      checked={
-                        productType === "DPK" || props.tabs === 3 ? true : false
-                      }
+                      checked={productType === "DPK" ? true : false}
                     />
                     <div className="head-text2" style={{ marginRight: "5px" }}>
                       DPK
@@ -182,6 +172,7 @@ const AddTank = (props) => {
                 }}
                 placeholder=""
                 type="number"
+                value={tankName}
                 onChange={(e) => setTankName(e.target.value)}
               />
             </div>
@@ -201,7 +192,8 @@ const AddTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type="number"
+                value={tankHeight}
                 onChange={(e) => setTankHeight(e.target.value)}
               />
             </div>
@@ -221,7 +213,8 @@ const AddTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type="number"
+                value={tankCapacity}
                 onChange={(e) => setTankCapacity(e.target.value)}
               />
             </div>
@@ -241,7 +234,8 @@ const AddTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type={"number"}
+                value={currentStock}
                 onChange={(e) => setCurrentStock(e.target.value)}
               />
             </div>
@@ -261,7 +255,8 @@ const AddTank = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type="number"
+                value={deadStockLevel}
                 onChange={(e) => setDeadStockLevel(e.target.value)}
               />
             </div>
@@ -269,7 +264,7 @@ const AddTank = (props) => {
             <div style={{ marginTop: "15px" }} className="inputs">
               <div className="head-text2">Calibration Date</div>
               <input
-                defaultValue={new Date()}
+                value={calibrationDate}
                 onChange={(e) => setCalibrationDate(e.target.value)}
                 style={date}
                 type={"date"}
@@ -279,7 +274,7 @@ const AddTank = (props) => {
 
           <div style={{ marginTop: "10px", height: "30px" }} className="butt">
             <Button
-              disabled={waiting}
+              disabled={loader}
               sx={{
                 width: "100px",
                 height: "30px",
@@ -297,7 +292,7 @@ const AddTank = (props) => {
               Save
             </Button>
 
-            {waiting && (
+            {loader && (
               <ThreeDots
                 height="60"
                 width="50"
@@ -326,12 +321,12 @@ const cont = {
 const date = {
   width: "95%",
   height: "35px",
-  background: "#EEF2F1",
+  borderRadius: "0px",
   paddingLeft: "2%",
   paddingRight: "2%",
-  borderRadius: "0px",
-  border: "1px solid #777777",
   outline: "none",
+  border: "1px solid #777777",
+  background: "#EEF2F1",
 };
 
-export default AddTank;
+export default EditTank;

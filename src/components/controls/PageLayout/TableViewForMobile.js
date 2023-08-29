@@ -2,6 +2,7 @@ import React from "react";
 import ThreeDotsLoader from "../../common/ThreeDotsLoader";
 
 export const TableViewForMobile = ({ children, rows, loading }) => {
+  console.log(rows);
   return (
     <React.Fragment>
       {loading && <ThreeDotsLoader />}

@@ -11,9 +11,9 @@ import swal from "sweetalert";
 import { getAllPumps, getAllOutletTanks } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import AddPump from "../Modals/AddPumpModal2";
-import EditPump from "../Modals/EditPump";
+import EditPump from "../Modals/outlet/editpump";
 import { ThreeDots } from "react-loader-spinner";
+import CreatePumpFromTank from "../Modals/outlet/createpumpfromtank";
 
 const Pump = (props) => {
   const [tabs, setTabs] = useState(0);
@@ -461,7 +461,7 @@ const Pump = (props) => {
   return (
     <div className="tanksContainer">
       {open && (
-        <AddPump
+        <CreatePumpFromTank
           tabs={tabs}
           allTank={tankList}
           open={open}

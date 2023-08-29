@@ -1,31 +1,30 @@
 import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { closeModal, openModal } from "../../storage/outlet";
+import { closeModal, openModal, newOutlet } from "../../../storage/outlet";
 import { useSelector } from "react-redux";
-import close from "../../assets/close.png";
+import close from "../../../assets/close.png";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
-import states from "../../modules/states";
+import states from "../../../modules/states";
 import swal from "sweetalert";
-import { newOutlet } from "../../storage/outlet";
-import "../../styles/payments.scss";
-import AddStationLocationMap from "../common/AddStationLocationMap";
+import "../../../styles/payments.scss";
+import AddStationLocationMap from "../../common/AddStationLocationMap";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
 import { GoogleApiWrapper } from "google-maps-react";
-import upload from "../../assets/upload.png";
+import upload from "../../../assets/upload.png";
 import axios from "axios";
-import config from "../../constants";
+import config from "../../../constants";
 import AddIcon from "@mui/icons-material/Add";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
-import OutletService from "../../services/outletService";
+import OutletService from "../../../services/outletService";
 
 const days = [
   "Monday",
@@ -37,7 +36,7 @@ const days = [
   "Sunday",
 ];
 
-const CreateFillingStation = (props) => {
+const CreateStation = (props) => {
   const dispatch = useDispatch();
   const attach = useRef();
   const open = useSelector((state) => state.outlet.openModal);
@@ -155,7 +154,7 @@ const CreateFillingStation = (props) => {
         setLoadingSpinner(false);
         dispatch(closeModal(0));
         props.getStations();
-        dispatch(openModal(4));
+        dispatch(openModal(2));
       })
       .catch((err) => {});
   };
@@ -922,4 +921,4 @@ const mens = {
 export default GoogleApiWrapper({
   apiKey: "AIzaSyDZnZ15rSQS_2CluQE47CY5MRqAHGdUYZY",
   libraries: ["places"],
-})(CreateFillingStation);
+})(CreateStation);

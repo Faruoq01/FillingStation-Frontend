@@ -1,32 +1,40 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { closeModal, openModal } from "../../storage/outlet";
+import { closeModal } from "../../../storage/outlet";
 import { useSelector } from "react-redux";
-import close from "../../assets/close.png";
+import close from "../../../assets/close.png";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-import createTank from "../../assets/createTank.png";
+import outletSuccess from "../../../assets/outletSuccess.png";
 import { ThreeDots } from "react-loader-spinner";
+import { useHistory } from "react-router-dom";
+import swal from "sweetalert";
 
-const AddPumpMore = () => {
+const CreateStationAssets = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const open = useSelector((state) => state.outlet.openModal);
   const loadingSpinner = useSelector((state) => state.auth.loadingSpinner);
+  const newOutlet = useSelector((state) => state.outlet.newOutlet);
 
   const handleClose = () => dispatch(closeModal(0));
 
-  const handleAddPumps = () => {
+  const handleAddTanks = () => {
     dispatch(closeModal(0));
-    dispatch(openModal(3));
-  };
-
-  const addMoreTanks = () => {
-    dispatch(openModal(2));
+    if (newOutlet !== {}) {
+      history.push("/home/outlets/tanks", { state: newOutlet });
+    } else {
+      swal(
+        "Warning!",
+        "Please click on outlet on the list to add pumps and tanks",
+        "info"
+      );
+    }
   };
 
   return (
     <Modal
-      open={open === 6}
+      open={open === 2}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -46,7 +54,7 @@ const AddPumpMore = () => {
           <div className="tank">
             <img
               style={{ width: "300px", height: "250px" }}
-              src={createTank}
+              src={outletSuccess}
               alt="icon"
             />
           </div>
@@ -68,10 +76,10 @@ const AddPumpMore = () => {
                   backgroundColor: "#427BBE",
                 },
               }}
-              onClick={handleAddPumps}
+              onClick={handleAddTanks}
               variant="contained">
               {" "}
-              Add Pumps
+              Add Tanks
             </Button>
 
             {loadingSpinner && (
@@ -87,22 +95,10 @@ const AddPumpMore = () => {
               />
             )}
           </div>
-
-          <div onClick={addMoreTanks} style={tanks}>
-            Add more tanks
-          </div>
         </div>
       </div>
     </Modal>
   );
 };
 
-const tanks = {
-  width: "100%",
-  marginTop: "20px",
-  fontSize: "14px",
-  color: "blue",
-  textAlign: "center",
-};
-
-export default AddPumpMore;
+export default CreateStationAssets;

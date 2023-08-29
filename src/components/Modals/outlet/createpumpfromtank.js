@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import close from "../../assets/close.png";
+import React, { useEffect, useState } from "react";
+import close from "../../../assets/close.png";
 import Button from "@mui/material/Button";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Modal from "@mui/material/Modal";
@@ -10,87 +8,94 @@ import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import swal from "sweetalert";
-import OutletService from "../../services/outletService";
-import { removeSpinner, setSpinner } from "../../storage/outlet";
+import OutletService from "../../../services/outletService";
+import { useSelector } from "react-redux";
 
-const EditPump = (props) => {
-  const dispatch = useDispatch();
-  const loadingSpinner = useSelector((state) => state.auth.loadingSpinner);
-
-  const [initialState, setInitialState] = useState(0);
+const CreatePumpFromTank = (props) => {
+  const [defaultState, setDefaultState] = useState(0);
   const [productType, setProduct] = useState("PMS");
   const [pumpName, setPumpName] = useState("");
   const [totalizer, setTotalizer] = useState("");
-  const [hostTank, setHostTank] = useState(null);
-  const [list, setList] = useState([]);
+  const [currentTank, setCurrentTank] = useState();
+  const [allTanks, setAllTanks] = useState([]);
+  const [loadingSpinner, setLoader] = useState(false);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
-  const handleClose = () => dispatch(props.close(false));
+  const handleClose = () => props.close(false);
+
+  useEffect(() => {
+    if (props.tabs === 0) {
+      setProduct("PMS");
+    } else if (props.tabs === 1) {
+      setProduct("PMS");
+    } else if (props.tabs === 2) {
+      setProduct("AGO");
+    } else if (props.tabs === 3) {
+      setProduct("DPK");
+    }
+  }, [props.tabs]);
+
+  useEffect(() => {
+    setAllTanks([]);
+    const payload = {
+      organisationID: oneStationData.organisation,
+      outletID: oneStationData._id,
+      productType: productType,
+    };
+    OutletService.getAllOutletTanks2(payload).then((data) => {
+      setAllTanks(data.stations);
+    });
+  }, [oneStationData._id, oneStationData.organisation, productType]);
 
   function removeSpecialCharacters(str) {
     return str.replace(/[^0-9.]/g, "");
   }
 
   const handleOpen = () => {
-    if (hostTank === null)
-      return swal("Warning!", "Please select host tank", "info");
     if (pumpName === "")
       return swal("Warning!", "Pump name field cannot be empty", "info");
-    if (initialState === "")
+    if (defaultState === "")
       return swal("Warning!", "Tank name field cannot be empty", "info");
     if (productType === "")
       return swal("Warning!", "Product type field cannot be empty", "info");
     if (totalizer === "")
       return swal("Warning!", "Totalizer field cannot be empty", "info");
-    dispatch(setSpinner());
+    setLoader(true);
 
-    const data = {
-      id: props.data._id,
+    const payload = {
       pumpName: pumpName,
-      hostTank: hostTank._id,
+      hostTank: currentTank._id,
+      hostTankName: currentTank.tankName,
       productType: productType,
       totalizerReading: removeSpecialCharacters(totalizer),
-      organisationID: hostTank.organisationID,
-      outletID: hostTank.outletID,
-      hostTankName: hostTank.tankName,
+      organisationID: currentTank.organisationID,
+      outletID: currentTank.outletID,
     };
 
-    OutletService.pumpUpdate(data)
+    OutletService.registerPumps(payload)
       .then((data) => {
-        dispatch(removeSpinner());
-        props.refresh();
-        swal("Success", data.message, "success");
+        if (data.status === "exist") {
+          swal("Warning!", data.message, "info");
+        } else {
+          swal("Success!", "Pump created successfully!", "success");
+        }
       })
       .then(() => {
-        handleClose();
+        setLoader(false);
+        props.close(false);
+        props.refresh();
       });
   };
 
-  const updateTankDetails = (data, index) => {
-    setInitialState(index);
-    setHostTank(data);
+  const selectMenu = (index, item) => {
+    setDefaultState(index);
+    setProduct(item.productType);
+    setCurrentTank(item);
   };
 
-  useEffect(() => {
-    const findID = props.allTank.findIndex(
-      (data) => data._id === props.data.hostTank
-    );
-    setProduct(props.data.productType);
-    setTotalizer(props.data.totalizerReading);
-    setPumpName(props.data.pumpName.split(" ")[1]);
-    setHostTank(props.allTank[findID]);
-    setList(
-      props.allTank.filter(
-        (data) => data.productType === props.data.productType
-      )
-    );
-  }, [
-    props.data.productType,
-    props.allTank,
-    props.data.totalizerReading,
-    props.data.hostTank,
-    props.data.pumpName,
-    productType,
-  ]);
+  const changeType = (data) => {
+    setProduct(data);
+  };
 
   return (
     <Modal
@@ -102,7 +107,7 @@ const EditPump = (props) => {
       <div style={{ height: "430px" }} className="modalContainer2">
         <div className="inner">
           <div className="head">
-            <div className="head-text">Edit Pump</div>
+            <div className="head-text">Add Pumps</div>
             <img
               onClick={handleClose}
               style={{ width: "18px", height: "18px" }}
@@ -118,9 +123,11 @@ const EditPump = (props) => {
                 <div className="rad-item">
                   <Radio
                     onClick={() => {
-                      setProduct("PMS");
+                      changeType("PMS");
                     }}
-                    checked={productType === "PMS" ? true : false}
+                    checked={
+                      productType === "PMS" || props.tabs === 1 ? true : false
+                    }
                   />
                   <div className="head-text2" style={{ marginRight: "5px" }}>
                     PMS
@@ -132,22 +139,27 @@ const EditPump = (props) => {
                 <div className="rad-item">
                   <Radio
                     onClick={() => {
-                      setProduct("AGO");
+                      changeType("AGO");
                     }}
-                    checked={productType === "AGO" ? true : false}
+                    checked={
+                      productType === "AGO" || props.tabs === 2 ? true : false
+                    }
                   />
                   <div className="head-text2" style={{ marginRight: "5px" }}>
                     AGO
                   </div>
                 </div>
               )}
+
               {(props.tabs === 3 || props.tabs === 0) && (
                 <div className="rad-item">
                   <Radio
                     onClick={() => {
-                      setProduct("DPK");
+                      changeType("DPK");
                     }}
-                    checked={productType === "DPK" ? true : false}
+                    checked={
+                      productType === "DPK" || props.tabs === 3 ? true : false
+                    }
                   />
                   <div className="head-text2" style={{ marginRight: "5px" }}>
                     DPK
@@ -172,7 +184,6 @@ const EditPump = (props) => {
                 },
               }}
               placeholder=""
-              value={pumpName}
               type="number"
               onChange={(e) => setPumpName(e.target.value)}
             />
@@ -183,7 +194,7 @@ const EditPump = (props) => {
             <Select
               labelId="demo-select-small"
               id="demo-select-small"
-              value={initialState}
+              value={defaultState}
               sx={{
                 width: "100%",
                 height: "35px",
@@ -196,21 +207,26 @@ const EditPump = (props) => {
                 },
               }}>
               <MenuItem style={menu} value={0}>
-                Select a tank
+                Please select a tank
               </MenuItem>
-              {list.map((data, index) => {
-                return (
-                  <MenuItem
-                    onClick={() => {
-                      updateTankDetails(data, index + 1);
-                    }}
-                    key={index}
-                    style={menu}
-                    value={index + 1}>
-                    {data.tankName}
-                  </MenuItem>
-                );
-              })}
+              {allTanks.length === 0 ? (
+                <MenuItem style={menu} value={0}>
+                  No available tanks
+                </MenuItem>
+              ) : (
+                allTanks.map((item, index) => {
+                  return (
+                    <MenuItem
+                      onClick={() => {
+                        selectMenu(index + 1, item);
+                      }}
+                      style={menu}
+                      value={index + 1}>
+                      {item.productType} {item.tankName}
+                    </MenuItem>
+                  );
+                })
+              )}
             </Select>
           </div>
 
@@ -229,21 +245,21 @@ const EditPump = (props) => {
                 },
               }}
               placeholder=""
-              value={totalizer}
               type="text"
               onChange={(e) => setTotalizer(e.target.value)}
             />
           </div>
 
-          <div style={{ height: "30px" }} className="butt">
+          <div className="butt" style={{ height: "30px" }}>
             <Button
+              disabled={loadingSpinner}
               sx={{
                 width: "100px",
                 height: "30px",
                 background: "#427BBE",
                 borderRadius: "3px",
                 fontSize: "10px",
-                marginTop: "0px",
+                marginTop: "00px",
                 "&:hover": {
                   backgroundColor: "#427BBE",
                 },
@@ -277,4 +293,4 @@ const menu = {
   fontSize: "14px",
 };
 
-export default EditPump;
+export default CreatePumpFromTank;

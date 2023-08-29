@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { closeModal } from "../../storage/outlet";
 import { useSelector } from "react-redux";
-import close from "../../assets/close.png";
+import close from "../../../assets/close.png";
 import Button from "@mui/material/Button";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Modal from "@mui/material/Modal";
@@ -11,80 +10,91 @@ import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import swal from "sweetalert";
-import OutletService from "../../services/outletService";
+import OutletService from "../../../services/outletService";
+import { removeSpinner, setSpinner } from "../../../storage/outlet";
 
-const AddPump = (props) => {
+const EditPump = (props) => {
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.outlet.openModal);
-  const oneTank = useSelector((state) => state.outlet.oneTank);
+  const loadingSpinner = useSelector((state) => state.auth.loadingSpinner);
 
-  const [defaultState, setDefaultState] = useState(0);
-  const [productType, setProduct] = useState("");
+  const [initialState, setInitialState] = useState(0);
+  const [productType, setProduct] = useState("PMS");
   const [pumpName, setPumpName] = useState("");
   const [totalizer, setTotalizer] = useState("");
-  const [waiting, setWaiting] = useState(false);
-  const [loadingSpinner, setLoadingSpinner] = useState(false);
+  const [hostTank, setHostTank] = useState(null);
+  const [list, setList] = useState([]);
 
-  const handleClose = () => dispatch(closeModal(0));
+  const handleClose = () => dispatch(props.close(false));
 
   function removeSpecialCharacters(str) {
     return str.replace(/[^0-9.]/g, "");
   }
 
   const handleOpen = () => {
-    if (oneTank === null)
-      return swal("Warning!", "Please create a station", "info");
+    if (hostTank === null)
+      return swal("Warning!", "Please select host tank", "info");
     if (pumpName === "")
       return swal("Warning!", "Pump name field cannot be empty", "info");
-    if (defaultState === "")
+    if (initialState === "")
       return swal("Warning!", "Tank name field cannot be empty", "info");
     if (productType === "")
       return swal("Warning!", "Product type field cannot be empty", "info");
     if (totalizer === "")
       return swal("Warning!", "Totalizer field cannot be empty", "info");
-    setWaiting(true);
-    setLoadingSpinner(true);
+    dispatch(setSpinner());
 
-    const payload = {
+    const data = {
+      id: props.data._id,
       pumpName: pumpName,
-      hostTank: oneTank?._id,
-      hostTankName: oneTank?.tankName,
+      hostTank: hostTank._id,
       productType: productType,
       totalizerReading: removeSpecialCharacters(totalizer),
-      organisationID: oneTank?.organisationID,
-      outletID: oneTank?.outletID,
+      organisationID: hostTank.organisationID,
+      outletID: hostTank.outletID,
+      hostTankName: hostTank.tankName,
     };
 
-    OutletService.registerPumps(payload)
+    OutletService.pumpUpdate(data)
       .then((data) => {
-        if (data.status === "exist") {
-          setWaiting(false);
-          setLoadingSpinner(false);
-          handleClose();
-          swal("Warning!", data.message, "info");
-        } else {
-          setWaiting(false);
-          setLoadingSpinner(false);
-          handleClose();
-          swal("Success!", "Pump created successfully!", "success");
-        }
+        dispatch(removeSpinner());
+        props.refresh();
+        swal("Success", data.message, "success");
       })
       .then(() => {
-        props.refresh();
         handleClose();
-        setWaiting(false);
-        setLoadingSpinner(false);
       });
   };
 
+  const updateTankDetails = (data, index) => {
+    setInitialState(index);
+    setHostTank(data);
+  };
+
   useEffect(() => {
-    setDefaultState(oneTank?.tankName);
-    setProduct(oneTank?.productType);
-  }, [oneTank?.tankName, oneTank?.productType]);
+    const findID = props.allTank.findIndex(
+      (data) => data._id === props.data.hostTank
+    );
+    setProduct(props.data.productType);
+    setTotalizer(props.data.totalizerReading);
+    setPumpName(props.data.pumpName.split(" ")[1]);
+    setHostTank(props.allTank[findID]);
+    setList(
+      props.allTank.filter(
+        (data) => data.productType === props.data.productType
+      )
+    );
+  }, [
+    props.data.productType,
+    props.allTank,
+    props.data.totalizerReading,
+    props.data.hostTank,
+    props.data.pumpName,
+    productType,
+  ]);
 
   return (
     <Modal
-      open={open === 3}
+      open={props.open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -92,7 +102,7 @@ const AddPump = (props) => {
       <div style={{ height: "430px" }} className="modalContainer2">
         <div className="inner">
           <div className="head">
-            <div className="head-text">Add Pump</div>
+            <div className="head-text">Edit Pump</div>
             <img
               onClick={handleClose}
               style={{ width: "18px", height: "18px" }}
@@ -104,33 +114,46 @@ const AddPump = (props) => {
           <div style={{ marginTop: "15px" }} className="inputs">
             <div className="head-text2">Choose product type</div>
             <div className="radio">
-              {(props.tabs === 1 || props.tabs === 0) &&
-                productType === "PMS" && (
-                  <div className="rad-item">
-                    <Radio checked={productType === "PMS" ? true : false} />
-                    <div className="head-text2" style={{ marginRight: "5px" }}>
-                      PMS
-                    </div>
+              {(props.tabs === 1 || props.tabs === 0) && (
+                <div className="rad-item">
+                  <Radio
+                    onClick={() => {
+                      setProduct("PMS");
+                    }}
+                    checked={productType === "PMS" ? true : false}
+                  />
+                  <div className="head-text2" style={{ marginRight: "5px" }}>
+                    PMS
                   </div>
-                )}
-              {(props.tabs === 2 || props.tabs === 0) &&
-                productType === "AGO" && (
-                  <div className="rad-item">
-                    <Radio checked={productType === "AGO" ? true : false} />
-                    <div className="head-text2" style={{ marginRight: "5px" }}>
-                      AGO
-                    </div>
+                </div>
+              )}
+
+              {(props.tabs === 2 || props.tabs === 0) && (
+                <div className="rad-item">
+                  <Radio
+                    onClick={() => {
+                      setProduct("AGO");
+                    }}
+                    checked={productType === "AGO" ? true : false}
+                  />
+                  <div className="head-text2" style={{ marginRight: "5px" }}>
+                    AGO
                   </div>
-                )}
-              {(props.tabs === 3 || props.tabs === 0) &&
-                productType === "DPK" && (
-                  <div className="rad-item">
-                    <Radio checked={productType === "DPK" ? true : false} />
-                    <div className="head-text2" style={{ marginRight: "5px" }}>
-                      DPK
-                    </div>
+                </div>
+              )}
+              {(props.tabs === 3 || props.tabs === 0) && (
+                <div className="rad-item">
+                  <Radio
+                    onClick={() => {
+                      setProduct("DPK");
+                    }}
+                    checked={productType === "DPK" ? true : false}
+                  />
+                  <div className="head-text2" style={{ marginRight: "5px" }}>
+                    DPK
                   </div>
-                )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -149,6 +172,7 @@ const AddPump = (props) => {
                 },
               }}
               placeholder=""
+              value={pumpName}
               type="number"
               onChange={(e) => setPumpName(e.target.value)}
             />
@@ -159,7 +183,7 @@ const AddPump = (props) => {
             <Select
               labelId="demo-select-small"
               id="demo-select-small"
-              value={defaultState}
+              value={initialState}
               sx={{
                 width: "100%",
                 height: "35px",
@@ -171,9 +195,22 @@ const AddPump = (props) => {
                   border: "1px solid #777777",
                 },
               }}>
-              <MenuItem style={menu} value={oneTank?.tankName}>
-                {oneTank?.productType} {oneTank?.tankName}
+              <MenuItem style={menu} value={0}>
+                Select a tank
               </MenuItem>
+              {list.map((data, index) => {
+                return (
+                  <MenuItem
+                    onClick={() => {
+                      updateTankDetails(data, index + 1);
+                    }}
+                    key={index}
+                    style={menu}
+                    value={index + 1}>
+                    {data.tankName}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </div>
 
@@ -192,21 +229,21 @@ const AddPump = (props) => {
                 },
               }}
               placeholder=""
-              type={"text"}
+              value={totalizer}
+              type="text"
               onChange={(e) => setTotalizer(e.target.value)}
             />
           </div>
 
           <div style={{ height: "30px" }} className="butt">
             <Button
-              disabled={waiting}
               sx={{
                 width: "100px",
                 height: "30px",
                 background: "#427BBE",
                 borderRadius: "3px",
                 fontSize: "10px",
-                marginTop: "00px",
+                marginTop: "0px",
                 "&:hover": {
                   backgroundColor: "#427BBE",
                 },
@@ -240,4 +277,4 @@ const menu = {
   fontSize: "14px",
 };
 
-export default AddPump;
+export default EditPump;
