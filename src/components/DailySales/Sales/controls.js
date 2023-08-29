@@ -9,6 +9,9 @@ import { adminOutlet, getAllStations } from "../../../storage/outlet";
 import swal from "sweetalert";
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom";
+import SelectStation from "../../common/selectstations";
+
+const mobile = window.matchMedia("(max-width: 600px)");
 
 const Controls = () => {
   const dispatch = useDispatch();
@@ -88,66 +91,11 @@ const Controls = () => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <div>
-        {getPerm("0") && (
-          <Select
-            labelId="demo-select-small"
-            id="demo-select-small"
-            value={defaultState}
-            sx={selectStyle2}>
-            <MenuItem
-              onClick={() => {
-                changeMenu(0, null);
-              }}
-              style={menu}
-              value={0}>
-              All Stations
-            </MenuItem>
-            {allOutlets.map((item, index) => {
-              return (
-                <MenuItem
-                  key={index}
-                  style={menu}
-                  onClick={() => {
-                    changeMenu(index + 1, item);
-                  }}
-                  value={index + 1}>
-                  {item.outletName + ", " + item.alias}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        )}
-        {getPerm("0") || (
-          <Select
-            labelId="demo-select-small"
-            id="demo-select-small"
-            value={0}
-            sx={selectStyle2}
-            disabled>
-            <MenuItem style={menu} value={0}>
-              {!getPerm("0")
-                ? oneStationData?.outletName + ", " + oneStationData?.alias
-                : "No station created"}
-            </MenuItem>
-          </Select>
-        )}
-      </div>
+    <div style={style}>
+      <SelectStation oneStation={getPerm("0")} allStation={getPerm("1")} />
       <Button
         variant="contained"
-        sx={{
-          width: "210px",
-          height: "30px",
-          background: "#06805B",
-          fontSize: "12px",
-          marginLeft: "10px",
-          borderRadius: "0px",
-          textTransform: "capitalize",
-          "&:hover": {
-            backgroundColor: "#06805B",
-          },
-        }}
+        sx={button}
         onClick={() => {
           openDailySales();
         }}>
@@ -157,20 +105,23 @@ const Controls = () => {
   );
 };
 
-const menu = {
-  fontSize: "12px",
+const style = {
+  margin: "0px",
+  display: "flex",
+  flexDirection: mobile.matches ? "column" : "row",
 };
 
-const selectStyle2 = {
-  width: "130px",
+const button = {
+  minWidth: mobile.matches ? "225px" : "120px",
+  maxWidth: "300px",
   height: "30px",
-  borderRadius: "0px",
-  background: "#F2F1F1B2",
-  color: "#000",
+  background: "#06805B",
   fontSize: "12px",
-  outline: "none",
-  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #777777",
+  marginLeft: mobile.matches ? "0px" : "10px",
+  borderRadius: "0px",
+  textTransform: "capitalize",
+  "&:hover": {
+    backgroundColor: "#06805B",
   },
 };
 
