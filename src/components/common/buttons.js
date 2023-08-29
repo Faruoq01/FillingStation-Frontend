@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+const mobile = window.matchMedia("(max-width: 600px)");
 
 export const CreateButton = ({ callback, label }) => {
   return (
@@ -36,6 +37,7 @@ const style = {
   borderRadius: "0px",
   fontSize: "12px",
   textTransform: "capitalize",
+  display: mobile.matches ? "none" : "block",
   "&:hover": {
     backgroundColor: "#427BBE",
   },
@@ -48,6 +50,7 @@ const history = {
   borderRadius: "0px",
   fontSize: "10px",
   marginLeft: "10px",
+  display: mobile.matches ? "none" : "block",
   "&:hover": {
     backgroundColor: "#58A0DF",
   },
@@ -60,6 +63,7 @@ const print = {
   borderRadius: "0px",
   fontSize: "10px",
   marginLeft: "10px",
+  display: mobile.matches ? "none" : "block",
   "&:hover": {
     backgroundColor: "#F36A4C",
   },

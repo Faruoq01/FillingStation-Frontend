@@ -1,6 +1,14 @@
+const mobile = window.matchMedia("(max-width: 600px)");
+
 export const TableControls = ({ children, mt }) => {
+  const getStyle = () => {
+    const style = {
+      marginTop: mobile.matches ? "0px" : "mt",
+    };
+    return style;
+  };
   return (
-    <div style={{ marginTop: mt }} className="search">
+    <div style={getStyle()} className="search">
       {children}
     </div>
   );

@@ -1,8 +1,5 @@
 import React, { useCallback, useRef } from "react";
 import "../../styles/payments.scss";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import { openModal, getAllStations, tankListType } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
@@ -33,6 +30,7 @@ import { CreateButton, HistoryButton, PrintButton } from "../common/buttons";
 import { SearchField } from "../common/searchfields";
 import { LimitSelect } from "../common/customselect";
 import OutletGridSwitch from "../common/outletgrid";
+import MobileMenuListing from "../common/mobilemenulist";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -167,41 +165,12 @@ const Outlets = (props) => {
               close={setPrints}
             />
           )}
-          <div className="action">
-            <div style={{ width: "150px" }} className="butt2">
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={10}
-                sx={{
-                  ...selectStyle2,
-                  backgroundColor: "#06805B",
-                  color: "#fff",
-                  fontSize: "12px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}>
-                <MenuItem style={menu} value={10}>
-                  Action
-                </MenuItem>
-                <MenuItem
-                  style={menu}
-                  onClick={() => {
-                    handleOpenModal(1);
-                  }}
-                  value={20}>
-                  Create new filling station
-                </MenuItem>
-                <MenuItem style={menu} onClick={printTable} value={30}>
-                  Download PDF
-                </MenuItem>
-                <MenuItem style={menu} onClick={preview} value={40}>
-                  Print
-                </MenuItem>
-              </Select>
-            </div>
-          </div>
+          <MobileMenuListing
+            callback={handleOpenModal}
+            preview={preview}
+            print={printTable}
+            label={"Create Station"}
+          />
 
           <TableControls>
             <LeftControls>
@@ -270,19 +239,6 @@ const Outlets = (props) => {
   );
 };
 
-const selectStyle2 = {
-  width: "100%",
-  height: "35px",
-  borderRadius: "5px",
-  background: "#F2F1F1B2",
-  color: "#000",
-  fontSize: "12px",
-  outline: "none",
-  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #F2F1F1B2",
-  },
-};
-
 const contain = {
   width: "96%",
   height: "89%",
@@ -294,11 +250,6 @@ const place = {
   fontSize: "12px",
   marginTop: "20px",
   color: "green",
-};
-
-const menu = {
-  fontSize: "12px",
-  fontFamily: "Poppins",
 };
 
 export default Outlets;
