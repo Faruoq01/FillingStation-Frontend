@@ -24,6 +24,7 @@ import { PrintButton } from "../common/buttons";
 import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { ExpenseDesktopTable, ExpenseMobileTable } from "../tables/expenses";
+import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 
 const columns = [
   "S/N",
@@ -150,83 +151,78 @@ const Expenses = () => {
   };
 
   return (
-    <div
-      data-aos="zoom-in-down"
-      style={{ marginTop: mobile.matches ? "10px" : "auto" }}
-      className="paymentsCaontainer">
+    <TablePageBackground>
       {prints && (
         <ExpenseReport allOutlets={expense} open={prints} close={setPrints} />
       )}
-      <div className="inner-pay">
-        <div className="action">
-          <div style={{ width: "150px" }} className="butt2">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={10}
-              sx={{
-                ...selectStyle2,
-                backgroundColor: "#06805B",
-                color: "#fff",
-              }}>
-              <MenuItem value={10}>Actions</MenuItem>
-              <MenuItem onClick={createOrderHandler} value={20}>
-                Create Order
-              </MenuItem>
-              <MenuItem value={30}>Download PDF</MenuItem>
-              <MenuItem value={40}>Print</MenuItem>
-            </Select>
-          </div>
+      <div className="action">
+        <div style={{ width: "150px" }} className="butt2">
+          <Select
+            labelId="demo-select-small"
+            id="demo-select-small"
+            value={10}
+            sx={{
+              ...selectStyle2,
+              backgroundColor: "#06805B",
+              color: "#fff",
+            }}>
+            <MenuItem value={10}>Actions</MenuItem>
+            <MenuItem onClick={createOrderHandler} value={20}>
+              Create Order
+            </MenuItem>
+            <MenuItem value={30}>Download PDF</MenuItem>
+            <MenuItem value={40}>Print</MenuItem>
+          </Select>
         </div>
-
-        <TableControls>
-          <LeftControls>
-            <SelectStation
-              ml={"0px"}
-              oneStation={getPerm("0")}
-              allStation={getPerm("1")}
-              callback={stationHelper}
-            />
-            <SearchField ml={"10px"} callback={searchTable} />
-          </LeftControls>
-          <RightControls>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Stack spacing={1}>
-                <ButtonDatePicker
-                  label={`${value == null || "" ? date2 : convertDate(value)}`}
-                  value={value}
-                  onChange={(newValue) => updateDated(newValue)}
-                />
-              </Stack>
-            </LocalizationProvider>
-          </RightControls>
-        </TableControls>
-
-        <TableControls mt={"10px"}>
-          <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-          </LeftControls>
-          <RightControls>
-            <PrintButton callback={printReport} />
-          </RightControls>
-        </TableControls>
-
-        {mobile.matches ? (
-          <ExpenseMobileTable data={mobileTableData} />
-        ) : (
-          <ExpenseDesktopTable data={desktopTableData} />
-        )}
-
-        <TableNavigation
-          skip={skip}
-          limit={limit}
-          total={total}
-          setSkip={setSkip}
-          updateDate={updateDate}
-          callback={getExpenseData}
-        />
       </div>
-    </div>
+
+      <TableControls>
+        <LeftControls>
+          <SelectStation
+            ml={"0px"}
+            oneStation={getPerm("0")}
+            allStation={getPerm("1")}
+            callback={stationHelper}
+          />
+          <SearchField ml={"10px"} callback={searchTable} />
+        </LeftControls>
+        <RightControls>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Stack spacing={1}>
+              <ButtonDatePicker
+                label={`${value == null || "" ? date2 : convertDate(value)}`}
+                value={value}
+                onChange={(newValue) => updateDated(newValue)}
+              />
+            </Stack>
+          </LocalizationProvider>
+        </RightControls>
+      </TableControls>
+
+      <TableControls mt={"10px"}>
+        <LeftControls>
+          <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+        </LeftControls>
+        <RightControls>
+          <PrintButton callback={printReport} />
+        </RightControls>
+      </TableControls>
+
+      {mobile.matches ? (
+        <ExpenseMobileTable data={mobileTableData} />
+      ) : (
+        <ExpenseDesktopTable data={desktopTableData} />
+      )}
+
+      <TableNavigation
+        skip={skip}
+        limit={limit}
+        total={total}
+        setSkip={setSkip}
+        updateDate={updateDate}
+        callback={getExpenseData}
+      />
+    </TablePageBackground>
   );
 };
 
