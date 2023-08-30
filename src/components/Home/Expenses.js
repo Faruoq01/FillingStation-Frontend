@@ -6,9 +6,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import ExpenseService from "../../services/expense";
 import { allExpenses, searchExpenses } from "../../storage/expenses";
-import config from "../../constants";
 import ExpenseReport from "../Reports/ExpenseReport";
-import { ThreeDots } from "react-loader-spinner";
 import { Stack } from "@mui/material";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -219,80 +217,6 @@ const Expenses = () => {
           <ExpenseDesktopTable data={desktopTableData} />
         )}
 
-        {/* <div className="table-container">
-          <div className="table-head">
-            <div className="column">S/N</div>
-            <div className="column">Date Created</div>
-            <div className="column">Expense Date</div>
-            <div className="column">Expense Name</div>
-            <div className="column">Description</div>
-            <div className="column">Expense Amount</div>
-            <div className="column">Action</div>
-          </div>
-
-          
-
-          <div className="row-container">
-            {!loading ? (
-              expense.length === 0 ? (
-                <div style={place}>No product data</div>
-              ) : (
-                expense.map((data, index) => {
-                  return (
-                    <div className="table-head2">
-                      <div className="column">{index + 1}</div>
-                      <div className="column">
-                        {data.createdAt.split("T")[0]}
-                      </div>
-                      <div className="column">{data.dateCreated}</div>
-                      <div className="column">{data.expenseName}</div>
-                      <div className="column">{data.description}</div>
-                      <div className="column">{data.expenseAmount}</div>
-                      <div className="column">
-                        {data.attachApproval === "0" &&
-                          data.attachApprovalCam !== "0" && (
-                            <a
-                              href={config.BASE_URL + data.attachApprovalCam}
-                              target="_blank"
-                              rel="noreferrer">
-                              View Invoice
-                            </a>
-                          )}
-                        {data.attachApproval !== "0" &&
-                          data.attachApprovalCam === "0" && (
-                            <a
-                              href={config.BASE_URL + data.attachApproval}
-                              target="_blank"
-                              rel="noreferrer">
-                              View Invoice
-                            </a>
-                          )}
-                        {data.attachApproval === "0" &&
-                          data.attachApprovalCam === "0" && (
-                            <span>No attachment</span>
-                          )}
-                      </div>
-                    </div>
-                  );
-                })
-              )
-            ) : (
-              <div style={load}>
-                <ThreeDots
-                  height="60"
-                  width="50"
-                  radius="9"
-                  color="#076146"
-                  ariaLabel="three-dots-loading"
-                  wrapperStyle={{}}
-                  wrapperClassName=""
-                  visible={true}
-                />
-              </div>
-            )}
-          </div>
-        </div> */}
-
         <TableNavigation
           skip={skip}
           limit={limit}
@@ -318,26 +242,6 @@ const selectStyle2 = {
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #777777",
   },
-};
-
-const place = {
-  width: "100%",
-  textAlign: "center",
-  fontSize: "12px",
-  marginTop: "20px",
-  color: "green",
-};
-
-const menu = {
-  fontSize: "12px",
-  fontFamily: "Poppins",
-};
-
-const load = {
-  width: "100%",
-  height: "30px",
-  display: "flex",
-  justifyContent: "center",
 };
 
 export default Expenses;

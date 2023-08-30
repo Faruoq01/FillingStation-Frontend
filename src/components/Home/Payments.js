@@ -24,6 +24,46 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { setDateValue } from "../../storage/dailysales";
 import { dateRange } from "../../storage/dashboard";
 import ButtonDatePicker from "../common/CustomDatePicker";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
+import SelectStation from "../common/selectstations";
+import { SearchField } from "../common/searchfields";
+import { LimitSelect } from "../common/customselect";
+import { PrintButton } from "../common/buttons";
+import TableNavigation from "../controls/PageLayout/TableNavigation";
+import {
+  BankPaymentDesktopTable,
+  BankPaymentMobileTable,
+} from "../tables/bankpayment";
+import {
+  PosPaymentDesktopTable,
+  PosPaymentMobileTable,
+} from "../tables/pospayment";
+
+const bankColumns = [
+  "S/N",
+  "Bank name",
+  "Teller number",
+  "Amount paid",
+  "Payment date",
+  "date created",
+  "Confirm",
+  "Receipt",
+];
+
+const posColumns = [
+  "S/N",
+  "POS name",
+  "Terminal ID",
+  "Amount paid",
+  "Payment date",
+  "date created",
+  "Confirm",
+  "Receipt",
+];
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 1150px)");
@@ -255,6 +295,38 @@ const Payments = (props) => {
     getAllPayments(ID, getDate, skip);
   };
 
+  const stationHelper = (id) => {
+    getAllPayments(id, updateDate, skip);
+  };
+
+  const desktopTableData = {
+    columns: bankColumns,
+    printReport: printReport,
+    allOutlets: bank,
+    loading: loading,
+    confirmPayment: confirmPayment,
+  };
+
+  const mobileTableData = {
+    allOutlets: bank,
+    loading: loading,
+    confirmPayment: confirmPayment,
+  };
+
+  const posDesktopTableData = {
+    columns: posColumns,
+    printReport: printReport,
+    allOutlets: pos,
+    loading: loading,
+    confirmPayment: confirmPayment,
+  };
+
+  const posMobileTableData = {
+    allOutlets: pos,
+    loading: loading,
+    confirmPayment: confirmPayment,
+  };
+
   return (
     <React.Fragment>
       <div
@@ -284,76 +356,17 @@ const Payments = (props) => {
             </div>
           </div>
 
-          <div className="search">
-            <div className="input-cont">
-              <div className="second-select">
-                {getPerm("0") && (
-                  <Select
-                    labelId="demo-select-small"
-                    id="demo-select-small"
-                    value={defaultState}
-                    sx={selectStyle2}>
-                    <MenuItem
-                      onClick={() => {
-                        changeMenu(0, null);
-                      }}
-                      style={menu}
-                      value={0}>
-                      All Stations
-                    </MenuItem>
-                    {allOutlets.map((item, index) => {
-                      return (
-                        <MenuItem
-                          key={index}
-                          style={menu}
-                          onClick={() => {
-                            changeMenu(index + 1, item);
-                          }}
-                          value={index + 1}>
-                          {item.outletName + ", " + item.alias}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                )}
-                {getPerm("0") || (
-                  <Select
-                    labelId="demo-select-small"
-                    id="demo-select-small"
-                    value={0}
-                    sx={selectStyle2}
-                    disabled>
-                    <MenuItem style={menu} value={0}>
-                      {!getPerm("0")
-                        ? oneStationData?.outletName +
-                          ", " +
-                          oneStationData?.alias
-                        : "No station created"}
-                    </MenuItem>
-                  </Select>
-                )}
-              </div>
-              <div className="second-select">
-                <OutlinedInput
-                  sx={{
-                    width: "100%",
-                    height: "35px",
-                    background: "#EEF2F1",
-                    fontSize: "12px",
-                    borderRadius: "0px",
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "1px solid #777777",
-                    },
-                  }}
-                  type="text"
-                  placeholder="Search"
-                  onChange={(e) => {
-                    searchTable(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
-            <div style={{ justifyContent: "flex-end" }} className="butt">
+          <TableControls>
+            <LeftControls>
+              <SelectStation
+                ml={"0px"}
+                oneStation={getPerm("0")}
+                allStation={getPerm("1")}
+                callback={stationHelper}
+              />
+              <SearchField ml={"10px"} callback={searchTable} />
+            </LeftControls>
+            <RightControls>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Stack spacing={1}>
                   <ButtonDatePicker
@@ -365,130 +378,40 @@ const Payments = (props) => {
                   />
                 </Stack>
               </LocalizationProvider>
-            </div>
-          </div>
+            </RightControls>
+          </TableControls>
 
-          <div style={{ marginTop: "20px" }} className="search2">
-            <div className="lpo-butt">
-              <Button
-                sx={{
-                  width: "120px",
-                  height: "30px",
-                  background: !activeButton ? "#06805B" : "#fff",
-                  borderRadius: "27px",
-                  fontSize: "10px",
-                  marginRight: "10px",
-                  color: !activeButton ? "#fff" : "#000",
-                  "&:hover": {
-                    background: !activeButton ? "#06805B" : "#fff",
-                  },
-                }}
-                onClick={dispensed}
-                variant="contained">
-                {" "}
-                Bank Payments
-              </Button>
-              <Button
-                sx={{
-                  width: "120px",
-                  height: "30px",
-                  background: activeButton ? "#06805B" : "#fff",
-                  borderRadius: "27px",
-                  fontSize: "10px",
-                  color: activeButton ? "#fff" : "#000",
-                  "&:hover": {
-                    background: activeButton ? "#06805B" : "#fff",
-                  },
-                }}
-                onClick={LPOCompanies}
-                variant="contained">
-                {" "}
-                POS payments
-              </Button>
-            </div>
-            <div
-              style={{
-                width: mediaMatch.matches ? "100%" : "330px",
-                alignItems: "center",
-              }}
-              className="input-cont2">
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={entries}
-                sx={{
-                  ...selectStyle2,
-                  width: "130px",
-                  height: "32px",
-                  display: mediaMatch.matches && "none",
-                }}>
-                <MenuItem style={menu} value={10}>
-                  Show entries
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    entriesMenu(20, 15);
-                  }}
-                  style={menu}
-                  value={20}>
-                  15 entries
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    entriesMenu(30, 30);
-                  }}
-                  style={menu}
-                  value={30}>
-                  30 entries
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    entriesMenu(40, 100);
-                  }}
-                  style={menu}
-                  value={40}>
-                  100 entries
-                </MenuItem>
-              </Select>
-              <Button
-                sx={{
-                  width: mediaMatch.matches ? "100%" : "100px",
-                  height: "30px",
-                  background: "#58A0DF",
-                  borderRadius: "3px",
-                  fontSize: "10px",
-                  display: mediaMatch.matches && "none",
-                  marginTop: mediaMatch.matches ? "10px" : "0px",
-                  "&:hover": {
-                    backgroundColor: "#58A0DF",
-                  },
-                }}
-                variant="contained">
-                {" "}
-                History
-              </Button>
-              <Button
-                sx={{
-                  width: mediaMatch.matches ? "100%" : "80px",
-                  height: "30px",
-                  background: "#F36A4C",
-                  borderRadius: "3px",
-                  fontSize: "10px",
-                  display: mediaMatch.matches && "none",
-                  marginTop: mediaMatch.matches ? "10px" : "0px",
-                  "&:hover": {
-                    backgroundColor: "#F36A4C",
-                  },
-                }}
-                onClick={printReport}
-                variant="contained">
-                {" "}
-                Print
-              </Button>
-            </div>
-          </div>
+          <TableControls mt={"15px"}>
+            <LeftControls>
+              <PaymentTypeSwitch
+                activeButton={activeButton}
+                dispensed={dispensed}
+                LPOCompanies={LPOCompanies}
+              />
+            </LeftControls>
+            <RightControls>
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+              <PrintButton callback={printReport} />
+            </RightControls>
+          </TableControls>
 
-          {activeButton || (
+          {!activeButton ? (
+            mobile.matches ? (
+              <BankPaymentMobileTable data={mobileTableData} />
+            ) : (
+              <BankPaymentDesktopTable data={desktopTableData} />
+            )
+          ) : null}
+
+          {activeButton ? (
+            mobile.matches ? (
+              <PosPaymentMobileTable data={posMobileTableData} />
+            ) : (
+              <PosPaymentDesktopTable data={posDesktopTableData} />
+            )
+          ) : null}
+
+          {/* {activeButton || (
             <div style={{ marginTop: "10px" }} className="table-container">
               <div className="table-head">
                 <div className="column">S/N</div>
@@ -597,9 +520,9 @@ const Payments = (props) => {
                 )}
               </div>
             </div>
-          )}
+          )} */}
 
-          {activeButton && (
+          {/* {activeButton && (
             <div style={{ marginTop: "10px" }} className="table-container">
               <div className="table-head">
                 <div className="column">S/N</div>
@@ -708,26 +631,57 @@ const Payments = (props) => {
                 )}
               </div>
             </div>
-          )}
+          )} */}
 
-          <div className="footer">
-            <div style={{ fontSize: "14px" }}>
-              Showing {(skip + 1) * limit - (limit - 1)} to {(skip + 1) * limit}{" "}
-              of {total1} entries
-            </div>
-            <div className="nav">
-              <button onClick={prevPage} className="but">
-                Previous
-              </button>
-              <div className="num">{skip + 1}</div>
-              <button onClick={nextPage} className="but2">
-                Next
-              </button>
-            </div>
-          </div>
+          <TableNavigation
+            skip={skip}
+            limit={limit}
+            total={total1}
+            setSkip={setSkip}
+            updateDate={updateDate}
+            callback={getAllPayments}
+          />
         </div>
       </div>
     </React.Fragment>
+  );
+};
+
+const PaymentTypeSwitch = ({ activeButton, dispensed, LPOCompanies }) => {
+  let ac = activeButton;
+  return (
+    <div style={toggle} className="lpo-butt">
+      <Button
+        sx={{
+          ...switchButton,
+          background: ac ? "#fff" : "#06805B",
+          borderRadius: "27px",
+          color: ac ? "#000" : "#fff",
+          "&:hover": {
+            background: ac ? "#fff" : "#06805B",
+          },
+        }}
+        onClick={dispensed}
+        variant="contained">
+        {" "}
+        Bank Payments
+      </Button>
+      <Button
+        sx={{
+          ...switchButton,
+          background: ac ? "#06805B" : "#fff",
+          borderRadius: "27px",
+          color: ac ? "#fff" : "#000",
+          "&:hover": {
+            background: ac ? "#06805B" : "#fff",
+          },
+        }}
+        onClick={LPOCompanies}
+        variant="contained">
+        {" "}
+        POS payments
+      </Button>
+    </div>
   );
 };
 
@@ -745,24 +699,16 @@ const selectStyle2 = {
   },
 };
 
-const place = {
-  width: "100%",
-  textAlign: "center",
-  fontSize: "12px",
-  marginTop: "20px",
-  color: "green",
-};
-
-const menu = {
-  fontSize: "12px",
-  fontFamily: "Poppins",
-};
-
-const load = {
-  width: "100%",
+const switchButton = {
+  width: "120px",
   height: "30px",
-  display: "flex",
-  justifyContent: "center",
+  borderRadius: "27px",
+  fontSize: "10px",
+  marginRight: "10px",
+};
+
+const toggle = {
+  marginTop: mobile.matches ? "10px" : "0px",
 };
 
 export default Payments;
