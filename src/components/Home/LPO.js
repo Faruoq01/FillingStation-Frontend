@@ -273,23 +273,4 @@ const selectStyle2 = {
   },
 };
 
-const place = {
-  width: "100%",
-  textAlign: "center",
-  fontSize: "12px",
-  marginTop: "20px",
-  color: "green",
-};
-
-const menu = {
-  fontSize: "12px",
-};
-
-const load = {
-  width: "100%",
-  height: "30px",
-  display: "flex",
-  justifyContent: "center",
-};
-
 export default LPO;
