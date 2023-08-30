@@ -56,6 +56,8 @@ const Outlets = (props) => {
   const tablePrints = useRef();
   const [switchTabs, setSwitchTabs] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [skip, setSkip] = useState(0);
+  const [entries, setEntries] = useState(10);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -152,6 +154,13 @@ const Outlets = (props) => {
     Action: Action,
   };
 
+  const entriesMenu = (value, limit) => {
+    setEntries(value);
+    // setLimit(limit);
+    // const getID = oneStationData === null ? "None" : oneStationData._id;
+    // getExpenseData(getID, updateDate, skip);
+  };
+
   return (
     <>
       {props.activeRoute.split("/").length === 3 && (
@@ -186,7 +195,7 @@ const Outlets = (props) => {
 
           <TableControls mt={"10px"}>
             <LeftControls>
-              <LimitSelect />
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
             </LeftControls>
             <RightControls>
               <OutletGridSwitch
@@ -216,7 +225,14 @@ const Outlets = (props) => {
             </div>
           )}
 
-          <TableNavigation />
+          <TableNavigation
+            skip={skip}
+            limit={15}
+            total={100}
+            setSkip={setSkip}
+            updateDate={"None"}
+            callback={() => {}}
+          />
         </TablePageBackground>
       )}
 

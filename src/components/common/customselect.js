@@ -1,35 +1,58 @@
 import { MenuItem, Select } from "@mui/material";
 
-export const LimitSelect = () => {
+const mobile = window.matchMedia("(max-width: 600px)");
+
+export const LimitSelect = ({ entries, entriesMenu }) => {
   return (
     <Select
       labelId="demo-select-small"
       id="demo-select-small"
-      value={10}
-      sx={{ ...style, borderRadius: "0px" }}>
+      value={entries}
+      sx={selectStyle2}>
       <MenuItem style={menu} value={10}>
         Show entries
       </MenuItem>
-      <MenuItem style={menu} value={20}>
-        Twenty
+      <MenuItem
+        onClick={() => {
+          entriesMenu(20, 15);
+        }}
+        style={menu}
+        value={20}>
+        15 entries
       </MenuItem>
-      <MenuItem style={menu} value={30}>
-        Thirty
+      <MenuItem
+        onClick={() => {
+          entriesMenu(30, 30);
+        }}
+        style={menu}
+        value={30}>
+        30 entries
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          entriesMenu(40, 100);
+        }}
+        style={menu}
+        value={40}>
+        100 entries
       </MenuItem>
     </Select>
   );
 };
 
-const style = {
-  width: "120px",
-  height: "35px",
-  borderRadius: "5px",
+const selectStyle2 = {
+  minWidth: mobile.matches ? "100%" : "120px",
+  maxWidth: "300px",
+  height: "30px",
+  borderRadius: "0px",
   background: "#F2F1F1B2",
-  color: "#000",
+  color: "grey",
   fontSize: "12px",
   outline: "none",
+  fontFamily: "Poppins",
+  marginTop: mobile.matches ? "10px" : "0px",
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #F2F1F1B2",
+    border: "1px solid #777777",
   },
 };
 

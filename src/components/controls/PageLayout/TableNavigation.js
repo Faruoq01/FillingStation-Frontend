@@ -1,11 +1,41 @@
-const TableNavigation = () => {
+import { useSelector } from "react-redux";
+
+const TableNavigation = ({
+  skip,
+  limit,
+  total,
+  setSkip,
+  updateDate,
+  callback,
+}) => {
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+
+  const nextPage = () => {
+    setSkip((prev) => prev + 1);
+    const getID = oneStationData === null ? "None" : oneStationData._id;
+    callback(getID, updateDate, skip + 1);
+  };
+
+  const prevPage = () => {
+    if (skip < 1) return;
+    setSkip((prev) => prev - 1);
+    const getID = oneStationData === null ? "None" : oneStationData._id;
+    callback(getID, updateDate, skip - 1);
+  };
   return (
     <div className="footer">
-      <div style={{ fontSize: "12px" }}>Showing 1 to 11 of 38 entries</div>
+      <div style={{ fontSize: "14px" }}>
+        Showing {(skip + 1) * limit - (limit - 1)} to {(skip + 1) * limit} of{" "}
+        {total} entries
+      </div>
       <div className="nav">
-        <button className="but">Previous</button>
-        <div className="num">1</div>
-        <button className="but2">Next</button>
+        <button onClick={prevPage} className="but">
+          Previous
+        </button>
+        <div className="num">{skip + 1}</div>
+        <button onClick={nextPage} className="but2">
+          Next
+        </button>
       </div>
     </div>
   );

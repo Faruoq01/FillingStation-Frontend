@@ -1,8 +1,12 @@
 import { OutlinedInput } from "@mui/material";
 
-export const SearchField = ({ placeholder, callback }) => {
+const mobile = window.matchMedia("(max-width: 600px)");
+
+export const SearchField = ({ ml, callback }) => {
   return (
-    <div className="second-select">
+    <div
+      style={{ marginLeft: mobile.matches ? "0px" : ml }}
+      className="second-select">
       <OutlinedInput
         placeholder={"Search"}
         sx={style}
@@ -15,8 +19,9 @@ export const SearchField = ({ placeholder, callback }) => {
 };
 
 const style = {
-  width: "100%",
-  height: "35px",
+  minWidth: mobile.matches ? "225px" : "120px",
+  maxWidth: "300px",
+  height: "30px",
   fontSize: "12px",
   background: "#F2F1F1",
   color: "#000",

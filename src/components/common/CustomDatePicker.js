@@ -2,6 +2,8 @@ import { Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React from "react";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 function ButtonField(props) {
   const {
     setOpen,
@@ -22,6 +24,7 @@ function ButtonField(props) {
         borderRadius: "0px",
         background: "#06805B",
         color: "#fff",
+        marginTop: mobile.matches ? "10px" : "0px",
         textTransform: "capitalize",
         "&:hover": {
           backgroundColor: "#06805B",

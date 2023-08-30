@@ -32,6 +32,7 @@ const Controls = () => {
         ml={"0px"}
         oneStation={getPerm("0")}
         allStation={getPerm("1")}
+        callback={() => {}}
       />
       <Button
         variant="contained"

@@ -40,6 +40,7 @@ const Controls = () => {
         ml={"10px"}
         oneStation={getPerm("0")}
         allStation={getPerm("1")}
+        callback={() => {}}
       />
     </div>
   );
