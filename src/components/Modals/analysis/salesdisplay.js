@@ -1,9 +1,9 @@
 import React from "react";
-import close from "../../assets/close.png";
-import pumpHead from "../../assets/pumpHead.png";
+import close from "../../../assets/close.png";
+import pumpHead from "../../../assets/pumpHead.png";
 import Modal from "@mui/material/Modal";
-import "../../styles/cost.scss";
-import ApproximateDecimal from "../common/approx";
+import "../../../styles/cost.scss";
+import ApproximateDecimal from "../../common/approx";
 import { useSelector } from "react-redux";
 
 const SalesDisplay = (props) => {

@@ -4,18 +4,18 @@ import {
   adminOutlet,
   getAllStations,
   searchStations,
-} from "../../storage/outlet";
+} from "../../../storage/outlet";
 import { useSelector } from "react-redux";
-import close from "../../assets/close.png";
+import close from "../../../assets/close.png";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
-import "../../styles/mode.scss";
-import search from "../../assets/search.png";
-import tick from "../../assets/tick.png";
+import "../../../styles/mode.scss";
+import search from "../../../assets/search.png";
+import tick from "../../../assets/tick.png";
 import { OutlinedInput } from "@mui/material";
-import OutletService from "../../services/outletService";
+import OutletService from "../../../services/outletService";
 
 const CostPriceModal = (props) => {
   const dispatch = useDispatch();

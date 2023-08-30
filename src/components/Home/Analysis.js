@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../../styles/payments.scss";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import analysis2 from "../../assets/analysis2.png";
 import folder from "../../assets/folder.png";
 import folder2 from "../../assets/folder2.png";
@@ -9,10 +7,8 @@ import hand from "../../assets/hand.png";
 import naira from "../../assets/naira.png";
 import me6 from "../../assets/me6.png";
 import { useDispatch, useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
-import { adminOutlet, getAllStations } from "../../storage/outlet";
-import AddCostPrice from "../Modals/AddCostPrice";
-import CostPriceModal from "../Modals/CostPriceModal";
+import AddCostPrice from "../Modals/analysis/addcostprice";
+import CostPriceModal from "../Modals/analysis/costpricemodal";
 import { Route, Switch, useHistory } from "react-router-dom";
 import Payments from "./Payments";
 import Expenses from "./Expenses";
@@ -21,14 +17,19 @@ import { setAnalysisData } from "../../storage/analysis";
 import swal from "sweetalert";
 import ApproximateDecimal from "../common/approx";
 import { Skeleton } from "@mui/material";
-import SalesDisplay from "../Modals/SalesDisplay";
+import SalesDisplay from "../Modals/analysis/salesdisplay";
 import Varience from "../Modals/Varience";
 import { dateRange } from "../../storage/analysis";
 import APIs from "../../services/api";
+import SelectStation from "../common/selectstations";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
 
 const Analysis = (props) => {
   const user = useSelector((state) => state.auth.user);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const { expenses, payments, profit, totalSales, totalVarience } = useSelector(
     (state) => state.analysis.analysisData
@@ -38,7 +39,6 @@ const Analysis = (props) => {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const [defaultState, setDefault] = useState(0);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [type, setType] = useState(false);
@@ -62,55 +62,8 @@ const Analysis = (props) => {
     return user.permission?.analysis[e];
   };
 
-  const getAllOutletData = useCallback(() => {
-    if (oneStationData !== null) {
-      if (getPerm("0") || getPerm("1") || user.userType === "superAdmin") {
-        const findID = allOutlets.findIndex(
-          (data) => data._id === oneStationData._id
-        );
-        setDefault(findID + 1);
-        const [start, end] = updatedDate;
-        analysisDataHandler(oneStationData._id, start, end);
-        return;
-      }
-    }
-
-    const payload = {
-      organisation: resolveUserID().id,
-    };
-
-    OutletService.getAllOutletStations(payload)
-      .then((data) => {
-        dispatch(getAllStations(data.station));
-        if (
-          (getPerm("0") || user.userType === "superAdmin") &&
-          oneStationData === null
-        ) {
-          if (!getPerm("1")) setDefault(1);
-          dispatch(adminOutlet(null));
-          return "None";
-        } else {
-          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-            (data) => {
-              dispatch(adminOutlet(data.station));
-            }
-          );
-
-          return user.outletID;
-        }
-      })
-      .then((data) => {
-        const [start, end] = updatedDate;
-        analysisDataHandler(data, start, end);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    getAllOutletData();
-  }, [getAllOutletData]);
-
-  const analysisDataHandler = (outletID, start, end) => {
+  const analysisDataHandler = (outletID) => {
+    const [start, end] = updatedDate;
     setLoad(true);
     const payload = {
       organisation: resolveUserID().id,
@@ -126,17 +79,6 @@ const Analysis = (props) => {
       .then(() => {
         setLoad(false);
       });
-  };
-
-  const changeMenu = (index, item) => {
-    if (!getPerm("1") && item === null)
-      return swal("Warning!", "Permission denied", "info");
-    setDefault(index);
-    dispatch(adminOutlet(item));
-
-    const id = item === null ? "None" : item._id;
-    const [start, end] = updatedDate;
-    analysisDataHandler(id, start, end);
   };
 
   const DashboardImage = (props) => {
@@ -254,13 +196,7 @@ const Analysis = (props) => {
         />
       )}
       {open2 && (
-        <CostPriceModal
-          type={type}
-          open={open2}
-          close={setOpen2}
-          mode={mode}
-          refresh={getAllOutletData}
-        />
+        <CostPriceModal type={type} open={open2} close={setOpen2} mode={mode} />
       )}
       {openDetails && (
         <SalesDisplay open={openDetails} close={setOpenDetails} />
@@ -268,81 +204,22 @@ const Analysis = (props) => {
       {openDetails2 && <Varience open={openDetails2} close={setOpenDetails2} />}
       {props.activeRoute.split("/").length === 3 && (
         <div style={{ width: "100%", marginTop: "0px" }} className="inner-pay">
-          <div className="action">
-            <div style={{ width: "150px" }} className="butt2">
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={10}
-                sx={{
-                  ...selectStyle2,
-                  backgroundColor: "#06805B",
-                  color: "#fff",
-                }}>
-                <MenuItem value={10}>Add Payments</MenuItem>
-                <MenuItem value={20}>Download PDF</MenuItem>
-                <MenuItem value={30}>Print</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div style={{ marginBottom: "0px" }} className="search">
-            <div className="input-cont">
-              <div className="second-select">
-                {getPerm("0") && (
-                  <Select
-                    labelId="demo-select-small"
-                    id="demo-select-small"
-                    value={defaultState}
-                    sx={selectStyle2}>
-                    <MenuItem
-                      onClick={() => {
-                        changeMenu(0, null);
-                      }}
-                      style={menu}
-                      value={0}>
-                      All Stations
-                    </MenuItem>
-                    {allOutlets.map((item, index) => {
-                      return (
-                        <MenuItem
-                          key={index}
-                          style={menu}
-                          onClick={() => {
-                            changeMenu(index + 1, item);
-                          }}
-                          value={index + 1}>
-                          {item.outletName + ", " + item.alias}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                )}
-                {getPerm("0") || (
-                  <Select
-                    labelId="demo-select-small"
-                    id="demo-select-small"
-                    value={0}
-                    sx={selectStyle2}
-                    disabled>
-                    <MenuItem style={menu} value={0}>
-                      {!getPerm("0")
-                        ? oneStationData?.outletName +
-                          ", " +
-                          oneStationData?.alias
-                        : "No station created"}
-                    </MenuItem>
-                  </Select>
-                )}
-              </div>
-            </div>
-            <div style={{ justifyContent: "flex-end" }} className="butt">
+          <TableControls>
+            <LeftControls>
+              <SelectStation
+                ml={"0px"}
+                oneStation={getPerm("0")}
+                allStation={getPerm("1")}
+                callback={analysisDataHandler}
+              />
+            </LeftControls>
+            <RightControls>
               <DateRangePicker
                 onChange={getDateFromRange}
                 value={updatedDate}
               />
-            </div>
-          </div>
+            </RightControls>
+          </TableControls>
 
           <div style={contain2}>
             <div className="imgContainer">
@@ -421,25 +298,9 @@ const Analysis = (props) => {
   );
 };
 
-const selectStyle2 = {
-  width: "100%",
-  height: "35px",
-  borderRadius: "0px",
-  background: "#F2F1F1B2",
-  color: "#000",
-  fontSize: "12px",
-  outline: "none",
-  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #777777",
-  },
-};
-
 const contain2 = {
   width: "100%",
-};
-
-const menu = {
-  fontSize: "12px",
+  marginTop: "20px",
 };
 
 export default Analysis;

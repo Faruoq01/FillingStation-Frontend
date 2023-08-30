@@ -9,7 +9,7 @@ import swal from "sweetalert";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
-const SelectStation = ({ ml, oneStation, allStation }) => {
+const SelectStation = ({ ml, oneStation, allStation, callback }) => {
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
@@ -36,27 +36,34 @@ const SelectStation = ({ ml, oneStation, allStation }) => {
           (data) => data._id === oneStationData._id
         );
         setDefault(findID + 1);
+        callback(oneStationData._id);
         return;
       }
     }
 
-    OutletService.getAllOutletStations(payload).then((data) => {
-      dispatch(getAllStations(data.station));
-      if (
-        (oneStation || user.userType === "superAdmin") &&
-        oneStationData === null
-      ) {
-        if (!allStation) setDefault(1);
-        dispatch(adminOutlet(null));
-        return "None";
-      } else {
-        OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-          (data) => {
-            dispatch(adminOutlet(data.station));
-          }
-        );
-      }
-    });
+    OutletService.getAllOutletStations(payload)
+      .then((data) => {
+        dispatch(getAllStations(data.station));
+        if (
+          (oneStation || user.userType === "superAdmin") &&
+          oneStationData === null
+        ) {
+          if (!allStation) setDefault(1);
+          dispatch(adminOutlet(null));
+          return "None";
+        } else {
+          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
+            (data) => {
+              dispatch(adminOutlet(data.station));
+            }
+          );
+
+          return user.outletID;
+        }
+      })
+      .then((data) => {
+        callback(data);
+      });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user._id, user.userType, user.outletID, dispatch]);
@@ -70,6 +77,9 @@ const SelectStation = ({ ml, oneStation, allStation }) => {
       return swal("Warning!", "Permission denied", "info");
     setDefault(index);
     dispatch(adminOutlet(item));
+
+    const id = item === null ? "None" : item._id;
+    callback(id);
   };
 
   return (

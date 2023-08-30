@@ -15,7 +15,11 @@ export const TableControls = ({ children, mt }) => {
 };
 
 export const LeftControls = ({ children }) => {
-  return <div className="input-cont">{children}</div>;
+  return (
+    <div style={left} className="input-cont">
+      {children}
+    </div>
+  );
 };
 
 export const RightControls = ({ children }) => {
@@ -27,5 +31,13 @@ export const RightControls = ({ children }) => {
 };
 
 const right = {
-  justifyContent: "flex-end",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: mobile.matches ? "flex-start" : "flex-end",
+};
+
+const left = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "flex-start",
 };

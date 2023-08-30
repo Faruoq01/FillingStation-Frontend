@@ -54,7 +54,7 @@ export const OutletMobileTable = ({ data }) => {
               />
               <MobileTableCell
                 columns={["State", "action"]}
-                cellData={[item.state, <Action />]}
+                cellData={[item.state, <Action item={item} />]}
               />
             </MobileTableRows>
           );
