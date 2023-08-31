@@ -51,7 +51,6 @@ const IncomingOrder = () => {
   );
   const [incomingOrderEditModal, setIncomingOrderEditModal] = useState(false);
   const dispatch = useDispatch();
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
@@ -60,7 +59,6 @@ const IncomingOrder = () => {
   const [prints, setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log(allOutlets, "all stations");
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
       return { id: user._id };
