@@ -25,6 +25,7 @@ import {
   RegulatoryDesktopTable,
   RegulatoryMobileTable,
 } from "../tables/regulatory";
+import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 
 const columns = [
   "S/N",
@@ -144,73 +145,71 @@ const Regulatory = () => {
   };
 
   return (
-    <>
-      <div data-aos="zoom-in-down" className="paymentsCaontainer">
-        <div className="inner-pay">
-          <div className="action">
-            <div style={{ width: "150px" }} className="butt2">
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={10}
-                sx={{
-                  ...selectStyle2,
-                  backgroundColor: "#06805B",
-                  color: "#fff",
-                }}>
-                <MenuItem value={10}>Action</MenuItem>
-                <MenuItem onClick={openPaymentModal} value={20}>
-                  Register Payment
-                </MenuItem>
-                <MenuItem value={30}>Download PDF</MenuItem>
-                <MenuItem value={40}>Print</MenuItem>
-              </Select>
-            </div>
+    <React.Fragment>
+      <TablePageBackground>
+        <div className="action">
+          <div style={{ width: "150px" }} className="butt2">
+            <Select
+              labelId="demo-select-small"
+              id="demo-select-small"
+              value={10}
+              sx={{
+                ...selectStyle2,
+                backgroundColor: "#06805B",
+                color: "#fff",
+              }}>
+              <MenuItem value={10}>Action</MenuItem>
+              <MenuItem onClick={openPaymentModal} value={20}>
+                Register Payment
+              </MenuItem>
+              <MenuItem value={30}>Download PDF</MenuItem>
+              <MenuItem value={40}>Print</MenuItem>
+            </Select>
           </div>
-
-          <TableControls>
-            <LeftControls>
-              <SelectStation
-                ml={"0px"}
-                oneStation={getPerm("0")}
-                allStation={getPerm("1")}
-                callback={stationHelper}
-              />
-              <SearchField ml={"10px"} callback={searchTable} />
-            </LeftControls>
-            <RightControls>
-              <CreateButton
-                callback={openPaymentModal}
-                label={"Register Payment"}
-              />
-            </RightControls>
-          </TableControls>
-
-          <TableControls mt={"10px"}>
-            <LeftControls>
-              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-            </LeftControls>
-            <RightControls>
-              <PrintButton callback={printReport} />
-            </RightControls>
-          </TableControls>
-
-          {mobile.matches ? (
-            <RegulatoryMobileTable data={mobileTableData} />
-          ) : (
-            <RegulatoryDesktopTable data={desktopTableData} />
-          )}
-
-          <TableNavigation
-            skip={skip}
-            limit={limit}
-            total={total}
-            setSkip={setSkip}
-            updateDate={"None"}
-            callback={refresh}
-          />
         </div>
-      </div>
+
+        <TableControls>
+          <LeftControls>
+            <SelectStation
+              ml={"0px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+            <SearchField ml={"10px"} callback={searchTable} />
+          </LeftControls>
+          <RightControls>
+            <CreateButton
+              callback={openPaymentModal}
+              label={"Register Payment"}
+            />
+          </RightControls>
+        </TableControls>
+
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+          </LeftControls>
+          <RightControls>
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
+
+        {mobile.matches ? (
+          <RegulatoryMobileTable data={mobileTableData} />
+        ) : (
+          <RegulatoryDesktopTable data={desktopTableData} />
+        )}
+
+        <TableNavigation
+          skip={skip}
+          limit={limit}
+          total={total}
+          setSkip={setSkip}
+          updateDate={"None"}
+          callback={refresh}
+        />
+      </TablePageBackground>
       {editPaymentModal && (
         <PaymentEditModal
           singleRegulatoryDetails={singleRegulatoryDetails}
@@ -240,7 +239,7 @@ const Regulatory = () => {
           desc={description}
         />
       )}
-    </>
+    </React.Fragment>
   );
 };
 
