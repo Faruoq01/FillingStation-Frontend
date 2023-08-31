@@ -152,9 +152,6 @@ const Expenses = () => {
 
   return (
     <TablePageBackground>
-      {prints && (
-        <ExpenseReport allOutlets={expense} open={prints} close={setPrints} />
-      )}
       <div className="action">
         <div style={{ width: "150px" }} className="butt2">
           <Select
@@ -222,6 +219,9 @@ const Expenses = () => {
         updateDate={updateDate}
         callback={getExpenseData}
       />
+      {prints && (
+        <ExpenseReport allOutlets={expense} open={prints} close={setPrints} />
+      )}
     </TablePageBackground>
   );
 };
