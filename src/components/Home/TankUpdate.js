@@ -78,7 +78,7 @@ const TankUpdate = () => {
     const payload = {
       skip: skip * limit,
       limit: limit,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
+      outletID: id,
       organisationID: resolveUserID().id,
     };
     OutletService.getAllOutletTanks(payload)

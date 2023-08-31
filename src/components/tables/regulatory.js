@@ -79,10 +79,22 @@ export const RegulatoryDesktopTable = ({ data }) => {
                 <DesktopTableCell data={item.amount} />
                 <DesktopTableCell data={item.contactPerson} />
                 <DesktopTableCell
-                  data={<ViewCert item={item} label={"DPRCertificate"} />}
+                  data={
+                    <ViewCert
+                      item={item}
+                      label={"DPRCertificate"}
+                      type={"attachCertificate"}
+                    />
+                  }
                 />
                 <DesktopTableCell
-                  data={<ViewCert item={item} label={"DPRReceip"} />}
+                  data={
+                    <ViewCert
+                      item={item}
+                      label={"DPRReceip"}
+                      type={"paymentReceipt"}
+                    />
+                  }
                 />
                 <DesktopTableCell
                   data={
@@ -124,8 +136,16 @@ export const RegulatoryMobileTable = ({ data }) => {
               <MobileTableCell
                 columns={["Certificate", "Reciept"]}
                 cellData={[
-                  <ViewCert item={item} label={"DPRCertificate"} />,
-                  <ViewCert item={item} label={"DPRReceip"} />,
+                  <ViewCert
+                    item={item}
+                    label={"DPRCertificate"}
+                    type={"attachCertificate"}
+                  />,
+                  <ViewCert
+                    item={item}
+                    label={"DPRReceip"}
+                    type={"paymentReceipt"}
+                  />,
                 ]}
               />
               <MobileTableCell
@@ -169,12 +189,9 @@ const ViewMore = ({ data, viewDescription }) => {
   );
 };
 
-const ViewCert = ({ item, label }) => {
+const ViewCert = ({ item, label, type }) => {
   return (
-    <a
-      href={config.BASE_URL + item.attachCertificate}
-      target="_blank"
-      rel="noreferrer">
+    <a href={config.BASE_URL + item[type]} target="_blank" rel="noreferrer">
       {label}
     </a>
   );
