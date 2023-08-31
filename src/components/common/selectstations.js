@@ -66,7 +66,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user._id, user.userType, user.outletID, dispatch]);
+  }, []);
 
   useEffect(() => {
     getAllStationData();
