@@ -12,7 +12,8 @@ import { posPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 import ApproximateDecimal from "../common/approx";
 import { Button } from "@mui/material";
-import moment from "moment";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const PosPayments = (props) => {
   const dispatch = useDispatch();
@@ -37,6 +38,13 @@ const PosPayments = (props) => {
   const [paymentDate, setPaymentDate] = useState("");
   const [cam, setCam] = useState("null");
   const [gall, setGall] = useState("null");
+
+  const [paymentDetails, setPaymentDetails] = useState({
+    totalSales: 0,
+    salesAmount: 0,
+    netToBank: 0,
+    outstanding: 0,
+  });
 
   const deleteFromList = (index) => {
     const copyPos = JSON.parse(JSON.stringify(posPayloadData));
@@ -120,131 +128,150 @@ const PosPayments = (props) => {
     setGall("null");
   };
 
-  const getPayments = () => {
-    const bank = bankPayloadData;
-    const pos = posPayloadData;
+  const getPayments = useCallback(
+    (newPayment = 0) => {
+      const bank = bankPayloadData;
+      const pos = posPayloadData;
 
-    const totalExpenses = expensesPayloadData.reduce((accum, current) => {
-      return Number(accum) + Number(current.expenseAmount);
-    }, 0);
+      const totalExpenses = expensesPayloadData.reduce((accum, current) => {
+        return Number(accum) + Number(current.expenseAmount);
+      }, 0);
 
-    const totalPOSPayment = pos.reduce((accum, current) => {
-      return Number(accum) + Number(current.amountPaid);
-    }, 0);
+      const totalPOSPayment = pos.reduce((accum, current) => {
+        return Number(accum) + Number(current.amountPaid);
+      }, 0);
 
-    const totalBankPayment = bank.reduce((accum, current) => {
-      return Number(accum) + Number(current.amountPaid);
-    }, 0);
+      const totalBankPayment = bank.reduce((accum, current) => {
+        return Number(accum) + Number(current.amountPaid);
+      }, 0);
 
-    /*############################################
+      /*############################################
             Total sales
         ###############################################*/
 
-    const totalPMS = selectedPumps
-      .filter((data) => data.productType === "PMS")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) +
-          Number(current.sales) * Number(oneStationData.PMSPrice)
-        );
-      }, 0);
+      const totalPMS = selectedPumps
+        .filter((data) => data.productType === "PMS")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) +
+            Number(current.sales) * Number(oneStationData.PMSPrice)
+          );
+        }, 0);
 
-    const totalAGO = selectedPumps
-      .filter((data) => data.productType === "AGO")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) +
-          Number(current.sales) * Number(oneStationData.AGOPrice)
-        );
-      }, 0);
+      const totalAGO = selectedPumps
+        .filter((data) => data.productType === "AGO")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) +
+            Number(current.sales) * Number(oneStationData.AGOPrice)
+          );
+        }, 0);
 
-    const totalDPK = selectedPumps
-      .filter((data) => data.productType === "DPK")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) +
-          Number(current.sales) * Number(oneStationData.DPKPrice)
-        );
-      }, 0);
+      const totalDPK = selectedPumps
+        .filter((data) => data.productType === "DPK")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) +
+            Number(current.sales) * Number(oneStationData.DPKPrice)
+          );
+        }, 0);
 
-    /*############################################
+      /*############################################
             Total lpo sales
         ###############################################*/
 
-    const totalLpoPMS = lpoPayloadData
-      .filter((data) => data.productType === "PMS")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) + Number(current.lpoLitre) * Number(current.PMSRate)
-        );
-      }, 0);
+      const totalLpoPMS = lpoPayloadData
+        .filter((data) => data.productType === "PMS")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) + Number(current.lpoLitre) * Number(current.PMSRate)
+          );
+        }, 0);
 
-    const totalLpoAGO = lpoPayloadData
-      .filter((data) => data.productType === "AGO")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) + Number(current.lpoLitre) * Number(current.AGORate)
-        );
-      }, 0);
+      const totalLpoAGO = lpoPayloadData
+        .filter((data) => data.productType === "AGO")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) + Number(current.lpoLitre) * Number(current.AGORate)
+          );
+        }, 0);
 
-    const totalLpoDPK = lpoPayloadData
-      .filter((data) => data.productType === "DPK")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) + Number(current.lpoLitre) * Number(current.DPKRate)
-        );
-      }, 0);
+      const totalLpoDPK = lpoPayloadData
+        .filter((data) => data.productType === "DPK")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) + Number(current.lpoLitre) * Number(current.DPKRate)
+          );
+        }, 0);
 
-    /*############################################
+      /*############################################
             Return to tank
         ###############################################*/
 
-    const pmsRT = selectedPumps
-      .filter((data) => data.productType === "PMS")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) +
-          Number(current.RTlitre) * Number(oneStationData.PMSPrice)
-        );
-      }, 0);
+      const pmsRT = selectedPumps
+        .filter((data) => data.productType === "PMS")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) +
+            Number(current.RTlitre) * Number(oneStationData.PMSPrice)
+          );
+        }, 0);
 
-    const agoRT = selectedPumps
-      .filter((data) => data.productType === "AGO")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) +
-          Number(current.RTlitre) * Number(oneStationData.AGOPrice)
-        );
-      }, 0);
+      const agoRT = selectedPumps
+        .filter((data) => data.productType === "AGO")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) +
+            Number(current.RTlitre) * Number(oneStationData.AGOPrice)
+          );
+        }, 0);
 
-    const dpkRT = selectedPumps
-      .filter((data) => data.productType === "DPK")
-      .reduce((accum, current) => {
-        return (
-          Number(accum) +
-          Number(current.RTlitre) * Number(oneStationData.DPKPrice)
-        );
-      }, 0);
+      const dpkRT = selectedPumps
+        .filter((data) => data.productType === "DPK")
+        .reduce((accum, current) => {
+          return (
+            Number(accum) +
+            Number(current.RTlitre) * Number(oneStationData.DPKPrice)
+          );
+        }, 0);
 
-    const totalSales = totalPMS + totalAGO + totalDPK;
-    const totalLpoSales = totalLpoPMS + totalLpoAGO + totalLpoDPK;
-    const totalRT = pmsRT + agoRT + dpkRT;
-    const netToBank = totalSales - totalLpoSales - totalRT - totalExpenses;
-    const totalPayments = totalPOSPayment + totalBankPayment;
+      const totalSales = totalPMS + totalAGO + totalDPK;
+      const totalLpoSales = totalLpoPMS + totalLpoAGO + totalLpoDPK;
+      const totalRT = pmsRT + agoRT + dpkRT;
+      const netToBank = totalSales - totalLpoSales - totalRT - totalExpenses;
+      const totalPayments =
+        totalPOSPayment + totalBankPayment + Number(newPayment);
 
-    const payment = {
-      totalSales: totalSales - totalRT,
-      salesAmount: totalSales - totalLpoSales - totalRT,
-      netToBank: netToBank,
-      outstanding: totalPayments - netToBank,
-    };
+      const payment = {
+        totalSales: totalSales - totalRT,
+        salesAmount: totalSales - totalLpoSales - totalRT,
+        netToBank: netToBank,
+        outstanding: totalPayments - netToBank,
+      };
+      setPaymentDetails(payment);
+      return payment;
+    },
+    [
+      bankPayloadData,
+      expensesPayloadData,
+      lpoPayloadData,
+      oneStationData.AGOPrice,
+      oneStationData.DPKPrice,
+      oneStationData.PMSPrice,
+      posPayloadData,
+      selectedPumps,
+    ]
+  );
 
-    return payment;
+  useEffect(() => {
+    getPayments();
+  }, [getPayments]);
+
+  const updateCurrentPayment = (e) => {
+    const amount = e.target.value.replace(/^0|[^.\w\s]/gi, "");
+    setAmountPaid(amount);
+    getPayments(amount);
   };
-
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
 
   return (
     <div
@@ -287,9 +314,7 @@ const PosPayments = (props) => {
               <span>Amount Paid</span>
               <input
                 value={ApproximateDecimal(amountPaid)}
-                onChange={(e) =>
-                  setAmountPaid(e.target.value.replace(/^0|[^.\w\s]/gi, ""))
-                }
+                onChange={(e) => updateCurrentPayment(e)}
                 className="lpo-inputs"
                 type={"text"}
               />
@@ -300,7 +325,7 @@ const PosPayments = (props) => {
             <div className="input-d">
               <span>Net to bank</span>
               <input
-                value={ApproximateDecimal(getPayments().netToBank)}
+                value={ApproximateDecimal(paymentDetails.netToBank)}
                 disabled
                 className="lpo-inputs"
                 type={"text"}
@@ -311,9 +336,9 @@ const PosPayments = (props) => {
               <span>Outstanding Balance</span>
               <input
                 value={
-                  getPayments().outstanding < 0
-                    ? ApproximateDecimal(getPayments().outstanding)
-                    : ApproximateDecimal(getPayments().outstanding)
+                  paymentDetails.outstanding < 0
+                    ? ApproximateDecimal(paymentDetails.outstanding)
+                    : ApproximateDecimal(paymentDetails.outstanding)
                 }
                 disabled
                 className="lpo-inputs"
