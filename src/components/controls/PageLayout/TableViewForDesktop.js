@@ -28,10 +28,10 @@ export const DesktopTableRowContainer = ({ children, rows, loading }) => {
   );
 };
 
-export const DesktopTableRows = ({ children, index }) => {
+export const DesktopTableRows = ({ children, index, callback }) => {
   return (
     <React.Fragment>
-      <div key={index} className="row-container">
+      <div key={index} onClick={callback} className="row-container">
         <div className="table-head2">{children}</div>
       </div>
     </React.Fragment>

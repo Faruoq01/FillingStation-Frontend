@@ -18,6 +18,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { singleLPORecord } from "../../storage/lpo";
 import { useHistory } from "react-router-dom";
 
+const openLPOSales = (getPerm, data, history, dispatch) => {
+  if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
+  dispatch(singleLPORecord(data));
+  history.push("/home/estation/airbnb");
+};
+
 const Action = ({ data, setEditOptionsModal }) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -30,12 +36,6 @@ const Action = ({ data, setEditOptionsModal }) => {
     return user.permission?.corporateSales[e];
   };
 
-  const openLPOSales = (data) => {
-    if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
-    dispatch(singleLPORecord(data));
-    history.push("/home/estation/airbnb");
-  };
-
   const createPrice = (data) => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
     dispatch(singleLPORecord(data));
@@ -45,7 +45,7 @@ const Action = ({ data, setEditOptionsModal }) => {
     <React.Fragment>
       <img
         onClick={() => {
-          openLPOSales(data);
+          openLPOSales(getPerm, data, history, dispatch);
         }}
         style={{ width: "28px", height: "28px" }}
         src={eyes}
@@ -68,15 +68,35 @@ const Action = ({ data, setEditOptionsModal }) => {
 };
 
 export const LPODesktopTable = ({ data }) => {
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const getPerm = (e) => {
+    if (user.userType === "superAdmin") {
+      return true;
+    }
+    return user.permission?.corporateSales[e];
+  };
+
   const { columns, tablePrints, allOutlets, loading, setEditOptionsModal } =
     data;
+
+  const triggerRowCallback = (data) => {
+    openLPOSales(getPerm, data, history, dispatch);
+  };
+
   return (
     <TableViewForDesktop columns={columns} ref={tablePrints}>
       <DesktopTableRowContainer rows={allOutlets} loading={loading}>
         {!loading &&
           allOutlets.map((item, index) => {
             return (
-              <DesktopTableRows index={index}>
+              <DesktopTableRows
+                index={index}
+                callback={() => {
+                  triggerRowCallback(item);
+                }}>
                 <DesktopTableCell data={index + 1} />
                 <DesktopTableCell data={item.companyName} />
                 <DesktopTableCell data={item.address} />
