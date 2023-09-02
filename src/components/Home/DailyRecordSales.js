@@ -248,6 +248,8 @@ const DailyRecordSales = () => {
     dispatch(tanksPayload([]));
     dispatch(tankList([]));
     dispatch(daySupply([]));
+    dispatch(getAllPumps([]));
+    dispatch(changeStation());
   }, [dispatch]);
 
   useEffect(() => {

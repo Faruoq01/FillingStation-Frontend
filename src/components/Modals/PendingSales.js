@@ -55,6 +55,15 @@ const PendingSales = (props) => {
   };
 
   const submit = async () => {
+    const today = moment();
+    const beyondTodaysDate = moment(currentDate) > today;
+
+    if (beyondTodaysDate)
+      return swal(
+        "Error",
+        "You cannot save a record greater than todays date",
+        "error"
+      );
     if (currentDate === "")
       return swal("Error", "Please select a valid date", "error");
     if (!isValidDateFormat(currentDate))

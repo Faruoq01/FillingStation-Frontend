@@ -6,9 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import me4 from "../../assets/me4.png";
 import { dippingPayload } from "../../storage/recordsales";
 import ApproximateDecimal from "../common/approx";
-import OutletService from "../../services/outletService";
 import { ThreeDots } from "react-loader-spinner";
-import moment from "moment";
 
 const returnColor = (data, style) => {
   if (data === "PMS") {
@@ -22,7 +20,7 @@ const returnColor = (data, style) => {
 
 const DippingComponents = (props) => {
   const [productType, setProductType] = useState("PMS");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const dispatch = useDispatch();
 
   /////////////////////////////////////////////////////////

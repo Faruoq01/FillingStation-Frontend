@@ -316,6 +316,10 @@ const SummaryRecord = (props) => {
       handleClose();
       return swal("Error", "Dipping record cannot be empty!", "error");
     }
+    if (dippingPayloadData.length !== tankList.length) {
+      handleClose();
+      return swal("Error", "Please record dipping for all tanks!", "error");
+    }
     if (typeof currentDate !== "string") {
       handleClose();
       return swal("Error", "Please select record date", "error");
