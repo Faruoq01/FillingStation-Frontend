@@ -77,6 +77,7 @@ const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const online = useSelector((data) => data.auth.connection);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -255,11 +256,10 @@ const HomeScreen = () => {
       "/home/estation/sales": "Sales",
       "/home/estation/sales/individual": "Individual Sales",
       "/home/estation/sales/corporate": "Corporate Sales",
-      "/home/estation/corporate/customer": "Corporate Customer",
       "/home/estation/individual/customer": "Individual Customer",
       "/home/estation/orders": "Incoming Order",
       "/home/estation/orders/incoming-individual": "Individual Incoming Order",
-      "/home/estation/airbnb": "Corporate Customer ",
+      "/home/estation/airbnb": "Corporate Customer",
       "/home/estation/orders/incoming-corporate": "Corporate Incoming Order",
       "/home/estation/payments": "Payments",
       "/home/dashEmp": "← Employee List",
@@ -385,17 +385,26 @@ const HomeScreen = () => {
     }
   };
 
-  const getStationDetails = () => {
+  const getStationDetails = (name) => {
+    if (name === "Corporate Customer") {
+      return singleLPO?.companyName;
+    }
+
+    if (name === "Human Resources") {
+      return name?.concat(" ");
+    }
+
     if (oneStationData === null) {
-      return "";
-    } else if (name === "Admin Department") {
-      return null;
-    } else if (typeof oneStationData?.outletName !== "undefined") {
-      return (
-        "(" +
-        oneStationData?.outletName.concat(", ", oneStationData?.alias) +
-        ")"
-      );
+      return name?.concat(" ");
+    } else {
+      if (typeof oneStationData?.outletName !== "undefined") {
+        return (
+          name?.concat(" ") +
+          "(" +
+          oneStationData?.outletName.concat(", ", oneStationData?.alias) +
+          ")"
+        );
+      }
     }
   };
 
@@ -714,8 +723,7 @@ const HomeScreen = () => {
               onClick={() => {
                 navigateBack(name);
               }}>
-              {name?.concat(" ")}{" "}
-              {name === "Human Resources" ? "" : getStationDetails()}
+              {getStationDetails(name)}
             </span>
           </div>
           <div className="right-lobe">
