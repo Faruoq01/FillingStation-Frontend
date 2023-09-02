@@ -4,9 +4,9 @@ import pumpHead from "../../assets/pumpHead.png";
 import Modal from "@mui/material/Modal";
 import "../../styles/cost.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { overageType } from "../../store/actions/dailySales";
 import { useHistory } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
+import { overageType } from "../../storage/dashboard";
 
 const Varience = (props) => {
   const { varience } = useSelector((state) => state.analysis.analysisData);

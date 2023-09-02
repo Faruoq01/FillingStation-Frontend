@@ -15,6 +15,7 @@ import "../../../styles/lpo.scss";
 import config from "../../../constants";
 import ReactCamera from "../ReactCamera";
 import APIs from "../../../services/api";
+import ModalInputField from "../../controls/Modal/ModalInputField";
 
 const ExpensesModal = (props) => {
   const attach = useRef();
@@ -142,26 +143,13 @@ const ExpensesModal = (props) => {
               />
             </div>
 
-            <div className="inputs">
-              <div className="head-text2">Expense Amount</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={expenseAmount}
-                type="number"
-                onChange={(e) => setExpenseAmount(e.target.value)}
-              />
-            </div>
+            <ModalInputField
+              value={expenseAmount}
+              setValue={setExpenseAmount}
+              type={"number"}
+              label={`Expense Amount`}
+              disabled={false}
+            />
 
             <div className="inputs">
               <div className="head-text2">Description</div>

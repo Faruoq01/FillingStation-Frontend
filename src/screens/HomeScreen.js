@@ -65,13 +65,13 @@ import { useHistory } from "react-router-dom";
 import { socket } from "../services/socket";
 import { useCallback } from "react";
 import OutletService from "../services/outletService";
-import { adminOutlet, getAllStations } from "../store/actions/outlet";
 import OverageList from "../components/DailySales/OverageList";
 import { Badge } from "@mui/material";
 import NotificationDrawer from "../components/common/NotificationDrawer";
 import AirBnBTotal from "../components/Home/AirBnBTotal";
 import Transactions from "../components/Home/Transactions";
 import ListAllTanks from "../components/Outlet/TankList";
+import { adminOutlet, getAllStations } from "../storage/outlet";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);

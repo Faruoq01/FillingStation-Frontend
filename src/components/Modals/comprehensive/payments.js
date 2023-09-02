@@ -16,6 +16,7 @@ import config from "../../../constants";
 import ReactCamera from "../ReactCamera";
 import APIs from "../../../services/api";
 import { MenuItem, Select } from "@mui/material";
+import ModalInputField from "../../controls/Modal/ModalInputField";
 
 const PaymentsModal = (props) => {
   const attach = useRef();
@@ -277,26 +278,13 @@ const PaymentsModal = (props) => {
               </>
             )}
 
-            <div className="inputs">
-              <div className="head-text2">Amount Paid</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={amountPaid}
-                type="number"
-                onChange={(e) => setAmountPaid(e.target.value)}
-              />
-            </div>
+            <ModalInputField
+              value={amountPaid}
+              setValue={setAmountPaid}
+              type={"number"}
+              label={`Amount Paid`}
+              disabled={false}
+            />
 
             <div className="inputs">
               <div className="head-text2">Payment Date</div>

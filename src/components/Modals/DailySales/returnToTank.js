@@ -7,29 +7,14 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../../styles/lpo.scss";
 import { useEffect } from "react";
-import DailySalesService from "../../../services/DailySales";
-import { useDispatch, useSelector } from "react-redux";
-import { bulkReports } from "../../../store/actions/dailySales";
 import APIs from "../../../services/api";
 
 const UpdateReturnToTank = (props) => {
-  const user = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
-  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.currentDate);
   const [loading, setLoading] = useState(false);
   const [pumpName, setPumpName] = useState("");
   const [producType, setProductType] = useState("");
   const [quantity, setQuantity] = useState("");
   const [rate, setRate] = useState("");
-
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
 
   const handleClose = () => props.close(false);
 

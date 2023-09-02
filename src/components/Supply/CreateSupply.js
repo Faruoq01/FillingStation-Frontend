@@ -11,9 +11,9 @@ import "../../styles/supplystyle.scss";
 import SupplyService from "../../services/supplyService";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
-import { getAllOutletTanks } from "../../store/actions/outlet";
 import { BallTriangle } from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
+import { getAllOutletTanks } from "../../storage/outlet";
 
 const CreateSupply = (props) => {
   const history = useHistory();

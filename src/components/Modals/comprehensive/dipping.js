@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import close from "../../../assets/close.png";
 import Button from "@mui/material/Button";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
@@ -15,6 +14,7 @@ import { useCallback } from "react";
 import OutletService from "../../../services/outletService";
 import { setTankList } from "../../../storage/comprehensive";
 import { MenuItem, Select } from "@mui/material";
+import ModalInputField from "../../controls/Modal/ModalInputField";
 
 const DippingModal = (props) => {
   const dispatch = useDispatch();
@@ -147,108 +147,45 @@ const DippingModal = (props) => {
               </Select>
             </div>
 
-            <div className="inputs">
-              <div className="head-text2">Tank Capacity</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={tankCapacity}
-                disabled
-              />
-            </div>
+            <ModalInputField
+              value={tankCapacity}
+              setValue={() => {}}
+              type={"number"}
+              label={`Tank Capacity`}
+              disabled={true}
+            />
 
-            <div className="inputs">
-              <div className="head-text2">Level Before Sale</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={beforeSales}
-                disabled
-              />
-            </div>
+            <ModalInputField
+              value={beforeSales}
+              setValue={() => {}}
+              type={"number"}
+              label={`Level Before Sale`}
+              disabled={true}
+            />
 
-            <div className="inputs">
-              <div className="head-text2">Level After Sale</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={afterSales}
-                disabled
-              />
-            </div>
+            <ModalInputField
+              value={afterSales}
+              setValue={() => {}}
+              type={"number"}
+              label={`Level After Sale`}
+              disabled={true}
+            />
 
-            <div className="inputs">
-              <div className="head-text2">Expense Date</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={currentDate}
-                disabled
-                type="date"
-                // onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
+            <ModalInputField
+              value={currentDate}
+              setValue={() => {}}
+              type={"date"}
+              label={`Current date`}
+              disabled={true}
+            />
 
-            <div className="inputs">
-              <div className="head-text2">Dipping</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                type="number"
-                value={dipping}
-                onChange={(e) => setDipping(e.target.value)}
-              />
-            </div>
+            <ModalInputField
+              value={dipping}
+              setValue={setDipping}
+              type={"number"}
+              label={`Dipping`}
+              disabled={false}
+            />
           </div>
 
           <div style={{ marginTop: "10px", height: "30px" }} className="butt">

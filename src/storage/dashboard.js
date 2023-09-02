@@ -110,6 +110,7 @@ const initialState = {
   asset: "",
   assetsList: [],
   employeeList: [],
+  employeeListCopy: [],
 };
 
 export const dashboard = createSlice({
@@ -170,6 +171,16 @@ export const dashboard = createSlice({
     },
     setEmployeeList: (state, action) => {
       state.employeeList = action.payload;
+      state.employeeListCopy = action.payload;
+    },
+    searchdashStaffs: (state, action) => {
+      const search = state.employeeListCopy.filter(
+        (data) =>
+          !data.staffName.toUpperCase().indexOf(action.payload.toUpperCase()) ||
+          !data.email.toUpperCase().indexOf(action.payload.toUpperCase()) ||
+          !data.jobTitle.toUpperCase().indexOf(action.payload.toUpperCase())
+      );
+      state.employeeList = search;
     },
     clearDashboard: () => initialState,
   },
@@ -195,6 +206,7 @@ export const {
   asset,
   assetData,
   setEmployeeList,
+  searchdashStaffs,
   clearDashboard,
 } = dashboard.actions;
 

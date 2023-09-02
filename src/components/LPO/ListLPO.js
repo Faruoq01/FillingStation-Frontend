@@ -2,10 +2,10 @@ import { Button, MenuItem, OutlinedInput, Select } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import LPOService from "../../services/lpo";
 import { useDispatch, useSelector } from "react-redux";
-import { createLPOSales, searchLPOList } from "../../store/actions/lpo";
 import LPOSalesReport from "../Reports/LPOSales";
 import config from "../../constants";
 import { useHistory } from "react-router-dom";
+import { createLPOSales, searchLPO } from "../../storage/lpo";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 
@@ -82,7 +82,7 @@ const ListLPO = () => {
   };
 
   const searchList = (e) => {
-    dispatch(searchLPOList(e.target.value));
+    dispatch(searchLPO(e.target.value));
   };
 
   const printReport = () => {

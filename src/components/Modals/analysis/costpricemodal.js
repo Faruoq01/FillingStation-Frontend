@@ -14,8 +14,8 @@ import swal from "sweetalert";
 import "../../../styles/mode.scss";
 import search from "../../../assets/search.png";
 import tick from "../../../assets/tick.png";
-import { OutlinedInput } from "@mui/material";
 import OutletService from "../../../services/outletService";
+import ModalInputField from "../../controls/Modal/ModalInputField";
 
 const CostPriceModal = (props) => {
   const dispatch = useDispatch();
@@ -225,46 +225,20 @@ const CostPriceModal = (props) => {
               </div>
             </div>
 
-            <div className="inputs">
-              <div className="head-text2">Present {type} price</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                value={cost1}
-                placeholder=""
-                type="number"
-                disabled
-              />
-            </div>
-            <div style={{ marginTop: "15px" }} className="inputs">
-              <div className="head-text2">New {type} price</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                value={cost === "pending" ? 0 : cost}
-                placeholder=""
-                type="number"
-                onChange={(e) => setCost(e.target.value)}
-              />
-            </div>
+            <ModalInputField
+              value={cost1}
+              setValue={() => {}}
+              type={"number"}
+              label={`Present ${type} price`}
+              disabled={true}
+            />
+
+            <ModalInputField
+              value={cost === "pending" ? 0 : cost}
+              setValue={setCost}
+              type={"number"}
+              label={`New ${type} price`}
+            />
 
             <Button
               sx={{

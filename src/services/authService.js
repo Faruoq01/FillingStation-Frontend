@@ -1,7 +1,7 @@
 import APIs from "./api";
-import store from "../store";
-import { removeSpinner } from "../store/actions/auth";
 import swal from "sweetalert";
+import { removeSpinner } from "../storage/outlet";
+import { store } from "../storage/store";
 
 const AuthService = {
   register: (data) => {

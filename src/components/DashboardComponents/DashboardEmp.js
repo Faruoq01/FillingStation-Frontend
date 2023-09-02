@@ -8,11 +8,10 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import PrintStaffRecords from "../Reports/StaffRecord";
-import { searchdashStaffs } from "../../store/actions/dashboard";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import APIs from "../../services/api";
-import { setEmployeeList } from "../../storage/dashboard";
+import { searchdashStaffs, setEmployeeList } from "../../storage/dashboard";
 import { ThreeDots } from "react-loader-spinner";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
