@@ -1,16 +1,48 @@
 import "./App.scss";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
-import ProtectedRoute from "./screens/ProtectedRoute";
-import { HashRouter, Route, Switch } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
 import Homepage from "./components/LandingPage/Home";
 import Connection from "./screens/Connection";
-import CustomerLPO from "./screens/LPOCustomers";
 import AttendanceModule from "./screens/AttendantModule";
 import Transactions from "./components/Home/Transactions";
+import { Routes, Route } from "react-router-dom";
+import Dashboard from "./components/Home/Dashboard";
+import DailySales from "./components/Home/DailySales";
+import Outlets from "./components/Home/Outlets";
+import DailyRecordSales from "./components/Home/DailyRecordSales";
+import Analysis from "./components/Home/Analysis";
+import LPO from "./components/Home/LPO";
+import ProductOrders from "./components/Home/ProductOrders";
+import IncomingOrders from "./components/Home/IncomingOrders";
+import Supply from "./components/Home/Supply";
+import Regulatory from "./components/Home/Regulatory";
+import TankUpdate from "./components/Home/TankUpdate";
+import HumanResources from "./components/Home/HumanResource";
+import Settings from "./components/Home/Settings";
+import DashboardEmployee from "./components/DashboardComponents/DashboardEmp";
+import OverageList from "./components/DashboardComponents/overagelist";
+import SalesOverageList from "./components/DailySales/OverageList";
+import StationTanks from "./components/Home/StationTanks";
+import StationPumps from "./components/Home/StationPumps";
+import ListAllTanks from "./components/Outlet/TankList";
+import PMSDailySales from "./components/DailySales/PMSDailySales";
+import AGODailySales from "./components/DailySales/AGODailySales";
+import DPKDailySales from "./components/DailySales/DPKDailySales";
+import ComprehensiveReport from "./components/DailySales/ComprehensiveReport";
+import Sales from "./components/Outlet/Sales";
+import Tank from "./components/Outlet/Tanks";
+import Pump from "./components/Outlet/Pumps";
+import Payments from "./components/Home/Payments";
+import Expenses from "./components/Home/Expenses";
+import AirBnBTotal from "./components/Home/AirBnBTotal";
+import CreateSupply from "./components/Supply/CreateSupply";
+import Employee from "./components/HRComponents/Employee";
+import Salary from "./components/HRComponents/Salary";
+import Query from "./components/HRComponents/Query";
+import Attendance from "./components/HRComponents/Attendance";
 
 function App() {
   useEffect(() => {
@@ -19,88 +51,60 @@ function App() {
   }, []);
 
   return (
-    <HashRouter>
-      <div className="App">
-        <Switch>
-          <Route exact path="/" component={Homepage} />
-          <ProtectedRoute path="/home" component={HomeScreen} />
-          <Route path="/home/overage" component={HomeScreen} />
-          <Route path="/home/tankList" component={HomeScreen} />
-          <Route path="/home/daily-sales" component={HomeScreen} />
-          <Route path="/home/daily-sales/overage" component={HomeScreen} />
-          <Route path="/home/tank-list" component={HomeScreen} />
-          <Route path="/home/pump-list" component={HomeScreen} />
-          <Route path="/home/analysis/expenses" component={HomeScreen} />
-          <Route path="/home/hr" component={HomeScreen} />
-          <Route path="/home/inc-orders" component={HomeScreen} />
-          <Route path="/home/outlets" component={HomeScreen} />
-          <Route path="/home/outlets/tanks" component={HomeScreen} />
-          <Route path="/home/outlets/pumps" component={HomeScreen} />
-          <Route path="/home/outlets/sales" component={HomeScreen} />
-          <Route path="/home/outlets/sales/list" component={HomeScreen} />
-          <Route path="/home/analysis/payments" component={HomeScreen} />
-
-          <Route path="/home/product-orders" component={HomeScreen} />
-          <Route path="/home/daily-record-sales" component={HomeScreen} />
-          <Route path="/home/daily-record-sales/lpo" component={HomeScreen} />
-
-          <Route
-            path="/home/daily-record-sales/expenses"
-            component={HomeScreen}
-          />
-          <Route path="/home/estation/airbnb" component={HomeScreen} />
-          <Route
-            path="/home/daily-record-sales/payment"
-            component={HomeScreen}
-          />
-          <Route
-            path="/home/daily-record-sales/dipping"
-            component={HomeScreen}
-          />
-          <Route path="/home/daily-record-sales/pump" component={HomeScreen} />
-          <Route path="/home/daily-record-sales/rt" component={HomeScreen} />
-          <Route path="/home/regulatory" component={HomeScreen} />
-          <Route path="/home/analysis" component={HomeScreen} />
-          <Route path="/home/lpo" component={HomeScreen} />
-          <Route path="/home/lpo/list" component={HomeScreen} />
-          <Route path="/home/lpo/company" component={HomeScreen} />
-          <Route path="/home/estation" component={HomeScreen} />
-          <Route path="/home/estation-corporate-sales" component={HomeScreen} />
-          <Route
-            path="/home/estation/corporate/customer"
-            component={HomeScreen}
-          />
-          <Route path="/home/estation/payments" component={HomeScreen} />
-          <Route path="/home/estation/sales" component={HomeScreen} />
-          <Route
-            path="/home/estation/sales/individual"
-            component={HomeScreen}
-          />
-          <Route
-            path="/home/estation/individual/customer"
-            component={HomeScreen}
-          />
-          <Route path="/home/supply" component={HomeScreen} />
-          <Route path="/home/supply/create" component={HomeScreen} />
-          <Route path="/home/tank" component={HomeScreen} />
-          <Route path="/home/history" component={HomeScreen} />
-          <Route path="/home/settings" component={HomeScreen} />
-          <Route path="/home/hr/manager" component={HomeScreen} />
-          <Route path="/home/hr/employee" component={HomeScreen} />
-          <Route path="/home/dashEmp" component={HomeScreen} />
-          <Route path="/home/hr/salary" component={HomeScreen} />
-          <Route path="/home/hr/query" component={HomeScreen} />
-          <Route path="/home/hr/recruitment" component={HomeScreen} />
-          <Route path="/home/hr/attendance" component={HomeScreen} />
-          <Route path="/home/transactions" component={Transactions} />
-          <Route path="/login" component={LoginScreen} />
-          <Route path="/attendance" component={AttendanceModule} />
-          <Route path="/lpo-customers" component={CustomerLPO} />
-          <Route path="/connection" component={Connection} />
-          <Route render={() => <h1>404 page not found</h1>} />
-        </Switch>
-      </div>
-    </HashRouter>
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="login" element={<LoginScreen />} />
+        <Route path="home" element={<HomeScreen />}>
+          <Route path="dashboard" element={<Dashboard />}>
+            <Route path="dashboardemployee" element={<DashboardEmployee />} />
+            <Route path="dashboardoverage" element={<OverageList />} />
+            <Route path="stationtanks" element={<StationTanks />} />
+            <Route path="stationpumps" element={<StationPumps />} />
+          </Route>
+          <Route path="dailysales" element={<DailySales />}>
+            <Route path="pmssales" element={<PMSDailySales />} />
+            <Route path="agolist" element={<AGODailySales />} />
+            <Route path="dpklist" element={<DPKDailySales />} />
+            <Route path="comprehensive" element={<ComprehensiveReport />} />
+            <Route path="tanklist" element={<ListAllTanks />} />
+            <Route path="dailysalesoverage" element={<SalesOverageList />} />
+          </Route>
+          <Route path="mystation" element={<Outlets />}>
+            <Route path="sales" element={<Sales />} />
+            <Route path="tanks" element={<Tank />} />
+            <Route path="pumps" element={<Pump />} />
+          </Route>
+          <Route path="recordsales" element={<DailyRecordSales />} />
+          <Route path="analysis" element={<Analysis />}>
+            <Route path="payments" element={<Payments />} />
+            <Route path="expenses" element={<Expenses />} />
+          </Route>
+          <Route path="lposales" element={<LPO />}>
+            <Route path="corporatecustomer" element={<AirBnBTotal />}>
+              <Route path="transactions" element={<Transactions />} />
+            </Route>
+          </Route>
+          <Route path="productorder" element={<ProductOrders />} />
+          <Route path="incomingorder" element={<IncomingOrders />} />
+          <Route path="supply" element={<Supply />}>
+            <Route path="createsupply" element={<CreateSupply />} />
+          </Route>
+          <Route path="regulatory" element={<Regulatory />} />
+          <Route path="tankupdate" element={<TankUpdate />} />
+          <Route path="hr" element={<HumanResources />}>
+            <Route path="hremployees" element={<Employee />} />
+            <Route path="salary" element={<Salary />} />
+            <Route path="query" element={<Query />} />
+            <Route path="attendance" element={<Attendance />} />
+          </Route>
+          <Route path="settings" element={<Settings />} />
+        </Route>
+        <Route path="attendance" element={<AttendanceModule />} />
+        <Route path="connection" element={<Connection />} />
+        {/* <Route render={() => <h1>404 page not found</h1>} /> */}
+      </Routes>
+    </div>
   );
 }
 
