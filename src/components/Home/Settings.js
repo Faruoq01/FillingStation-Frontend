@@ -18,6 +18,7 @@ import Logo from "../Settings/Logo";
 import Permissions from "../Settings/Permission";
 import PermissionList from "../Settings/PermissionList";
 import { logout } from "../../storage/logout";
+import HistoryPage from "./History";
 
 const Password = () => {
   const user = useSelector((state) => state.auth.user);
@@ -342,6 +343,7 @@ const DeleteOutlet = (props) => {
 const Settings = (props) => {
   const [nav, setNav] = useState(0);
   const [defaultState, setDefault] = useState(0);
+  const [actionState, setActionState] = useState(10);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
@@ -415,6 +417,7 @@ const Settings = (props) => {
     if (nav === 6 && !getPerm("8"))
       return swal("Warning!", "Permission denied", "info");
     setNav(data);
+    setActionState(data);
   };
 
   return (
@@ -426,16 +429,9 @@ const Settings = (props) => {
         <Select
           labelId="demo-select-small"
           id="demo-select-small"
-          value={1}
-          sx={{
-            backgroundColor: "#06805B",
-            color: "#fff",
-            height: "35px",
-            width: "150px",
-            fontSize: "12px",
-            marginRight: "20px",
-          }}>
-          <MenuItem value={1}>Action</MenuItem>
+          value={actionState}
+          sx={mobileSelect}>
+          <MenuItem value={10}>Action</MenuItem>
           <MenuItem
             onClick={() => {
               navigateAround(0);
@@ -455,37 +451,44 @@ const Settings = (props) => {
               navigateAround(2);
             }}
             value={2}>
-            Appearances
+            History
           </MenuItem>
           <MenuItem
             onClick={() => {
               navigateAround(3);
             }}
             value={3}>
-            Logo (Branding)
+            Appearances
           </MenuItem>
           <MenuItem
             onClick={() => {
               navigateAround(4);
             }}
             value={4}>
-            Change Password
+            Logo (Branding)
           </MenuItem>
           <MenuItem
             onClick={() => {
               navigateAround(5);
             }}
             value={5}>
-            Change Email
+            Change Password
           </MenuItem>
           <MenuItem
             onClick={() => {
               navigateAround(6);
             }}
             value={6}>
+            Change Email
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              navigateAround(7);
+            }}
+            value={7}>
             Delete Outlet
           </MenuItem>
-          <MenuItem onClick={logouts} value={7}>
+          <MenuItem onClick={logouts} value={8}>
             Logout
           </MenuItem>
         </Select>
@@ -524,9 +527,7 @@ const Settings = (props) => {
                 navigateAround(2);
               }}
               className="accord">
-              <div style={nav === 2 ? active : inActive} className="text">
-                Appearances
-              </div>
+              <div style={nav === 2 ? active : inActive}>Activity history</div>
               <img
                 style={{ width: "7px", height: "13px" }}
                 src={rightArrow}
@@ -539,7 +540,7 @@ const Settings = (props) => {
               }}
               className="accord">
               <div style={nav === 3 ? active : inActive} className="text">
-                Logo ( Branding )
+                Appearances
               </div>
               <img
                 style={{ width: "7px", height: "13px" }}
@@ -553,7 +554,7 @@ const Settings = (props) => {
               }}
               className="accord">
               <div style={nav === 4 ? active : inActive} className="text">
-                Change Password
+                Logo ( Branding )
               </div>
               <img
                 style={{ width: "7px", height: "13px" }}
@@ -567,7 +568,7 @@ const Settings = (props) => {
               }}
               className="accord">
               <div style={nav === 5 ? active : inActive} className="text">
-                Change Email
+                Change Password
               </div>
               <img
                 style={{ width: "7px", height: "13px" }}
@@ -581,6 +582,20 @@ const Settings = (props) => {
               }}
               className="accord">
               <div style={nav === 6 ? active : inActive} className="text">
+                Change Email
+              </div>
+              <img
+                style={{ width: "7px", height: "13px" }}
+                src={rightArrow}
+                alt="icon"
+              />
+            </div>
+            <div
+              onClick={() => {
+                navigateAround(7);
+              }}
+              className="accord">
+              <div style={nav === 7 ? active : inActive} className="text">
                 Delete Outlets
               </div>
               <img
@@ -635,12 +650,13 @@ const Settings = (props) => {
             )}
             {nav === 0 && <OutletInfo refresh={getStationData} />}
             {nav === 1 && <Permissions nav={setNav} />}
-            {nav === 2 && <Appearances />}
-            {nav === 3 && <Logo />}
-            {nav === 4 && <Password />}
-            {nav === 5 && <Email />}
-            {nav === 6 && <DeleteOutlet refresh={getStationData} />}
-            {nav === 7 && <PermissionList nav={setNav} />}
+            {nav === 2 && <HistoryPage />}
+            {nav === 3 && <Appearances />}
+            {nav === 4 && <Logo />}
+            {nav === 5 && <Password />}
+            {nav === 6 && <Email />}
+            {nav === 7 && <DeleteOutlet refresh={getStationData} />}
+            {nav === 8 && <PermissionList nav={setNav} />}
           </div>
         </div>
       </div>
@@ -669,10 +685,10 @@ const inActive = {
 };
 
 const selectStyle2 = {
-  width: "160px",
-  height: "35px",
+  minWidth: "160px",
+  height: "30px",
   borderRadius: "0px",
-  background: "#054834",
+  backgroundColor: "#06805B",
   color: "#fff",
   fontSize: "12px",
   outline: "none",
@@ -687,6 +703,19 @@ const contain = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "flex-start",
+};
+
+const mobileSelect = {
+  backgroundColor: "#06805B",
+  color: "#fff",
+  height: "30px",
+  width: "150px",
+  fontSize: "12px",
+  marginRight: "20px",
+  borderRadius: "0px",
+  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #777777",
+  },
 };
 
 export default Settings;
