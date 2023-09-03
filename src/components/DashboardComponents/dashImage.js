@@ -24,34 +24,34 @@ const DashboardImage = (props) => {
         if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
         if (!getPerm("4" && oneStationData === null))
           return swal("Warning!", "Permission denied", "info");
-        navigate("dashboardemployee");
+        navigate("/home/dashboard/dashboardemployee");
         break;
       }
 
       case "activeTank": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("activeTank"));
-        navigate("stationtanks");
+        navigate("/home/dashboard/stationtanks");
         break;
       }
 
       case "inactiveTank": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("inActiveTank"));
-        navigate("stationtanks");
+        navigate("/home/dashboard/stationtanks");
         break;
       }
       case "activePump": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("activePump"));
-        navigate("stationpumps");
+        navigate("/home/dashboard/stationpumps");
         break;
       }
 
       case "inactivePump": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("inActivePump"));
-        navigate("stationpumps");
+        navigate("/home/dashboard/stationpumps");
         break;
       }
 

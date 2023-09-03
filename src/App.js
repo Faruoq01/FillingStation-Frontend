@@ -43,6 +43,7 @@ import Employee from "./components/HRComponents/Employee";
 import Salary from "./components/HRComponents/Salary";
 import Query from "./components/HRComponents/Query";
 import Attendance from "./components/HRComponents/Attendance";
+import DashboardHome from "./components/DashboardComponents/dashboardhome";
 
 function App() {
   useEffect(() => {
@@ -53,10 +54,11 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route index path="/" element={<Homepage />} />
         <Route path="login" element={<LoginScreen />} />
         <Route path="home" element={<HomeScreen />}>
           <Route path="dashboard" element={<Dashboard />}>
+            <Route index path="dashboardhome/:index" element={<DashboardHome />} />
             <Route path="dashboardemployee" element={<DashboardEmployee />} />
             <Route path="dashboardoverage" element={<OverageList />} />
             <Route path="stationtanks" element={<StationTanks />} />

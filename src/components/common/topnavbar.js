@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import UserService from "../../services/user";
 import { updateUser } from "../../storage/auth";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { routeNames } from "../../modules/routenames";
 
 const TopNavBar = ({ open }) => {
@@ -18,12 +18,11 @@ const TopNavBar = ({ open }) => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
-  const [activeRoute, setActiveRoute] = useState("");
   const [name, setName] = useState("");
+  const { index } = useParams();
 
   useEffect(() => {
     const route = pathname.split("/")[2];
-    setActiveRoute(pathname);
     setName(routeNames[route]);
   }, [pathname]);
 
@@ -84,7 +83,7 @@ const TopNavBar = ({ open }) => {
       <div
         style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}
         className="left-lobe">
-        {activeRoute.split("/").length > 3 && (
+        {index !== "0" && (
           <img
             onClick={previousPage}
             style={{ width: "30px", height: "25px", marginRight: "10px" }}

@@ -37,7 +37,7 @@ const DesktopSideBar = () => {
         <img className="home-logo" src={homeLogo} alt="icon" />
         <SideItems
           marginT={"0px"}
-          link={"/home/dashboard"}
+          link={"/home/dashboard/dashboardhome/0"}
           name={"Dashboard"}
           icon={dashboard}
           icon2={dashboard2}

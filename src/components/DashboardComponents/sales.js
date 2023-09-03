@@ -1,7 +1,6 @@
 import { Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
 import me1 from "../../assets/me1.png";
 import me2 from "../../assets/me2.png";

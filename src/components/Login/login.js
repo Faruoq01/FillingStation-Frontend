@@ -36,7 +36,7 @@ const Login = (props) => {
 
         if (auth && data.user.status === "1") {
           dispatch(login(data));
-          navigate("/home/dashboard");
+          navigate("/home/dashboard/dashboardhome/0");
         }
       })
       .then(() => {
