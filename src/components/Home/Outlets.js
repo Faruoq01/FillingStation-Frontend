@@ -1,11 +1,8 @@
 import React, { useCallback, useRef } from "react";
 import "../../styles/payments.scss";
 import { useSelector } from "react-redux";
-import { openModal, getAllStations, tankListType } from "../../storage/outlet";
+import { openModal, getAllStations } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
-import Tank from "../Outlet/Tanks";
-import Pumps from "../Outlet/Pumps";
-import Sales from "../Outlet/Sales";
 import OutletService from "../../services/outletService";
 import { useEffect } from "react";
 import html2canvas from "html2canvas";
@@ -30,7 +27,6 @@ import { SearchField } from "../common/searchfields";
 import { LimitSelect } from "../common/customselect";
 import OutletGridSwitch from "../common/outletgrid";
 import MobileMenuListing from "../common/mobilemenulist";
-import { useNavigate } from "react-router-dom";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -47,7 +43,6 @@ const columns = [
 ];
 
 const Outlets = (props) => {
-  const navigate = useNavigate();
   const open = useSelector((state) => state.outlet.openModal);
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
@@ -77,11 +72,6 @@ const Outlets = (props) => {
   const handleOpenModal = (value) => {
     if (!getPerm("0")) return swal("Warning!", "Permission denied", "info");
     dispatch(openModal(value));
-  };
-
-  const goToTankList = (item) => {
-    dispatch(tankListType(item));
-    navigate("tankList");
   };
 
   const getAllStationData = useCallback(() => {
@@ -162,96 +152,75 @@ const Outlets = (props) => {
   };
 
   return (
-    <>
-      {props.activeRoute.split("/").length === 3 && (
-        <TablePageBackground>
-          {open === 1 && <CreateStation getStations={getAllStationData} />}
-          {open === 2 && <CreateStationAssets />}
-          {prints && (
-            <PrintOutLetsModal
-              allOutlets={allOutlets}
-              open={prints}
-              close={setPrints}
+    <React.Fragment>
+      <TablePageBackground>
+        {open === 1 && <CreateStation getStations={getAllStationData} />}
+        {open === 2 && <CreateStationAssets />}
+        {prints && (
+          <PrintOutLetsModal
+            allOutlets={allOutlets}
+            open={prints}
+            close={setPrints}
+          />
+        )}
+        <MobileMenuListing
+          callback={handleOpenModal}
+          preview={preview}
+          print={printTable}
+          label={"Create Station"}
+        />
+
+        <TableControls>
+          <LeftControls>
+            <SearchField callback={getStations} />
+          </LeftControls>
+          <RightControls>
+            <CreateButton
+              callback={handleOpenModal}
+              label={"Create new filling station"}
             />
-          )}
-          <MobileMenuListing
-            callback={handleOpenModal}
-            preview={preview}
-            print={printTable}
-            label={"Create Station"}
-          />
+          </RightControls>
+        </TableControls>
 
-          <TableControls>
-            <LeftControls>
-              <SearchField callback={getStations} />
-            </LeftControls>
-            <RightControls>
-              <CreateButton
-                callback={handleOpenModal}
-                label={"Create new filling station"}
-              />
-            </RightControls>
-          </TableControls>
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+          </LeftControls>
+          <RightControls>
+            <OutletGridSwitch switchTabs={switchTabs} callback={changeSwitch} />
+            <HistoryButton callback={goToHistory} />
+            <PrintButton callback={preview} />
+          </RightControls>
+        </TableControls>
 
-          <TableControls mt={"10px"}>
-            <LeftControls>
-              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-            </LeftControls>
-            <RightControls>
-              <OutletGridSwitch
-                switchTabs={switchTabs}
-                callback={changeSwitch}
-              />
-              <HistoryButton callback={goToHistory} />
-              <PrintButton callback={preview} />
-            </RightControls>
-          </TableControls>
-
-          {!switchTabs ? (
-            mobile.matches ? (
-              <OutletMobileTable data={mobileTableData} />
-            ) : (
-              <OutletDesktopTable data={desktopTableData} />
-            )
+        {!switchTabs ? (
+          mobile.matches ? (
+            <OutletMobileTable data={mobileTableData} />
           ) : (
-            <div className="gridCard">
-              {allOutlets.length === 0 ? (
-                <div style={place}>No data</div>
-              ) : (
-                allOutlets.map((item, index) => {
-                  return <CardItem data={item} index={index} />;
-                })
-              )}
-            </div>
-          )}
+            <OutletDesktopTable data={desktopTableData} />
+          )
+        ) : (
+          <div className="gridCard">
+            {allOutlets.length === 0 ? (
+              <div style={place}>No data</div>
+            ) : (
+              allOutlets.map((item, index) => {
+                return <CardItem data={item} index={index} />;
+              })
+            )}
+          </div>
+        )}
 
-          <TableNavigation
-            skip={skip}
-            limit={15}
-            total={100}
-            setSkip={setSkip}
-            updateDate={"None"}
-            callback={() => {}}
-          />
-        </TablePageBackground>
-      )}
-
-      {/* {props.activeRoute.split("/").length === 4 && (
-        <div style={contain}>
-          <Switch>
-            <Route path="/home/outlets/sales">
-              <Sales goToList={goToTankList} />
-            </Route>
-            <Route path="/home/outlets/tanks">
-              <Tank refresh={getAllStationData} />
-            </Route>
-            <Route path="/home/outlets/pumps">
-              <Pumps refresh={getAllStationData} />
-            </Route>
-          </Switch>
-        </div>
-      )} */}
-    </>
+        <TableNavigation
+          skip={skip}
+          limit={15}
+          total={100}
+          setSkip={setSkip}
+          updateDate={"None"}
+          callback={() => {}}
+        />
+      </TablePageBackground>
+    </React.Fragment>
   );
 };
 

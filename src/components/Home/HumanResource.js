@@ -6,10 +6,6 @@ import hr3 from "../../assets/hr3.png";
 import hr5 from "../../assets/hr5.png";
 import me6 from "../../assets/me6.png";
 import { useNavigate } from "react-router-dom";
-import Employee from "../HRComponents/Employee";
-import Salary from "../HRComponents/Salary";
-import Query from "../HRComponents/Query";
-import Attendance from "../HRComponents/Attendance";
 
 const HumanResource = (props) => {
   const navigate = useNavigate();
@@ -61,48 +57,16 @@ const HumanResource = (props) => {
 
   return (
     <div data-aos="zoom-in-down" className="hrContainer">
-      {props.activeRoute.split("/").length === 3 && (
-        <div style={contain2}>
-          <div className="imgContainer">
-            <DashboardImage image={hr1} name={"Employee"} value={"41"} />
-            <DashboardImage
-              image={hr11}
-              name={"Salary structure"}
-              value={"41"}
-            />
-            <DashboardImage image={hr3} name={"Query"} value={"41"} />
-            <DashboardImage image={hr5} name={"Attendance"} value={"41"} />
-          </div>
+      <div style={contain2}>
+        <div className="imgContainer">
+          <DashboardImage image={hr1} name={"Employee"} value={"41"} />
+          <DashboardImage image={hr11} name={"Salary structure"} value={"41"} />
+          <DashboardImage image={hr3} name={"Query"} value={"41"} />
+          <DashboardImage image={hr5} name={"Attendance"} value={"41"} />
         </div>
-      )}
-
-      {/* {props.activeRoute.split("/").length === 4 && (
-        <div style={contain}>
-          <Switch>
-            <Route path="/home/hr/employee">
-              <Employee />
-            </Route>
-            <Route path="/home/hr/salary">
-              <Salary />
-            </Route>
-            <Route path="/home/hr/query">
-              <Query />
-            </Route>
-            <Route path="/home/hr/attendance">
-              <Attendance />
-            </Route>
-          </Switch>
-        </div>
-      )} */}
+      </div>
     </div>
   );
-};
-
-const contain = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
 };
 
 const contain2 = {

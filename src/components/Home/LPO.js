@@ -157,72 +157,60 @@ const LPO = (props) => {
 
   return (
     <React.Fragment>
-      {props.activeRoute.split("/").length === 3 && (
-        <TablePageBackground>
-          <div className="action">
-            <div style={{ width: "150px" }} className="butt2">
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={10}
-                sx={{
-                  ...selectStyle2,
-                  backgroundColor: "#06805B",
-                  color: "#fff",
-                }}>
-                <MenuItem value={10}>Action</MenuItem>
-                <MenuItem onClick={openModal} value={20}>
-                  Register LPO
-                </MenuItem>
-                <MenuItem value={30}>Download PDF</MenuItem>
-                <MenuItem value={40}>Print</MenuItem>
-              </Select>
-            </div>
+      <TablePageBackground>
+        <div className="action">
+          <div style={{ width: "150px" }} className="butt2">
+            <Select
+              labelId="demo-select-small"
+              id="demo-select-small"
+              value={10}
+              sx={{
+                ...selectStyle2,
+                backgroundColor: "#06805B",
+                color: "#fff",
+              }}>
+              <MenuItem value={10}>Action</MenuItem>
+              <MenuItem onClick={openModal} value={20}>
+                Register LPO
+              </MenuItem>
+              <MenuItem value={30}>Download PDF</MenuItem>
+              <MenuItem value={40}>Print</MenuItem>
+            </Select>
           </div>
+        </div>
 
-          <TableControls>
-            <LeftControls>
-              <SearchField callback={searchTable} />
-            </LeftControls>
-            <RightControls>
-              <CreateButton callback={openModal} label={"Register LPO"} />
-            </RightControls>
-          </TableControls>
+        <TableControls>
+          <LeftControls>
+            <SearchField callback={searchTable} />
+          </LeftControls>
+          <RightControls>
+            <CreateButton callback={openModal} label={"Register LPO"} />
+          </RightControls>
+        </TableControls>
 
-          <TableControls mt={"10px"}>
-            <LeftControls></LeftControls>
-            <RightControls>
-              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-              <PrintButton callback={printReport} />
-            </RightControls>
-          </TableControls>
+        <TableControls mt={"10px"}>
+          <LeftControls></LeftControls>
+          <RightControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
 
-          {mobile.matches ? (
-            <LPOMobileTable data={mobileTableData} />
-          ) : (
-            <LPODesktopTable data={desktopTableData} />
-          )}
+        {mobile.matches ? (
+          <LPOMobileTable data={mobileTableData} />
+        ) : (
+          <LPODesktopTable data={desktopTableData} />
+        )}
 
-          <TableNavigation
-            skip={skip}
-            limit={limit}
-            total={total}
-            setSkip={setSkip}
-            updateDate={"None"}
-            callback={refresh}
-          />
-        </TablePageBackground>
-      )}
-      {/* {props.activeRoute.split("/").length === 4 && (
-        <Switch>
-          <Route path="/home/lpo/list">
-            <ListLPO />
-          </Route>
-          <Route path="/home/lpo/company">
-            <CompanyLPO />
-          </Route>
-        </Switch>
-      )} */}
+        <TableNavigation
+          skip={skip}
+          limit={limit}
+          total={total}
+          setSkip={setSkip}
+          updateDate={"None"}
+          callback={refresh}
+        />
+      </TablePageBackground>
       <LPOModalEdit
         refresh={refresh}
         close={setLpoModalEditStatus}

@@ -1,6 +1,9 @@
-const TablePageBackground = ({ children }) => {
+const TablePageBackground = ({ children, bg }) => {
   return (
-    <div data-aos="zoom-in-down" className="paymentsCaontainer">
+    <div
+      style={{ background: bg }}
+      data-aos="zoom-in-down"
+      className="paymentsCaontainer">
       <div className="inner-pay">{children}</div>
     </div>
   );

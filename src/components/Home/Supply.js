@@ -154,85 +154,73 @@ const Supply = (props) => {
 
   return (
     <React.Fragment>
-      {props.activeRoute.split("/").length === 3 && (
-        <TablePageBackground>
-          <div className="action">
-            <div style={{ width: "150px" }} className="butt2">
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={10}
-                sx={{
-                  ...selectStyle2,
-                  backgroundColor: "#06805B",
-                  color: "#fff",
-                }}>
-                <MenuItem style={menu} value={10}>
-                  Action
-                </MenuItem>
-                <MenuItem style={menu} onClick={openPaymentModal} value={20}>
-                  Add Supply
-                </MenuItem>
-                <MenuItem style={menu} value={30}>
-                  History
-                </MenuItem>
-                <MenuItem style={menu} onClick={printReport} value={40}>
-                  Print
-                </MenuItem>
-              </Select>
-            </div>
+      <TablePageBackground>
+        <div className="action">
+          <div style={{ width: "150px" }} className="butt2">
+            <Select
+              labelId="demo-select-small"
+              id="demo-select-small"
+              value={10}
+              sx={{
+                ...selectStyle2,
+                backgroundColor: "#06805B",
+                color: "#fff",
+              }}>
+              <MenuItem style={menu} value={10}>
+                Action
+              </MenuItem>
+              <MenuItem style={menu} onClick={openPaymentModal} value={20}>
+                Add Supply
+              </MenuItem>
+              <MenuItem style={menu} value={30}>
+                History
+              </MenuItem>
+              <MenuItem style={menu} onClick={printReport} value={40}>
+                Print
+              </MenuItem>
+            </Select>
           </div>
-
-          <TableControls>
-            <LeftControls>
-              <SelectStation
-                ml={"0px"}
-                oneStation={getPerm("0")}
-                allStation={getPerm("1")}
-                callback={stationHelper}
-              />
-              <SearchField ml={"10px"} callback={searchTable} />
-            </LeftControls>
-            <RightControls>
-              <CreateButton callback={openPaymentModal} label={"Add Supply"} />
-            </RightControls>
-          </TableControls>
-
-          <TableControls mt={"10px"}>
-            <LeftControls>
-              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-            </LeftControls>
-            <RightControls>
-              <PrintButton callback={printReport} />
-            </RightControls>
-          </TableControls>
-
-          {mobile.matches ? (
-            <SupplyMobileTable data={mobileTableData} />
-          ) : (
-            <SupplyDesktopTable data={desktopTableData} />
-          )}
-
-          <TableNavigation
-            skip={skip}
-            limit={limit}
-            total={total}
-            setSkip={setSkip}
-            updateDate={"None"}
-            callback={refresh}
-          />
-        </TablePageBackground>
-      )}
-
-      {/* {props.activeRoute.split("/").length === 4 && (
-        <div style={{ width: "100%", marginTop: "30px" }}>
-          <Switch>
-            <Route path="/home/supply/create">
-              <CreateSupply refresh={refresh} history={props.history} />
-            </Route>
-          </Switch>
         </div>
-      )} */}
+
+        <TableControls>
+          <LeftControls>
+            <SelectStation
+              ml={"0px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+            <SearchField ml={"10px"} callback={searchTable} />
+          </LeftControls>
+          <RightControls>
+            <CreateButton callback={openPaymentModal} label={"Add Supply"} />
+          </RightControls>
+        </TableControls>
+
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+          </LeftControls>
+          <RightControls>
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
+
+        {mobile.matches ? (
+          <SupplyMobileTable data={mobileTableData} />
+        ) : (
+          <SupplyDesktopTable data={desktopTableData} />
+        )}
+
+        <TableNavigation
+          skip={skip}
+          limit={limit}
+          total={total}
+          setSkip={setSkip}
+          updateDate={"None"}
+          callback={refresh}
+        />
+      </TablePageBackground>
       {open && (
         <SupplyModal
           station={oneStationData}

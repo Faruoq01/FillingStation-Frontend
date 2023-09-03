@@ -25,6 +25,7 @@ import {
   TableControls,
 } from "../controls/PageLayout/TableControls";
 import { useNavigate } from "react-router-dom";
+import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 
 const Analysis = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -180,10 +181,84 @@ const Analysis = (props) => {
   };
 
   return (
-    <div
-      data-aos="zoom-in-down"
-      style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
-      className="paymentsCaontainer">
+    <TablePageBackground bg={"#fff"}>
+      <div style={{ width: "100%", marginTop: "0px" }} className="inner-pay">
+        <TableControls>
+          <LeftControls>
+            <SelectStation
+              ml={"0px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={analysisDataHandler}
+            />
+          </LeftControls>
+          <RightControls>
+            <DateRangePicker onChange={getDateFromRange} value={updatedDate} />
+          </RightControls>
+        </TableControls>
+
+        <div style={contain2}>
+          <div className="imgContainer">
+            <DashboardImage
+              type={"cost"}
+              right={"10px"}
+              left={"0px"}
+              image={naira}
+              name={"Cost Price"}
+              value={`NGN ${oneStationData ? oneStationData?.PMSCost : "0"}`}
+            />
+            <DashboardImage
+              type={"selling"}
+              right={"10px"}
+              left={"0px"}
+              image={hand}
+              name={"Selling Price"}
+              value={`NGN ${oneStationData ? oneStationData?.PMSPrice : "0"}`}
+            />
+            <DashboardImage
+              type={"expenses"}
+              right={"10px"}
+              left={"0px"}
+              image={folder}
+              name={"Expenses"}
+              value={`NGN ${ApproximateDecimal(expenses)}`}
+            />
+            <DashboardImage
+              type={"payments"}
+              right={"10px"}
+              left={"0px"}
+              image={folder2}
+              name={"Payments"}
+              value={`NGN ${ApproximateDecimal(payments)}`}
+            />
+            <DashboardImage
+              type={"none"}
+              right={"10px"}
+              left={"0px"}
+              image={analysis2}
+              name={"Profits"}
+              value={`NGN ${ApproximateDecimal(profit)}`}
+            />
+            <DashboardImage
+              type={"sales"}
+              right={"10px"}
+              left={"0px"}
+              image={folder}
+              name={"Total Sales"}
+              value={`NGN ${ApproximateDecimal(totalSales)}`}
+            />
+            <DashboardImage
+              type={"varience"}
+              right={"10px"}
+              left={"0px"}
+              image={folder2}
+              name={"Varience"}
+              value={`NGN ${ApproximateDecimal(totalVarience)}`}
+            />
+          </div>
+        </div>
+      </div>
+
       {open && (
         <AddCostPrice
           type={type}
@@ -200,99 +275,7 @@ const Analysis = (props) => {
         <SalesDisplay open={openDetails} close={setOpenDetails} />
       )}
       {openDetails2 && <Varience open={openDetails2} close={setOpenDetails2} />}
-      {props.activeRoute.split("/").length === 3 && (
-        <div style={{ width: "100%", marginTop: "0px" }} className="inner-pay">
-          <TableControls>
-            <LeftControls>
-              <SelectStation
-                ml={"0px"}
-                oneStation={getPerm("0")}
-                allStation={getPerm("1")}
-                callback={analysisDataHandler}
-              />
-            </LeftControls>
-            <RightControls>
-              <DateRangePicker
-                onChange={getDateFromRange}
-                value={updatedDate}
-              />
-            </RightControls>
-          </TableControls>
-
-          <div style={contain2}>
-            <div className="imgContainer">
-              <DashboardImage
-                type={"cost"}
-                right={"10px"}
-                left={"0px"}
-                image={naira}
-                name={"Cost Price"}
-                value={`NGN ${oneStationData ? oneStationData?.PMSCost : "0"}`}
-              />
-              <DashboardImage
-                type={"selling"}
-                right={"10px"}
-                left={"0px"}
-                image={hand}
-                name={"Selling Price"}
-                value={`NGN ${oneStationData ? oneStationData?.PMSPrice : "0"}`}
-              />
-              <DashboardImage
-                type={"expenses"}
-                right={"10px"}
-                left={"0px"}
-                image={folder}
-                name={"Expenses"}
-                value={`NGN ${ApproximateDecimal(expenses)}`}
-              />
-              <DashboardImage
-                type={"payments"}
-                right={"10px"}
-                left={"0px"}
-                image={folder2}
-                name={"Payments"}
-                value={`NGN ${ApproximateDecimal(payments)}`}
-              />
-              <DashboardImage
-                type={"none"}
-                right={"10px"}
-                left={"0px"}
-                image={analysis2}
-                name={"Profits"}
-                value={`NGN ${ApproximateDecimal(profit)}`}
-              />
-              <DashboardImage
-                type={"sales"}
-                right={"10px"}
-                left={"0px"}
-                image={folder}
-                name={"Total Sales"}
-                value={`NGN ${ApproximateDecimal(totalSales)}`}
-              />
-              <DashboardImage
-                type={"varience"}
-                right={"10px"}
-                left={"0px"}
-                image={folder2}
-                name={"Varience"}
-                value={`NGN ${ApproximateDecimal(totalVarience)}`}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* {props.activeRoute.split("/").length === 4 && (
-        <Switch>
-          <Route path="/home/analysis/payments">
-            <Payments />
-          </Route>
-          <Route path="/home/analysis/expenses">
-            <Expenses />
-          </Route>
-        </Switch>
-      )} */}
-    </div>
+    </TablePageBackground>
   );
 };
 

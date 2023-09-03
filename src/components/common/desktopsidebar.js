@@ -79,7 +79,7 @@ const DesktopSideBar = () => {
         />
         <SideItems
           marginT={"270px"}
-          link={"/home/productorders"}
+          link={"/home/productorder"}
           name={"Product Orders"}
           icon={productOrders2}
           icon2={productOrders}

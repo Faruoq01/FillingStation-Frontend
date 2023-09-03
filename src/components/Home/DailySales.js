@@ -1,11 +1,6 @@
 import React from "react";
 import "../../styles/dailySales.scss";
 import { useSelector } from "react-redux";
-import PMSDailySales from "../DailySales/PMSDailySales";
-import AGODailySales from "../DailySales/AGODailySales";
-import DPKDailySales from "../DailySales/DPKDailySales";
-import ComprehensiveReport from "../DailySales/ComprehensiveReport";
-import ListAllTanks from "../Outlet/TankList";
 import OveragesAndShortages from "../DailySales/OveragesAndShortages";
 import Controls from "../DailySales/Sales/controls";
 import SalesCards from "../DailySales/Sales/salescards";
@@ -15,39 +10,15 @@ import NetToBank from "../DailySales/Sales/net_to_bank";
 import LPO from "../DailySales/Sales/lpo";
 import IncomingOrder from "../DailySales/Sales/incoming";
 import Supply from "../DailySales/Sales/supply";
-// const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const DailySales = (props) => {
   return (
-    <>
-      {props.activeRoute.split("/").length === 3 && (
-        <div className="daily-sales-container">
-          <SalesLeftColumn />
-          <SalesRightColumn />
-        </div>
-      )}
-      {/* {props.activeRoute.split("/").length === 4 && (
-        <div style={contain}>
-          <Switch>
-            <Route path="/home/daily-sales/pms">
-              <PMSDailySales />
-            </Route>
-            <Route path="/home/daily-sales/ago">
-              <AGODailySales />
-            </Route>
-            <Route path="/home/daily-sales/dpk">
-              <DPKDailySales />
-            </Route>
-            <Route path="/home/daily-sales/report">
-              <ComprehensiveReport />
-            </Route>
-            <Route path="/home/outlets/list">
-              <ListAllTanks />
-            </Route>
-          </Switch>
-        </div>
-      )} */}
-    </>
+    <React.Fragment>
+      <div className="daily-sales-container">
+        <SalesLeftColumn />
+        <SalesRightColumn />
+      </div>
+    </React.Fragment>
   );
 };
 
@@ -80,14 +51,6 @@ const SalesRightColumn = () => {
       <IncomingOrder />
     </div>
   );
-};
-
-const contain = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  marginTop: "20px",
 };
 
 export default DailySales;
