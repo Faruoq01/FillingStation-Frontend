@@ -72,6 +72,8 @@ import ListAllTanks from "../components/Outlet/TankList";
 import { adminOutlet, getAllStations } from "../storage/outlet";
 import TopNavBar from "../components/common/topnavbar";
 import MobileNavBar from "../components/common/mobilenavbar";
+import DesktopSideBar from "../components/common/desktopsidebar";
+import MobileSideBar from "../components/common/mobilesidebar";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);
@@ -80,7 +82,6 @@ const HomeScreen = () => {
   const online = useSelector((data) => data.auth.connection);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -111,8 +112,6 @@ const HomeScreen = () => {
     getAllStationData();
   }, [getAllStationData]);
 
-  // const [isConnected, setIsConnected] = useState(socket.connected);
-
   useEffect(() => {
     if (!online) {
       navigate("connection");
@@ -120,7 +119,6 @@ const HomeScreen = () => {
   });
 
   useEffect(() => {
-    // no-op if the socket is already connected
     socket.connect();
 
     return () => {
@@ -229,322 +227,17 @@ const HomeScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, user]);
 
-  const [activeRoute, setActiveRoute] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [openRight, setOpenRight] = useState(false);
-  const [name, setName] = useState("");
 
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
   };
 
-  // history.listen((location) => {
-  //   setActiveRoute(location.pathname);
-  //   setName(routes[history.location.pathname]);
-  // });
-
-  const setNames = (name) => {
-    setName(name);
-  };
-
-  // useEffect(() => {
-  //   setActiveRoute(history.location.pathname);
-  //   setName(routes[history.location.pathname]);
-  // }, [history.location.pathname, routes]);
-
-  useEffect(() => {
-    const route = pathname.split("/")[2];
-    setName(route);
-  }, [pathname]);
-
-  const SideItems = (props) => {
-    return (
-      <Link className="link" to={props.link}>
-        <div
-          onClick={() => {
-            setNames(props.name);
-          }}
-          style={{ marginTop: props.marginT }}
-          className="item-container">
-          {activeRoute.split("/")[2] === props.link.split("/")[2] ? (
-            <div className="side-item">
-              <div className="side-focus">
-                <div className="side-focus-image">
-                  <img
-                    style={{ width: "100%", height: "100%" }}
-                    src={user.isDark === "0" ? active : darkMode}
-                    alt="icon"
-                  />
-                </div>
-                <div data-aos="zoom-out-right" className="side-focus-text">
-                  <img
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      marginRight: "10px",
-                    }}
-                    src={user.isDark === "0" ? props.icon : props.icon2}
-                    alt="icon"
-                  />
-                  <div
-                    style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}>
-                    {props.name}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="side-item2">
-              <img className="normal-image" src={props.icon2} alt="icon" />
-              <div style={{ color: "#fff" }}>{props.name}</div>
-            </div>
-          )}
-        </div>
-      </Link>
-    );
-  };
-
-  const switchDarkMode = () => {
-    const payload = {
-      id: user._id,
-      isDark: user.isDark === "0" ? "1" : "0",
-    };
-
-    UserService.updateUserDarkMode(payload)
-      .then((data) => {
-        return data;
-      })
-      .then((data) => {
-        UserService.getOneUser({ id: data.user._id }).then((data) => {
-          localStorage.setItem("user", JSON.stringify(data.user));
-          dispatch(updateUser(data.user));
-        });
-      });
-  };
-
-  const openTheRightDrawer = () => {
-    setOpenRight(!openRight);
-  };
-
-  const goToEsales = () => {
-    navigate("corporatecustomer");
-  };
-
   return (
     <div className="home-container">
-      <div style={{ background: user.sideBarMode }} className="side-bar">
-        <div className="inner-side-bar">
-          <img
-            onClick={goToEsales}
-            className="home-logo"
-            src={homeLogo}
-            alt="icon"
-          />
-          <SideItems
-            marginT={"0px"}
-            link={"/home"}
-            name={"Dashboard"}
-            icon={dashboard}
-            icon2={dashboard2}
-          />
-          <SideItems
-            marginT={"45px"}
-            link={"/home/daily-sales"}
-            name={"Daily Sales"}
-            icon={dailySales2}
-            icon2={dailySales}
-          />
-          <SideItems
-            marginT={"90px"}
-            link={"/home/outlets"}
-            name={"My Stations"}
-            icon={outlet2}
-            icon2={outlet}
-          />
-          <SideItems
-            marginT={"135px"}
-            link={"/home/daily-record-sales"}
-            name={"Record Sales"}
-            icon={recordSales2}
-            icon2={recordSales}
-          />
-          <SideItems
-            marginT={"180px"}
-            link={"/home/analysis"}
-            name={"Analysis"}
-            icon={analysis22}
-            icon2={analysis}
-          />
-          <SideItems
-            marginT={"225px"}
-            link={"/home/lpo"}
-            name={"Corporate Sales"}
-            icon={lpo2}
-            icon2={lpo}
-          />
-          <SideItems
-            marginT={"270px"}
-            link={"/home/product-orders"}
-            name={"Product Orders"}
-            icon={productOrders2}
-            icon2={productOrders}
-          />
-          <SideItems
-            marginT={"315px"}
-            link={"/home/inc-orders"}
-            name={"Incoming Orders"}
-            icon={incOrders2}
-            icon2={incOrders}
-          />
-          <SideItems
-            marginT={"360px"}
-            link={"/home/supply"}
-            name={"Supply"}
-            icon={expenses2}
-            icon2={expenses}
-          />
-          <SideItems
-            marginT={"405px"}
-            link={"/home/regulatory"}
-            name={"Regulatory Pay"}
-            icon={regulatory2}
-            icon2={regulatory}
-          />
-          <SideItems
-            marginT={"450px"}
-            link={"/home/tank"}
-            name={"Tank Update"}
-            icon={tank2}
-            icon2={tank}
-          />
-          <SideItems
-            marginT={"495px"}
-            link={"/home/hr"}
-            name={"Human Resources"}
-            icon={hr2}
-            icon2={hr}
-          />
-          <SideItems
-            marginT={"540px"}
-            link={"/home/settings"}
-            name={"Settings"}
-            icon={settings2}
-            icon2={settings}
-          />
-        </div>
-      </div>
-
-      <Drawer open={isOpen} onClose={toggleDrawer} direction="left">
-        <div
-          style={{
-            background: user.sideBarMode,
-            display: "flex",
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "flex-end",
-          }}
-          className="side-bar">
-          <div style={{ width: "90%" }} className="inner-side-bar">
-            <img
-              onClick={goToEsales}
-              className="home-logo"
-              src={homeLogo}
-              alt="icon"
-            />
-            <SideItems
-              marginT={"0px"}
-              link={"/home"}
-              name={"Dashboard"}
-              icon={dashboard}
-              icon2={dashboard2}
-            />
-            <SideItems
-              marginT={"45px"}
-              link={"/home/daily-sales"}
-              name={"Daily Sales"}
-              icon={dailySales2}
-              icon2={dailySales}
-            />
-            <SideItems
-              marginT={"90px"}
-              link={"/home/outlets"}
-              name={"My Stations"}
-              icon={outlet2}
-              icon2={outlet}
-            />
-            <SideItems
-              marginT={"135px"}
-              link={"/home/daily-record-sales"}
-              name={"Record Sales"}
-              icon={recordSales2}
-              icon2={recordSales}
-            />
-            <SideItems
-              marginT={"180px"}
-              link={"/home/analysis"}
-              name={"Analysis"}
-              icon={analysis22}
-              icon2={analysis}
-            />
-            <SideItems
-              marginT={"225px"}
-              link={"/home/lpo"}
-              name={"Corporate Sales"}
-              icon={lpo2}
-              icon2={lpo}
-            />
-            <SideItems
-              marginT={"270px"}
-              link={"/home/product-orders"}
-              name={"Product Orders"}
-              icon={productOrders2}
-              icon2={productOrders}
-            />
-            <SideItems
-              marginT={"315px"}
-              link={"/home/inc-orders"}
-              name={"Incoming Orders"}
-              icon={incOrders2}
-              icon2={incOrders}
-            />
-            <SideItems
-              marginT={"360px"}
-              link={"/home/supply"}
-              name={"Supply"}
-              icon={expenses2}
-              icon2={expenses}
-            />
-            <SideItems
-              marginT={"405px"}
-              link={"/home/regulatory"}
-              name={"Regulatory Pay"}
-              icon={regulatory2}
-              icon2={regulatory}
-            />
-            <SideItems
-              marginT={"450px"}
-              link={"/home/tank"}
-              name={"Tank Update"}
-              icon={tank2}
-              icon2={tank}
-            />
-            <SideItems
-              marginT={"495px"}
-              link={"/home/hr"}
-              name={"Human Resources"}
-              icon={hr2}
-              icon2={hr}
-            />
-            <SideItems
-              marginT={"540px"}
-              link={"/home/settings"}
-              name={"Settings"}
-              icon={settings2}
-              icon2={settings}
-            />
-          </div>
-        </div>
-      </Drawer>
+      <DesktopSideBar />
+      <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />
 
       {openRight && <NotificationDrawer open={setOpenRight} />}
 
