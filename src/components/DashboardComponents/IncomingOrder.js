@@ -3,13 +3,13 @@ import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import slideMenu from "../../assets/slideMenu.png";
 import swal from "sweetalert";
-import { useHistory } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
 import { incoming } from "../../storage/dashboard";
 import APIs from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const IncomingOrder = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const incomingData = useSelector((state) => state.dashboard.incoming);
@@ -50,7 +50,7 @@ const IncomingOrder = () => {
 
   const goToInc = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
-    history.push("/home/inc-orders");
+    navigate("incomingorder");
   };
 
   return (

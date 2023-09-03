@@ -4,16 +4,16 @@ import { Button, Switch } from "@mui/material";
 import SortIcon from "@mui/icons-material/Sort";
 import { useSelector } from "react-redux";
 import ApproximateDecimal from "../common/approx";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useNavigate } from "react-router-dom";
 
 export default function AirBnBTopCardWithSwitch({ ...props }) {
   const [switchState, setSwitchState] = useState(false);
 
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const openModal = () => {
-    history.push("/home/transactions");
+    navigate("transactions");
   };
 
   return (

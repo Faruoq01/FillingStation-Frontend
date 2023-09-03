@@ -4,12 +4,12 @@ import Button from "@mui/material/Button";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
 import AuthService from "../../services/authService";
 import { login } from "../../storage/auth";
+import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
-  const navigation = useHistory();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loader, setLoader] = useState(false);
@@ -36,7 +36,7 @@ const Login = (props) => {
 
         if (auth && data.user.status === "1") {
           dispatch(login(data));
-          props.history.push("/home");
+          navigate("/home/dashboard");
         }
       })
       .then(() => {
@@ -56,7 +56,7 @@ const Login = (props) => {
       <div className="inner-form-container">
         <div
           onClick={() => {
-            navigation.push("/attendance");
+            navigate("attendant");
           }}
           className="logo-container"
           style={{ cursor: "pointer" }}>

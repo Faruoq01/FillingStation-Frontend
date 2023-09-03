@@ -2,7 +2,7 @@ import { Skeleton } from "@mui/material";
 import ApproximateDecimal from "../common/approx";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import expense from "../../assets/expense.png";
 import swal from "sweetalert";
 import { useCallback } from "react";
@@ -16,7 +16,7 @@ const Expenses = () => {
   const expenseData = useSelector((state) => state.dashboard.expenses);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
-  const history = useHistory();
+  const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -63,7 +63,7 @@ const Expenses = () => {
 
   const goToExpenses = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
-    history.push("/home/analysis/expenses");
+    navigate("expenses");
   };
 
   return (

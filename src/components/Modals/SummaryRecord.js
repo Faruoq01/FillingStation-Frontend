@@ -11,13 +11,13 @@ import {
   salesPayload,
   tanksPayload,
 } from "../../storage/recordsales";
-import { useHistory } from "react-router-dom";
 import "../../styles/summary.scss";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import SalesService from "../../services/sales";
 import APIs from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const FuelCard = (props) => {
   const dispatch = useDispatch();
@@ -225,7 +225,7 @@ const SummaryRecord = (props) => {
 
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   /////////////////////////////////////////////////////////
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
@@ -525,7 +525,7 @@ const SummaryRecord = (props) => {
       Promise.allSettled(payload)
         .then((results) => {
           handleClose();
-          history.push("/home/daily-sales");
+          navigate("dailysales");
           swal("Success!", "Record saved successfully!", "success");
         })
         .catch((error) => {

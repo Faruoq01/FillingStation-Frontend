@@ -16,18 +16,18 @@ import {
 import swal from "sweetalert";
 import { useDispatch, useSelector } from "react-redux";
 import { singleLPORecord } from "../../storage/lpo";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const openLPOSales = (getPerm, data, history, dispatch) => {
+const openLPOSales = (getPerm, data, navigate, dispatch) => {
   if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
   dispatch(singleLPORecord(data));
-  history.push("/home/estation/airbnb");
+  navigate("corporatecustomer");
 };
 
 const Action = ({ data, setEditOptionsModal }) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -45,7 +45,7 @@ const Action = ({ data, setEditOptionsModal }) => {
     <React.Fragment>
       <img
         onClick={() => {
-          openLPOSales(getPerm, data, history, dispatch);
+          openLPOSales(getPerm, data, navigate, dispatch);
         }}
         style={{ width: "28px", height: "28px" }}
         src={eyes}
@@ -70,7 +70,7 @@ const Action = ({ data, setEditOptionsModal }) => {
 export const LPODesktopTable = ({ data }) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -83,7 +83,7 @@ export const LPODesktopTable = ({ data }) => {
     data;
 
   const triggerRowCallback = (data) => {
-    openLPOSales(getPerm, data, history, dispatch);
+    openLPOSales(getPerm, data, navigate, dispatch);
   };
 
   return (

@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import PrintTankUpdate from "../Reports/PrintTankUpdate";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -33,7 +33,7 @@ const Transactions = () => {
   const [total, setTotal] = useState(0);
   const [prints, setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const [creditData, setCreditData] = useState([]);
 
   const getAllCreditData = useCallback(() => {
@@ -62,7 +62,7 @@ const Transactions = () => {
     getAllCreditData();
     return () => {
       if (typeof singleLPO._id === "undefined") {
-        history.push("/home/lpo");
+        navigate("lposales");
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -9,7 +9,7 @@ import APIs from "../../services/api";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { setRTSales, setReturnToTank } from "../../storage/comprehensive";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
@@ -17,7 +17,7 @@ import moment from "moment";
 import ReturnToTankModal from "../Modals/comprehensive/returnToTank";
 
 const ReturnToTank = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const rtVolumes = useSelector((state) => state.comprehensive.rtVolumes);
   const dispatch = useDispatch();
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
@@ -46,7 +46,7 @@ const ReturnToTank = () => {
   };
 
   const getReturnToTankData = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

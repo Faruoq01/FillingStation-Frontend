@@ -4,9 +4,9 @@ import pumpHead from "../../assets/pumpHead.png";
 import Modal from "@mui/material/Modal";
 import "../../styles/cost.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
 import { overageType } from "../../storage/dashboard";
+import { useNavigate } from "react-router-dom";
 
 const Varience = (props) => {
   const { varience } = useSelector((state) => state.analysis.analysisData);
@@ -14,18 +14,18 @@ const Varience = (props) => {
 
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const changePage = (data) => {
     if (data === "pms") {
       dispatch(overageType("PMS"));
-      history.push("/home/overage");
+      navigate("dashboardoverage");
     } else if (data === "ago") {
       dispatch(overageType("AGO"));
-      history.push("/home/overage");
+      navigate("dashboardoverage");
     } else if (data === "dpk") {
       dispatch(overageType("DPK"));
-      history.push("/home/overage");
+      navigate("dashboardoverage");
     }
   };
 

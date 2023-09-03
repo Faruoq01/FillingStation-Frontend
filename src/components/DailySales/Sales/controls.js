@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import { Button } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SelectStation from "../../common/selectstations";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const Controls = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
@@ -23,7 +23,7 @@ const Controls = () => {
       return swal("Warning!", "Please select a station", "info");
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
 
-    history.push("/home/daily-sales/report");
+    navigate("comprehensive");
   };
 
   return (

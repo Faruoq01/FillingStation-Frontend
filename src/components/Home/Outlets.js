@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import Tank from "../Outlet/Tanks";
 import Pumps from "../Outlet/Pumps";
 import Sales from "../Outlet/Sales";
-import { Switch, Route, useHistory } from "react-router-dom";
 import OutletService from "../../services/outletService";
 import { useEffect } from "react";
 import html2canvas from "html2canvas";
@@ -31,6 +30,7 @@ import { SearchField } from "../common/searchfields";
 import { LimitSelect } from "../common/customselect";
 import OutletGridSwitch from "../common/outletgrid";
 import MobileMenuListing from "../common/mobilemenulist";
+import { useNavigate } from "react-router-dom";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -47,7 +47,7 @@ const columns = [
 ];
 
 const Outlets = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const open = useSelector((state) => state.outlet.openModal);
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
@@ -81,7 +81,7 @@ const Outlets = (props) => {
 
   const goToTankList = (item) => {
     dispatch(tankListType(item));
-    props.history.push("/home/tankList");
+    navigate("tankList");
   };
 
   const getAllStationData = useCallback(() => {
@@ -137,7 +137,7 @@ const Outlets = (props) => {
   };
 
   const goToHistory = () => {
-    history.push("/home/history");
+    // navigate("/home/history");
   };
 
   const desktopTableData = {
@@ -236,7 +236,7 @@ const Outlets = (props) => {
         </TablePageBackground>
       )}
 
-      {props.activeRoute.split("/").length === 4 && (
+      {/* {props.activeRoute.split("/").length === 4 && (
         <div style={contain}>
           <Switch>
             <Route path="/home/outlets/sales">
@@ -250,14 +250,9 @@ const Outlets = (props) => {
             </Route>
           </Switch>
         </div>
-      )}
+      )} */}
     </>
   );
-};
-
-const contain = {
-  width: "96%",
-  height: "89%",
 };
 
 const place = {

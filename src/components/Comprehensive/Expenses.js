@@ -7,8 +7,8 @@ import UpdateExpenses from "../Modals/DailySales/expenses";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import React from "react";
-import { useHistory } from "react-router-dom";
-import { setExpenses, setSalesList } from "../../storage/comprehensive";
+import { useNavigate } from "react-router-dom";
+import { setExpenses } from "../../storage/comprehensive";
 import { useEffect } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
@@ -16,7 +16,7 @@ import ExpensesModal from "../Modals/comprehensive/expenses";
 import moment from "moment";
 
 const Expenses = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const expenses = useSelector((state) => state.comprehensive.expenses);
 
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const Expenses = () => {
   };
 
   const getExpensesData = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

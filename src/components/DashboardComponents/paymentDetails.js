@@ -1,7 +1,7 @@
 import { Skeleton } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
 import me6 from "../../assets/me6.png";
 import APIs from "../../services/api";
@@ -16,7 +16,7 @@ const PaymentDetails = () => {
   const paymentsDetailData = useSelector(
     (state) => state.dashboard.paymentsDetails
   );
-  const history = useHistory();
+  const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -55,7 +55,7 @@ const PaymentDetails = () => {
   }, [getAssetCounts, oneStationData, updatedDate]);
 
   const goToPayments = () => {
-    history.push("/home/analysis/payments");
+    navigate("payments");
   };
 
   return (

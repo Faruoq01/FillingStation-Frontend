@@ -22,7 +22,7 @@ import moment from "moment";
 import OutletService from "../../services/outletService";
 import LPOService from "../../services/lpo";
 import APIs from "../../services/api";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const PendingSales = (props) => {
@@ -32,7 +32,7 @@ const PendingSales = (props) => {
   const date2 = `${day} ${month} ${year}`;
   const [value, setValue] = React.useState(null);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
 
   const handleClose = () => props.close(false);
@@ -216,7 +216,7 @@ const PendingSales = (props) => {
 
   const goToSales = () => {
     dispatch(changeDate(""));
-    history.push("/home");
+    navigate("home");
   };
 
   return (

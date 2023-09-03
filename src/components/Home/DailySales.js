@@ -1,7 +1,6 @@
 import React from "react";
 import "../../styles/dailySales.scss";
 import { useSelector } from "react-redux";
-import { Route, Switch } from "react-router-dom";
 import PMSDailySales from "../DailySales/PMSDailySales";
 import AGODailySales from "../DailySales/AGODailySales";
 import DPKDailySales from "../DailySales/DPKDailySales";
@@ -27,7 +26,7 @@ const DailySales = (props) => {
           <SalesRightColumn />
         </div>
       )}
-      {props.activeRoute.split("/").length === 4 && (
+      {/* {props.activeRoute.split("/").length === 4 && (
         <div style={contain}>
           <Switch>
             <Route path="/home/daily-sales/pms">
@@ -47,7 +46,7 @@ const DailySales = (props) => {
             </Route>
           </Switch>
         </div>
-      )}
+      )} */}
     </>
   );
 };

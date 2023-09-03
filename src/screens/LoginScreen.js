@@ -4,17 +4,17 @@ import station from "../assets/station.png";
 import Register from "../components/Login/register";
 import Login from "../components/Login/login";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginScreen = () => {
   const [gotToRegister, setToRegister] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const online = useSelector((state) => state.auth.connection);
 
   useEffect(() => {
     if (!online) {
-      history.push("/connection");
+      navigate("/connection");
     }
   });
 
@@ -22,7 +22,7 @@ const LoginScreen = () => {
     <div className="container">
       <div className="left-block">
         <div style={{ flexDirection: "column" }} className="upper-block">
-          {gotToRegister || <Login history={history} reg={setToRegister} />}
+          {gotToRegister || <Login reg={setToRegister} />}
           {gotToRegister && <Register reg={setToRegister} />}
         </div>
       </div>

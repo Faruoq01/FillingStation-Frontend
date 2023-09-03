@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 import OutletService from "../../services/outletService";
 import { getAllOutletTanks } from "../../storage/outlet";
 import PrintSupplyRecords from "../Reports/SupplyRecords";
-import { Route, Switch, useHistory } from "react-router-dom";
 import CreateSupply from "../Supply/CreateSupply";
 import swal from "sweetalert";
 import IncomingService from "../../services/IncomingService";
@@ -27,6 +26,7 @@ import { CreateButton, PrintButton } from "../common/buttons";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { LimitSelect } from "../common/customselect";
 import { SupplyDesktopTable, SupplyMobileTable } from "../tables/supply";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   "S/N",
@@ -47,7 +47,7 @@ const mobile = window.matchMedia("(max-width: 600px)");
 const Supply = (props) => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
@@ -81,7 +81,7 @@ const Supply = (props) => {
     if (oneStationData === null) {
       return swal("Warning!", "Please select a station to proceed", "info");
     }
-    history.push("/home/supply/create");
+    navigate("createsupply");
   };
 
   const refresh = (id, date, skip) => {
@@ -224,7 +224,7 @@ const Supply = (props) => {
         </TablePageBackground>
       )}
 
-      {props.activeRoute.split("/").length === 4 && (
+      {/* {props.activeRoute.split("/").length === 4 && (
         <div style={{ width: "100%", marginTop: "30px" }}>
           <Switch>
             <Route path="/home/supply/create">
@@ -232,7 +232,7 @@ const Supply = (props) => {
             </Route>
           </Switch>
         </div>
-      )}
+      )} */}
       {open && (
         <SupplyModal
           station={oneStationData}

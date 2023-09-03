@@ -12,9 +12,8 @@ import { useEffect, useState } from "react";
 import ProductBalance from "../Comprehensive/ProductBalance";
 import LPOReport from "../Comprehensive/LPOReport";
 import Expenses from "../Comprehensive/Expenses";
-import BalanceCF from "../Comprehensive/BalanceCF";
 import Dipping from "../Comprehensive/Dipping";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ReturnToTank from "../Comprehensive/ReturnToTank";
 import PaymentDetails from "../Comprehensive/PaymentDetails";
@@ -46,26 +45,13 @@ const ComprehensiveReport = (props) => {
   const date2 = moment().format("Do MMM YYYY");
   const [initial, setInitial] = useState("");
   const [value, setValue] = React.useState(null);
-  const [openInitialBalanceModal, setOpenInitialBalanceModal] = useState(false);
-  const [bankPaymentModalStatus, setBankPaymentModalStatus] = useState(false);
-  const [posPaymentModalStatus, setPosPaymentModalStatus] = useState(false);
-  const [dippingModalStatus, setDippingModalStatus] = useState(false);
-  const [openReturnToTankModal, setOpenReturnToTankModal] = useState(false);
-
-  const [
-    openCreateCorporateSaleModalModal,
-    setOpenCreateCorporateSaleModalModal,
-  ] = useState(false);
-  const [createExpenseModalStatus, setCreateExpenseModalStatus] =
-    useState(false);
-  const [createLpoModalStatus, setCreateLpoModalStatus] = useState(false);
 
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const localeDate = useSelector((state) => state.dailysales.localeDate);
   const user = useSelector((state) => state.auth.user);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const resolveUserID = () => {
@@ -86,7 +72,7 @@ const ComprehensiveReport = (props) => {
     }
 
     if (oneStationData === null) {
-      history.push("/home/daily-sales");
+      navigate("dailysales");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

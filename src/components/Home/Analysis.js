@@ -9,9 +9,6 @@ import me6 from "../../assets/me6.png";
 import { useDispatch, useSelector } from "react-redux";
 import AddCostPrice from "../Modals/analysis/addcostprice";
 import CostPriceModal from "../Modals/analysis/costpricemodal";
-import { Route, Switch, useHistory } from "react-router-dom";
-import Payments from "./Payments";
-import Expenses from "./Expenses";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { setAnalysisData } from "../../storage/analysis";
 import swal from "sweetalert";
@@ -27,6 +24,7 @@ import {
   RightControls,
   TableControls,
 } from "../controls/PageLayout/TableControls";
+import { useNavigate } from "react-router-dom";
 
 const Analysis = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -38,7 +36,7 @@ const Analysis = (props) => {
   const moment = require("moment-timezone");
 
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [type, setType] = useState(false);
@@ -153,11 +151,11 @@ const Analysis = (props) => {
     } else if (type === "payments") {
       if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
 
-      history.push("/home/analysis/payments");
+      navigate("payments");
     } else if (type === "expenses") {
       if (!getPerm("5")) return swal("Warning!", "Permission denied", "info");
 
-      history.push("/home/analysis/expenses");
+      navigate("expenses");
     } else if (type === "sales") {
       setOpenDetails(true);
     } else if (type === "varience") {
@@ -284,7 +282,7 @@ const Analysis = (props) => {
         </div>
       )}
 
-      {props.activeRoute.split("/").length === 4 && (
+      {/* {props.activeRoute.split("/").length === 4 && (
         <Switch>
           <Route path="/home/analysis/payments">
             <Payments />
@@ -293,7 +291,7 @@ const Analysis = (props) => {
             <Expenses />
           </Route>
         </Switch>
-      )}
+      )} */}
     </div>
   );
 };

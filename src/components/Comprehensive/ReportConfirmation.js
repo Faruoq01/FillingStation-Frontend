@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import { useDispatch, useSelector } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
 import APIs from "../../services/api";
-import { useHistory } from "react-router-dom";
+import { useHistory, useNavigate } from "react-router-dom";
 import { setRemarkList } from "../../storage/comprehensive";
 
 const months = {
@@ -53,7 +53,7 @@ const RemarkCard = (props) => {
 };
 
 const ReportConfirmation = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [remark, setRemark] = useState("");
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
@@ -72,7 +72,7 @@ const ReportConfirmation = () => {
   };
 
   const getRemarkData = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoading(true);
     const payload = {
       organizationID: resolveUserID().id,

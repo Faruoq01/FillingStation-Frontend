@@ -1,15 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { adminOutlet } from "../../../storage/outlet";
-import { useHistory } from "react-router-dom";
 import tan from "../../../assets/tan.png";
 import eye from "../../../assets/eye.png";
 import filling from "../../../assets/filling.png";
 import swal from "sweetalert";
+import { useNavigate } from "react-router-dom";
 
 export const Action = ({ item }) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -20,19 +20,19 @@ export const Action = ({ item }) => {
 
   const goToSales = (item) => {
     dispatch(adminOutlet(item));
-    history.push("/home/outlets/sales");
+    navigate("sales");
   };
 
   const goToTanks = (item) => {
     if (!getPerm("1")) return swal("Warning!", "Permission denied", "info");
     dispatch(adminOutlet(item));
-    history.push("/home/outlets/tanks");
+    navigate("tanks");
   };
 
   const goToPumps = (item) => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
     dispatch(adminOutlet(item));
-    history.push("/home/outlets/pumps");
+    navigate("pumps");
   };
 
   return (

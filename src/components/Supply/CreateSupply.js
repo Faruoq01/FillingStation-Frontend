@@ -12,11 +12,11 @@ import SupplyService from "../../services/supplyService";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
 import { BallTriangle } from "react-loader-spinner";
-import { useHistory } from "react-router-dom";
 import { getAllOutletTanks } from "../../storage/outlet";
+import { useNavigate } from "react-router-dom";
 
 const CreateSupply = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState([]);
   const [menus, setMenus] = useState(false);
   const dispatch = useDispatch();
@@ -74,7 +74,7 @@ const CreateSupply = (props) => {
 
   useEffect(() => {
     if (oneStationData === null) {
-      history.push("/home/supply");
+      navigate("supply");
     } else {
       getAllIncoming();
     }
@@ -319,7 +319,7 @@ const CreateSupply = (props) => {
             })
             .then(() => {
               setStop(false);
-              history.push("/home/supply");
+              navigate("supply");
             });
         } else {
           swal("Warning!", `You can not submit an empty supply list. `, "info");

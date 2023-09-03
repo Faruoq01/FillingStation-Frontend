@@ -34,7 +34,7 @@ import tank2 from "../assets/tank2.png";
 import note from "../assets/note.png";
 import search from "../assets/search.png";
 import switchT from "../assets/switchT.png";
-import { Switch, Route, Link, withRouter } from "react-router-dom";
+import { useNavigate, useLocation, Link, Outlet } from "react-router-dom";
 import Dashboard from "../components/Home/Dashboard";
 import DailySales from "../components/Home/DailySales";
 import HumanResources from "../components/Home/HumanResource";
@@ -61,7 +61,6 @@ import StationPumps from "../components/Home/StationPumps";
 import HistoryPage from "../components/Home/History";
 import DailyRecordSales from "../components/Home/DailyRecordSales";
 import DashboardEmployee from "../components/DashboardComponents/DashboardEmp";
-import { useHistory } from "react-router-dom";
 import { socket } from "../services/socket";
 import { useCallback } from "react";
 import OutletService from "../services/outletService";
@@ -80,7 +79,8 @@ const HomeScreen = () => {
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const online = useSelector((data) => data.auth.connection);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -115,7 +115,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (!online) {
-      history.push("/connection");
+      navigate("connection");
     }
   });
 
@@ -291,22 +291,27 @@ const HomeScreen = () => {
     setIsOpen((prevState) => !prevState);
   };
 
-  history.listen((location) => {
-    setActiveRoute(location.pathname);
-    setName(routes[history.location.pathname]);
-  });
+  // history.listen((location) => {
+  //   setActiveRoute(location.pathname);
+  //   setName(routes[history.location.pathname]);
+  // });
 
   const setNames = (name) => {
     setName(name);
   };
 
+  // useEffect(() => {
+  //   setActiveRoute(history.location.pathname);
+  //   setName(routes[history.location.pathname]);
+  // }, [history.location.pathname, routes]);
+
   useEffect(() => {
-    setActiveRoute(history.location.pathname);
-    setName(routes[history.location.pathname]);
-  }, [history.location.pathname, routes]);
+    const route = pathname.split("/")[2];
+    // setPath(route);
+  }, [pathname]);
 
   const goBackToPreviousPage = () => {
-    history.goBack();
+    // history.goBack();
   };
 
   const SideItems = (props) => {
@@ -381,7 +386,7 @@ const HomeScreen = () => {
       name === "← Employee List" ||
       "← Overage/Shortage"
     ) {
-      history.goBack();
+      // history.goBack();
     }
   };
 
@@ -413,7 +418,7 @@ const HomeScreen = () => {
   };
 
   const goToEsales = () => {
-    history.push("/home/estation");
+    navigate("corporatecustomer");
   };
 
   return (
@@ -779,7 +784,8 @@ const HomeScreen = () => {
           </div>
         </div>
         <div style={inner}>
-          <Switch>
+          <Outlet />
+          {/* <Switch>
             <Route exact path="/home">
               <Dashboard activeRoute={activeRoute} />
             </Route>
@@ -846,7 +852,7 @@ const HomeScreen = () => {
             <Route path="/home/tankList">
               <ListAllTanks refresh={getAllStationData} />
             </Route>
-          </Switch>
+          </Switch> */}
         </div>
       </div>
     </div>
@@ -868,4 +874,4 @@ const inner = {
   alignItems: "center",
 };
 
-export default withRouter(HomeScreen);
+export default HomeScreen;

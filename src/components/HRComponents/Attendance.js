@@ -16,7 +16,6 @@ import ClockOutModal from "../Modals/AttendanceClockOut";
 import PrintAttendanceRecords from "../Reports/Attendance";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
-import { useHistory } from "react-router-dom";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -37,7 +36,6 @@ const Attendance = () => {
   const [entries, setEntries] = useState(10);
   const [prints, setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -302,7 +300,6 @@ const Attendance = () => {
   };
 
   const goToHistory = () => {
-    history.push("/home/history");
   };
 
   return (

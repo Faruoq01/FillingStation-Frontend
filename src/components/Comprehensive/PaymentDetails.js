@@ -7,14 +7,14 @@ import { useCallback, useEffect, useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { paymentDetails } from "../../storage/comprehensive";
 import { Button } from "@mui/material";
 import PaymentsModal from "../Modals/comprehensive/payments";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const PaymentDetails = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const payments = useSelector((state) => state.comprehensive.paymentDetails);
 
   const dispatch = useDispatch();
@@ -44,7 +44,7 @@ const PaymentDetails = () => {
   };
 
   const getPaymentDetails = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
 
     const payload = {

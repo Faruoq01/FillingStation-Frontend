@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import ApproximateDecimal from "../common/approx";
 import { useCallback, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import APIs from "../../services/api";
 import { setBalanceCF } from "../../storage/comprehensive";
@@ -10,7 +10,7 @@ import { ThreeDots } from "react-loader-spinner";
 
 const BalanceCF = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pms, ago, dpk } = useSelector(
     (state) => state.comprehensive.balanceCF
   );
@@ -28,7 +28,7 @@ const BalanceCF = () => {
   };
 
   const getRemarkData = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

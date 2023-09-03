@@ -1,16 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
 import { useCallback, useEffect, useState } from "react";
 import APIs from "../../services/api";
 import { setBalances, setSupply } from "../../storage/comprehensive";
 import React from "react";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 
 const InitialBalance = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const today = moment().format("YYYY-MM-DD").split(" ")[0];
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -29,7 +28,7 @@ const InitialBalance = () => {
   };
 
   const getAllProductBalances = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

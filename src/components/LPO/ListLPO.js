@@ -4,13 +4,11 @@ import LPOService from "../../services/lpo";
 import { useDispatch, useSelector } from "react-redux";
 import LPOSalesReport from "../Reports/LPOSales";
 import config from "../../constants";
-import { useHistory } from "react-router-dom";
 import { createLPOSales, searchLPO } from "../../storage/lpo";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 
 const ListLPO = () => {
-  const history = useHistory();
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -89,9 +87,7 @@ const ListLPO = () => {
     setPrints(true);
   };
 
-  const goToHistory = () => {
-    history.push("/home/history");
-  };
+  const goToHistory = () => {};
 
   return (
     <div

@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import slideMenu from "../../assets/slideMenu.png";
 import swal from "sweetalert";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import ApproximateDecimal from "../common/approx";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import APIs from "../../services/api";
 import { supplies } from "../../storage/dashboard";
+import { useNavigate } from "react-router-dom";
 
 const Supply = () => {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ const Supply = () => {
   const suppliesData = useSelector((state) => state.dashboard.supplies);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
-  const history = useHistory();
+  const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -63,7 +63,7 @@ const Supply = () => {
 
   const goToSupplyPage = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");
-    history.push("/home/supply");
+    navigate("supply");
   };
 
   return (

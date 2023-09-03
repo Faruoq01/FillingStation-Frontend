@@ -64,8 +64,8 @@ function App() {
           </Route>
           <Route path="dailysales" element={<DailySales />}>
             <Route path="pmssales" element={<PMSDailySales />} />
-            <Route path="agolist" element={<AGODailySales />} />
-            <Route path="dpklist" element={<DPKDailySales />} />
+            <Route path="agosales" element={<AGODailySales />} />
+            <Route path="dpksales" element={<DPKDailySales />} />
             <Route path="comprehensive" element={<ComprehensiveReport />} />
             <Route path="tanklist" element={<ListAllTanks />} />
             <Route path="dailysalesoverage" element={<SalesOverageList />} />
@@ -100,7 +100,7 @@ function App() {
           </Route>
           <Route path="settings" element={<Settings />} />
         </Route>
-        <Route path="attendance" element={<AttendanceModule />} />
+        <Route path="attendant" element={<AttendanceModule />} />
         <Route path="connection" element={<Connection />} />
         {/* <Route render={() => <h1>404 page not found</h1>} /> */}
       </Routes>

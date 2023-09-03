@@ -1,14 +1,14 @@
 import { Skeleton } from "@mui/material";
 import me6 from "../../assets/me6.png";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
 import { asset } from "../../storage/dashboard";
+import { useNavigate } from "react-router-dom";
 
 const DashboardImage = (props) => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const getPerm = (e) => {
@@ -24,34 +24,34 @@ const DashboardImage = (props) => {
         if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
         if (!getPerm("4" && oneStationData === null))
           return swal("Warning!", "Permission denied", "info");
-        history.push("/home/dashEmp");
+        navigate("dashboardemployee");
         break;
       }
 
       case "activeTank": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("activeTank"));
-        history.push("/home/tank-list");
+        navigate("stationtanks");
         break;
       }
 
       case "inactiveTank": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("inActiveTank"));
-        history.push("/home/tank-list");
+        navigate("stationtanks");
         break;
       }
       case "activePump": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("activePump"));
-        history.push("/home/pump-list");
+        navigate("stationpumps");
         break;
       }
 
       case "inactivePump": {
         if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
         dispatch(asset("inActivePump"));
-        history.push("/home/pump-list");
+        navigate("stationpumps");
         break;
       }
 

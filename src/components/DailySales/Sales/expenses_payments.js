@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import BarChartGraph from "../../common/BarChartGraph";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useNavigate } from "react-router-dom";
 import { Skeleton, Stack } from "@mui/material";
 import { dateRange } from "../../../storage/dashboard";
 import swal from "sweetalert";
@@ -30,7 +30,7 @@ const ExpensesAndPayments = () => {
   const expenseData = useSelector((state) => state.dailysales.expenses);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -102,8 +102,8 @@ const ExpensesAndPayments = () => {
   };
 
   const goToPagesInd = (data) => {
-    if (data === "exp") return history.push("/home/analysis/expenses");
-    if (data === "pay") return history.push("/home/analysis/payments");
+    if (data === "exp") return navigate("expenses");
+    if (data === "pay") return navigate("payments");
   };
 
   return (

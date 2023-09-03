@@ -7,14 +7,14 @@ import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { setTankLevels } from "../../storage/comprehensive";
 import { ThreeDots } from "react-loader-spinner";
 
 const TankLevels = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const tankLevels = useSelector((state) => state.comprehensive.tankLevels);
 
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ const TankLevels = () => {
   };
 
   const getTankLevels = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

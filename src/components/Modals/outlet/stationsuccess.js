@@ -7,12 +7,12 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import outletSuccess from "../../../assets/outletSuccess.png";
 import { ThreeDots } from "react-loader-spinner";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 
 const CreateStationAssets = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const open = useSelector((state) => state.outlet.openModal);
   const loadingSpinner = useSelector((state) => state.auth.loadingSpinner);
   const newOutlet = useSelector((state) => state.outlet.newOutlet);
@@ -22,7 +22,7 @@ const CreateStationAssets = () => {
   const handleAddTanks = () => {
     dispatch(closeModal(0));
     if (newOutlet !== {}) {
-      history.push("/home/outlets/tanks", { state: newOutlet });
+      navigate("tanks", { state: newOutlet });
     } else {
       swal(
         "Warning!",

@@ -2,7 +2,7 @@ import { Button, MenuItem, Select, Skeleton } from "@mui/material";
 import "../../styles/overage.scss";
 import slideMenu from "../../assets/slideMenu.png";
 import tank from "../../assets/comp/tank.png";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
@@ -14,7 +14,7 @@ import React from "react";
 import moment from "moment";
 
 const OveragesAndShortages = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [defaultState, setDefault] = useState(10);
   const overageData = useSelector((state) => state.dailysales.overage);
@@ -88,7 +88,7 @@ const OveragesAndShortages = (props) => {
   };
 
   const loadOverageList = () => {
-    history.push("/home/overage");
+    navigate("dailysalesoverage");
   };
 
   const Selectors = () => {

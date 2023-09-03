@@ -4,19 +4,18 @@ import { useDispatch, useSelector } from "react-redux";
 import Sales from "../Modals/DailySales/sales";
 import { useCallback, useEffect, useState } from "react";
 import swal from "sweetalert";
-import DailySalesService from "../../services/DailySales";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import moment from "moment";
 import { setProduct } from "../../storage/comprehensive";
 import React from "react";
-import { useHistory } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import PumpUpdate from "../Modals/comprehensive/pumpupdate";
+import { useNavigate } from "react-router-dom";
 
 const ProductBalance = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const sales = useSelector((state) => state.comprehensive.sales);
   const dispatch = useDispatch();
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
@@ -46,7 +45,7 @@ const ProductBalance = (props) => {
   };
 
   const getAllProduct = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

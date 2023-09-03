@@ -8,11 +8,8 @@ import { useSelector } from "react-redux";
 import { createLPO, searchLPO, singleLPORecord } from "../../storage/lpo";
 import { useDispatch } from "react-redux";
 import LPORateModal from "../Modals/SetLPORate";
-import { Route, Switch } from "react-router-dom";
-import ListLPO from "../LPO/ListLPO";
 import LPOReport from "../Reports/LpoReport";
 import swal from "sweetalert";
-import CompanyLPO from "../LPO/company";
 import LPOEditOptions from "../Modals/LPOEditOptions";
 import LPOModalEdit from "../Modals/LPOModalEdit";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
@@ -216,7 +213,7 @@ const LPO = (props) => {
           />
         </TablePageBackground>
       )}
-      {props.activeRoute.split("/").length === 4 && (
+      {/* {props.activeRoute.split("/").length === 4 && (
         <Switch>
           <Route path="/home/lpo/list">
             <ListLPO />
@@ -225,7 +222,7 @@ const LPO = (props) => {
             <CompanyLPO />
           </Route>
         </Switch>
-      )}
+      )} */}
       <LPOModalEdit
         refresh={refresh}
         close={setLpoModalEditStatus}

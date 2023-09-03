@@ -8,7 +8,7 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useNavigate } from "react-router-dom";
 import { setDipping, setSalesList } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
@@ -17,7 +17,7 @@ import DippingModal from "../Modals/comprehensive/dipping";
 import moment from "moment";
 
 const Dipping = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dipping = useSelector((state) => state.comprehensive.dipping);
 
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const Dipping = () => {
   };
 
   const getDippingData = useCallback((updatedDate) => {
-    if (oneStationData === null) return history.push("/home/daily-sales");
+    if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

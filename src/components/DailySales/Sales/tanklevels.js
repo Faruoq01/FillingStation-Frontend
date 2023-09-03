@@ -4,7 +4,6 @@ import AGOTank from "../../Outlet/AGOTank";
 import DPKTank from "../../Outlet/DPKTank";
 import ApproximateDecimal from "../../common/approx";
 import swal from "sweetalert";
-import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Skeleton } from "@mui/material";
 import { useState } from "react";
@@ -12,9 +11,10 @@ import moment from "moment";
 import APIs from "../../../services/api";
 import { tankLevels } from "../../../storage/dailysales";
 import { tankListType } from "../../../storage/outlet";
+import { useNavigate } from "react-router-dom";
 
 const TankLevels = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -68,7 +68,7 @@ const TankLevels = () => {
   const goToTanks = (product) => {
     if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
     dispatch(tankListType(product));
-    history.push("/home/tankList");
+    navigate("tanklist");
   };
 
   return (
@@ -101,8 +101,7 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("PMS");
               }}
-              className="canvas-container"
-            >
+              className="canvas-container">
               <PMSTank />
             </div>
           </div>
@@ -124,8 +123,7 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("AGO");
               }}
-              className="canvas-container"
-            >
+              className="canvas-container">
               <AGOTank />
             </div>
           </div>
@@ -147,8 +145,7 @@ const TankLevels = () => {
               onClick={() => {
                 goToTanks("DPK");
               }}
-              className="canvas-container"
-            >
+              className="canvas-container">
               <DPKTank />
             </div>
           </div>

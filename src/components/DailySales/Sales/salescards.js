@@ -2,15 +2,15 @@ import { Skeleton } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { useHistory } from "react-router-dom";
 import me5 from "../../../assets/me5.png";
 import ApproximateDecimal from "../../common/approx";
 import APIs from "../../../services/api";
 import { sales } from "../../../storage/dailysales";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const SalesCards = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [load, setLoad] = useState();
   const user = useSelector((state) => state.auth.user);
@@ -68,11 +68,11 @@ const SalesCards = () => {
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
 
     if (data === "pms") {
-      history.push("/home/daily-sales/pms");
+      navigate("pmssales");
     } else if (data === "ago") {
-      history.push("/home/daily-sales/ago");
+      navigate("agosales");
     } else if (data === "dpk") {
-      history.push("/home/daily-sales/dpk");
+      navigate("dpksales");
     }
   };
 

@@ -1,6 +1,5 @@
 import { Button, Skeleton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import slideMenu from "../../../assets/slideMenu.png";
 import swal from "sweetalert";
 import ApproximateDecimal from "../../common/approx";
@@ -8,9 +7,10 @@ import { useCallback, useEffect, useState } from "react";
 import APIs from "../../../services/api";
 import { lpo } from "../../../storage/dailysales";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const LPO = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -62,7 +62,7 @@ const LPO = () => {
 
   const goToLPO = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");
-    history.push("/home/record-sales/lpo");
+    navigate("lposales");
   };
 
   return (

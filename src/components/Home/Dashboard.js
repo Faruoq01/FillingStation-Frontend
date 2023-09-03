@@ -26,41 +26,39 @@ const Dashboard = (props) => {
   };
 
   return (
-    <>
-      <DashboardSales open={prices} close={closeModal} />
-      {props.activeRoute.split("/").length === 2 && (
-        <div className="dashboardContainer">
-          <div className="left-dash">
-            <Controls />
-            <Sales priceModal={setPrices} />
-            <div
-              style={{
-                marginTop: "40px",
-                fontWeight: "bold",
-                fontSize: "15px",
-                color: user.isDark === "0" ? "#000" : "#fff",
-              }}>
-              Total Sales
-            </div>
-
-            <DashboardGraph station={oneStationData} />
-            <OveragesAndShortages path={"dash"} />
+    <React.Fragment>
+      <div className="dashboardContainer">
+        <div className="left-dash">
+          <Controls />
+          <Sales priceModal={setPrices} />
+          <div
+            style={{
+              marginTop: "40px",
+              fontWeight: "bold",
+              fontSize: "15px",
+              color: user.isDark === "0" ? "#000" : "#fff",
+            }}>
+            Total Sales
           </div>
-          <div className="right-dash">
-            <Assets />
 
-            <div className="section">
-              <Supply />
-              <PaymentDetails />
-              <Expenses />
-            </div>
-
-            <TopStations />
-            <IncomingOrder />
-          </div>
+          <DashboardGraph station={oneStationData} />
+          <OveragesAndShortages path={"dash"} />
         </div>
-      )}
-    </>
+        <div className="right-dash">
+          <Assets />
+
+          <div className="section">
+            <Supply />
+            <PaymentDetails />
+            <Expenses />
+          </div>
+
+          <TopStations />
+          <IncomingOrder />
+        </div>
+      </div>
+      {prices && <DashboardSales open={prices} close={closeModal} />}
+    </React.Fragment>
   );
 };
 

@@ -1,12 +1,12 @@
 import { Skeleton } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import ApproximateDecimal from "../../common/approx";
 import me6 from "../../../assets/me6.png";
 import APIs from "../../../services/api";
 import { netToBank } from "../../../storage/dailysales";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const NetToBank = () => {
   const user = useSelector((state) => state.auth.user);
@@ -14,7 +14,7 @@ const NetToBank = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const paymentsDetailData = useSelector((state) => state.dailysales.netToBank);
-  const history = useHistory();
+  const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -53,7 +53,7 @@ const NetToBank = () => {
   }, [getNetToBank, oneStationData, updatedDate]);
 
   const goToPayments = () => {
-    history.push("/home/analysis/payments");
+    navigate("payments");
   };
 
   return (

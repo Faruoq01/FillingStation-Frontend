@@ -17,7 +17,6 @@ import ViewQuery from "../Modals/ViewQuery";
 import swal from "sweetalert";
 import UpdateQuery from "../Modals/UpdateQuery";
 import { ThreeDots } from "react-loader-spinner";
-import { useHistory } from "react-router-dom";
 
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -40,7 +39,6 @@ const Query = () => {
   const [limit, setLimit] = useState(15);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -232,9 +230,7 @@ const Query = () => {
     refresh(skip);
   };
 
-  const goToHistory = () => {
-    history.push("/home/history");
-  };
+  const goToHistory = () => {};
 
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
