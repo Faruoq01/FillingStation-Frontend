@@ -44,6 +44,8 @@ import Salary from "./components/HRComponents/Salary";
 import Query from "./components/HRComponents/Query";
 import Attendance from "./components/HRComponents/Attendance";
 import DashboardHome from "./components/DashboardComponents/dashboardhome";
+import DailysalesHome from "./components/DailySales/dailysaleshome";
+import SupplyHome from "./components/Supply/supplyhome";
 
 function App() {
   useEffect(() => {
@@ -58,13 +60,14 @@ function App() {
         <Route path="login" element={<LoginScreen />} />
         <Route path="home" element={<HomeScreen />}>
           <Route path="dashboard" element={<Dashboard />}>
-            <Route index path="dashboardhome/:index" element={<DashboardHome />} />
+            <Route path="dashboardhome/:index" element={<DashboardHome />} />
             <Route path="dashboardemployee" element={<DashboardEmployee />} />
             <Route path="dashboardoverage" element={<OverageList />} />
             <Route path="stationtanks" element={<StationTanks />} />
             <Route path="stationpumps" element={<StationPumps />} />
           </Route>
           <Route path="dailysales" element={<DailySales />}>
+            <Route path="dailysaleshome/:index" element={<DailysalesHome />} />
             <Route path="pmssales" element={<PMSDailySales />} />
             <Route path="agosales" element={<AGODailySales />} />
             <Route path="dpksales" element={<DPKDailySales />} />
@@ -90,6 +93,7 @@ function App() {
           <Route path="productorder" element={<ProductOrders />} />
           <Route path="incomingorder" element={<IncomingOrders />} />
           <Route path="supply" element={<Supply />}>
+            <Route path="supplyhome/:index" element={<SupplyHome />} />
             <Route path="createsupply" element={<CreateSupply />} />
           </Route>
           <Route path="regulatory" element={<Regulatory />} />

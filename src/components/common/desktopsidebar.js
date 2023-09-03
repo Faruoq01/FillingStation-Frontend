@@ -44,7 +44,7 @@ const DesktopSideBar = () => {
         />
         <SideItems
           marginT={"45px"}
-          link={"/home/dailysales"}
+          link={"/home/dailysales/dailysaleshome/0"}
           name={"Daily Sales"}
           icon={dailySales2}
           icon2={dailySales}
@@ -93,7 +93,7 @@ const DesktopSideBar = () => {
         />
         <SideItems
           marginT={"360px"}
-          link={"/home/supply"}
+          link={"/home/supply/supplyhome/0"}
           name={"Supply"}
           icon={expenses2}
           icon2={expenses}

@@ -47,14 +47,14 @@ const MobileSideBar = ({ isOpen, toggleDrawer }) => {
           <img className="home-logo" src={homeLogo} alt="icon" />
           <SideItems
             marginT={"0px"}
-            link={"/home/dashboard"}
+            link={"/home/dashboard/dashboardhome/0"}
             name={"Dashboard"}
             icon={dashboard}
             icon2={dashboard2}
           />
           <SideItems
             marginT={"45px"}
-            link={"/home/dailysales"}
+            link={"/home/dailysales/dailysaleshome/0"}
             name={"Daily Sales"}
             icon={dailySales2}
             icon2={dailySales}
@@ -103,7 +103,7 @@ const MobileSideBar = ({ isOpen, toggleDrawer }) => {
           />
           <SideItems
             marginT={"360px"}
-            link={"/home/supply"}
+            link={"/home/supply/supplyhome/0"}
             name={"Supply"}
             icon={expenses2}
             icon2={expenses}
