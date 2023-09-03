@@ -1,31 +1,31 @@
 import SideItems from "./sidebarmenu";
-import homeLogo from "../assets/homeLogo.png";
-import dashboard from "../assets/dashboard.png";
-import dashboard2 from "../assets/dashboard2.png";
-import dailySales from "../assets/dailySales.png";
-import expenses from "../assets/expenses.png";
-import hr from "../assets/hr.png";
-import incOrders from "../assets/incOrders.png";
-import outlet from "../assets/outlet.png";
-import analysis from "../assets/analysis.png";
-import lpo from "../assets/lpo.png";
-import productOrders from "../assets/productOrders.png";
-import analysis22 from "../assets/analysis22.png";
-import lpo2 from "../assets/lpo2.png";
-import recordSales from "../assets/recordSales.png";
-import regulatory from "../assets/regulatory.png";
-import settings from "../assets/settings.png";
-import tank from "../assets/tank.png";
-import dailySales2 from "../assets/dailySales2.png";
-import expenses2 from "../assets/expenses2.png";
-import hr2 from "../assets/hr2.png";
-import incOrders2 from "../assets/incOrders2.png";
-import outlet2 from "../assets/outlet2.png";
-import productOrders2 from "../assets/productOrders2.png";
-import recordSales2 from "../assets/recordSales2.png";
-import regulatory2 from "../assets/regulatory2.png";
-import settings2 from "../assets/settings2.png";
-import tank2 from "../assets/tank2.png";
+import homeLogo from "../../assets/homeLogo.png";
+import dashboard from "../../assets/dashboard.png";
+import dashboard2 from "../../assets/dashboard2.png";
+import dailySales from "../../assets/dailySales.png";
+import expenses from "../../assets/expenses.png";
+import hr from "../../assets/hr.png";
+import incOrders from "../../assets/incOrders.png";
+import outlet from "../../assets/outlet.png";
+import analysis from "../../assets/analysis.png";
+import lpo from "../../assets/lpo.png";
+import productOrders from "../../assets/productOrders.png";
+import analysis22 from "../../assets/analysis22.png";
+import lpo2 from "../../assets/lpo2.png";
+import recordSales from "../../assets/recordSales.png";
+import regulatory from "../../assets/regulatory.png";
+import settings from "../../assets/settings.png";
+import tank from "../../assets/tank.png";
+import dailySales2 from "../../assets/dailySales2.png";
+import expenses2 from "../../assets/expenses2.png";
+import hr2 from "../../assets/hr2.png";
+import incOrders2 from "../../assets/incOrders2.png";
+import outlet2 from "../../assets/outlet2.png";
+import productOrders2 from "../../assets/productOrders2.png";
+import recordSales2 from "../../assets/recordSales2.png";
+import regulatory2 from "../../assets/regulatory2.png";
+import settings2 from "../../assets/settings2.png";
+import tank2 from "../../assets/tank2.png";
 import { useSelector } from "react-redux";
 
 const DesktopSideBar = () => {
@@ -37,28 +37,28 @@ const DesktopSideBar = () => {
         <img className="home-logo" src={homeLogo} alt="icon" />
         <SideItems
           marginT={"0px"}
-          link={"/home"}
+          link={"/home/dashboard"}
           name={"Dashboard"}
           icon={dashboard}
           icon2={dashboard2}
         />
         <SideItems
           marginT={"45px"}
-          link={"/home/daily-sales"}
+          link={"/home/dailysales"}
           name={"Daily Sales"}
           icon={dailySales2}
           icon2={dailySales}
         />
         <SideItems
           marginT={"90px"}
-          link={"/home/outlets"}
+          link={"/home/mystation"}
           name={"My Stations"}
           icon={outlet2}
           icon2={outlet}
         />
         <SideItems
           marginT={"135px"}
-          link={"/home/daily-record-sales"}
+          link={"/home/recordsales"}
           name={"Record Sales"}
           icon={recordSales2}
           icon2={recordSales}
@@ -72,21 +72,21 @@ const DesktopSideBar = () => {
         />
         <SideItems
           marginT={"225px"}
-          link={"/home/lpo"}
+          link={"/home/lposales"}
           name={"Corporate Sales"}
           icon={lpo2}
           icon2={lpo}
         />
         <SideItems
           marginT={"270px"}
-          link={"/home/product-orders"}
+          link={"/home/productorders"}
           name={"Product Orders"}
           icon={productOrders2}
           icon2={productOrders}
         />
         <SideItems
           marginT={"315px"}
-          link={"/home/inc-orders"}
+          link={"/home/incomingorder"}
           name={"Incoming Orders"}
           icon={incOrders2}
           icon2={incOrders}
@@ -107,7 +107,7 @@ const DesktopSideBar = () => {
         />
         <SideItems
           marginT={"450px"}
-          link={"/home/tank"}
+          link={"/home/tankupdate"}
           name={"Tank Update"}
           icon={tank2}
           icon2={tank}
