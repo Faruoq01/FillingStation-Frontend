@@ -6,7 +6,6 @@ import dashboard from "../assets/dashboard.png";
 import dashboard2 from "../assets/dashboard2.png";
 import dailySales from "../assets/dailySales.png";
 import darkMode from "../assets/darkMode.png";
-import goBack from "../assets/goBack.png";
 import dark from "../assets/dark.png";
 import expenses from "../assets/expenses.png";
 import hr from "../assets/hr.png";
@@ -71,12 +70,13 @@ import AirBnBTotal from "../components/Home/AirBnBTotal";
 import Transactions from "../components/Home/Transactions";
 import ListAllTanks from "../components/Outlet/TankList";
 import { adminOutlet, getAllStations } from "../storage/outlet";
+import TopNavBar from "../components/common/topnavbar";
+import MobileNavBar from "../components/common/mobilenavbar";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const online = useSelector((data) => data.auth.connection);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -229,59 +229,6 @@ const HomeScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, user]);
 
-  const routes = useMemo(() => {
-    return {
-      "/home": "Dashboard",
-      "/home/tank-list": "← Station Tanks",
-      "/home/pump-list": "← Station Pumps",
-      "/home/daily-sales": "Daily Sales",
-      "/home/overage": "← Overage/Shortage",
-      "/home/tankList": "← Tank List",
-      "/home/history": "← History",
-      "/home/daily-sales/report": "Daily Sales",
-      "/home/daily-sales/pms": "Daily Sales",
-      "/home/daily-sales/ago": "Daily Sales",
-      "/home/daily-sales/dpk": "Daily Sales",
-      "/home/analysis/payments": "Payments",
-      "/home/analysis/expenses": "Expenses",
-      "/home/outlets": "My Stations",
-      "/home/outlets/tanks": "Outlet Tanks",
-      "/home/outlets/pumps": "Outlet Pumps",
-      "/home/outlets/sales": "Outlet Sales",
-      "/home/outlets/list": "Tank Stock Levels",
-      "/home/daily-record-sales": "Record Sales ",
-      "/home/analysis": "Analysis",
-      "/home/lpo": "Corporate Sales",
-      "/home/estation": "E-station",
-      "/home/estation/sales": "Sales",
-      "/home/estation/sales/individual": "Individual Sales",
-      "/home/estation/sales/corporate": "Corporate Sales",
-      "/home/estation/individual/customer": "Individual Customer",
-      "/home/estation/orders": "Incoming Order",
-      "/home/estation/orders/incoming-individual": "Individual Incoming Order",
-      "/home/estation/airbnb": "Corporate Customer",
-      "/home/estation/orders/incoming-corporate": "Corporate Incoming Order",
-      "/home/estation/payments": "Payments",
-      "/home/dashEmp": "← Employee List",
-      "/home/lpo/list": "LPO",
-      "/home/lpo/company": "Corporate Company",
-      "/home/transactions": "← Transaction History",
-      "/home/product-orders": "Product Orders",
-      "/home/inc-orders": "Incoming Orders",
-      "/home/supply": "Supply",
-      "/home/supply/create": "Create Supply",
-      "/home/regulatory": "Regulatory Payment",
-      "/home/tank": "Tank Update",
-      "/home/hr": "Human Resources",
-      "/home/hr/manager": "Admin Department",
-      "/home/hr/employee": "Employees",
-      "/home/hr/salary": "Salary Structures",
-      "/home/hr/query": "Query",
-      "/home/hr/recruitment": "Recruitment",
-      "/home/hr/attendance": "Attendance",
-    };
-  }, []);
-
   const [activeRoute, setActiveRoute] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [openRight, setOpenRight] = useState(false);
@@ -307,12 +254,8 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const route = pathname.split("/")[2];
-    // setPath(route);
+    setName(route);
   }, [pathname]);
-
-  const goBackToPreviousPage = () => {
-    // history.goBack();
-  };
 
   const SideItems = (props) => {
     return (
@@ -377,40 +320,6 @@ const HomeScreen = () => {
           dispatch(updateUser(data.user));
         });
       });
-  };
-
-  const navigateBack = (name) => {
-    if (
-      name === "← Station Tanks" ||
-      name === "← Station Pumps" ||
-      name === "← Employee List" ||
-      "← Overage/Shortage"
-    ) {
-      // history.goBack();
-    }
-  };
-
-  const getStationDetails = (name) => {
-    if (name === "Corporate Customer") {
-      return singleLPO?.companyName;
-    }
-
-    if (name === "Human Resources") {
-      return name?.concat(" ");
-    }
-
-    if (oneStationData === null) {
-      return name?.concat(" ");
-    } else {
-      if (typeof oneStationData?.outletName !== "undefined") {
-        return (
-          name?.concat(" ") +
-          "(" +
-          oneStationData?.outletName.concat(", ", oneStationData?.alias) +
-          ")"
-        );
-      }
-    }
   };
 
   const openTheRightDrawer = () => {
@@ -642,147 +551,8 @@ const HomeScreen = () => {
       <div
         style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
         className="main-content">
-        <div className="mobile-bar">
-          <AppBar
-            sx={{ background: "#06805B", zIndex: "50" }}
-            position="absolute">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-                onClick={toggleDrawer}>
-                <MenuIcon />
-              </IconButton>
-              <span style={roots}>{name}</span>
-              <div className="side-app-bar">
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ marginRight: "0px" }}>
-                  <img
-                    style={{ width: "35px", height: "35px" }}
-                    src={search}
-                    alt="icon"
-                  />
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ marginRight: "0px" }}
-                  onClick={openTheRightDrawer}>
-                  {user.noteCount === "0" || (
-                    <Badge badgeContent={user.noteCount} color="error">
-                      <img
-                        style={{ width: "35px", height: "35px" }}
-                        src={note}
-                        alt="icon"
-                      />
-                    </Badge>
-                  )}
-                  {user.noteCount === "0" && (
-                    <img
-                      style={{ width: "35px", height: "35px" }}
-                      src={note}
-                      alt="icon"
-                    />
-                  )}
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ marginRight: "0px" }}
-                  onClick={switchDarkMode}>
-                  <img
-                    style={{ width: "35px", height: "35px" }}
-                    src={user.isDark ? dark : switchT}
-                    alt="icon"
-                  />
-                </IconButton>
-              </div>
-            </Toolbar>
-          </AppBar>
-        </div>
-        <div className="top-bar-menu">
-          <div
-            style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}
-            className="left-lobe">
-            {(activeRoute.split("/").length === 4 ||
-              activeRoute.split("/").length >= 5) && (
-              <img
-                onClick={goBackToPreviousPage}
-                style={{ width: "30px", height: "25px", marginRight: "10px" }}
-                src={goBack}
-                alt="icon"
-              />
-            )}
-            <span
-              onClick={() => {
-                navigateBack(name);
-              }}>
-              {getStationDetails(name)}
-            </span>
-          </div>
-          <div className="right-lobe">
-            <div className="search-icon">
-              <input
-                className="search-content"
-                type={"text"}
-                placeholder="Search"
-              />
-              <img
-                style={{ width: "35px", height: "35px", marginRight: "1px" }}
-                src={search}
-                alt="icon"
-              />
-            </div>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ marginRight: "0px" }}
-              onClick={openTheRightDrawer}>
-              {user.noteCount === "0" || (
-                <Badge badgeContent={user.noteCount} color="error">
-                  <img
-                    style={{ width: "35px", height: "35px" }}
-                    src={note}
-                    alt="icon"
-                  />
-                </Badge>
-              )}
-              {user.noteCount === "0" && (
-                <img
-                  style={{ width: "35px", height: "35px" }}
-                  src={note}
-                  alt="icon"
-                />
-              )}
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ marginRight: "0px" }}
-              onClick={switchDarkMode}>
-              <img
-                style={{ width: "35px", height: "35px" }}
-                src={user.isDark ? dark : switchT}
-                alt="icon"
-              />
-            </IconButton>
-          </div>
-        </div>
+        <MobileNavBar open={setOpenRight} />
+        <TopNavBar open={setOpenRight} drawer={setIsOpen} />
         <div style={inner}>
           <Outlet />
           {/* <Switch>
@@ -857,14 +627,6 @@ const HomeScreen = () => {
       </div>
     </div>
   );
-};
-
-const roots = {
-  width: "100%",
-  fontSize: "14px",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "flex-start",
 };
 
 const inner = {

@@ -1,0 +1,15 @@
+export const routeNames = {
+  dashboard: "Dashboard",
+  dailysales: "Daily Sales",
+  mystation: "My Station",
+  recordsales: "Record Sales",
+  analysis: "Analysis",
+  lposales: "Corporate Sales",
+  productorder: "Product Order",
+  incomingorder: "Incoming Order",
+  supply: "Supply",
+  regulatory: "Regulatory",
+  tankupdate: "Tank Update",
+  hr: "Human Resources",
+  settings: "Settings",
+};
