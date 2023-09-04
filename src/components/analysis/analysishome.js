@@ -255,6 +255,38 @@ const AnalysisHome = (props) => {
               name={"Varience"}
               value={`NGN ${ApproximateDecimal(totalVarience)}`}
             />
+            <DashboardImage
+              type={"payments"}
+              right={"10px"}
+              left={"0px"}
+              image={folder2}
+              name={"Payments"}
+              value={`NGN ${ApproximateDecimal(payments)}`}
+            />
+            <DashboardImage
+              type={"none"}
+              right={"10px"}
+              left={"0px"}
+              image={analysis2}
+              name={"Profits"}
+              value={`NGN ${ApproximateDecimal(profit)}`}
+            />
+            <DashboardImage
+              type={"sales"}
+              right={"10px"}
+              left={"0px"}
+              image={folder}
+              name={"Total Sales"}
+              value={`NGN ${ApproximateDecimal(totalSales)}`}
+            />
+            <DashboardImage
+              type={"varience"}
+              right={"10px"}
+              left={"0px"}
+              image={folder2}
+              name={"Varience"}
+              value={`NGN ${ApproximateDecimal(totalVarience)}`}
+            />
           </div>
         </div>
       </div>
