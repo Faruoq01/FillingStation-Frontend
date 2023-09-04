@@ -46,6 +46,10 @@ import Attendance from "./components/HRComponents/Attendance";
 import DashboardHome from "./components/DashboardComponents/dashboardhome";
 import DailysalesHome from "./components/DailySales/dailysaleshome";
 import SupplyHome from "./components/Supply/supplyhome";
+import OutletHome from "./components/Outlet/outlethome";
+import AnalysisHome from "./components/analysis/analysishome";
+import LPOHome from "./components/AirBnBTotal/lpohome";
+import HumanResourcesHome from "./components/HRComponents/hrhome";
 
 function App() {
   useEffect(() => {
@@ -76,19 +80,21 @@ function App() {
             <Route path="dailysalesoverage" element={<SalesOverageList />} />
           </Route>
           <Route path="mystation" element={<Outlets />}>
+            <Route path="mystationhome/:index" element={<OutletHome />} />
             <Route path="sales" element={<Sales />} />
             <Route path="tanks" element={<Tank />} />
             <Route path="pumps" element={<Pump />} />
           </Route>
           <Route path="recordsales" element={<DailyRecordSales />} />
           <Route path="analysis" element={<Analysis />}>
+            <Route path="analysishome/:index" element={<AnalysisHome />} />
             <Route path="payments" element={<Payments />} />
             <Route path="expenses" element={<Expenses />} />
           </Route>
           <Route path="lposales" element={<LPO />}>
-            <Route path="corporatecustomer" element={<AirBnBTotal />}>
-              <Route path="transactions" element={<Transactions />} />
-            </Route>
+            <Route path="lposaleshome/:index" element={<LPOHome />} />
+            <Route path="corporatecustomer" element={<AirBnBTotal />} />
+            <Route path="transactions" element={<Transactions />} />
           </Route>
           <Route path="productorder" element={<ProductOrders />} />
           <Route path="incomingorder" element={<IncomingOrders />} />
@@ -99,6 +105,7 @@ function App() {
           <Route path="regulatory" element={<Regulatory />} />
           <Route path="tankupdate" element={<TankUpdate />} />
           <Route path="hr" element={<HumanResources />}>
+            <Route path="hrhome/:index" element={<HumanResourcesHome />} />
             <Route path="hremployees" element={<Employee />} />
             <Route path="salary" element={<Salary />} />
             <Route path="query" element={<Query />} />

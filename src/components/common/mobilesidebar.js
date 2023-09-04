@@ -61,7 +61,7 @@ const MobileSideBar = ({ isOpen, toggleDrawer }) => {
           />
           <SideItems
             marginT={"90px"}
-            link={"/home/mystation"}
+            link={"/home/mystation/mystationhome/0"}
             name={"My Stations"}
             icon={outlet2}
             icon2={outlet}
@@ -75,14 +75,14 @@ const MobileSideBar = ({ isOpen, toggleDrawer }) => {
           />
           <SideItems
             marginT={"180px"}
-            link={"/home/analysis"}
+            link={"/home/analysis/analysishome/0"}
             name={"Analysis"}
             icon={analysis22}
             icon2={analysis}
           />
           <SideItems
             marginT={"225px"}
-            link={"/home/lposales"}
+            link={"/home/lposales/lposaleshome/0"}
             name={"Corporate Sales"}
             icon={lpo2}
             icon2={lpo}
@@ -124,7 +124,7 @@ const MobileSideBar = ({ isOpen, toggleDrawer }) => {
           />
           <SideItems
             marginT={"495px"}
-            link={"/home/hr"}
+            link={"/home/hr/hrhome/0"}
             name={"Human Resources"}
             icon={hr2}
             icon2={hr}
