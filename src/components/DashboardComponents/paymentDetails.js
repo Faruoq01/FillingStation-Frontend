@@ -55,7 +55,7 @@ const PaymentDetails = () => {
   }, [getAssetCounts, oneStationData, updatedDate]);
 
   const goToPayments = () => {
-    navigate("payments");
+    navigate("/home/analysis/payments");
   };
 
   return (

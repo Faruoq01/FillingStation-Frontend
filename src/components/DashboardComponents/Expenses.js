@@ -63,7 +63,7 @@ const Expenses = () => {
 
   const goToExpenses = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
-    navigate("expenses");
+    navigate("/home/analysis/expenses");
   };
 
   return (

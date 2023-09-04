@@ -82,7 +82,7 @@ const OveragesAndShortages = (props) => {
   };
 
   const loadOverageList = () => {
-    navigate("dashboardoverage");
+    navigate("/home/dashboard/dashboardoverage");
   };
 
   const Selectors = () => {

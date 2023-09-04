@@ -8,9 +8,11 @@ import me4 from "../../assets/me4.png";
 import me5 from "../../assets/me5.png";
 import APIs from "../../services/api";
 import { assets } from "../../storage/dashboard";
+import { useNavigate } from "react-router-dom";
 
 const Assets = () => {
   const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
@@ -52,6 +54,10 @@ const Assets = () => {
     getAssetCounts(updatedDate, oneStationData);
   }, [getAssetCounts, oneStationData, updatedDate]);
 
+  const goToStation = () => {
+    navigate("/home/mystation/mystationhome/0");
+  };
+
   return (
     <React.Fragment>
       <div className="asset">
@@ -73,6 +79,7 @@ const Assets = () => {
         ) : (
           <Button
             variant="contained"
+            onClick={goToStation}
             startIcon={
               <img
                 style={{
