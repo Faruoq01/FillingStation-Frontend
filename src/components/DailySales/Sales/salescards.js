@@ -68,11 +68,11 @@ const SalesCards = () => {
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
 
     if (data === "pms") {
-      navigate("pmssales");
+      navigate("/home/dailysales/pmssales");
     } else if (data === "ago") {
-      navigate("agosales");
+      navigate("/home/dailysales/agosales");
     } else if (data === "dpk") {
-      navigate("dpksales");
+      navigate("/home/dailysales/dpksales");
     }
   };
 

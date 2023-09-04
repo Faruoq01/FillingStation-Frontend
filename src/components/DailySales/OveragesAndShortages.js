@@ -88,7 +88,7 @@ const OveragesAndShortages = (props) => {
   };
 
   const loadOverageList = () => {
-    navigate("dailysalesoverage");
+    navigate("/home/dailysales/dailysalesoverage");
   };
 
   const Selectors = () => {

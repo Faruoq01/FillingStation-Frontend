@@ -62,7 +62,7 @@ const LPO = () => {
 
   const goToLPO = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");
-    navigate("lposales");
+    navigate("/home/lposales/corporatecustomer");
   };
 
   return (

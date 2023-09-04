@@ -102,8 +102,8 @@ const ExpensesAndPayments = () => {
   };
 
   const goToPagesInd = (data) => {
-    if (data === "exp") return navigate("expenses");
-    if (data === "pay") return navigate("payments");
+    if (data === "exp") return navigate("/home/analysis/expenses");
+    if (data === "pay") return navigate("/home/analysis/payments");
   };
 
   return (

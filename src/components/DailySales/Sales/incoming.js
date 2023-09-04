@@ -53,7 +53,7 @@ const IncomingOrder = () => {
 
   const goToInc = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
-    navigate("incomingorder");
+    navigate("/home/incomingorder");
   };
 
   return (

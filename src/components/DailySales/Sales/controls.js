@@ -23,7 +23,7 @@ const Controls = () => {
       return swal("Warning!", "Please select a station", "info");
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
 
-    navigate("comprehensive");
+    navigate("/home/dailysales/comprehensive");
   };
 
   return (

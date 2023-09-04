@@ -63,7 +63,7 @@ const Supply = () => {
 
   const goToSupplyPage = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");
-    navigate("supply");
+    navigate("/home/supply/supplyhome/0");
   };
 
   return (

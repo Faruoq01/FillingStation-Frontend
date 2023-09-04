@@ -53,7 +53,7 @@ const NetToBank = () => {
   }, [getNetToBank, oneStationData, updatedDate]);
 
   const goToPayments = () => {
-    navigate("payments");
+    navigate("/home/analysis/payments");
   };
 
   return (
