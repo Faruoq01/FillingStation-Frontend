@@ -20,19 +20,19 @@ export const Action = ({ item }) => {
 
   const goToSales = (item) => {
     dispatch(adminOutlet(item));
-    navigate("sales");
+    navigate("/home/mystation/sales");
   };
 
   const goToTanks = (item) => {
     if (!getPerm("1")) return swal("Warning!", "Permission denied", "info");
     dispatch(adminOutlet(item));
-    navigate("tanks");
+    navigate("/home/mystation/tanks");
   };
 
   const goToPumps = (item) => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
     dispatch(adminOutlet(item));
-    navigate("pumps");
+    navigate("/home/mystation/pumps");
   };
 
   return (

@@ -64,14 +64,22 @@ function App() {
         <Route path="login" element={<LoginScreen />} />
         <Route path="home" element={<HomeScreen />}>
           <Route path="dashboard" element={<Dashboard />}>
-            <Route path="dashboardhome/:index" element={<DashboardHome />} />
+            <Route
+              index
+              path="dashboardhome/:index"
+              element={<DashboardHome />}
+            />
             <Route path="dashboardemployee" element={<DashboardEmployee />} />
             <Route path="dashboardoverage" element={<OverageList />} />
             <Route path="stationtanks" element={<StationTanks />} />
             <Route path="stationpumps" element={<StationPumps />} />
           </Route>
           <Route path="dailysales" element={<DailySales />}>
-            <Route path="dailysaleshome/:index" element={<DailysalesHome />} />
+            <Route
+              index
+              path="dailysaleshome/:index"
+              element={<DailysalesHome />}
+            />
             <Route path="pmssales" element={<PMSDailySales />} />
             <Route path="agosales" element={<AGODailySales />} />
             <Route path="dpksales" element={<DPKDailySales />} />
@@ -80,32 +88,40 @@ function App() {
             <Route path="dailysalesoverage" element={<SalesOverageList />} />
           </Route>
           <Route path="mystation" element={<Outlets />}>
-            <Route path="mystationhome/:index" element={<OutletHome />} />
+            <Route index path="mystationhome/:index" element={<OutletHome />} />
             <Route path="sales" element={<Sales />} />
             <Route path="tanks" element={<Tank />} />
             <Route path="pumps" element={<Pump />} />
           </Route>
           <Route path="recordsales" element={<DailyRecordSales />} />
           <Route path="analysis" element={<Analysis />}>
-            <Route path="analysishome/:index" element={<AnalysisHome />} />
+            <Route
+              index
+              path="analysishome/:index"
+              element={<AnalysisHome />}
+            />
             <Route path="payments" element={<Payments />} />
             <Route path="expenses" element={<Expenses />} />
           </Route>
           <Route path="lposales" element={<LPO />}>
-            <Route path="lposaleshome/:index" element={<LPOHome />} />
+            <Route index path="lposaleshome/:index" element={<LPOHome />} />
             <Route path="corporatecustomer" element={<AirBnBTotal />} />
             <Route path="transactions" element={<Transactions />} />
           </Route>
           <Route path="productorder" element={<ProductOrders />} />
           <Route path="incomingorder" element={<IncomingOrders />} />
           <Route path="supply" element={<Supply />}>
-            <Route path="supplyhome/:index" element={<SupplyHome />} />
+            <Route index path="supplyhome/:index" element={<SupplyHome />} />
             <Route path="createsupply" element={<CreateSupply />} />
           </Route>
           <Route path="regulatory" element={<Regulatory />} />
           <Route path="tankupdate" element={<TankUpdate />} />
           <Route path="hr" element={<HumanResources />}>
-            <Route path="hrhome/:index" element={<HumanResourcesHome />} />
+            <Route
+              index
+              path="hrhome/:index"
+              element={<HumanResourcesHome />}
+            />
             <Route path="hremployees" element={<Employee />} />
             <Route path="salary" element={<Salary />} />
             <Route path="query" element={<Query />} />
