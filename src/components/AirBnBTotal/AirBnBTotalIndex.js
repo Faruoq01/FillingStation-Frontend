@@ -206,6 +206,7 @@ const styles = {
     justifyContent: "center",
     background: " #F0F9F7",
     paddingBottom: "1rem",
+    marginTop: "10px",
   },
   inner: {
     display: "flex",

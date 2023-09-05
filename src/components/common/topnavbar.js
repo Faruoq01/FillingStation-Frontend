@@ -34,7 +34,7 @@ const TopNavBar = ({ open }) => {
   }
 
   const getStationDetails = (name) => {
-    if (name === "Corporate Customer") {
+    if (name === "Corporate Sales") {
       return singleLPO?.companyName;
     }
 

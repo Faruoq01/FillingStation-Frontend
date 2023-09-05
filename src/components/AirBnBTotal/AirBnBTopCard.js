@@ -2,9 +2,11 @@ import React from "react";
 import "../../styles/estation/airbnb.scss";
 import { useSelector } from "react-redux";
 import ApproximateDecimal from "../common/approx";
+import { useNavigate } from "react-router-dom";
 
 export default function AirBnBTopCard({ ...props }) {
   const lpos = useSelector((state) => state.lpo.lpoSales);
+  const navigate = useNavigate();
 
   const getTotalSales = () => {
     const pms = lpos.filter((data) => data.productType === "PMS");
@@ -26,8 +28,12 @@ export default function AirBnBTopCard({ ...props }) {
     return pmsSales + agoSales + dpkSales;
   };
 
+  const goToExpenses = () => {
+    navigate("/home/lposales/lpoexpense");
+  };
+
   return (
-    <div className="airbnb-card-top">
+    <div onClick={goToExpenses} className="airbnb-card-top">
       <div className="airbnb-card-top-sub">
         <img src={props.icon} alt="walet" />
         <div className="txt-wrap">
