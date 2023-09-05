@@ -114,7 +114,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (!online) {
-      navigate("connection");
+      navigate("/connection");
     }
   });
 

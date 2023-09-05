@@ -3,13 +3,15 @@ import connection from "../assets/connection.png";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setConnection } from "../storage/auth";
+import { useNavigate } from "react-router-dom";
 
-const Connection = ({ history }) => {
+const Connection = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const reload = () => {
     dispatch(setConnection(true));
-    history.goBack();
+    navigate(-1);
   };
 
   return (
