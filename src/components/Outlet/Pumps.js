@@ -67,13 +67,6 @@ const Pump = (props) => {
     getSeparateTanks(pumpList);
   }, [pumpList]);
 
-  useEffect(() => {
-    return () => {
-      props.refresh();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const getSeparateTanks = (data) => {
     const PMS = [];
     const AGO = [];

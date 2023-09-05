@@ -27,6 +27,7 @@ import { SearchField } from "../common/searchfields";
 import { LimitSelect } from "../common/customselect";
 import OutletGridSwitch from "../common/outletgrid";
 import MobileMenuListing from "../common/mobilemenulist";
+import { useLocation } from "react-router-dom";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -53,6 +54,8 @@ const OutletHome = (props) => {
   const [loading, setLoading] = useState(false);
   const [skip, setSkip] = useState(0);
   const [entries, setEntries] = useState(10);
+  const { pathname } = useLocation();
+  const [routes, setRoutes] = useState("");
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -91,7 +94,12 @@ const OutletHome = (props) => {
 
   useEffect(() => {
     getAllStationData();
-  }, [getAllStationData]);
+  }, [getAllStationData, routes]);
+
+  useEffect(() => {
+    const route = pathname.split("/")[2];
+    setRoutes(route);
+  }, [pathname]);
 
   const printTable = () => {
     const input = tablePrints.current;

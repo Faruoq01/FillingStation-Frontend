@@ -6,7 +6,11 @@ import PMSTank from "./PMSTank";
 import AGOTank from "./AGOTank";
 import DPKTank from "./DPKTank";
 import OutletService from "../../services/outletService";
-import { getAllOutletTanks, getAllPumps } from "../../storage/outlet";
+import {
+  getAllOutletTanks,
+  getAllPumps,
+  tankListType,
+} from "../../storage/outlet";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +20,7 @@ import DashboardGraph from "../DashboardComponents/DashboardGraph";
 import moment from "moment";
 import APIs from "../../services/api";
 import { tankLevels } from "../../storage/dailysales";
+import { useNavigate } from "react-router-dom";
 
 const Sales = (props) => {
   const dispatch = useDispatch();
@@ -26,6 +31,7 @@ const Sales = (props) => {
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const [pumpAndTankMetric, setTankAndPumpMetrics] = useState({});
   const tankLevelsData = useSelector((state) => state.dailysales.tankLevels);
+  const navigate = useNavigate();
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -133,7 +139,8 @@ const Sales = (props) => {
   }, [getActiveTankAndPumps]);
 
   const goToTanks = (product) => {
-    props.goToList(product);
+    dispatch(tankListType(product));
+    navigate("/home/dailysales/tanklist");
   };
 
   const tankLevelsUpdate = useCallback((date, station) => {

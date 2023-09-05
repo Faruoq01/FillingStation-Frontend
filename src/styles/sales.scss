@@ -1,6 +1,5 @@
 .sales-container{
-    width: 100%;
-    margin-top: 20px;
+    width: 96%;
 
     .first{
         width: 100%;
@@ -375,10 +374,10 @@
     }
 }
 
-@media (max-width: 1250px){
-    .sales-container{
-    }
-}
+// @media (max-width: 1250px){
+//     .sales-container{
+//     }
+// }
 
 @media (max-width: 1150px){
     .sales-container{
