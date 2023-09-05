@@ -1,6 +1,6 @@
 import { clearAnalysis } from "./analysis";
 import { clearAttendance } from "./attendance";
-import { clearAuth } from "./auth";
+import { clearAuth, goToLogin } from "./auth";
 import { clearComprehensive } from "./comprehensive";
 import { clearSales } from "./dailysales";
 import { clearDashboard } from "./dashboard";
@@ -39,5 +39,6 @@ export const logout = () => {
   store.dispatch(clearSalary());
   store.dispatch(clearSetting());
   store.dispatch(clearSupply());
+  store.dispatch(goToLogin(false));
   localStorage.clear();
 };

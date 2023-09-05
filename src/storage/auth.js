@@ -30,6 +30,9 @@ export const authSlice = createSlice({
       state.connection = action.payload;
     },
     clearAuth: () => initialState,
+    goToLogin: (state, action) => {
+      state.isLoggedIn = action.payload;
+    },
   },
 });
 
@@ -41,6 +44,7 @@ export const {
   historyTags,
   clearAuth,
   setConnection,
+  goToLogin,
 } = authSlice.actions;
 
 export default authSlice.reducer;

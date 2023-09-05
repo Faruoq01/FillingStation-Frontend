@@ -31,11 +31,10 @@ APIs.interceptors.response.use(
       if (err.response.data.message !== "Incorrect password!") {
         if (err.response.data.error.name === "TokenExpiredError") {
           logout();
-          window.location.href = "/login";
+          swal("Error!", "Your session has expired", "error");
           return;
         }
       }
-
       swal("Error!", "Incorrect Password", "error");
       logout();
     }

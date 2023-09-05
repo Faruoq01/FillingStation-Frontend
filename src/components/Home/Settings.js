@@ -19,7 +19,6 @@ import Permissions from "../Settings/Permission";
 import PermissionList from "../Settings/PermissionList";
 import { logout } from "../../storage/logout";
 import HistoryPage from "./History";
-import { useNavigate } from "react-router-dom";
 
 const Password = () => {
   const user = useSelector((state) => state.auth.user);
@@ -348,7 +347,6 @@ const Settings = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
-  const navigate = useNavigate();
 
   const logouts = () => {
     swal({
@@ -360,7 +358,6 @@ const Settings = (props) => {
     }).then((willDelete) => {
       if (willDelete) {
         logout();
-        navigate("login");
       }
     });
   };
