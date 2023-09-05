@@ -525,7 +525,7 @@ const SummaryRecord = (props) => {
       Promise.allSettled(payload)
         .then((results) => {
           handleClose();
-          navigate("dailysales");
+          navigate("/home/dailysales/dailysaleshome/0");
           swal("Success!", "Record saved successfully!", "success");
         })
         .catch((error) => {
