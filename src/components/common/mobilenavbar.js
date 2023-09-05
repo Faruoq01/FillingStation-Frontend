@@ -18,13 +18,11 @@ const MobileNavBar = ({ open, drawer }) => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
-  const [activeRoute, setActiveRoute] = useState("");
   const [name, setName] = useState("");
 
   useEffect(() => {
-    const route = pathname.split("/")[2];
-    setActiveRoute(pathname);
-    setName(routeNames[route]);
+    // setName(routeNames[pathname]);
+    console.log(pathname, "hello");
   }, [pathname]);
 
   const toggleDrawer = () => {
@@ -49,35 +47,35 @@ const MobileNavBar = ({ open, drawer }) => {
       });
   };
 
-  function capitalizeFirstLetter(str) {
-    if (str.length === 0) {
-      return str;
-    }
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
+  // function capitalizeFirstLetter(str) {
+  //   if (str.length === 0) {
+  //     return str;
+  //   }
+  //   return str.charAt(0).toUpperCase() + str.slice(1);
+  // }
 
-  const getStationDetails = (name) => {
-    if (name === "Corporate Customer") {
-      return singleLPO?.companyName;
-    }
+  // const getStationDetails = (name) => {
+  //   if (name === "Corporate Customer") {
+  //     return singleLPO?.companyName;
+  //   }
 
-    if (name === "Human Resources") {
-      return capitalizeFirstLetter(name)?.concat(" ");
-    }
+  //   if (name === "Human Resources") {
+  //     return capitalizeFirstLetter(name)?.concat(" ");
+  //   }
 
-    if (oneStationData === null) {
-      return capitalizeFirstLetter(name)?.concat(" ");
-    } else {
-      if (typeof oneStationData?.outletName !== "undefined") {
-        return (
-          capitalizeFirstLetter(name)?.concat(" ") +
-          "(" +
-          oneStationData?.outletName.concat(", ", oneStationData?.alias) +
-          ")"
-        );
-      }
-    }
-  };
+  //   if (oneStationData === null) {
+  //     return capitalizeFirstLetter(name)?.concat(" ");
+  //   } else {
+  //     if (typeof oneStationData?.outletName !== "undefined") {
+  //       return (
+  //         capitalizeFirstLetter(name)?.concat(" ") +
+  //         "(" +
+  //         oneStationData?.outletName.concat(", ", oneStationData?.alias) +
+  //         ")"
+  //       );
+  //     }
+  //   }
+  // };
 
   return (
     <div className="mobile-bar">
@@ -92,7 +90,7 @@ const MobileNavBar = ({ open, drawer }) => {
             onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>
-          <span style={roots}>{getStationDetails(name)}</span>
+          <span style={roots}>{"Name"}</span>
           <div className="side-app-bar">
             <IconButton
               size="large"

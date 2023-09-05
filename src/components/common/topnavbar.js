@@ -21,8 +21,7 @@ const TopNavBar = ({ open }) => {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    const route = pathname.split("/")[2];
-    setName(routeNames[route]);
+    setName(routeNames[pathname]);
   }, [pathname]);
 
   function capitalizeFirstLetter(str) {
