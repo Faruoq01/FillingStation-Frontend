@@ -181,15 +181,14 @@ const HomeScreen = () => {
   return (
     <div className="home-container">
       <DesktopSideBar />
-      <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />
-
+      {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
       {openRight && <NotificationDrawer open={setOpenRight} />}
 
       <div
         style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
         className="main-content">
-        <MobileNavBar open={setOpenRight} />
-        <TopNavBar open={setOpenRight} drawer={setIsOpen} />
+        <MobileNavBar open={setOpenRight} drawer={setIsOpen} />
+        <TopNavBar open={setOpenRight} />
         <div style={inner}>
           <Outlet />
         </div>

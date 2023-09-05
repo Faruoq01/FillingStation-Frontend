@@ -27,6 +27,7 @@ import regulatory2 from "../../assets/regulatory2.png";
 import settings2 from "../../assets/settings2.png";
 import tank2 from "../../assets/tank2.png";
 import { useSelector } from "react-redux";
+import "../../styles/sidebar.scss";
 
 const DesktopSideBar = () => {
   const user = useSelector((state) => state.auth.user);

@@ -216,7 +216,7 @@ const PendingSales = (props) => {
 
   const goToSales = () => {
     dispatch(changeDate(""));
-    navigate("home");
+    navigate("/home/dashboard/dashboardhome/0");
   };
 
   return (

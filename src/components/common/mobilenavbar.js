@@ -21,8 +21,7 @@ const MobileNavBar = ({ open, drawer }) => {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    // setName(routeNames[pathname]);
-    console.log(pathname, "hello");
+    setName(routeNames[pathname]);
   }, [pathname]);
 
   const toggleDrawer = () => {
@@ -47,35 +46,35 @@ const MobileNavBar = ({ open, drawer }) => {
       });
   };
 
-  // function capitalizeFirstLetter(str) {
-  //   if (str.length === 0) {
-  //     return str;
-  //   }
-  //   return str.charAt(0).toUpperCase() + str.slice(1);
-  // }
+  function capitalizeFirstLetter(str) {
+    if (str.length === 0) {
+      return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 
-  // const getStationDetails = (name) => {
-  //   if (name === "Corporate Customer") {
-  //     return singleLPO?.companyName;
-  //   }
+  const getStationDetails = (name) => {
+    if (name === "Corporate Customer") {
+      return singleLPO?.companyName;
+    }
 
-  //   if (name === "Human Resources") {
-  //     return capitalizeFirstLetter(name)?.concat(" ");
-  //   }
+    if (name === "Human Resources") {
+      return capitalizeFirstLetter(name)?.concat(" ");
+    }
 
-  //   if (oneStationData === null) {
-  //     return capitalizeFirstLetter(name)?.concat(" ");
-  //   } else {
-  //     if (typeof oneStationData?.outletName !== "undefined") {
-  //       return (
-  //         capitalizeFirstLetter(name)?.concat(" ") +
-  //         "(" +
-  //         oneStationData?.outletName.concat(", ", oneStationData?.alias) +
-  //         ")"
-  //       );
-  //     }
-  //   }
-  // };
+    if (oneStationData === null) {
+      return capitalizeFirstLetter(name)?.concat(" ");
+    } else {
+      if (typeof oneStationData?.outletName !== "undefined") {
+        return (
+          capitalizeFirstLetter(name)?.concat(" ") +
+          "(" +
+          oneStationData?.outletName.concat(", ", oneStationData?.alias) +
+          ")"
+        );
+      }
+    }
+  };
 
   return (
     <div className="mobile-bar">
@@ -90,7 +89,7 @@ const MobileNavBar = ({ open, drawer }) => {
             onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>
-          <span style={roots}>{"Name"}</span>
+          <span style={roots}>{getStationDetails(name)}</span>
           <div className="side-app-bar">
             <IconButton
               size="large"
