@@ -5,6 +5,7 @@ export const routeNames = {
   recordsales: "Record Sales",
   analysis: "Analysis",
   lposales: "Corporate Sales",
+  corporatecustomer: "Corporate Customer",
   productorder: "Product Order",
   incomingorder: "Incoming Order",
   supply: "Supply",

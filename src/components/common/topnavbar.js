@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import UserService from "../../services/user";
 import { updateUser } from "../../storage/auth";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { routeNames } from "../../modules/routenames";
 
 const TopNavBar = ({ open }) => {
@@ -19,7 +19,6 @@ const TopNavBar = ({ open }) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const [name, setName] = useState("");
-  const { index } = useParams();
 
   useEffect(() => {
     const route = pathname.split("/")[2];
@@ -34,7 +33,7 @@ const TopNavBar = ({ open }) => {
   }
 
   const getStationDetails = (name) => {
-    if (name === "Corporate Sales") {
+    if (name === "Corporate Customer") {
       return singleLPO?.companyName;
     }
 
@@ -83,14 +82,15 @@ const TopNavBar = ({ open }) => {
       <div
         style={{ color: user.isDark === "0" ? "#054834" : "#fff" }}
         className="left-lobe">
-        {index !== "0" && (
-          <img
-            onClick={previousPage}
-            style={{ width: "30px", height: "25px", marginRight: "10px" }}
-            src={goBack}
-            alt="icon"
-          />
-        )}
+        {pathname.split("/").length === 5 ||
+          pathname.split("/").length === 3 || (
+            <img
+              onClick={previousPage}
+              style={{ width: "30px", height: "25px", marginRight: "10px" }}
+              src={goBack}
+              alt="icon"
+            />
+          )}
         <span onClick={previousPage}>{getStationDetails(name)}</span>
       </div>
       <div className="right-lobe">
