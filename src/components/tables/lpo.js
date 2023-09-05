@@ -36,33 +36,37 @@ const Action = ({ data, setEditOptionsModal }) => {
     return user.permission?.corporateSales[e];
   };
 
-  const createPrice = (data) => {
+  const createPrice = (e, data) => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
+    e.preventDefault();
+    e.stopPropagation();
     dispatch(singleLPORecord(data));
     setEditOptionsModal((prev) => !prev);
   };
   return (
     <React.Fragment>
-      <img
-        onClick={() => {
-          openLPOSales(getPerm, data, navigate, dispatch);
-        }}
-        style={{ width: "28px", height: "28px" }}
-        src={eyes}
-        alt="icon"
-      />
-      <img
-        onClick={() => {
-          createPrice(data);
-        }}
-        style={{
-          width: "28px",
-          height: "28px",
-          marginLeft: "10px",
-        }}
-        src={edit2}
-        alt="icon"
-      />
+      <div>
+        <img
+          onClick={() => {
+            openLPOSales(getPerm, data, navigate, dispatch);
+          }}
+          style={{ width: "28px", height: "28px" }}
+          src={eyes}
+          alt="icon"
+        />
+        <img
+          onClick={(e) => {
+            createPrice(e, data);
+          }}
+          style={{
+            width: "28px",
+            height: "28px",
+            marginLeft: "10px",
+          }}
+          src={edit2}
+          alt="icon"
+        />
+      </div>
     </React.Fragment>
   );
 };
@@ -82,7 +86,7 @@ export const LPODesktopTable = ({ data }) => {
   const { columns, tablePrints, allOutlets, loading, setEditOptionsModal } =
     data;
 
-  const triggerRowCallback = (data) => {
+  const triggerRowCallback = (e, data) => {
     openLPOSales(getPerm, data, navigate, dispatch);
   };
 
@@ -94,8 +98,8 @@ export const LPODesktopTable = ({ data }) => {
             return (
               <DesktopTableRows
                 index={index}
-                callback={() => {
-                  triggerRowCallback(item);
+                callback={(e) => {
+                  triggerRowCallback(e, item);
                 }}>
                 <DesktopTableCell data={index + 1} />
                 <DesktopTableCell data={item.companyName} />
