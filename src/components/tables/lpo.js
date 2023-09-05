@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 const openLPOSales = (getPerm, data, navigate, dispatch) => {
   if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
   dispatch(singleLPORecord(data));
-  navigate("corporatecustomer");
+  navigate("/home/lposales/corporatecustomer");
 };
 
 const Action = ({ data, setEditOptionsModal }) => {

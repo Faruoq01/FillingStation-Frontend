@@ -13,7 +13,7 @@ export default function AirBnBTopCardWithSwitch({ ...props }) {
   const navigate = useNavigate();
 
   const openModal = () => {
-    navigate("transactions");
+    navigate("/home/lposales/transactions");
   };
 
   return (
