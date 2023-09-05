@@ -12,13 +12,13 @@ const HumanResourcesHome = (props) => {
 
   const handleNavigation = (data) => {
     if (data.name === "Employee") {
-      navigate("hremployees");
+      navigate("/home/hr/hremployees");
     } else if (data.name === "Salary structure") {
-      navigate("salary");
+      navigate("/home/hr/salary");
     } else if (data.name === "Query") {
-      navigate("query");
+      navigate("/home/hr/query");
     } else if (data.name === "Attendance") {
-      navigate("attendance");
+      navigate("/home/hr/attendance");
     }
   };
 

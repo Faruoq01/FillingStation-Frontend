@@ -19,13 +19,13 @@ const Varience = (props) => {
   const changePage = (data) => {
     if (data === "pms") {
       dispatch(overageType("PMS"));
-      navigate("dashboardoverage");
+      navigate("/home/dashboard/dashboardoverage");
     } else if (data === "ago") {
       dispatch(overageType("AGO"));
-      navigate("dashboardoverage");
+      navigate("/home/dashboard/dashboardoverage");
     } else if (data === "dpk") {
       dispatch(overageType("DPK"));
-      navigate("dashboardoverage");
+      navigate("/home/dashboard/dashboardoverage");
     }
   };
 

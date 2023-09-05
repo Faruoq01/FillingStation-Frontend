@@ -79,10 +79,6 @@ const CreateSupply = (props) => {
       getAllIncoming();
     }
 
-    return () => {
-      props.refresh();
-    };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

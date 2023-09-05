@@ -152,11 +152,11 @@ const AnalysisHome = (props) => {
     } else if (type === "payments") {
       if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
 
-      navigate("payments");
+      navigate("/home/analysis/payments");
     } else if (type === "expenses") {
       if (!getPerm("5")) return swal("Warning!", "Permission denied", "info");
 
-      navigate("expenses");
+      navigate("/home/analysis/expenses");
     } else if (type === "sales") {
       setOpenDetails(true);
     } else if (type === "varience") {

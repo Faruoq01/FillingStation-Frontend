@@ -25,6 +25,8 @@ import { getAllOutletTanks } from "../../storage/outlet";
 import { SupplyDesktopTable, SupplyMobileTable } from "../tables/supply";
 import SupplyModal from "../Modals/SupplyModal";
 import PrintSupplyRecords from "../Reports/SupplyRecords";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const columns = [
   "S/N",
@@ -57,6 +59,8 @@ const SupplyHome = () => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [setEditSupply] = useState(false);
+  const { pathname } = useLocation();
+  const [routes, setRoutes] = useState("");
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -73,13 +77,18 @@ const SupplyHome = () => {
     return user.permission?.supply[e];
   };
 
+  useEffect(() => {
+    const route = pathname.split("/")[2];
+    setRoutes(route);
+  }, [pathname]);
+
   const openPaymentModal = () => {
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
 
     if (oneStationData === null) {
       return swal("Warning!", "Please select a station to proceed", "info");
     }
-    navigate("createsupply");
+    navigate("/home/supply/createsupply");
   };
 
   const refresh = (id, date, skip) => {
