@@ -54,26 +54,7 @@ const MobileNavBar = ({ open, drawer }) => {
   }
 
   const getStationDetails = (name) => {
-    if (name === "Corporate Customer") {
-      return singleLPO?.companyName;
-    }
-
-    if (name === "Human Resources") {
-      return capitalizeFirstLetter(name)?.concat(" ");
-    }
-
-    if (oneStationData === null) {
-      return capitalizeFirstLetter(name)?.concat(" ");
-    } else {
-      if (typeof oneStationData?.outletName !== "undefined") {
-        return (
-          capitalizeFirstLetter(name)?.concat(" ") +
-          "(" +
-          oneStationData?.outletName.concat(", ", oneStationData?.alias) +
-          ")"
-        );
-      }
-    }
+    return capitalizeFirstLetter(name);
   };
 
   return (

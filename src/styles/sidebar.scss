@@ -80,3 +80,10 @@
         }
     }
 }
+
+@media (max-width: 600px){
+    .side-bar{
+        width: 250px;
+        overflow: hidden;
+    }
+}

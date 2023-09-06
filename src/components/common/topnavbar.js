@@ -36,6 +36,14 @@ const TopNavBar = ({ open }) => {
       return singleLPO?.companyName;
     }
 
+    if (name === "Corporate Sales") {
+      return capitalizeFirstLetter(name)?.concat(" ");
+    }
+
+    if (name === "Product Order") {
+      return capitalizeFirstLetter(name)?.concat(" ");
+    }
+
     if (name === "Human Resources") {
       return capitalizeFirstLetter(name)?.concat(" ");
     }
