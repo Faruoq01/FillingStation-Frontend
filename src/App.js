@@ -51,6 +51,7 @@ import AnalysisHome from "./components/analysis/analysishome";
 import LPOHome from "./components/AirBnBTotal/lpohome";
 import HumanResourcesHome from "./components/HRComponents/hrhome";
 import LPOExpense from "./components/AirBnBTotal/lpoexpense";
+import ProductsDispensed from "./components/AirBnBTotal/dispensedproduct";
 
 function App() {
   useEffect(() => {
@@ -97,6 +98,7 @@ function App() {
             <Route path="corporatecustomer" element={<AirBnBTotal />} />
             <Route path="transactions" element={<Transactions />} />
             <Route path="lpoexpense" element={<LPOExpense />} />
+            <Route path="dispensedproducts" element={<ProductsDispensed />} />
           </Route>
           <Route path="productorder" element={<ProductOrders />} />
           <Route path="incomingorder" element={<IncomingOrders />} />

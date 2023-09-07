@@ -166,18 +166,18 @@ export default function AirBnBTotalIndex() {
                 icon={require("../../assets/estation/pump (1).svg").default}
               />
               <SmallCardLeft
-                dotColor="#35393E"
-                type="DPK"
-                style={{ marginTop: "10px", marginBottom: "10px" }}
-                title="Total DPK Dispensed"
-                amount="23,281.00 Liters"
-                icon={require("../../assets/estation/pump (1).svg").default}
-              />
-              <SmallCardLeft
                 dotColor="#FFA010"
                 title="Total AGO Dispensed"
                 amount="23,281.00 Liters"
+                style={{ marginTop: "10px", marginBottom: "10px" }}
                 type="AGO"
+                icon={require("../../assets/estation/pump (1).svg").default}
+              />
+              <SmallCardLeft
+                dotColor="#35393E"
+                type="DPK"
+                title="Total DPK Dispensed"
+                amount="23,281.00 Liters"
                 icon={require("../../assets/estation/pump (1).svg").default}
               />
             </div>

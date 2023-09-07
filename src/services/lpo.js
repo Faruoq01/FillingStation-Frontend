@@ -56,6 +56,17 @@ const LPOService = {
       });
   },
 
+  dispensed: (data) => {
+    return APIs.post("/lpoSales/dispensed", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
   credit: (data) => {
     return APIs.post("/lpo/credit", data)
       .then(({ data }) => {

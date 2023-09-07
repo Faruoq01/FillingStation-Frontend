@@ -23,6 +23,7 @@ export const routeNames = {
   "/home/lposales/corporatecustomer": "Corporate Customer",
   "/home/lposales/transactions": "Transactions",
   "/home/lposales/lpoexpense": "Expense Details",
+  "/home/lposales/dispensedproducts": "Dispensed Products",
   "/home/productorder": "Product Order",
   "/home/incomingorder": "Incoming Order",
   "/home/supply/supplyhome/0": "Supply",

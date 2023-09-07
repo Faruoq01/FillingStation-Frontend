@@ -18,6 +18,7 @@ const TopNavBar = ({ open }) => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
+  const type = useSelector((state) => state.lpo.dispensed);
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -50,6 +51,10 @@ const TopNavBar = ({ open }) => {
 
     if (name === "Transactions") {
       return singleLPO?.companyName;
+    }
+
+    if (name === "Dispensed Products") {
+      return capitalizeFirstLetter(name)?.concat(" ", `( ${type} )`);
     }
 
     if (oneStationData === null) {

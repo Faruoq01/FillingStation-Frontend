@@ -6,6 +6,8 @@ const initialState = {
   searchData: [],
   searchData2: [],
   singleLPO: {},
+  dispensed: "",
+  singleDate: "",
 };
 
 export const lpoSlice = createSlice({
@@ -35,6 +37,12 @@ export const lpoSlice = createSlice({
       state.lpoSales = action.payload;
       state.searchData = action.payload;
     },
+    setDispensed: (state, action) => {
+      state.dispensed = action.payload;
+    },
+    setLPOSalesDate: (state, action) => {
+      state.singleDate = action.payload;
+    },
     clearLpo: () => initialState,
   },
 });
@@ -46,6 +54,8 @@ export const {
   singleLPORecord,
   createLPOSales,
   clearLpo,
+  setDispensed,
+  setLPOSalesDate,
 } = lpoSlice.actions;
 
 export default lpoSlice.reducer;
