@@ -40,9 +40,25 @@ const CreditBalance = (props) => {
 
   const submit = () => {
     if (amount === "")
-      swal("Warning!", "Amount field cannot be empty!", "info");
+      return swal("Warning!", "Amount field cannot be empty!", "info");
     if (type === "")
-      swal("Warning!", "Payment type field cannot be empty", "info");
+      return swal("Warning!", "Payment type field cannot be empty", "info");
+    if (bankName === "" && type === "bank")
+      return swal("Warning!", "Bank name field cannot be empty", "info");
+    if (accountName === "" && type === "bank")
+      return swal("Warning!", "Account number field cannot be empty", "info");
+    if (tellerNo === "" && type === "bank")
+      return swal("Warning!", "Teller number field cannot be empty", "info");
+    if (posName === "" && type === "pos")
+      return swal("Warning!", "POS name field cannot be empty", "info");
+    if (terminalID === "" && type === "pos")
+      return swal("Warning!", "Terminal ID field cannot be empty", "info");
+    if (date === "")
+      return swal("Warning!", "Date field cannot be empty", "info");
+    if (paidBy === "")
+      return swal("Warning!", "Reference field cannot be empty", "info");
+    if (cam === "null" && gall === "null")
+      return swal("Warning!", "File upload cannot be empty", "info");
 
     setLoading(true);
 
@@ -50,6 +66,14 @@ const CreditBalance = (props) => {
       lpoID: singleLPO._id,
       credit: amount,
       method: type,
+      bankName: type === "bank" ? bankName : "null",
+      accountNumber: type === "bank" ? accountName : "null",
+      tellerNo: type === "bank" ? tellerNo : "null",
+      posName: type === "pos" ? posName : "null",
+      terminalID: type === "pos" ? terminalID : "null",
+      date: date,
+      paidBy: paidBy,
+      upload: cam === "null" ? gall : cam,
       organizationID: resolveUserID().id,
     };
 
@@ -61,6 +85,17 @@ const CreditBalance = (props) => {
         handleClose();
         setLoading(false);
       });
+
+    setAmount("");
+    setBankName("");
+    setAccountName("");
+    setTellerNo("");
+    setPosName("");
+    setTerminalID("");
+    setDate("");
+    setPaidBy("");
+    setCam("null");
+    setGall("null");
   };
 
   const setOptions = (data) => {
