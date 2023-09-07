@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import close from "../../assets/close.png";
 import Button from "@mui/material/Button";
@@ -13,11 +13,8 @@ import { MenuItem, Select } from "@mui/material";
 import { adminOutlet } from "../../storage/outlet";
 import AdminUserService from "../../services/adminUsers";
 import { useEffect } from "react";
-import photo from "../../assets/photo.png";
-import upload from "../../assets/upload.png";
-import axios from "axios";
-import config from "../../constants";
 import ReactCamera from "./ReactCamera";
+import UploadPhoto from "../common/uploadphoto";
 
 const ManagerModal = (props) => {
   const dispatch = useDispatch();
@@ -26,11 +23,9 @@ const ManagerModal = (props) => {
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
-  const [loading2, setLoading2] = useState(0);
   const [cam, setCam] = useState("null");
   const [gall, setGall] = useState("null");
   const [open, setOpen] = useState("");
-  const attach = useRef();
 
   const [staffName, setStaffName] = useState("");
   const [sex, setSex] = useState("Male");
@@ -184,36 +179,6 @@ const ManagerModal = (props) => {
     }
   };
 
-  const uploadProductOrders = () => {
-    attach.current.click();
-  };
-
-  const selectedFile = (e) => {
-    let file = e.target.files[0];
-    setLoading2(1);
-    const formData = new FormData();
-    formData.append("file", file);
-    const httpConfig = {
-      headers: {
-        "content-type": "multipart/form-data",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    };
-    const url = `${config.BASE_URL}/360-station/api/upload`;
-    axios
-      .post(url, formData, httpConfig)
-      .then((data) => {
-        setGall(data.data.path);
-      })
-      .then(() => {
-        setLoading2(2);
-      });
-  };
-
-  const openCamera = () => {
-    setOpen(true);
-  };
-
   return (
     <Modal
       open={props.open}
@@ -254,7 +219,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setStaffName(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Sex</div>
               <div className="radio">
@@ -282,7 +246,6 @@ const ManagerModal = (props) => {
                 </div>
               </div>
             </div>
-
             <div className="inputs">
               <div className="head-text2">Email</div>
               <input
@@ -302,7 +265,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Phone Number</div>
               <input
@@ -322,7 +284,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Home Address</div>
               <input
@@ -342,7 +303,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setAddress(e.target.value)}
               />
             </div>
-
             <div style={{ marginTop: "15px" }} className="inputs">
               <div className="head-text2">Select Station</div>
               <Select
@@ -379,7 +339,6 @@ const ManagerModal = (props) => {
                 })}
               </Select>
             </div>
-
             <div className="inputs">
               <div className="head-text2">Alias</div>
               <input
@@ -401,7 +360,6 @@ const ManagerModal = (props) => {
                 // onChange={e => setAlias(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">State Of Origin</div>
               <input
@@ -421,7 +379,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setState(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Account Number</div>
               <input
@@ -441,7 +398,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setAccountNumber(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Bank Name</div>
               <input
@@ -461,7 +417,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setBankName(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Salary</div>
               <input
@@ -481,7 +436,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setSalary(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Date Employed</div>
               <input
@@ -502,7 +456,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setDateEmployed(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Date Of Birth</div>
               <input
@@ -523,7 +476,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setDateOfBirth(e.target.value)}
               />
             </div>
-
             <div style={{ marginTop: "15px" }} className="inputs">
               <div className="head-text2">Role</div>
               <Select
@@ -560,7 +512,6 @@ const ManagerModal = (props) => {
                 })}
               </Select>
             </div>
-
             {roleState === 5 && (
               <div className="inputs">
                 <div className="head-text2">Designation</div>
@@ -582,7 +533,6 @@ const ManagerModal = (props) => {
                 />
               </div>
             )}
-
             <div className="inputs">
               <div className="head-text2">Job Title</div>
               <input
@@ -602,7 +552,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setJobTitle(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Password</div>
               <input
@@ -622,7 +571,6 @@ const ManagerModal = (props) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-
             <div className="inputs">
               <div className="head-text2">Confirm Password</div>
               <input
@@ -642,74 +590,7 @@ const ManagerModal = (props) => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-
-            <Button
-              sx={{
-                width: "98%",
-                height: "35px",
-                background: "green",
-                borderRadius: "3px",
-                fontSize: "10px",
-                marginTop: "30px",
-                "&:hover": {
-                  backgroundColor: "green",
-                },
-              }}
-              onClick={openCamera}
-              variant="contained">
-              <img
-                style={{ width: "25px", height: "20px", marginRight: "10px" }}
-                src={photo}
-                alt={"icon"}
-              />
-              {cam === "null" && <div>Take Photo</div>}
-              {cam !== "null" && (
-                <div style={{ color: "#fff", fontSize: "12px" }}>Success</div>
-              )}
-            </Button>
-
-            <Button
-              sx={{
-                width: "98%",
-                height: "35px",
-                background: "#427BBE",
-                borderRadius: "3px",
-                fontSize: "10px",
-                marginTop: "20px",
-                "&:hover": {
-                  backgroundColor: "#427BBE",
-                },
-              }}
-              onClick={uploadProductOrders}
-              variant="contained">
-              <img
-                style={{ width: "25px", height: "20px", marginRight: "10px" }}
-                src={upload}
-                alt={"icon"}
-              />
-              {loading2 === 0 && <div>Attachment</div>}
-              {loading2 === 1 && (
-                <ThreeDots
-                  height="60"
-                  width="50"
-                  radius="9"
-                  color="#076146"
-                  ariaLabel="three-dots-loading"
-                  wrapperStyle={{}}
-                  wrapperClassName=""
-                  visible={true}
-                />
-              )}
-              {loading2 === 2 && (
-                <div style={{ color: "#fff", fontSize: "12px" }}>Success</div>
-              )}
-            </Button>
-            <input
-              onChange={selectedFile}
-              ref={attach}
-              type="file"
-              style={{ visibility: "hidden" }}
-            />
+            <UploadPhoto setOpen={setOpen} setGall={setGall} cam={cam} />
           </div>
 
           <div style={{ marginTop: "10px", height: "30px" }} className="butt">

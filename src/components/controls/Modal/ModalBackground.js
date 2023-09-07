@@ -22,7 +22,7 @@ const ModalBackground = ({
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div style={{ height: "auto" }} className="modalContainer2">
         <div className="inner">
-          <div className="head">
+          <div style={{ marginTop: "10px" }} className="head">
             <div className="head-text">{label}</div>
             <img
               onClick={handleClose}

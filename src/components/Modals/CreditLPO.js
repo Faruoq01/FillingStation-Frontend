@@ -1,23 +1,32 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import close from "../../assets/close.png";
-import Button from "@mui/material/Button";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Modal from "@mui/material/Modal";
-import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import { MenuItem, Select } from "@mui/material";
 import LPOService from "../../services/lpo";
+import ModalBackground from "../controls/Modal/ModalBackground";
+import ModalInputField from "../controls/Modal/ModalInputField";
+import UploadPhoto from "../common/uploadphoto";
+import ReactCamera from "./ReactCamera";
 
 const CreditBalance = (props) => {
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState("");
+  const [cam, setCam] = useState("null");
+  const [gall, setGall] = useState("null");
   const user = useSelector((state) => state.auth.user);
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
 
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("bank");
   const [paymentType, setPaymentType] = useState(0);
+  const [bankName, setBankName] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [tellerNo, setTellerNo] = useState("");
+  const [posName, setPosName] = useState("");
+  const [terminalID, setTerminalID] = useState("");
+  const [date, setDate] = useState("");
+  const [paidBy, setPaidBy] = useState("");
 
   const handleClose = () => props.close(false);
 
@@ -56,114 +65,109 @@ const CreditBalance = (props) => {
 
   const setOptions = (data) => {
     setPaymentType(data);
-    if (data === 0) return setType("Bank");
-    if (data === 1) return setType("POS");
+    if (data === 0) return setType("bank");
+    if (data === 1) return setType("pos");
   };
 
   return (
-    <Modal
-      open={props.open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div style={{ height: "auto" }} className="modalContainer2">
-        <div style={{ height: "auto", margin: "20px" }} className="inner">
-          <div className="head">
-            <div className="head-text">Credit Account Balance</div>
-            <img
-              onClick={handleClose}
-              style={{ width: "18px", height: "18px" }}
-              src={close}
-              alt={"icon"}
-            />
-          </div>
+    <ModalBackground
+      openModal={props.open}
+      closeModal={handleClose}
+      submit={submit}
+      loading={loading}
+      label={"Credit Account Balance"}>
+      <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
+      <ModalInputField
+        value={amount}
+        setValue={setAmount}
+        type={"number"}
+        label={"Amount"}
+      />
 
-          <div className="middleDiv" style={inner}>
-            <div className="inputs">
-              <div className="head-text2">Amount</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Payment Method</div>
-              <Select defaultValue={paymentType} sx={selection}>
-                <MenuItem
-                  value={0}
-                  sx={menu}
-                  onClick={() => {
-                    setOptions(0);
-                  }}>
-                  Bank
-                </MenuItem>
-                <MenuItem
-                  value={1}
-                  sx={menu}
-                  onClick={() => {
-                    setOptions(1);
-                  }}>
-                  POS
-                </MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div style={{ marginTop: "10px", height: "30px" }} className="butt">
-            <Button
-              disabled={loading}
-              sx={{
-                width: "100px",
-                height: "30px",
-                background: "#427BBE",
-                borderRadius: "3px",
-                fontSize: "10px",
-                marginTop: "0px",
-                "&:hover": {
-                  backgroundColor: "#427BBE",
-                },
-              }}
-              onClick={submit}
-              variant="contained">
-              {" "}
-              Save
-            </Button>
-
-            {loading ? (
-              <ThreeDots
-                height="60"
-                width="50"
-                radius="9"
-                color="#076146"
-                ariaLabel="three-dots-loading"
-                wrapperStyle={{}}
-                wrapperClassName=""
-                visible={true}
-              />
-            ) : null}
-          </div>
-        </div>
+      <div className="inputs">
+        <div className="head-text2">Payment Method</div>
+        <Select defaultValue={paymentType} sx={selection}>
+          <MenuItem
+            value={0}
+            sx={menu}
+            onClick={() => {
+              setOptions(0);
+            }}>
+            Bank
+          </MenuItem>
+          <MenuItem
+            value={1}
+            sx={menu}
+            onClick={() => {
+              setOptions(1);
+            }}>
+            POS
+          </MenuItem>
+        </Select>
       </div>
-    </Modal>
-  );
-};
 
-const inner = {
-  width: "100%",
-  height: "180px",
+      {type === "bank" && (
+        <ModalInputField
+          value={bankName}
+          setValue={setBankName}
+          type={"text"}
+          label={"Bank Name"}
+        />
+      )}
+
+      {type === "bank" && (
+        <ModalInputField
+          value={accountName}
+          setValue={setAccountName}
+          type={"text"}
+          label={"Account Number"}
+        />
+      )}
+
+      {type === "bank" && (
+        <ModalInputField
+          value={tellerNo}
+          setValue={setTellerNo}
+          type={"text"}
+          label={"Teller Number"}
+        />
+      )}
+
+      {type === "pos" && (
+        <ModalInputField
+          value={posName}
+          setValue={setPosName}
+          type={"text"}
+          label={"POS name"}
+        />
+      )}
+
+      {type === "pos" && (
+        <ModalInputField
+          value={terminalID}
+          setValue={setTerminalID}
+          type={"text"}
+          label={"Terminal ID"}
+        />
+      )}
+
+      <ModalInputField
+        value={date}
+        setValue={setDate}
+        type={"date"}
+        label={"Date updated"}
+      />
+
+      <ModalInputField
+        value={paidBy}
+        setValue={setPaidBy}
+        type={"text"}
+        label={"Paid By"}
+      />
+
+      <UploadPhoto setOpen={setOpen} setGall={setGall} cam={cam} />
+    </ModalBackground>
+  );
 };
 
 const menu = {
@@ -176,6 +180,7 @@ const selection = {
   borderRadius: "0px",
   background: "#EEF2F1",
   fontSize: "12px",
+  marginTop: "5px",
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #777777",
   },
