@@ -65,7 +65,7 @@ const UserRow = (props) => {
 
   const goToList = (data) => {
     dispatch(storeSingleUser(data));
-    props.nav(7);
+    props.nav(8);
   };
 
   const changeSelected = (e, data) => {

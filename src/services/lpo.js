@@ -66,6 +66,17 @@ const LPOService = {
         throw err;
       });
   },
+
+  updateCreditBalance: (data) => {
+    return APIs.post("/lpo/updatecreditbalance", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
 };
 
 export default LPOService;

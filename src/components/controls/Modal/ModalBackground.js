@@ -9,6 +9,7 @@ const ModalBackground = ({
   submit,
   loading,
   label,
+  ht = "500px",
 }) => {
   const handleClose = () => closeModal(false);
 
@@ -19,7 +20,7 @@ const ModalBackground = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div className="modalContainer2">
+      <div style={{ height: "auto" }} className="modalContainer2">
         <div className="inner">
           <div className="head">
             <div className="head-text">{label}</div>
@@ -31,11 +32,13 @@ const ModalBackground = ({
             />
           </div>
 
-          <div className="middleDiv" style={inner}>
+          <div className="middleDiv" style={{ ...inner, height: ht }}>
             {children}
           </div>
 
-          <div style={{ marginTop: "10px", height: "30px" }} className="butt">
+          <div
+            style={{ marginTop: "10px", height: "30px", marginBottom: "10px" }}
+            className="butt">
             <Button sx={button} onClick={submit} variant="contained">
               {" "}
               Save
@@ -62,7 +65,6 @@ const ModalBackground = ({
 
 const inner = {
   width: "100%",
-  height: "500px",
   overflowY: "scroll",
 };
 

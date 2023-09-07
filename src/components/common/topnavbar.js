@@ -40,12 +40,16 @@ const TopNavBar = ({ open }) => {
       return capitalizeFirstLetter(name)?.concat(" ");
     }
 
+    if (name === "Human Resources") {
+      return capitalizeFirstLetter(name)?.concat(" ");
+    }
+
     if (name === "Product Order") {
       return capitalizeFirstLetter(name)?.concat(" ");
     }
 
-    if (name === "Human Resources") {
-      return capitalizeFirstLetter(name)?.concat(" ");
+    if (name === "Transactions") {
+      return singleLPO?.companyName;
     }
 
     if (oneStationData === null) {

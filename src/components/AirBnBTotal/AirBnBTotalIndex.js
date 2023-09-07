@@ -123,23 +123,23 @@ export default function AirBnBTotalIndex() {
           <DateRangePicker onChange={onChangeRange} value={updatedDate} />
         </div>
         <div className="airbnb-top-wrapper">
-          <Profile
-            name={"Chijoke Peter"}
-            position={"Station Manager"}
-            icon={require("../../assets/estation/enable.svg").default}
-            modal={setCredit}
-          />
-          <AirBnBTopCard
-            amount={"20,000"}
-            title={"Total Expenses"}
-            icon={require("../../assets/estation/pump (1).svg").default}
-          />
           <AirBnBTopCardWithSwitch
             amount="NGN 12, 500.00"
             Enable
             Credit
             Facility
             icon={require("../../assets/estation/enable.svg").default}
+          />
+          <AirBnBTopCard
+            amount={"20,000"}
+            title={"Total Expenses"}
+            icon={require("../../assets/estation/pump (1).svg").default}
+          />
+          <Profile
+            name={"Chijoke Peter"}
+            position={"Station Manager"}
+            icon={require("../../assets/estation/enable.svg").default}
+            modal={setCredit}
           />
         </div>
         {/* =====================body section============= */}

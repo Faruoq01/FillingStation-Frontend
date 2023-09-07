@@ -3,19 +3,32 @@ import "../../styles/estation/airbnb.scss";
 import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import EditCreditBalance from "../Modals/lpo/editcreditbalance";
+import { useState } from "react";
+import ApproximateDecimal from "../common/approx";
 
 export default function Profile({ ...props }) {
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const openCreditModal = () => {
     props.modal(true);
   };
+  const [open, setOpen] = useState(false);
+
+  const openEdit = () => {
+    setOpen(true);
+  };
 
   return (
     <div className="airbnb-card-top">
+      {open && <EditCreditBalance open={open} close={setOpen} />}
       <div className="airbnb-card-top-sub">
         <img src={props.icon} alt="walet" />
         <div className="txt-wrap">
-          <span>{`NGN ${singleLPO.creditBalance}`}</span>
+          <span style={iconContainer}>
+            {`NGN ${ApproximateDecimal(singleLPO.creditBalance)}`}{" "}
+            <DriveFileRenameOutlineIcon onClick={openEdit} sx={icon} />
+          </span>
           <label>Credit Balance</label>
         </div>
       </div>
@@ -28,6 +41,16 @@ export default function Profile({ ...props }) {
     </div>
   );
 }
+
+const icon = {
+  marginLeft: "10px",
+};
+
+const iconContainer = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+};
 
 const size = {
   width: "20px",
