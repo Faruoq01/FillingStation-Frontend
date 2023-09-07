@@ -11,29 +11,28 @@ import {
   TableViewForMobile,
 } from "../controls/PageLayout/TableViewForMobile";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import swal from "sweetalert";
-import IncomingService from "../../services/IncomingService";
+// import swal from "sweetalert";
 
 const Action = ({ data, setEditSupply, refresh }) => {
   const handleDelete = (data) => {
-    swal({
-      title: "Alert!",
-      text: "Are you sure you want to delete this record?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        IncomingService.deleteIncoming({
-          id: data._id,
-          quantity: data.quantity,
-          productOrderID: data.productOrderID,
-        }).then(() => {
-          refresh();
-          swal("Success", "Incoming order deleted successfully!", "success");
-        });
-      }
-    });
+    // swal({
+    //   title: "Alert!",
+    //   text: "Are you sure you want to delete this record?",
+    //   icon: "warning",
+    //   buttons: true,
+    //   dangerMode: true,
+    // }).then((willDelete) => {
+    //   if (willDelete) {
+    //     // IncomingService.deleteIncoming({
+    //     //   id: data._id,
+    //     //   quantity: data.quantity,
+    //     //   productOrderID: data.productOrderID,
+    //     // }).then(() => {
+    //     //   refresh();
+    //     //   swal("Success", "Incoming order deleted successfully!", "success");
+    //     // });
+    //   }
+    // });
   };
 
   return (
