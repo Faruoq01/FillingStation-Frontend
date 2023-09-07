@@ -6,7 +6,7 @@ import IncomingService from "../../services/IncomingService";
 import ModalBackground from "../controls/Modal/ModalBackground";
 import ModalInputField from "../controls/Modal/ModalInputField";
 
-const IncomingOrderEditModal = (props) => {
+const IncomingOrderEditModal = ({ open, close, skip, refresh }) => {
   const incomingOrder = useSelector(
     (state) => state?.incomingorder.singleIncomingOrder
   );
@@ -35,7 +35,7 @@ const IncomingOrderEditModal = (props) => {
   const [phoneNo, setPhoneNumber] = useState(incomingOrder.phoneNo);
   const [quantity, setQuantity] = useState("");
 
-  const handleClose = () => props.close(false);
+  const handleClose = () => close(false);
 
   const submit = async () => {
     // save updated data
@@ -66,7 +66,7 @@ const IncomingOrderEditModal = (props) => {
 
     IncomingService.updateIncoming(payload)
       .then(() => {
-        props.refresh();
+        refresh(oneStationData._id, "None", skip);
         handleClose();
       })
       .then(() => {
@@ -105,8 +105,8 @@ const IncomingOrderEditModal = (props) => {
 
   return (
     <ModalBackground
-      openModal={props.open}
-      closeModal={props.close}
+      openModal={open}
+      closeModal={close}
       submit={submit}
       loading={loading}
       label={"Edit Incoming Order"}>

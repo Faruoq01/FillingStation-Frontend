@@ -64,6 +64,12 @@ export default function AirbnbTable() {
       return Number(item.DPKRate) * Number(item.lpoLitre);
   };
 
+  const getColor = {
+    PMS: "#399A19",
+    AGO: "#FFA010",
+    DPK: "#35393E",
+  };
+
   return (
     <div className="tb-wraper">
       <table id="customers">
@@ -89,7 +95,11 @@ export default function AirbnbTable() {
                 <td>{item.createdAt}</td>
                 <td>
                   <Circle
-                    style={{ color: "#1B6602", fontSize: 10, marginRight: 4 }}
+                    style={{
+                      color: getColor[item.productType],
+                      fontSize: 10,
+                      marginRight: 4,
+                    }}
                   />
                   <label>{item.productType}</label>
                 </td>

@@ -15,7 +15,7 @@ import { setProductOrder } from "../../storage/productOrder";
 import { Radio } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-const IncomingOrderModal = (props) => {
+const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [loading, setLoading] = useState(false);
   const [defaultState, setDefault] = useState(0);
   const productOrder = useSelector((state) => state.productorder.productorder);
@@ -43,7 +43,7 @@ const IncomingOrderModal = (props) => {
   const [loadedQuantity, setLoadedQuantity] = useState("0");
   const [searchKey, setSearchKey] = useState("");
 
-  const handleClose = () => props.close(false);
+  const handleClose = () => closeup(false);
 
   function removeSpecialCharacters(str) {
     return str.replace(/[^0-9.]/g, "");
@@ -127,7 +127,7 @@ const IncomingOrderModal = (props) => {
     setDefault(0);
     setVal(1);
     swal("Success", "Incoming order created successfully!", "success");
-    props.refresh();
+    refresh(oneStationData._id, "None", skip);
     handleClose();
   };
 
@@ -220,7 +220,7 @@ const IncomingOrderModal = (props) => {
 
   return (
     <Modal
-      open={props.open}
+      open={open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"

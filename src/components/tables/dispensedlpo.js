@@ -10,6 +10,7 @@ import {
   MobileTableRows,
   TableViewForMobile,
 } from "../controls/PageLayout/TableViewForMobile";
+import { Circle } from "@mui/icons-material";
 
 const getAmount = (item) => {
   const rate = item[`${item.productType}Rate`];
@@ -18,6 +19,12 @@ const getAmount = (item) => {
 
 export const DispensedLPODesktopTable = ({ data }) => {
   const { columns, tablePrints, allOutlets, loading } = data;
+
+  const getColor = {
+    PMS: "#399A19",
+    AGO: "#FFA010",
+    DPK: "#35393E",
+  };
 
   return (
     <TableViewForDesktop columns={columns} ref={tablePrints}>
@@ -28,7 +35,15 @@ export const DispensedLPODesktopTable = ({ data }) => {
               <DesktopTableRows index={index}>
                 <DesktopTableCell data={index + 1} />
                 <DesktopTableCell data={item.createdAt} />
-                <DesktopTableCell data={item.productType} />
+                <DesktopTableCell data={item.productType}>
+                  <Circle
+                    style={{
+                      color: getColor[item.productType],
+                      fontSize: 10,
+                      marginRight: 4,
+                    }}
+                  />
+                </DesktopTableCell>
                 <DesktopTableCell data={item.lpoLitre} />
                 <DesktopTableCell data={item[`${item.productType}Rate`]} />
                 <DesktopTableCell data={getAmount(item)} />

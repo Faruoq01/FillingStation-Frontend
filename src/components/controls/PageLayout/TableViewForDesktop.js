@@ -38,8 +38,15 @@ export const DesktopTableRows = ({ children, index, callback }) => {
   );
 };
 
-export const DesktopTableCell = ({ data }) => {
-  return <div className="column">{data}</div>;
+export const DesktopTableCell = ({ children, data }) => {
+  return (
+    <div className="column">
+      <React.Fragment>
+        {children}
+        {data}
+      </React.Fragment>
+    </div>
+  );
 };
 
 const place = {

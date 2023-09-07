@@ -128,6 +128,7 @@ const IncomingOrder = () => {
     loading: loading,
     setIncomingOrderEditModal: setIncomingOrderEditModal,
     refresh: refresh,
+    skip: skip,
   };
 
   const mobileTableData = {
@@ -135,6 +136,7 @@ const IncomingOrder = () => {
     loading: loading,
     setIncomingOrderEditModal: setIncomingOrderEditModal,
     refresh: refresh,
+    skip: skip,
   };
 
   return (
@@ -208,14 +210,15 @@ const IncomingOrder = () => {
         <IncomingOrderEditModal
           open={incomingOrderEditModal}
           close={setIncomingOrderEditModal}
+          skip={skip}
           refresh={refresh}
         />
       )}
       {
         <IncomingOrderModal
-          station={oneStationData}
           open={open}
-          close={setOpen}
+          closeup={setOpen}
+          skip={skip}
           refresh={refresh}
         />
       }

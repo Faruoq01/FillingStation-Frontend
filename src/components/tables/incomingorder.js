@@ -11,13 +11,14 @@ import {
   TableViewForMobile,
 } from "../controls/PageLayout/TableViewForMobile";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { singleIncomingOrderRecord } from "../../storage/incomingOrder";
 import swal from "sweetalert";
 import IncomingService from "../../services/IncomingService";
 
-const Action = ({ data, setIncomingOrderEditModal, refresh }) => {
+const Action = ({ data, setIncomingOrderEditModal, refresh, skip }) => {
   const dispatch = useDispatch();
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const handleDelete = (data) => {
     swal({
@@ -33,7 +34,7 @@ const Action = ({ data, setIncomingOrderEditModal, refresh }) => {
           quantity: data.quantity,
           productOrderID: data.productOrderID,
         }).then(() => {
-          refresh();
+          refresh(oneStationData._id, "None", skip);
           swal("Success", "Incoming order deleted successfully!", "success");
         });
       }
@@ -80,6 +81,7 @@ export const IncomingOrderDesktopTable = ({ data }) => {
     loading,
     setIncomingOrderEditModal,
     refresh,
+    skip,
   } = data;
 
   return (
@@ -104,6 +106,7 @@ export const IncomingOrderDesktopTable = ({ data }) => {
                       data={item}
                       setIncomingOrderEditModal={setIncomingOrderEditModal}
                       refresh={refresh}
+                      skip={skip}
                     />
                   }
                 />
@@ -116,7 +119,8 @@ export const IncomingOrderDesktopTable = ({ data }) => {
 };
 
 export const IncomingOrderMobileTable = ({ data }) => {
-  const { allOutlets, loading, setIncomingOrderEditModal, refresh } = data;
+  const { allOutlets, loading, setIncomingOrderEditModal, refresh, skip } =
+    data;
   return (
     <TableViewForMobile rows={allOutlets} loading={loading}>
       {!loading &&
@@ -143,6 +147,7 @@ export const IncomingOrderMobileTable = ({ data }) => {
                     data={item}
                     setIncomingOrderEditModal={setIncomingOrderEditModal}
                     refresh={refresh}
+                    skip={skip}
                   />,
                 ]}
               />
