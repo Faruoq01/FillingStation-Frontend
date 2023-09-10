@@ -5,7 +5,7 @@ import slideMenu from "../../assets/slideMenu.png";
 import swal from "sweetalert";
 import ApproximateDecimal from "../common/approx";
 import { incoming } from "../../storage/dashboard";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { useNavigate } from "react-router-dom";
 
 const IncomingOrder = () => {

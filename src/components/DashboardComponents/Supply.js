@@ -6,7 +6,7 @@ import swal from "sweetalert";
 import ApproximateDecimal from "../common/approx";
 import { useCallback } from "react";
 import { useEffect } from "react";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { supplies } from "../../storage/dashboard";
 import { useNavigate } from "react-router-dom";
 

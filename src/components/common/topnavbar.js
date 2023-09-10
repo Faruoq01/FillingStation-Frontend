@@ -5,7 +5,7 @@ import note from "../../assets/note.png";
 import switchT from "../../assets/switchT.png";
 import dark from "../../assets/dark.png";
 import { useDispatch, useSelector } from "react-redux";
-import UserService from "../../services/user";
+import UserService from "../../services/360station/user";
 import { updateUser } from "../../storage/auth";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";

@@ -7,7 +7,7 @@ import me2 from "../../assets/me2.png";
 import me6 from "../../assets/me6.png";
 import approximateNumber from "approximate-number";
 import DashboardImage from "./dashImage";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { useCallback } from "react";
 import { employees, products } from "../../storage/dashboard";
 

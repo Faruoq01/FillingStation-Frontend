@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import QueryService from '../../services/query';
+import QueryService from '../../services/360station/query';
 
 const UpdateQuery = (props) => {
     const [loading, setLoading] = useState(false);

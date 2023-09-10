@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Skeleton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { graph } from "../../storage/dailysales";
 import { useState } from "react";
 

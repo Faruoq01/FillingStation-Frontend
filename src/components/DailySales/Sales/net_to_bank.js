@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ApproximateDecimal from "../../common/approx";
 import me6 from "../../../assets/me6.png";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 import { netToBank } from "../../../storage/dailysales";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";

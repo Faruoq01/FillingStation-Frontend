@@ -7,7 +7,7 @@ import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 import { useEffect } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 

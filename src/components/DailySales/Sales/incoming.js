@@ -6,7 +6,7 @@ import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
 import ApproximateDecimal from "../../common/approx";
 import { incoming } from "../../../storage/dailysales";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 
 const IncomingOrder = () => {
   const navigate = useNavigate();

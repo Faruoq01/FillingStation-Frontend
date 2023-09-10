@@ -3,7 +3,7 @@ import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import SalaryModal from "../Modals/SalaryModal";
-import SalaryService from "../../services/salary";
+import SalaryService from "../../services/360station/salary";
 import { createSalary, searchSalary } from "../../storage/salary";
 import { useDispatch, useSelector } from "react-redux";
 import UpdateSalary from "../Modals/UpdateSalary";

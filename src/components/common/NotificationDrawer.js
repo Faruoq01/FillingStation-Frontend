@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import HistoryService from "../../services/history";
+import HistoryService from "../../services/360station/history";
 import { useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 import { ThreeDots } from "react-loader-spinner";

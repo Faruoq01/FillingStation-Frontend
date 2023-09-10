@@ -1,9 +1,9 @@
-import APIs from './api';
+import APIs from '../connections/api';
 
-const AdminUserService = {
+const SalaryService = {
 
-    createAdminUsers: (data) => {
-        return APIs.post('/hr/adminUsers/create', data)
+    createSalary: (data) => {
+        return APIs.post('/hr/salary/create', data)
         .then(({ data }) => {
             return data;
         })
@@ -13,8 +13,8 @@ const AdminUserService = {
         })
     },
 
-    allAdminUserRecords: (data) => {
-        return APIs.post('/hr/adminUsers/allRecords', data)
+    updateSalary: (data) => {
+        return APIs.post('/hr/salary/update', data)
         .then(({ data }) => {
             return data;
         })
@@ -24,8 +24,8 @@ const AdminUserService = {
         })
     },
 
-    createStaffUsers: (data) => {
-        return APIs.post('/hr/employee/create', data)
+    deleteSalary: (data) => {
+        return APIs.post('/hr/salary/delete', data)
         .then(({ data }) => {
             return data;
         })
@@ -35,19 +35,8 @@ const AdminUserService = {
         })
     },
 
-    allStaffUserRecords: (data) => {
-        return APIs.post('/hr/employee/allRecords', data)
-        .then(({ data }) => {
-            return data;
-        })
-         .catch(err => {
-            console.log("Auth service err", err);
-            throw err
-        })
-    },
-
-    filterRecords: (data) => {
-        return APIs.post('/hr/employee/filterRecords', data)
+    allSalaryRecords: (data) => {
+        return APIs.post('/hr/salary/allRecords', data)
         .then(({ data }) => {
             return data;
         })
@@ -58,4 +47,4 @@ const AdminUserService = {
     },
 }
 
-export default AdminUserService;
+export default SalaryService;

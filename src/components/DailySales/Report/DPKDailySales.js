@@ -3,7 +3,7 @@ import '../../../styles/dailySales.scss';
 import { useSelector } from 'react-redux';
 import editImg from '../../../assets/editImg.png';
 import delImg from '../../../assets/delImg.png';
-import DailySalesService from '../../../services/DailySales';
+import DailySalesService from '../../../services/360station/DailySales';
 import swal from 'sweetalert';
 import Sales from '../../Modals/DailySales/sales';
 

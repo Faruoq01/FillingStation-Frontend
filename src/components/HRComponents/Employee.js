@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import EmployeeDetails from "../Modals/EmployeeModal";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import AdminUserService from "../../services/adminUsers";
+import AdminUserService from "../../services/360station/adminUsers";
 import { searchStaffs, storeStaffUsers } from "../../storage/employee";
 import PrintStaffRecords from "../Reports/StaffRecord";
 import ManagerModal from "../Modals/ManagerModal";

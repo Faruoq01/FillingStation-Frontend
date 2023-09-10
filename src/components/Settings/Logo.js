@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import UserService from "../../services/user";
+import UserService from "../../services/360station/user";
 import { updateUser } from "../../storage/auth";
 import config from "../../constants";
 

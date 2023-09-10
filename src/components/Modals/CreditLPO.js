@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import { MenuItem, Select } from "@mui/material";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 import ModalBackground from "../controls/Modal/ModalBackground";
 import ModalInputField from "../controls/Modal/ModalInputField";
 import UploadPhoto from "../common/uploadphoto";

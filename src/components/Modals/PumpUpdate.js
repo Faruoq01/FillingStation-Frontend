@@ -7,7 +7,7 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import OutletService from '../../services/outletService';
+import OutletService from '../../services/360station/outletService';
 import { useEffect } from 'react';
 
 const PumpUpdate = (props) => {

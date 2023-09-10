@@ -3,7 +3,7 @@ import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import ProductOrderModal from "../Modals/ProductOrderModal";
-import ProductService from "../../services/productService";
+import ProductService from "../../services/360station/productService";
 import { setProductOrder, searchProduct } from "../../storage/productOrder";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";

@@ -1,7 +1,7 @@
 import { Radio } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import UserService from "../../services/user";
+import UserService from "../../services/360station/user";
 import { updateUser } from "../../storage/auth";
 import dark from "../../assets/dark.png";
 import light from "../../assets/light.png";

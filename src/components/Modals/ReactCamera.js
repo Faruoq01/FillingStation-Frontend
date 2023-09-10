@@ -6,7 +6,7 @@ import { ThreeDots } from "react-loader-spinner";
 import "../../styles/lpo.scss";
 import Webcam from "react-webcam";
 import config from "../../constants";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 
 const ReactCamera = (props) => {
   const [loading, setLoading] = useState(false);

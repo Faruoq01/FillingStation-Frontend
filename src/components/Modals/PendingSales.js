@@ -19,9 +19,9 @@ import {
 import { daySupply } from "../../storage/supply";
 import swal from "sweetalert";
 import moment from "moment";
-import OutletService from "../../services/outletService";
-import LPOService from "../../services/lpo";
-import APIs from "../../services/api";
+import OutletService from "../../services/360station/outletService";
+import LPOService from "../../services/360station/lpo";
+import APIs from "../../services/connections/api";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 

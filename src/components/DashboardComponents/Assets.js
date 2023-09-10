@@ -6,7 +6,7 @@ import { useState } from "react";
 import slideMenu from "../../assets/slideMenu.png";
 import me4 from "../../assets/me4.png";
 import me5 from "../../assets/me5.png";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { assets } from "../../storage/dashboard";
 import { useNavigate } from "react-router-dom";
 

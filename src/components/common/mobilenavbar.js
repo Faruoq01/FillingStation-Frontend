@@ -7,7 +7,7 @@ import search from "../../assets/search.png";
 import note from "../../assets/note.png";
 import switchT from "../../assets/switchT.png";
 import dark from "../../assets/dark.png";
-import UserService from "../../services/user";
+import UserService from "../../services/360station/user";
 import { updateUser } from "../../storage/auth";
 import { useEffect } from "react";
 import { routeNames } from "../../modules/routenames";

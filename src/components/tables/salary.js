@@ -11,7 +11,7 @@ import {
   TableViewForMobile,
 } from "../controls/PageLayout/TableViewForMobile";
 import swal from "sweetalert";
-import SalaryService from "../../services/salary";
+import SalaryService from "../../services/360station/salary";
 import hr7 from "../../assets/hr7.png";
 import hr8 from "../../assets/hr8.png";
 

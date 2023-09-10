@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
-import ProductService from "../../services/productService";
+import ProductService from "../../services/360station/productService";
 import axios from "axios";
 import { MenuItem, Select } from "@mui/material";
 import config from "../../constants";

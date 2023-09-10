@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import { useDispatch } from "react-redux";
-import AuthService from "../../services/authService";
+import AuthService from "../../services/360station/authService";
 import { login } from "../../storage/auth";
 import { useNavigate } from "react-router-dom";
 

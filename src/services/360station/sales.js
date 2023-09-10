@@ -1,4 +1,4 @@
-import APIs from "./api";
+import APIs from "../connections/api";
 
 const SalesService = {
   pumpUpdate: (data) => {

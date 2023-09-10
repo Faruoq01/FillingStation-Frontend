@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import "../../styles/login.scss";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import COUNTRIES from "../common/countryList";
-import AuthService from "../../services/authService";
+import AuthService from "../../services/360station/authService";
 const moment = require("moment-timezone");
 
 const Register = (props) => {

@@ -7,9 +7,9 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../../styles/lpo.scss";
 import { useEffect } from "react";
-import DailySalesService from "../../../services/DailySales";
+import DailySalesService from "../../../services/360station/DailySales";
 import { useDispatch, useSelector } from "react-redux";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 
 const UpdateDipping = (props) => {
   const user = useSelector((state) => state.auth.user);

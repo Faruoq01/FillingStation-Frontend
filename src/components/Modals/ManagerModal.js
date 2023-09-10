@@ -11,7 +11,7 @@ import Radio from "@mui/material/Radio";
 import "react-html5-camera-photo/build/css/index.css";
 import { MenuItem, Select } from "@mui/material";
 import { adminOutlet } from "../../storage/outlet";
-import AdminUserService from "../../services/adminUsers";
+import AdminUserService from "../../services/360station/adminUsers";
 import { useEffect } from "react";
 import ReactCamera from "./ReactCamera";
 import UploadPhoto from "../common/uploadphoto";

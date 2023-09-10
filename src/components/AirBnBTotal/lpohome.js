@@ -3,7 +3,7 @@ import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import LPOModal from "../Modals/LPOModal";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 import { useSelector } from "react-redux";
 import { createLPO, searchLPO, singleLPORecord } from "../../storage/lpo";
 import { useDispatch } from "react-redux";

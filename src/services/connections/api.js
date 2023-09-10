@@ -1,9 +1,9 @@
 import axios from "axios";
-import { store } from "../storage/store";
-import { logout } from "../storage/logout";
-import { setConnection } from "../storage/auth";
+import { store } from "../../storage/store";
+import { logout } from "../../storage/logout";
+import { setConnection } from "../../storage/auth";
 import swal from "sweetalert";
-import config from "../constants";
+import config from "../../constants";
 
 const APIs = axios.create({
   baseURL: `${config.BASE_URL}/360-station/api`,

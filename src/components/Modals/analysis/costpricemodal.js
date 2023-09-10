@@ -14,7 +14,7 @@ import swal from "sweetalert";
 import "../../../styles/mode.scss";
 import search from "../../../assets/search.png";
 import tick from "../../../assets/tick.png";
-import OutletService from "../../../services/outletService";
+import OutletService from "../../../services/360station/outletService";
 import ModalInputField from "../../controls/Modal/ModalInputField";
 
 const CostPriceModal = (props) => {

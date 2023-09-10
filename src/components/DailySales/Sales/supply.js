@@ -7,7 +7,7 @@ import ApproximateDecimal from "../../common/approx";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { supply } from "../../../storage/dailysales";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 import { useNavigate } from "react-router-dom";
 
 const Supply = () => {

@@ -17,9 +17,9 @@ import ReactCamera from "../ReactCamera";
 import { MenuItem, Select } from "@mui/material";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import LPOService from "../../../services/lpo";
+import LPOService from "../../../services/360station/lpo";
 import { setLPOAccount } from "../../../storage/comprehensive";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 import ModalInputField from "../../controls/Modal/ModalInputField";
 
 const LPOSalesModal = (props) => {

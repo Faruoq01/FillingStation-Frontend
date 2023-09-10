@@ -16,7 +16,7 @@ import {
   setLocaleDate,
 } from "../../../storage/dailysales";
 import { useCallback } from "react";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 
 const ExpensesAndPayments = () => {
   const moment = require("moment-timezone");

@@ -5,7 +5,7 @@ import me5 from "../../assets/me5.png";
 import PMSTank from "./PMSTank";
 import AGOTank from "./AGOTank";
 import DPKTank from "./DPKTank";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import {
   getAllOutletTanks,
   getAllPumps,
@@ -18,7 +18,7 @@ import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import DashboardGraph from "../DashboardComponents/DashboardGraph";
 import moment from "moment";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { tankLevels } from "../../storage/dailysales";
 import { useNavigate } from "react-router-dom";
 

@@ -8,8 +8,8 @@ import "../../../styles/summary.scss";
 import { useState } from "react";
 import ApproximateDecimal from "../../common/approx";
 import { ThreeDots } from "react-loader-spinner";
-import APIs from "../../../services/api";
-import OutletService from "../../../services/outletService";
+import APIs from "../../../services/connections/api";
+import OutletService from "../../../services/360station/outletService";
 import { setTankList } from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {

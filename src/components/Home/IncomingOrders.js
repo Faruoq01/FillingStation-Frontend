@@ -9,7 +9,7 @@ import {
   createIncomingOrder,
   searchIncoming,
 } from "../../storage/incomingOrder";
-import IncomingService from "../../services/IncomingService";
+import IncomingService from "../../services/360station/IncomingService";
 import IncomingReport from "../Reports/IncomingReport";
 import swal from "sweetalert";
 import IncomingOrderEditModal from "../Modals/IncomingOrderEditModal";

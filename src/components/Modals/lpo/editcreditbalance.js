@@ -2,7 +2,7 @@ import { useState } from "react";
 import ModalBackground from "../../controls/Modal/ModalBackground";
 import ModalInputField from "../../controls/Modal/ModalInputField";
 import { useDispatch, useSelector } from "react-redux";
-import LPOService from "../../../services/lpo";
+import LPOService from "../../../services/360station/lpo";
 import swal from "sweetalert";
 import { singleLPORecord } from "../../../storage/lpo";
 

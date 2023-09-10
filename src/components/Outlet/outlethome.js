@@ -3,7 +3,7 @@ import "../../styles/payments.scss";
 import { useSelector } from "react-redux";
 import { openModal, getAllStations } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import { useEffect } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";

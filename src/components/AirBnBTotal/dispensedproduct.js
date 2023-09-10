@@ -16,7 +16,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Stack } from "@mui/material";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { createLPOSales, setLPOSalesDate } from "../../storage/lpo";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 import { useEffect } from "react";
 import {
   DispensedLPODesktopTable,

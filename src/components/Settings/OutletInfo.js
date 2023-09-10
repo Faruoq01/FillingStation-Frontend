@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import swal from "sweetalert";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 
 const OutletInfo = (props) => {
   const oneStation = useSelector((state) => state.outlet.adminOutlet);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
-import IncomingService from "../../services/IncomingService";
+import IncomingService from "../../services/360station/IncomingService";
 import ModalBackground from "../controls/Modal/ModalBackground";
 import ModalInputField from "../controls/Modal/ModalInputField";
 

@@ -1,7 +1,7 @@
 import { MenuItem, Select, Stack, Switch } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import { adminOutlet, getAllStations } from "../../storage/outlet";
 import "../../styles/listTanks.scss";
 import PMSTank from "./TankSingleList/PMSTank.js";
@@ -18,7 +18,7 @@ import {
   setTankLevelList,
 } from "../../storage/dailysales";
 import { dateRange } from "../../storage/dashboard";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";

@@ -1,37 +1,8 @@
-import APIs from "./api";
+import APIs from "../connections/api";
 
-const ProductService = {
-  createProductOrder: (data) => {
-    return APIs.post("/product-order/create", data)
-      .then(({ data }) => {
-        return data.product;
-      })
-      .catch((err) => {
-        console.log("Auth service err", err);
-        throw err;
-      });
-  },
-
-  updateProductOrder: async (data) => {
-    return APIs.post("/product-order/update", data)
-      .then()
-      .catch((err) => {
-        console.log("Auth service err", err);
-        throw err;
-      });
-  },
-
-  deleteProductOrder: async (data) => {
-    return APIs.post("/product-order/delete", data)
-      .then()
-      .catch((err) => {
-        console.log("Auth service err", err);
-        throw err;
-      });
-  },
-
-  getAllProductOrder: (data) => {
-    return APIs.post("/product-order/allRecords", data)
+const AdminUserService = {
+  createAdminUsers: (data) => {
+    return APIs.post("/hr/adminUsers/create", data)
       .then(({ data }) => {
         return data;
       })
@@ -41,8 +12,41 @@ const ProductService = {
       });
   },
 
-  getAllProductOrder2: (data) => {
-    return APIs.post("/product-order/allRecords2", data)
+  allAdminUserRecords: (data) => {
+    return APIs.post("/hr/adminUsers/allRecords", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
+  createStaffUsers: (data) => {
+    return APIs.post("/hr/employee/create", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
+  allStaffUserRecords: (data) => {
+    return APIs.post("/hr/employee/allRecords", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
+  filterRecords: (data) => {
+    return APIs.post("/hr/employee/filterRecords", data)
       .then(({ data }) => {
         return data;
       })
@@ -53,4 +57,4 @@ const ProductService = {
   },
 };
 
-export default ProductService;
+export default AdminUserService;

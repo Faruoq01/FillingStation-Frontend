@@ -14,7 +14,7 @@ import axios from "axios";
 import "../../../styles/lpo.scss";
 import config from "../../../constants";
 import ReactCamera from "../ReactCamera";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 import { MenuItem, Select } from "@mui/material";
 import ModalInputField from "../../controls/Modal/ModalInputField";
 

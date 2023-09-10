@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import expense from "../../assets/expense.png";
 import swal from "sweetalert";
 import { useCallback } from "react";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { useEffect } from "react";
 import { expenses } from "../../storage/dashboard";
 

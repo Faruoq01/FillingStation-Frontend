@@ -8,7 +8,7 @@ import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import OutletService from '../../services/outletService';
+import OutletService from '../../services/360station/outletService';
 
 const TankUpdateModal = (props) => {
     const [loading, setLoading] = useState(false);

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import { adminOutlet, getAllStations } from "../../storage/outlet";
 import swal from "sweetalert";
 

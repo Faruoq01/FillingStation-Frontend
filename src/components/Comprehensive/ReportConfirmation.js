@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import swal from "sweetalert";
 import { useDispatch, useSelector } from "react-redux";
 import { ThreeDots } from "react-loader-spinner";
-import APIs from "../../services/api";
-import { useHistory, useNavigate } from "react-router-dom";
+import APIs from "../../services/connections/api";
+import { useNavigate } from "react-router-dom";
 import { setRemarkList } from "../../storage/comprehensive";
 
 const months = {

@@ -7,7 +7,7 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import Radio from "@mui/material/Radio";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 
 const LPOModal = (props) => {
   const [productType, setProductType] = useState("Weekly");

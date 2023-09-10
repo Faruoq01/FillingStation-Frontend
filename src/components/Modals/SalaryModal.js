@@ -7,7 +7,7 @@ import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
-import SalaryService from "../../services/salary";
+import SalaryService from "../../services/360station/salary";
 
 const SalaryModal = (props) => {
   const [loading, setLoading] = useState(false);

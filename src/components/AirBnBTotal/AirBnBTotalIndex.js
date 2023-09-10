@@ -10,7 +10,7 @@ import Profile from "./Profile";
 import CreditBalance from "../Modals/CreditLPO";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 import { createLPOSales } from "../../storage/lpo";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";

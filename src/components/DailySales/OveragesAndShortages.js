@@ -8,7 +8,7 @@ import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { overage, overageType } from "../../storage/dailysales";
 import React from "react";
 import moment from "moment";

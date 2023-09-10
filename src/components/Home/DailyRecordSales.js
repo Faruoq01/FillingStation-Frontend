@@ -41,9 +41,9 @@ import {
   updateSelectedTanks,
 } from "../../storage/recordsales";
 import { useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import { adminOutlet, getAllPumps, getAllStations } from "../../storage/outlet";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 import { createLPO } from "../../storage/recordsales";
 import Backdrop from "@mui/material/Backdrop";
 import { BallTriangle } from "react-loader-spinner";
@@ -56,7 +56,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PendingSales from "../Modals/PendingSales";
 import moment from "moment";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { daySupply } from "../../storage/supply";
 import { useCallback } from "react";
 

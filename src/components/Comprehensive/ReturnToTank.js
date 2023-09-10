@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import { useState } from "react";
 import UpdateReturnToTank from "../Modals/DailySales/returnToTank";
 import ApproximateDecimal from "../common/approx";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { setRTSales, setReturnToTank } from "../../storage/comprehensive";

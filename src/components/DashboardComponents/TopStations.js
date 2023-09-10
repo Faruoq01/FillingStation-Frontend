@@ -2,7 +2,7 @@ import { MenuItem, Select, Skeleton } from "@mui/material";
 import approximateNumber from "approximate-number";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { topStations } from "../../storage/dashboard";
 
 import LinearProgress from "@mui/material/LinearProgress";

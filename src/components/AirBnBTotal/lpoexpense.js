@@ -12,7 +12,7 @@ import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Stack } from "@mui/material";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import moment from "moment";
 import { Circle } from "@mui/icons-material";
 import { PrintButton } from "../common/buttons";

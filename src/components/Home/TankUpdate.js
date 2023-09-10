@@ -3,7 +3,7 @@ import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useDispatch, useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import { getAllOutletTanks } from "../../storage/outlet";
 import swal from "sweetalert";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";

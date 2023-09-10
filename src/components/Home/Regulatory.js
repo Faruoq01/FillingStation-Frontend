@@ -4,7 +4,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import PaymentModal from "../Modals/PaymentModal";
 import { useDispatch, useSelector } from "react-redux";
-import PaymentService from "../../services/paymentService";
+import PaymentService from "../../services/360station/paymentService";
 import PaymentEditModal from "../Modals/PaymentEditModal";
 
 import { createPayment, searchPayment } from "../../storage/regulatory";

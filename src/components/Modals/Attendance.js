@@ -7,7 +7,7 @@ import Modal from "@mui/material/Modal";
 import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
-import AtendanceService from "../../services/attendance";
+import AtendanceService from "../../services/360station/attendance";
 import { MenuItem, Select } from "@mui/material";
 
 const AttendanceModal = (props) => {

@@ -15,8 +15,8 @@ import "../../styles/summary.scss";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
-import SalesService from "../../services/sales";
-import APIs from "../../services/api";
+import SalesService from "../../services/360station/sales";
+import APIs from "../../services/connections/api";
 import { useNavigate } from "react-router-dom";
 
 const FuelCard = (props) => {

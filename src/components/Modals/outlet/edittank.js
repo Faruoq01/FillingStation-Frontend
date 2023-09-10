@@ -9,7 +9,7 @@ import { ThreeDots } from "react-loader-spinner";
 import Radio from "@mui/material/Radio";
 import swal from "sweetalert";
 import { useEffect } from "react";
-import OutletService from "../../../services/outletService";
+import OutletService from "../../../services/360station/outletService";
 
 const EditTank = (props) => {
   const dispatch = useDispatch();

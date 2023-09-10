@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
 import me5 from "../../assets/me5.png";
 import "../../styles/stationTanks.scss";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { assetData } from "../../storage/dashboard";
 import { ThreeDots } from "react-loader-spinner";
 

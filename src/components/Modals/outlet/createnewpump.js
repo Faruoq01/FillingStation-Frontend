@@ -11,7 +11,7 @@ import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import swal from "sweetalert";
-import OutletService from "../../../services/outletService";
+import OutletService from "../../../services/360station/outletService";
 
 const CreateNewPump = (props) => {
   const dispatch = useDispatch();

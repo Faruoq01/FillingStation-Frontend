@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Stack } from "@mui/material";
-import RecordPaymentService from "../../services/recordPayment";
+import RecordPaymentService from "../../services/360station/recordPayment";
 import {
   allBankPayment,
   allPosPayment,
@@ -14,7 +14,7 @@ import {
   searchPosPayment,
 } from "../../storage/payment";
 import swal from "sweetalert";
-import DailySalesService from "../../services/DailySales";
+import DailySalesService from "../../services/360station/DailySales";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { setDateValue } from "../../storage/dailysales";

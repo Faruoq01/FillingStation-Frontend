@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ButtonDatePicker from "../common/CustomDatePicker";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { weekly, monthly, annually, yearList } from "../../storage/dashboard";
 
 ChartJS.register(

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ApproximateDecimal from "../common/approx";
 import me6 from "../../assets/me6.png";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { paymentsDetails } from "../../storage/dashboard";
 import { useEffect } from "react";
 

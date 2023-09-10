@@ -4,15 +4,15 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import { getAllStations, adminOutlet } from "../../storage/outlet";
 import { ThreeDots } from "react-loader-spinner";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
-import DashboardService from "../../services/dashboard";
+import DashboardService from "../../services/360station/dashboard";
 import { overageType, overages } from "../../storage/dailysales";
 import { dateRange } from "../../storage/dashboard";
 import ApproximateDecimal from "../common/approx";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { setDipping } from "../../storage/analysis";
 
 const OverageList = () => {

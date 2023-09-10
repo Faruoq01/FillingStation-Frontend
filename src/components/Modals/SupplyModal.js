@@ -9,7 +9,7 @@ import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import Radio from "@mui/material/Radio";
 import "../../styles/lpo.scss";
-import SupplyService from "../../services/supplyService";
+import SupplyService from "../../services/360station/supplyService";
 
 const SupplyModal = (props) => {
   const [loading, setLoading] = useState(false);

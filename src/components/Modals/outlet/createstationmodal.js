@@ -24,7 +24,7 @@ import config from "../../../constants";
 import AddIcon from "@mui/icons-material/Add";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
-import OutletService from "../../../services/outletService";
+import OutletService from "../../../services/360station/outletService";
 
 const days = [
   "Monday",

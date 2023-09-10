@@ -7,7 +7,7 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../../styles/lpo.scss";
 import { useEffect } from "react";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 
 const UpdateReturnToTank = (props) => {
   const [loading, setLoading] = useState(false);

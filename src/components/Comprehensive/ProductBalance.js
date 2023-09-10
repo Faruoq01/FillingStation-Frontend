@@ -5,7 +5,7 @@ import Sales from "../Modals/DailySales/sales";
 import { useCallback, useEffect, useState } from "react";
 import swal from "sweetalert";
 import ApproximateDecimal from "../common/approx";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import moment from "moment";
 import { setProduct } from "../../storage/comprehensive";
 import React from "react";

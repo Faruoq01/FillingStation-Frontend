@@ -10,7 +10,7 @@ import { openModal, getAllOutletTanks, getOneTank } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
 import AddTank from "../Modals/outlet/createnewtank";
 import { useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import swal from "sweetalert";
 import EditTank from "../Modals/outlet/edittank";
 import { ThreeDots } from "react-loader-spinner";

@@ -4,7 +4,7 @@ import { Button, Switch } from "@mui/material";
 import data from "./permissionsHelper";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import DashboardService from "../../services/dashboard";
+import DashboardService from "../../services/360station/dashboard";
 import { useState } from "react";
 import { useEffect } from "react";
 import { saveSelectedUsers } from "../../storage/settings";

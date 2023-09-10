@@ -14,7 +14,7 @@ import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { singleIncomingOrderRecord } from "../../storage/incomingOrder";
 import swal from "sweetalert";
-import IncomingService from "../../services/IncomingService";
+import IncomingService from "../../services/360station/IncomingService";
 
 const Action = ({ data, setIncomingOrderEditModal, refresh, skip }) => {
   const dispatch = useDispatch();

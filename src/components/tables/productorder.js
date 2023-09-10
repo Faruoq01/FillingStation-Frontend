@@ -18,7 +18,7 @@ import {
 import swal from "sweetalert";
 import { useDispatch } from "react-redux";
 import { singleProductOrderRecord } from "../../storage/productOrder";
-import ProductService from "../../services/productService";
+import ProductService from "../../services/360station/productService";
 
 const Action = ({
   data,

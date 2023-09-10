@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import UpdateDipping from "../Modals/DailySales/Dipping";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";

@@ -15,7 +15,7 @@ import "../../styles/lpo.scss";
 import config from "../../constants";
 import ReactCamera from "./ReactCamera";
 import { MenuItem, Select } from "@mui/material";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 
 const AddPayModal = (props) => {
   const [loading, setLoading] = useState(false);

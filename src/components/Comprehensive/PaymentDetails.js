@@ -6,7 +6,7 @@ import swal from "sweetalert";
 import { useCallback, useEffect, useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 import ApproximateDecimal from "../common/approx";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { paymentDetails } from "../../storage/comprehensive";
 import { Button } from "@mui/material";
 import PaymentsModal from "../Modals/comprehensive/payments";

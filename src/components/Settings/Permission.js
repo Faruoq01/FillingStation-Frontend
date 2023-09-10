@@ -10,12 +10,12 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import { adminOutlet, getAllStations } from "../../storage/outlet";
 import "../../styles/permission.scss";
 import { styled } from "@mui/material/styles";
 import perm from "../../assets/perm.png";
-import DashboardService from "../../services/dashboard";
+import DashboardService from "../../services/360station/dashboard";
 import {
   changeAllEmployeeStatus,
   changeEmployeeStatus,
@@ -23,7 +23,7 @@ import {
   storeSingleUser,
 } from "../../storage/settings";
 import { ThreeDots } from "react-loader-spinner";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
   padding: 8,

@@ -6,7 +6,7 @@ import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Button from "@mui/material/Button";
-import OutletService from "../../services/outletService";
+import OutletService from "../../services/360station/outletService";
 import swal from "sweetalert";
 import { getAllPumps, getAllOutletTanks } from "../../storage/outlet";
 import { useDispatch } from "react-redux";

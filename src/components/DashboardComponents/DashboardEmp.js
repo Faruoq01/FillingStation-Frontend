@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import PrintStaffRecords from "../Reports/StaffRecord";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { searchdashStaffs, setEmployeeList } from "../../storage/dashboard";
 import { ThreeDots } from "react-loader-spinner";
 

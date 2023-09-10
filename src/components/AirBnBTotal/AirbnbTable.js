@@ -3,7 +3,7 @@ import "../../styles/estation/airbnb.scss";
 import { Circle } from "@mui/icons-material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import LPOService from "../../services/lpo";
+import LPOService from "../../services/360station/lpo";
 import { createLPOSales } from "../../storage/lpo";
 import moment from "moment";
 

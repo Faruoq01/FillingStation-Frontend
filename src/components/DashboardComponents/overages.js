@@ -7,7 +7,7 @@ import React, { useCallback, useState } from "react";
 import { overageType, overage } from "../../storage/dashboard";
 import ApproximateDecimal from "../common/approx";
 import { useEffect } from "react";
-import APIs from "../../services/api";
+import APIs from "../../services/connections/api";
 import { useNavigate } from "react-router-dom";
 
 const OveragesAndShortages = (props) => {

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import me5 from "../../../assets/me5.png";
 import ApproximateDecimal from "../../common/approx";
-import APIs from "../../../services/api";
+import APIs from "../../../services/connections/api";
 import { sales } from "../../../storage/dailysales";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
