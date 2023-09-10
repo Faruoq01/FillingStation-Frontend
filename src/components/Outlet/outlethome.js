@@ -1,13 +1,10 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback } from "react";
 import "../../styles/payments.scss";
 import { useSelector } from "react-redux";
 import { openModal, getAllStations } from "../../storage/outlet";
 import { useDispatch } from "react-redux";
 import OutletService from "../../services/360station/outletService";
 import { useEffect } from "react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-import PrintOutLetsModal from "../Modals/PrintOutlets";
 import { useState } from "react";
 import swal from "sweetalert";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
@@ -22,12 +19,13 @@ import {
   RightControls,
   TableControls,
 } from "../controls/PageLayout/TableControls";
-import { CreateButton, HistoryButton, PrintButton } from "../common/buttons";
+import { CreateButton, PrintButton } from "../common/buttons";
 import { SearchField } from "../common/searchfields";
 import { LimitSelect } from "../common/customselect";
 import OutletGridSwitch from "../common/outletgrid";
 import MobileMenuListing from "../common/mobilemenulist";
 import { useLocation } from "react-router-dom";
+import GenerateReports from "../Modals/reports";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -49,7 +47,6 @@ const OutletHome = (props) => {
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const dispatch = useDispatch();
   const [prints, setPrints] = useState(false);
-  const tablePrints = useRef();
   const [switchTabs, setSwitchTabs] = useState(false);
   const [loading, setLoading] = useState(false);
   const [skip, setSkip] = useState(0);
@@ -101,16 +98,6 @@ const OutletHome = (props) => {
     setRoutes(route);
   }, [pathname]);
 
-  const printTable = () => {
-    const input = tablePrints.current;
-    html2canvas(input).then((canvas) => {
-      const imageData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      pdf.addImage(imageData, "PNG", 5, 5);
-      pdf.save("download.pdf");
-    });
-  };
-
   const preview = () => {
     setPrints(true);
   };
@@ -134,13 +121,8 @@ const OutletHome = (props) => {
     // }
   };
 
-  const goToHistory = () => {
-    // navigate("/home/history");
-  };
-
   const desktopTableData = {
     columns: columns,
-    tablePrints: tablePrints,
     allOutlets: allOutlets,
     loading: loading,
     Action: Action,
@@ -162,19 +144,10 @@ const OutletHome = (props) => {
   return (
     <React.Fragment>
       <TablePageBackground>
-        {open === 1 && <CreateStation getStations={getAllStationData} />}
-        {open === 2 && <CreateStationAssets />}
-        {prints && (
-          <PrintOutLetsModal
-            allOutlets={allOutlets}
-            open={prints}
-            close={setPrints}
-          />
-        )}
         <MobileMenuListing
           callback={handleOpenModal}
           preview={preview}
-          print={printTable}
+          print={() => {}}
           label={"Create Station"}
         />
 
@@ -190,13 +163,12 @@ const OutletHome = (props) => {
           </RightControls>
         </TableControls>
 
-        <TableControls mt={"10px"}>
+        <TableControls mt={"15px"}>
           <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
             <OutletGridSwitch switchTabs={switchTabs} callback={changeSwitch} />
-            <HistoryButton callback={goToHistory} />
             <PrintButton callback={preview} />
           </RightControls>
         </TableControls>
@@ -228,6 +200,10 @@ const OutletHome = (props) => {
           callback={() => {}}
         />
       </TablePageBackground>
+
+      {prints && <GenerateReports open={prints} close={setPrints} />}
+      {open === 1 && <CreateStation getStations={getAllStationData} />}
+      {open === 2 && <CreateStationAssets />}
     </React.Fragment>
   );
 };

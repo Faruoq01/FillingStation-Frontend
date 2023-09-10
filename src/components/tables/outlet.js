@@ -11,9 +11,9 @@ import {
 } from "../controls/PageLayout/TableViewForMobile";
 
 export const OutletDesktopTable = ({ data }) => {
-  const { columns, tablePrints, allOutlets, loading, Action } = data;
+  const { columns, allOutlets, loading, Action } = data;
   return (
-    <TableViewForDesktop columns={columns} ref={tablePrints}>
+    <TableViewForDesktop columns={columns}>
       <DesktopTableRowContainer rows={allOutlets} loading={loading}>
         {!loading &&
           allOutlets.map((item, index) => {

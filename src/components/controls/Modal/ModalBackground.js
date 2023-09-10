@@ -10,6 +10,9 @@ const ModalBackground = ({
   loading,
   label,
   ht = "500px",
+  report = false,
+  pdf,
+  print,
 }) => {
   const handleClose = () => closeModal(false);
 
@@ -36,13 +39,18 @@ const ModalBackground = ({
             {children}
           </div>
 
-          <div
-            style={{ marginTop: "10px", height: "30px", marginBottom: "10px" }}
-            className="butt">
-            <Button sx={button} onClick={submit} variant="contained">
-              {" "}
-              Save
+          <div style={footer} className="butt">
+            <Button
+              sx={button}
+              onClick={report ? pdf : submit}
+              variant="contained">
+              {report ? "Download PDF" : "Save"}
             </Button>
+            {report && (
+              <Button sx={button2} onClick={print} variant="contained">
+                {report ? "Print Report" : "Save"}
+              </Button>
+            )}
 
             {loading ? (
               <ThreeDots
@@ -69,15 +77,38 @@ const inner = {
 };
 
 const button = {
-  width: "100px",
+  minWidth: "100px",
   height: "30px",
-  background: "#427BBE",
+  background: "#0040a0",
   borderRadius: "3px",
   fontSize: "10px",
   marginTop: "0px",
   "&:hover": {
-    backgroundColor: "#427BBE",
+    backgroundColor: "#0040a0",
   },
+};
+
+const button2 = {
+  minWidth: "100px",
+  height: "30px",
+  background: "#001f3f",
+  borderRadius: "3px",
+  fontSize: "10px",
+  marginTop: "0px",
+  marginLeft: "10px",
+  "&:hover": {
+    backgroundColor: "#001f3f",
+  },
+};
+
+const footer = {
+  marginTop: "10px",
+  height: "30px",
+  marginBottom: "10px",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-start",
 };
 
 export default ModalBackground;

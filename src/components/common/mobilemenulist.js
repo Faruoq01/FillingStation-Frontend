@@ -1,6 +1,6 @@
 import { MenuItem, Select } from "@mui/material";
 
-const MobileMenuListing = ({ callback, preview, print, label }) => {
+const MobileMenuListing = ({ callback, preview, label }) => {
   return (
     <div className="action">
       <div style={{ width: "150px" }} className="butt2">
@@ -22,11 +22,8 @@ const MobileMenuListing = ({ callback, preview, print, label }) => {
             value={20}>
             Create new filling station
           </MenuItem>
-          <MenuItem style={menu} onClick={print} value={30}>
-            Download PDF
-          </MenuItem>
           <MenuItem style={menu} onClick={preview} value={40}>
-            Print
+            Generate report
           </MenuItem>
         </Select>
       </div>

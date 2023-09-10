@@ -19,8 +19,7 @@ export const SearchField = ({ ml, callback }) => {
 };
 
 const style = {
-  minWidth: mobile.matches ? "225px" : "120px",
-  maxWidth: "300px",
+  minWidth: mobile.matches ? "100%" : "120px",
   height: "30px",
   fontSize: "12px",
   background: "#F2F1F1",

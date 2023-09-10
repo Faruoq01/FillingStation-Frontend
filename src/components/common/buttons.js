@@ -25,7 +25,7 @@ export const HistoryButton = ({ callback }) => {
 export const PrintButton = ({ callback }) => {
   return (
     <Button sx={print} onClick={callback} variant="contained">
-      Print
+      Generate report
     </Button>
   );
 };
@@ -60,9 +60,10 @@ const print = {
   minWidth: "80px",
   height: "30px",
   background: "#F36A4C",
-  borderRadius: "0px",
-  fontSize: "10px",
+  borderRadius: "30px",
+  fontSize: "11px",
   marginLeft: "10px",
+  textTransform: "capitalize",
   display: mobile.matches ? "none" : "block",
   "&:hover": {
     backgroundColor: "#F36A4C",
