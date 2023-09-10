@@ -54,11 +54,9 @@ const ProductsDispensed = () => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   //   const [prints, setPrints] = useState(false);
-  console.log(type, "type");
-  console.log(lpos, "lpos");
 
   useEffect(() => {
-    const getDate = date === "" ? date2 : currentDate;
+    const getDate = currentDate === "" ? date2 : currentDate;
     refresh("None", getDate, skip);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -67,7 +65,7 @@ const ProductsDispensed = () => {
     setLoading(true);
 
     const payload = {
-      skip: skip,
+      skip: skip * limit,
       limit: limit,
       lpoID: singleLPO?._id,
       organisationID: singleLPO?.organizationID,

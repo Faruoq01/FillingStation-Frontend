@@ -35,14 +35,6 @@ const DippingComponents = (props) => {
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
 
-  // const resolveUserID = () => {
-  //   if (user.userType === "superAdmin") {
-  //     return { id: user._id };
-  //   } else {
-  //     return { id: user.organisationID };
-  //   }
-  // };
-
   const getStationTanks = useCallback(() => {
     const copyTanks = JSON.parse(JSON.stringify(tankListData));
     const outletTanks = copyTanks.map((data) => {
@@ -50,36 +42,19 @@ const DippingComponents = (props) => {
       return newData;
     });
 
-    setPMS(getPMSPump(outletTanks));
-    setAGO(getAGOPump(outletTanks));
-    setDPK(getDPKPump(outletTanks));
+    const pmsData = outletTanks.filter((data) => data.productType === "PMS");
+    const agoData = outletTanks.filter((data) => data.productType === "AGO");
+    const dpkData = outletTanks.filter((data) => data.productType === "DPK");
+
+    setPMS(pmsData);
+    setAGO(agoData);
+    setDPK(dpkData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oneStationData._id]);
 
   useEffect(() => {
     getStationTanks();
   }, [getStationTanks]);
-
-  const getPMSPump = (tankList) => {
-    const newList = [...tankList];
-    const pms = newList.filter((data) => data.productType === "PMS");
-    const pmsCopy = pms.map((data) => Object.assign({}, data));
-    return pmsCopy;
-  };
-
-  const getAGOPump = (tankList) => {
-    const newList = [...tankList];
-    const ago = newList.filter((data) => data.productType === "AGO");
-    const agoCopy = ago.map((data) => Object.assign({}, data));
-    return agoCopy;
-  };
-
-  const getDPKPump = (tankList) => {
-    const newList = [...tankList];
-    const dpk = newList.filter((data) => data.productType === "DPK");
-    const dpkCopy = dpk.map((data) => Object.assign({}, data));
-    return dpkCopy;
-  };
 
   const onRadioClick = (data) => {
     if (data === "PMS") {

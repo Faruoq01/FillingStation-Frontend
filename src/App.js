@@ -52,6 +52,38 @@ import LPOHome from "./components/AirBnBTotal/lpohome";
 import HumanResourcesHome from "./components/HRComponents/hrhome";
 import LPOExpense from "./components/AirBnBTotal/lpoexpense";
 import ProductsDispensed from "./components/AirBnBTotal/dispensedproduct";
+import Tree from "./test";
+import PDF from "./pdf";
+
+const treeData = [
+  {
+    id: 1,
+    label: "Node 1",
+    children: [
+      {
+        id: 2,
+        label: "Node 1.1",
+        children: [
+          {
+            id: 4,
+            label: "Node 1.1.1",
+            children: [],
+          },
+        ],
+      },
+      {
+        id: 3,
+        label: "Node 1.2",
+        children: [],
+      },
+    ],
+  },
+  {
+    id: 5,
+    label: "Node 2",
+    children: [],
+  },
+];
 
 function App() {
   useEffect(() => {
@@ -118,6 +150,8 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="attendant" element={<AttendanceModule />} />
+        <Route path="test" element={<Tree data={treeData} />} />
+        <Route path="pdf" element={<PDF />} />
         <Route path="connection" element={<Connection />} />
         {/* <Route render={() => <h1>404 page not found</h1>} /> */}
       </Routes>
