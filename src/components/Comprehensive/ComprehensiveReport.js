@@ -28,7 +28,7 @@ import { dateRange } from "../../storage/dashboard";
 import TankLevels from "../Comprehensive/TankLevels";
 import swal from "sweetalert";
 import SalesService from "../../services/360station/sales";
-import APIs from "../../services/360station/api";
+import APIs from "../../services/connections/api";
 import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
 import CreateProductDispensedModal from "../Modals/CreateProductDispensedModal";
 import CreateReturnToTankModal from "../Modals/CreateReturnToTankModal";

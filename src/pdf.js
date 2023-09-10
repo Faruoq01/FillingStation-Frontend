@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
+import ReportsAPI from "./services/connections/reportsapi";
 
 const PDF = () => {
   const [pdfDataUri, setPdfDataUri] = useState(null);
 
   useEffect(() => {
-    // Fetch the PDF data URI from the server
-    fetch("http://localhost:5000/generate-print") // Replace with your server's URL
-      .then((response) => response.text())
-      .then((dataUri) => {
-        // Set the data URI in the component state
-        setPdfDataUri(dataUri);
+    ReportsAPI.get("/outlet/print")
+      .then(({ data }) => {
+        console.log(data, "uri");
+        setPdfDataUri(data);
       })
       .catch((error) => {
         console.error("Error fetching PDF data:", error);
@@ -19,7 +18,7 @@ const PDF = () => {
   const handleDownload = () => {
     // Trigger the download by creating a link element
     const link = document.createElement("a");
-    link.href = "http://localhost:5000/generate-pdf";
+    link.href = ReportsAPI.get("/outlet/pdf");
     link.download = "generated.pdf";
     document.body.appendChild(link);
     link.click();
