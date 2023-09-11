@@ -1,16 +1,33 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ModalBackground from "../controls/Modal/ModalBackground";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { MenuItem, Select } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import OutletReport from "../../services/reports/outlet";
+import PrintReportPage from "./showreportpane";
+import { setPDFData } from "../../storage/outlet";
+import ReportsAPI from "../../services/connections/reportsapi";
+import axios from "axios";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
-const GenerateReports = ({ open, close }) => {
+const GenerateReports = ({ open, close, section }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const [headers, setHeaders] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
+  const [openReport, setOpen] = useState(false);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
   useEffect(() => {
     const oneStation = allOutlets ? allOutlets[0] : [];
@@ -29,34 +46,55 @@ const GenerateReports = ({ open, close }) => {
     setHeaders([...headers, field]);
   };
 
+  const payload = {
+    section: section,
+    organizationID: resolveUserID().id,
+    outletID: oneStationData?._id,
+    columns: selectedFields,
+  };
+
+  const downloadPDF = async () => {
+    downloadByCategory(payload);
+  };
+
+  const printReport = async () => {
+    const data = await printReportByCategory(payload);
+    dispatch(setPDFData(data));
+    setOpen(true);
+  };
+
   return (
-    <ModalBackground
-      openModal={open}
-      closeModal={close}
-      ht={"400px"}
-      report={true}
-      //   loading={loading}
-      label={"Generate Reports Settings"}>
-      <SelectList callback={addToList} menus={headers} />
-      <div style={selectedFields.length === 0 ? container2 : container}>
-        {selectedFields.map((data, index) => {
-          return (
-            <div style={keyStyle} key={index}>
-              {data}
-              <HighlightOffIcon
-                onClick={() => {
-                  removeFromList(data);
-                }}
-                sx={cancelStyle}
-              />
-            </div>
-          );
-        })}
-        {selectedFields.length === 0 && (
-          <span>Select Field to be reported</span>
-        )}
-      </div>
-    </ModalBackground>
+    <React.Fragment>
+      <ModalBackground
+        openModal={open}
+        closeModal={close}
+        ht={"400px"}
+        report={true}
+        pdf={downloadPDF}
+        print={printReport}
+        label={"Generate Reports Settings"}>
+        <SelectList callback={addToList} menus={headers} />
+        <div style={selectedFields.length === 0 ? container2 : container}>
+          {selectedFields.map((data, index) => {
+            return (
+              <div style={keyStyle} key={index}>
+                {data}
+                <HighlightOffIcon
+                  onClick={() => {
+                    removeFromList(data);
+                  }}
+                  sx={cancelStyle}
+                />
+              </div>
+            );
+          })}
+          {selectedFields.length === 0 && (
+            <span>Select Field to be reported</span>
+          )}
+        </div>
+      </ModalBackground>
+      {openReport && <PrintReportPage open={openReport} close={setOpen} />}
+    </React.Fragment>
   );
 };
 
@@ -164,3 +202,38 @@ const cancelStyle = {
 };
 
 export default GenerateReports;
+
+async function printReportByCategory(payload) {
+  switch (payload.section) {
+    case "station": {
+      const data = await OutletReport.getStationPrints(payload);
+      return data;
+    }
+    default: {
+    }
+  }
+}
+
+async function downloadByCategory(payload) {
+  switch (payload.section) {
+    case "station": {
+      const { data } = await ReportsAPI.post("/outlet/pdf", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    default: {
+    }
+  }
+}
+
+function downloadPDF(data) {
+  const url = window.URL.createObjectURL(new Blob([data]));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "generated.pdf";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}

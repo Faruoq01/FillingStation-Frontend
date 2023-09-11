@@ -16,6 +16,7 @@ const initialState = {
   searchStation: [],
   adminOutlet: null,
   tankListType: "",
+  pdfData: "",
 };
 
 export const outletSlice = createSlice({
@@ -99,6 +100,9 @@ export const outletSlice = createSlice({
       state.loadingSpinner = false;
     },
     searchTanks: (state, action) => {},
+    setPDFData: (state, action) => {
+      state.pdfData = action.payload;
+    },
     clearOutlet: () => initialState,
   },
 });
@@ -120,6 +124,7 @@ export const {
   removeSpinner,
   setSpinner,
   clearOutlet,
+  setPDFData,
 } = outletSlice.actions;
 
 export default outletSlice.reducer;

@@ -201,7 +201,9 @@ const OutletHome = (props) => {
         />
       </TablePageBackground>
 
-      {prints && <GenerateReports open={prints} close={setPrints} />}
+      {prints && (
+        <GenerateReports open={prints} close={setPrints} section={"station"} />
+      )}
       {open === 1 && <CreateStation getStations={getAllStationData} />}
       {open === 2 && <CreateStationAssets />}
     </React.Fragment>
