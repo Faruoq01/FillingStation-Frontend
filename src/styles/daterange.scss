@@ -1,0 +1,28 @@
+
+  .custom-styles {
+    position: relative;
+    background: rgba(51, 51, 51, 0.7);
+  }
+
+  .picker-label{
+    position: absolute;
+    z-index: 10;
+    background: rgba(51, 51, 51, 1);
+    height: 25px;
+    width: 190px;
+    margin-top: 2.7px;
+    margin-left: 2.5px;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-family: "Poppins";
+  }
+
+  .custom-styles .react-daterange-picker__calendar-button {
+    /* Your custom styles here */
+    color: red; /* Change the color of the icon to red */
+    font-size: 20px; /* Adjust the font size of the icon */
+  }

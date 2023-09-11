@@ -2,6 +2,7 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { dateRange } from "../../storage/dashboard";
 import SelectStation from "../common/selectstations";
+import "../../styles/daterange.scss";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -31,7 +32,12 @@ const Controls = () => {
 
   return (
     <div style={style}>
+      <label className="picker-label" for="picker">
+        11th sept, 2023 - 20th sept, 2023
+      </label>
       <DateRangePicker
+        id="picker"
+        className="custom-styles"
         disabled={!getPerm("0")}
         onChange={onChangeRange}
         value={updatedDate}
