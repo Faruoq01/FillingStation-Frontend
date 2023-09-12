@@ -53,7 +53,6 @@ import HumanResourcesHome from "./components/HRComponents/hrhome";
 import LPOExpense from "./components/AirBnBTotal/lpoexpense";
 import ProductsDispensed from "./components/AirBnBTotal/dispensedproduct";
 import Tree from "./test";
-import PDF from "./pdf";
 
 const treeData = [
   {
@@ -151,7 +150,6 @@ function App() {
         </Route>
         <Route path="attendant" element={<AttendanceModule />} />
         <Route path="test" element={<Tree data={treeData} />} />
-        <Route path="pdf" element={<PDF />} />
         <Route path="connection" element={<Connection />} />
         {/* <Route render={() => <h1>404 page not found</h1>} /> */}
       </Routes>
