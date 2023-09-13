@@ -19,6 +19,8 @@ const HumanResourcesHome = (props) => {
       navigate("/home/hr/query");
     } else if (data.name === "Attendance") {
       navigate("/home/hr/attendance");
+    } else if (data.name === "Employee Shifts") {
+      navigate("/home/hr/shifts");
     }
   };
 
@@ -63,6 +65,7 @@ const HumanResourcesHome = (props) => {
           <DashboardImage image={hr11} name={"Salary structure"} value={"41"} />
           <DashboardImage image={hr3} name={"Query"} value={"41"} />
           <DashboardImage image={hr5} name={"Attendance"} value={"41"} />
+          <DashboardImage image={hr5} name={"Employee Shifts"} value={"41"} />
         </div>
       </div>
     </div>

@@ -53,6 +53,7 @@ import HumanResourcesHome from "./components/HRComponents/hrhome";
 import LPOExpense from "./components/AirBnBTotal/lpoexpense";
 import ProductsDispensed from "./components/AirBnBTotal/dispensedproduct";
 import Tree from "./test";
+import EmployeeShifts from "./components/HRComponents/employeeshifts";
 
 const treeData = [
   {
@@ -145,6 +146,7 @@ function App() {
             <Route path="salary" element={<Salary />} />
             <Route path="query" element={<Query />} />
             <Route path="attendance" element={<Attendance />} />
+            <Route path="shifts" element={<EmployeeShifts />} />
           </Route>
           <Route path="settings" element={<Settings />} />
         </Route>

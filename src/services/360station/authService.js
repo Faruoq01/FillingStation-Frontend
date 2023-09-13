@@ -4,32 +4,30 @@ import { removeSpinner } from "../../storage/outlet";
 import { store } from "../../storage/store";
 
 const AuthService = {
-  register: (data) => {
-    return APIs.post("/register", data)
-      .then(({ data }) => {
-        store.dispatch(removeSpinner());
-        if (data.status === 200)
-          swal("Success!", "User registration successful", "success");
-        return data;
-      })
-      .catch((err) => {
-        store.dispatch(removeSpinner());
-        console.log("Auth service err", err);
-        throw err;
-      });
+  register: async (data) => {
+    try {
+      const { data: data_1 } = await APIs.post("/register", data);
+      store.dispatch(removeSpinner());
+      if (data_1.status === 200)
+        swal("Success!", "User registration successful", "success");
+      return data_1;
+    } catch (err) {
+      store.dispatch(removeSpinner());
+      console.log("Auth service err", err);
+      throw err;
+    }
   },
 
-  login: (data) => {
-    return APIs.post("/login", data)
-      .then(({ data }) => {
-        setHeadersAndStorage(data);
-        return data;
-      })
-      .catch((err) => {
-        store.dispatch(removeSpinner());
-        console.log("Auth service err", err);
-        throw err;
-      });
+  login: async (data) => {
+    try {
+      const { data: data_1 } = await APIs.post("/login", data);
+      setHeadersAndStorage(data_1);
+      return data_1;
+    } catch (err) {
+      store.dispatch(removeSpinner());
+      console.log("Auth service err", err);
+      throw err;
+    }
   },
 
   logout: () => {

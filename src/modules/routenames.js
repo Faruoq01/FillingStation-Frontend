@@ -35,5 +35,6 @@ export const routeNames = {
   "/home/hr/salary": "Salary",
   "/home/hr/query": "Query",
   "/home/hr/attendance": "Attendance",
+  "/home/hr/shifts": "Employee Shifts",
   "/home/settings": "Settings",
 };

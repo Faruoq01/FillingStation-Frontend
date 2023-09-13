@@ -29,7 +29,6 @@ const data = [
     difference: "122,293 ",
     lop: "283,922 ",
     rate: "283,922",
-    closing: "122,293 ",
   },
   {
     id: `${Math.random()}`,
@@ -135,7 +134,6 @@ const data2 = [
     difference: "122,293 ",
     lop: "283,922 ",
     rate: "283,922",
-    closing: "122,293 ",
   },
 ];
 const footer = (data) => [
