@@ -39,7 +39,12 @@ const ModalBackground = ({
             {children}
           </div>
 
-          <div style={footer} className="butt">
+          <div
+            style={{
+              ...footer,
+              justifyContent: report ? "flex-start" : "space-between",
+            }}
+            className="butt">
             <Button
               sx={button}
               onClick={report ? pdf : submit}
@@ -108,7 +113,6 @@ const footer = {
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
-  justifyContent: "flex-start",
 };
 
 export default ModalBackground;

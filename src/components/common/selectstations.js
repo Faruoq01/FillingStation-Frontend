@@ -119,6 +119,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
           id="demo-select-small"
           value={0}
           sx={selectStyle2}
+          MenuProps={menuProps}
           disabled>
           <MenuItem style={menu} value={0}>
             {!oneStation
@@ -154,6 +155,14 @@ const selectStyle2 = {
 
 const menu = {
   fontSize: "12px",
+};
+
+const menuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: "200px",
+    },
+  },
 };
 
 export default SelectStation;

@@ -30,12 +30,12 @@ const EmployeeShifts = () => {
         </TableControls>
 
         <CustomArcodion mt={"20px"} day={"Sunday"} />
-        <CustomArcodion mt={"5px"} day={"Monday"} />
-        <CustomArcodion mt={"5px"} day={"Tuesday"} />
-        <CustomArcodion mt={"5px"} day={"Wednesday"} />
-        <CustomArcodion mt={"5px"} day={"Thursday"} />
-        <CustomArcodion mt={"5px"} day={"Friday"} />
-        <CustomArcodion mt={"5px"} day={"Saturday"} />
+        <CustomArcodion mt={"0px"} day={"Monday"} />
+        <CustomArcodion mt={"0px"} day={"Tuesday"} />
+        <CustomArcodion mt={"0px"} day={"Wednesday"} />
+        <CustomArcodion mt={"0px"} day={"Thursday"} />
+        <CustomArcodion mt={"0px"} day={"Friday"} />
+        <CustomArcodion mt={"0px"} day={"Saturday"} />
       </TablePageBackground>
     </React.Fragment>
   );
