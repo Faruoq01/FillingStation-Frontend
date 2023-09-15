@@ -54,6 +54,7 @@ const BarChartGraph = (props) => {
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const graphData = useSelector((state) => state.dailysales.graph);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const user = useSelector((state) => state.auth.user);
   const [load, setLoad] = useState(false);
 
@@ -66,7 +67,7 @@ const BarChartGraph = (props) => {
   };
 
   const getMonthlyGraphData = useCallback(
-    (station) => {
+    (station, salesShift) => {
       setLoad(true);
       const getDate = updatedDate === (null || "") ? date2 : updatedDate;
       const getYear = moment(getDate).format("YYYY");
@@ -87,11 +88,11 @@ const BarChartGraph = (props) => {
         organisationID: resolveUserID().id,
         outletID: station === null ? "None" : station?._id,
         range: range,
+        shift: salesShift,
       };
 
       APIs.post("/daily-sales/bargraph", payload)
         .then(({ data }) => {
-          console.log(data, "monthly");
           dispatch(graph(data.monthly));
         })
         .then(() => {
@@ -106,8 +107,8 @@ const BarChartGraph = (props) => {
   );
 
   useEffect(() => {
-    getMonthlyGraphData(oneStationData);
-  }, [oneStationData, getMonthlyGraphData]);
+    getMonthlyGraphData(oneStationData, salesShift);
+  }, [oneStationData, getMonthlyGraphData, salesShift]);
 
   return (
     <div className="bar-chart">

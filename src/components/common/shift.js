@@ -48,6 +48,9 @@ const ShiftSelect = () => {
 
   const changeMenu = (item, index) => {
     setDefaultSelect(index);
+    if (index === 1) {
+      return dispatch(setSalesShift(item));
+    }
     dispatch(setSalesShift(item.shiftname));
   };
 

@@ -8,6 +8,7 @@ import APIs from "../../../services/connections/api";
 import { lpo } from "../../../storage/dailysales";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const LPO = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const LPO = () => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const lpoData = useSelector((state) => state.dailysales.lpo);
   const [load, setLoad] = useState(false);
 
@@ -33,14 +35,16 @@ const LPO = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getLPOSales = useCallback((date, station) => {
+  const getLPOSales = useCallback((date, station, salesShift) => {
     setLoad(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date,
-      end: date,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/lpo", payload)
@@ -57,8 +61,8 @@ const LPO = () => {
   }, []);
 
   useEffect(() => {
-    getLPOSales(updatedDate, oneStationData);
-  }, [getLPOSales, oneStationData, updatedDate]);
+    getLPOSales(updatedDate, oneStationData, salesShift);
+  }, [getLPOSales, oneStationData, updatedDate, salesShift]);
 
   const goToLPO = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");

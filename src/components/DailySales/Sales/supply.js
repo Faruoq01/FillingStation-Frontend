@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { supply } from "../../../storage/dailysales";
 import APIs from "../../../services/connections/api";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const Supply = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const Supply = () => {
   const suppliesData = useSelector((state) => state.dailysales.supply);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
@@ -34,14 +36,16 @@ const Supply = () => {
     return user.permission?.dailysales[e];
   };
 
-  const getSupply = useCallback((date, station) => {
+  const getSupply = useCallback((date, station, salesShift) => {
     setLoad(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date,
-      end: date,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/supply", payload)
@@ -58,8 +62,8 @@ const Supply = () => {
   }, []);
 
   useEffect(() => {
-    getSupply(updatedDate, oneStationData);
-  }, [getSupply, oneStationData, updatedDate]);
+    getSupply(updatedDate, oneStationData, salesShift);
+  }, [getSupply, oneStationData, updatedDate, salesShift]);
 
   const goToSupplyPage = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");

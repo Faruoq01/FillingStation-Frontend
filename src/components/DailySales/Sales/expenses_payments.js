@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import BarChartGraph from "../../common/BarChartGraph";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { useHistory, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Skeleton, Stack } from "@mui/material";
 import { dateRange } from "../../../storage/dashboard";
 import swal from "sweetalert";
@@ -29,6 +29,7 @@ const ExpensesAndPayments = () => {
   const localeDate = useSelector((state) => state.dailysales.localeDate);
   const expenseData = useSelector((state) => state.dailysales.expenses);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [load, setLoad] = useState(false);
@@ -58,7 +59,7 @@ const ExpensesAndPayments = () => {
     }
   }, [date2, localeDate, moment, updatedDate]);
 
-  const getExpenses = useCallback((station, date) => {
+  const getExpenses = useCallback((station, date, salesShift) => {
     setLoad(true);
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
@@ -67,6 +68,7 @@ const ExpensesAndPayments = () => {
       organisationID: resolveUserID().id,
       start: date === "" ? today : date,
       end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/expenses-payments", payload)
@@ -83,8 +85,8 @@ const ExpensesAndPayments = () => {
   }, []);
 
   useEffect(() => {
-    getExpenses(oneStationData, updatedDate);
-  }, [getExpenses, oneStationData, updatedDate]);
+    getExpenses(oneStationData, updatedDate, salesShift);
+  }, [getExpenses, oneStationData, updatedDate, salesShift]);
 
   const convertDate = (newValue) => {
     const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");

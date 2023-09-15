@@ -7,6 +7,7 @@ import APIs from "../../../services/connections/api";
 import { netToBank } from "../../../storage/dailysales";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const NetToBank = () => {
   const user = useSelector((state) => state.auth.user);
@@ -14,6 +15,7 @@ const NetToBank = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const paymentsDetailData = useSelector((state) => state.dailysales.netToBank);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
@@ -25,14 +27,16 @@ const NetToBank = () => {
     }
   };
 
-  const getNetToBank = useCallback((date, station) => {
+  const getNetToBank = useCallback((date, station, salesShift) => {
     setLoad(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisation: resolveUserID().id,
-      start: date,
-      end: date,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/net_to_bank", payload)
@@ -49,8 +53,8 @@ const NetToBank = () => {
   }, []);
 
   useEffect(() => {
-    getNetToBank(updatedDate, oneStationData);
-  }, [getNetToBank, oneStationData, updatedDate]);
+    getNetToBank(updatedDate, oneStationData, salesShift);
+  }, [getNetToBank, oneStationData, updatedDate, salesShift]);
 
   const goToPayments = () => {
     navigate("/home/analysis/payments");

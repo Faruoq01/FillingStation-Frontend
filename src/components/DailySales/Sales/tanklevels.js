@@ -20,6 +20,7 @@ const TankLevels = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const tankLevelsData = useSelector((state) => state.dailysales.tankLevels);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -37,7 +38,7 @@ const TankLevels = () => {
     return user.permission?.dailySales[e];
   };
 
-  const tankLevelsUpdate = useCallback((date, station) => {
+  const tankLevelsUpdate = useCallback((date, station, salesShift) => {
     setLoad(true);
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
@@ -46,6 +47,7 @@ const TankLevels = () => {
       organisationID: resolveUserID().id,
       start: date === "" ? today : date,
       end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/tanklevels", payload)
@@ -62,8 +64,8 @@ const TankLevels = () => {
   }, []);
 
   useEffect(() => {
-    tankLevelsUpdate(updatedDate, oneStationData);
-  }, [oneStationData, tankLevelsUpdate, updatedDate]);
+    tankLevelsUpdate(updatedDate, oneStationData, salesShift);
+  }, [oneStationData, tankLevelsUpdate, updatedDate, salesShift]);
 
   const goToTanks = (product) => {
     if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");

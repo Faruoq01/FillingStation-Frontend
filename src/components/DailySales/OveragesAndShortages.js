@@ -21,6 +21,7 @@ const OveragesAndShortages = (props) => {
   const overageTypeData = useSelector((state) => state.dailysales.overageType);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const user = useSelector((state) => state.auth.user);
   const [load, setLoad] = useState();
 
@@ -32,7 +33,7 @@ const OveragesAndShortages = (props) => {
     }
   };
 
-  const getOverages = useCallback((station, date) => {
+  const getOverages = useCallback((station, date, salesShift) => {
     setLoad(true);
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
@@ -41,6 +42,7 @@ const OveragesAndShortages = (props) => {
       organisationID: resolveUserID().id,
       start: date === "" ? today : date,
       end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/overages", payload)
@@ -57,8 +59,8 @@ const OveragesAndShortages = (props) => {
   }, []);
 
   useEffect(() => {
-    getOverages(oneStationData, updatedDate);
-  }, [getOverages, oneStationData, updatedDate]);
+    getOverages(oneStationData, updatedDate, salesShift);
+  }, [getOverages, oneStationData, updatedDate, salesShift]);
 
   const getDippingResult = () => {
     const product = overageData[overageTypeData.toLowerCase()];

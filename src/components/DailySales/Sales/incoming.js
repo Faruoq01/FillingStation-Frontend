@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ApproximateDecimal from "../../common/approx";
 import { incoming } from "../../../storage/dailysales";
 import APIs from "../../../services/connections/api";
+import moment from "moment";
 
 const IncomingOrder = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const IncomingOrder = () => {
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const incomingData = useSelector((state) => state.dailysales.incoming);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -31,12 +33,15 @@ const IncomingOrder = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getIncomingOrder = useCallback((date, station) => {
+  const getIncomingOrder = useCallback((date, station, salesShift) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date,
-      end: date,
+      start: date === "" ? today : date,
+      end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/incoming", payload)
@@ -48,8 +53,8 @@ const IncomingOrder = () => {
   }, []);
 
   useEffect(() => {
-    getIncomingOrder(updatedDate, oneStationData);
-  }, [getIncomingOrder, oneStationData, updatedDate]);
+    getIncomingOrder(updatedDate, oneStationData, salesShift);
+  }, [getIncomingOrder, oneStationData, updatedDate, salesShift]);
 
   const goToInc = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");
