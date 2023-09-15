@@ -7,12 +7,13 @@ import { settingsEmployee } from "../../storage/settings";
 import ModalInputField from "../controls/Modal/ModalInputField";
 import { MenuItem, Select } from "@mui/material";
 import swal from "sweetalert";
-import { adminOutlet } from "../../storage/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 
 const EditShiftModal = ({ day, open, close, data }) => {
   const user = useSelector((state) => state.auth.user);
   const employees = useSelector((state) => state.settings.orgEmployee);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const dispatch = useDispatch();
   const [defaultState, setDefaultState] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -95,7 +96,15 @@ const EditShiftModal = ({ day, open, close, data }) => {
 
       APIs.post("/station/shift", query)
         .then(({ data }) => {
-          dispatch(adminOutlet(data.outlet));
+          const stationCopy = JSON.parse(JSON.stringify(allOutlets));
+          const findID = stationCopy.findIndex(
+            (item) => item._id === data.outlet._id
+          );
+          stationCopy[findID] = data.outlet;
+          if (findID !== -1) {
+            dispatch(getAllStations(stationCopy));
+            dispatch(adminOutlet(data.outlet));
+          }
         })
         .then(() => {
           setLoading(false);

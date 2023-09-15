@@ -14,7 +14,7 @@ import AddShiftsModal from "../Modals/shifts";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import APIs from "../../services/connections/api";
-import { adminOutlet } from "../../storage/outlet";
+import { adminOutlet, getAllStations } from "../../storage/outlet";
 import EditShiftModal from "../Modals/editshift";
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -174,6 +174,39 @@ const CustomArcodion = ({ mt, day }) => {
 };
 
 const ShiftContainer = ({ key, data, day, edit }) => {
+  const dispatch = useDispatch();
+  const station = useSelector((state) => state.outlet.adminOutlet);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const [active, setActive] = useState(data.activeState);
+
+  const changeActiveState = (item) => {
+    setActive(!active);
+    const currentDay = day.toLowerCase();
+    const shiftList = JSON.parse(JSON.stringify(station.shift));
+    shiftList[currentDay][item.shiftname]["activeState"] = !active;
+
+    const query = {
+      id: station._id,
+      shift: shiftList,
+    };
+
+    APIs.post("/station/shift", query)
+      .then(({ data }) => {
+        const stationCopy = JSON.parse(JSON.stringify(allOutlets));
+        const findID = stationCopy.findIndex(
+          (item) => item._id === data.outlet._id
+        );
+        stationCopy[findID] = data.outlet;
+        if (findID !== -1) {
+          dispatch(getAllStations(stationCopy));
+          dispatch(adminOutlet(data.outlet));
+        }
+      })
+      .then(() => {
+        swal("Success!", "Shifts updated successfully!", "success");
+      });
+  };
+
   return (
     <div key={key} className="shift-container">
       <div className="shift-controls">
@@ -181,8 +214,8 @@ const ShiftContainer = ({ key, data, day, edit }) => {
         <div className="shift-actions">
           <Icons data={data} day={day} editShift={edit} />
           <Android12Switch
-            // onChange={(e) => changePermission(e)}
-            checked={data.activeState}
+            onChange={(e) => changeActiveState(data)}
+            checked={active}
           />
         </div>
       </div>
