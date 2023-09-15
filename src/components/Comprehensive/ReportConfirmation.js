@@ -62,6 +62,7 @@ const ReportConfirmation = () => {
   const [loading2, setLoading2] = useState(false);
   const dispatch = useDispatch();
   const remarkList = useSelector((state) => state.comprehensive.remarks);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -129,13 +130,13 @@ const ReportConfirmation = () => {
       image: user.image,
       remark: remark,
       selectedDate: currentDate,
+      shift: currentShift,
       outletID: oneStationData?._id,
       organisationID: oneStationData?.organisation,
     };
 
     APIs.post("/sales/remark", payload)
       .then((data) => {
-        console.log(data);
         refresh();
       })
       .then(() => {

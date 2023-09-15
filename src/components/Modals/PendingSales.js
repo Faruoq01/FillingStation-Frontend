@@ -8,11 +8,12 @@ import "../../styles/lpo.scss";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Stack } from "@mui/material";
+import { MenuItem, Select, Stack } from "@mui/material";
 import {
   changeDate,
   changeStation,
   createLPO,
+  setCurrentShift,
   tankList,
   updateRecords,
 } from "../../storage/recordsales";
@@ -41,6 +42,8 @@ const PendingSales = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
+  const [defaultSelect, setDefaultSelect] = useState(0);
 
   useEffect(() => {
     dispatch(changeDate(""));
@@ -54,7 +57,38 @@ const PendingSales = (props) => {
     );
   };
 
+  const getAllShifts = () => {
+    const today = moment().format("dddd").toLowerCase();
+    const station = JSON.parse(JSON.stringify(oneStationData));
+    if (station) {
+      if (station.shift) {
+        const shifts = station.shift;
+        if (today in shifts) {
+          const shiftList = shifts[today];
+          return Object.values(shiftList);
+        } else {
+          return [];
+        }
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  };
+
   const submit = async () => {
+    if (getAllShifts().length === 0) {
+      return swal(
+        "Error",
+        "Please contact admin to create shifts for this station",
+        "error"
+      );
+    }
+
+    if (currentShift === "") {
+      return swal("Error", "Please select shift to proceed", "error");
+    }
     const today = moment();
     const beyondTodaysDate = moment(currentDate) > today;
 
@@ -73,6 +107,7 @@ const PendingSales = (props) => {
       date: currentDate,
       organizationID: oneStationData.organisation,
       outletID: oneStationData._id,
+      shift: currentShift,
     }).then((data) => {
       setLoading(false);
       return data.data.data;
@@ -219,6 +254,11 @@ const PendingSales = (props) => {
     navigate("/home/dashboard/dashboardhome/0");
   };
 
+  const changeMenu = (item, index) => {
+    setDefaultSelect(index);
+    dispatch(setCurrentShift(item.shiftname));
+  };
+
   return (
     <Modal
       open={props.open}
@@ -281,6 +321,27 @@ const PendingSales = (props) => {
                   />
                 </Stack>
               </LocalizationProvider>
+            </div>
+
+            <div style={row2}>
+              <Select value={defaultSelect} sx={select}>
+                <MenuItem style={menu} value={0}>
+                  Please select shift
+                </MenuItem>
+                {getAllShifts().map((item, index) => {
+                  return (
+                    <MenuItem
+                      onClick={() => {
+                        changeMenu(item, index + 1);
+                      }}
+                      key={index}
+                      style={menu}
+                      value={index + 1}>
+                      {item.shiftname}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
             </div>
 
             <div style={{ marginTop: "10px", height: "30px" }} className="butt">
@@ -366,6 +427,22 @@ const right = {
   fontSize: "15px",
   fontWeight: "bold",
   marginRight: "15px",
+};
+
+const select = {
+  height: "35px",
+  border: "none",
+  fontSize: "12px",
+  fontFamily: "Poppins",
+  fontWeight: "bold",
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "none",
+  },
+};
+
+const menu = {
+  fontSize: "12px",
+  fontFamily: "Poppins",
 };
 
 export default PendingSales;

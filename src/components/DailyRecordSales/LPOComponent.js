@@ -21,6 +21,7 @@ const LPOComponent = (props) => {
   const gallery = useRef();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
   const lpos = useSelector((state) => state.recordsales.lpo);
   const [selectedPMS, setSelectedPMS] = useState(null);
   const [selectedAGO, setSelectedAGO] = useState(null);
@@ -229,6 +230,7 @@ const LPOComponent = (props) => {
       station: oneStationData?.outletName + " " + oneStationData.alias,
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
+      shift: currentShift,
       createdAt: currentDate,
       updatedAt: currentDate,
     };
@@ -241,6 +243,7 @@ const LPOComponent = (props) => {
       org: oneStationData?.organisation,
       outletID: oneStationData._id,
       truckNo: truckNo,
+      shift: currentShift,
       createdAt: currentDate,
       updatedAt: currentDate,
     };

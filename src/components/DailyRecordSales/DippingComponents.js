@@ -34,6 +34,7 @@ const DippingComponents = (props) => {
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
 
   const getStationTanks = useCallback(() => {
     const copyTanks = JSON.parse(JSON.stringify(tankListData));
@@ -113,6 +114,7 @@ const DippingComponents = (props) => {
           DPKSellingPrice: oneStationData.DPKPrice,
           outletID: oneStationData._id,
           organizationID: oneStationData.organisation,
+          shift: currentShift,
           createdAt: currentDate,
           updatedAt: currentDate,
         };
@@ -172,6 +174,7 @@ const DippingComponents = (props) => {
           DPKSellingPrice: oneStationData.DPKPrice,
           outletID: oneStationData._id,
           organizationID: oneStationData.organisation,
+          shift: currentShift,
           createdAt: currentDate,
           updatedAt: currentDate,
         };
@@ -230,6 +233,7 @@ const DippingComponents = (props) => {
           DPKSellingPrice: oneStationData.DPKPrice,
           outletID: oneStationData._id,
           organizationID: oneStationData.organisation,
+          shift: currentShift,
           createdAt: currentDate,
           updatedAt: currentDate,
         };

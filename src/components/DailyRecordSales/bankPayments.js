@@ -17,6 +17,7 @@ const BankPayment = () => {
   const gallery = useRef();
   const [open, setOpen] = useState(false);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
   const [autoCOM, setAutoCom] = useState(null);
 
   ///////////////////////////////////////////////////////////
@@ -109,6 +110,7 @@ const BankPayment = () => {
       attachApproval: getImage(),
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
+      shift: currentShift,
       createdAt: currentDate,
       updatedAt: currentDate,
     };

@@ -39,6 +39,7 @@ const initialState = {
   linkedData: { page: 1 },
   lpo: [],
   searchData2: [],
+  currentShift: "",
 };
 
 export const recordsalesSlice = createSlice({
@@ -231,6 +232,9 @@ export const recordsalesSlice = createSlice({
     tankList: (state, action) => {
       state.tankList = action.payload;
     },
+    setCurrentShift: (state, action) => {
+      state.currentShift = action.payload;
+    },
     clearRecordSales: () => initialState,
   },
 });
@@ -264,6 +268,7 @@ export const {
   creditPayloadObject,
   tankList,
   clearRecordSales,
+  setCurrentShift,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;

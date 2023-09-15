@@ -258,10 +258,7 @@ const SummaryRecord = (props) => {
   const daySupplyData = useSelector((state) => state.supply.daySupply);
   const tankList = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  // console.log(currentDate, "date");
-  // console.log(dippingPayloadData, "dipping");
-  // console.log(selectedPumps, "Pumps");
-  // console.log(selectedTanks, "Tanks");
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
 
   const updateTankDetails = (product, tank) => {
     const onlyPMS = [...tankList].filter(
@@ -350,7 +347,11 @@ const SummaryRecord = (props) => {
       const afterSales =
         data.afterSales === 0 ? data.currentLevel : data.afterSales;
       const updatedTank = { ...data, afterSales: afterSales };
-      const oneTank = getTankLevelsPayload(updatedTank, currentDate);
+      const oneTank = getTankLevelsPayload(
+        updatedTank,
+        currentDate,
+        currentShift
+      );
       return oneTank;
     });
     dispatch(tanksPayload(shuttled));
@@ -375,7 +376,12 @@ const SummaryRecord = (props) => {
 
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
-        const salesPayload = getSalesPayload(tank, pump, currentDate);
+        const salesPayload = getSalesPayload(
+          tank,
+          pump,
+          currentDate,
+          currentShift
+        );
         const pumpPayload = getPumpPayloads(pump);
         const tankPayload = getTankPayloads(tank);
 
@@ -412,7 +418,7 @@ const SummaryRecord = (props) => {
     for (let tank of updatedTanks) {
       for (let pump of tank.pumps) {
         if (pump.RTlitre !== 0) {
-          const rt = getRTPayload(tank, pump, currentDate);
+          const rt = getRTPayload(tank, pump, currentDate, currentShift);
           rtList.push(rt);
         }
       }
@@ -910,7 +916,7 @@ const SummaryRecord = (props) => {
   );
 };
 
-const getSalesPayload = (tank, pump, currentDate) => {
+const getSalesPayload = (tank, pump, currentDate, currentShift) => {
   return {
     sales: pump.sales,
     RTlitre: pump.RTlitre,
@@ -932,6 +938,7 @@ const getSalesPayload = (tank, pump, currentDate) => {
     outletID: tank.outlet._id,
     outletName: tank.outlet.outletName.concat(", ", tank.outlet.alias),
     organisationID: tank.outlet.organisation,
+    shift: currentShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };
@@ -958,7 +965,7 @@ const getTankPayloads = (tank) => {
   };
 };
 
-const getRTPayload = (tank, pump, currentDate) => {
+const getRTPayload = (tank, pump, currentDate, currentShift) => {
   return {
     rtLitre: pump.RTlitre,
     PMSCost: tank.outlet.PMSCost,
@@ -974,12 +981,13 @@ const getRTPayload = (tank, pump, currentDate) => {
     tankName: tank.tankName,
     outletID: tank.outletID,
     organizationID: tank.organisationID,
+    shift: currentShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };
 };
 
-const getTankLevelsPayload = (level, currentDate) => {
+const getTankLevelsPayload = (level, currentDate, currentShift) => {
   return {
     currentLevel: level.currentLevel,
     tankName: level.tankName,
@@ -989,6 +997,7 @@ const getTankLevelsPayload = (level, currentDate) => {
     outletID: level.outletID,
     tankID: level._id,
     organizationID: level.organisationID,
+    shift: currentShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };

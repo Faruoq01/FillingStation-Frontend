@@ -16,6 +16,7 @@ const SalesCards = () => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const salesData = useSelector((state) => state.dailysales.sales);
 
   const resolveUserID = () => {
@@ -33,7 +34,7 @@ const SalesCards = () => {
     return user.permission?.dailySales[e];
   };
 
-  const updateSalesValues = useCallback((date, station) => {
+  const updateSalesValues = useCallback((date, station, salesShift) => {
     setLoad(true);
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
@@ -42,6 +43,7 @@ const SalesCards = () => {
       organisationID: resolveUserID().id,
       start: date === "" ? today : date,
       end: date === "" ? today : date,
+      shift: salesShift,
     };
 
     APIs.post("/daily-sales/sales", payload)
@@ -58,8 +60,8 @@ const SalesCards = () => {
   }, []);
 
   useEffect(() => {
-    updateSalesValues(updatedDate, oneStationData);
-  }, [oneStationData, updateSalesValues, updatedDate]);
+    updateSalesValues(updatedDate, oneStationData, salesShift);
+  }, [oneStationData, updateSalesValues, updatedDate, salesShift]);
 
   const openDailySales = (data) => {
     if (load) return;

@@ -21,12 +21,7 @@ const EmployeeShifts = () => {
               callback={() => {}}
             />
           </LeftControls>
-          <RightControls>
-            {/* <CreateButton
-              callback={handleOpenModal}
-              label={"Create new filling station"}
-            /> */}
-          </RightControls>
+          <RightControls></RightControls>
         </TableControls>
 
         <CustomArcodion mt={"20px"} day={"Sunday"} />

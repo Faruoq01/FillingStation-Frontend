@@ -3,6 +3,7 @@ import swal from "sweetalert";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SelectStation from "../../common/selectstations";
+import ShiftSelect from "../../common/shift";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -42,6 +43,7 @@ const Controls = () => {
         }}>
         View comprehensive report
       </Button>
+      <ShiftSelect />
     </div>
   );
 };

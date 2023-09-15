@@ -90,7 +90,22 @@ const AddShiftsModal = ({ day, open, close }) => {
       let shiftLoad = {};
       if ("shift" in oneStationData) {
         const shiftList = currentStation.shift;
-        shiftList[day][payload.shiftname] = payload;
+        if (day in shiftList) {
+          const currentDay = shiftList[day];
+          if (payload.shiftname in currentDay) {
+            shiftList[day][payload.shiftname] = payload;
+            shiftLoad = shiftList;
+          } else {
+            shiftList[day][payload.shiftname] = {};
+            shiftList[day][payload.shiftname] = payload;
+            shiftLoad = shiftList;
+          }
+        } else {
+          shiftList[day] = {};
+          shiftList[day][payload.shiftname] = {};
+          shiftList[day][payload.shiftname] = payload;
+          shiftLoad = shiftList;
+        }
         shiftLoad = shiftList;
       } else {
         const initShift = { ...defaultShift };

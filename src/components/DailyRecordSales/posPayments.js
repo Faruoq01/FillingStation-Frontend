@@ -20,6 +20,7 @@ const PosPayments = (props) => {
   const gallery = useRef();
   const [open, setOpen] = useState(false);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
 
   ///////////////////////////////////////////////////////////
   const lpoPayloadData = useSelector((state) => state.recordsales.lpoPayload);
@@ -112,6 +113,7 @@ const PosPayments = (props) => {
       attachApproval: getImage(),
       outletID: oneStationData?._id,
       organizationID: oneStationData?.organisation,
+      shift: currentShift,
       createdAt: currentDate,
       updatedAt: currentDate,
     };
