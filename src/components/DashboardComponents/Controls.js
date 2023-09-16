@@ -18,7 +18,7 @@ const Controls = () => {
 
   return (
     <div style={style}>
-      <CustomDateRangePicker />
+      <CustomDateRangePicker callback={() => {}} />
       <SelectStation
         ml={"10px"}
         oneStation={getPerm("0")}

@@ -1,8 +1,6 @@
 import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
-import swal from "sweetalert";
-import UpdateDipping from "../Modals/DailySales/Dipping";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/connections/api";
@@ -22,11 +20,7 @@ const TankLevels = () => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
-
-  const [openEdit, setOpenEdit] = useState(false);
-  const [oneRecord, setOneRecord] = useState({});
   const [load, setLoad] = useState(false);
-  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -66,32 +60,7 @@ const TankLevels = () => {
 
   useEffect(() => {
     getTankLevels(currentDate, salesShift);
-  }, [getTankLevels, currentDate, refresh, salesShift]);
-
-  const updateRecord = (data) => {
-    // setOpenEdit(true);
-    // setOneRecord(data);
-  };
-
-  const deleteRecord = (data) => {
-    swal({
-      title: "Alert!",
-      text: "Are you sure you want to delete this record?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        APIs.post("/sales/delete/tankLevels", { id: data._id })
-          .then((data) => {
-            setRefresh(!refresh);
-          })
-          .then(() => {
-            swal("Success", "Record deleted successfully", "success");
-          });
-      }
-    });
-  };
+  }, [getTankLevels, currentDate, salesShift]);
 
   const DippingRow = (props) => {
     return (
@@ -114,17 +83,11 @@ const TankLevels = () => {
         {getPerm("17") && (
           <div style={ins} className="cells">
             <img
-              onClick={() => {
-                updateRecord(props.data);
-              }}
               style={{ width: "20px", height: "20px", marginRight: "10px" }}
               src={edit}
               alt="icon"
             />
             <img
-              onClick={() => {
-                deleteRecord(props.data);
-              }}
               style={{ width: "20px", height: "20px" }}
               src={del}
               alt="icon"
@@ -172,9 +135,6 @@ const TankLevels = () => {
               {getPerm("13") && (
                 <div className="cells">
                   <img
-                    onClick={() => {
-                      updateRecord(data);
-                    }}
                     style={{
                       width: "20px",
                       height: "20px",
@@ -184,9 +144,6 @@ const TankLevels = () => {
                     alt="icon"
                   />
                   <img
-                    onClick={() => {
-                      deleteRecord(data);
-                    }}
                     style={{ width: "20px", height: "20px" }}
                     src={del}
                     alt="icon"
@@ -217,13 +174,6 @@ const TankLevels = () => {
       ) : (
         <div style={{ width: "100%" }}>
           <div className="initial_balance_container">
-            {openEdit && (
-              <UpdateDipping
-                data={oneRecord}
-                open={openEdit}
-                close={setOpenEdit}
-              />
-            )}
             <div className="product_balance_header">
               <div className="cells">S/N</div>
               <div className="cells">Tank Name</div>

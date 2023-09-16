@@ -142,7 +142,7 @@ const selectStyle2 = {
   minWidth: mobile.matches ? "225px" : "120px",
   maxWidth: "300px",
   height: "30px",
-  borderRadius: "0px",
+  borderRadius: "20px",
   background: "#F2F1F1B2",
   color: "#000",
   fontSize: "12px",

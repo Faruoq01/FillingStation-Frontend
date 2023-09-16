@@ -8,7 +8,7 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/connections/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import { useHistory, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setLpo, setSalesList } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";

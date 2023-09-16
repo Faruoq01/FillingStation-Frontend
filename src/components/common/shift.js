@@ -7,7 +7,7 @@ const { Select, MenuItem } = require("@mui/material");
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
-const ShiftSelect = ({ mr = "0px" }) => {
+const ShiftSelect = ({ mr = "0px", ml = "10px" }) => {
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
@@ -55,7 +55,9 @@ const ShiftSelect = ({ mr = "0px" }) => {
   };
 
   return (
-    <Select value={defaultSelect} sx={{ ...selectStyle, marginRight: mr }}>
+    <Select
+      value={defaultSelect}
+      sx={{ ...selectStyle, marginRight: mr, marginLeft: ml }}>
       <MenuItem value={0} style={menu}>
         Select shift
       </MenuItem>

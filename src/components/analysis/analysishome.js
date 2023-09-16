@@ -9,14 +9,12 @@ import me6 from "../../assets/me6.png";
 import { useDispatch, useSelector } from "react-redux";
 import AddCostPrice from "../Modals/analysis/addcostprice";
 import CostPriceModal from "../Modals/analysis/costpricemodal";
-import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import { setAnalysisData } from "../../storage/analysis";
 import swal from "sweetalert";
 import ApproximateDecimal from "../common/approx";
 import { Skeleton } from "@mui/material";
 import SalesDisplay from "../Modals/analysis/salesdisplay";
 import Varience from "../Modals/Varience";
-import { dateRange } from "../../storage/analysis";
 import APIs from "../../services/connections/api";
 import SelectStation from "../common/selectstations";
 import {
@@ -26,6 +24,10 @@ import {
 } from "../controls/PageLayout/TableControls";
 import { useNavigate } from "react-router-dom";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
+import ShiftSelect from "../common/shift";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import CustomDateRangePicker from "../common/customdaterangepicker";
 
 const AnalysisHome = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -33,8 +35,8 @@ const AnalysisHome = (props) => {
   const { expenses, payments, profit, totalSales, totalVarience } = useSelector(
     (state) => state.analysis.analysisData
   );
-  const updatedDate = useSelector((state) => state.analysis.dateRange);
-  const moment = require("moment-timezone");
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -61,14 +63,25 @@ const AnalysisHome = (props) => {
     return user.permission?.analysis[e];
   };
 
-  const analysisDataHandler = (outletID) => {
-    const [start, end] = updatedDate;
+  const analysisDataHandler = useCallback((outletID, salesShift, date) => {
+    refresh(outletID, salesShift, date);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const outlet = oneStationData === null ? "None" : oneStationData._id;
+    analysisDataHandler(outlet, salesShift, updatedDate);
+  }, [analysisDataHandler, oneStationData, salesShift, updatedDate]);
+
+  const refresh = (outletID, salesShift, date) => {
+    const [start, end] = date;
     setLoad(true);
     const payload = {
       organisation: resolveUserID().id,
       outletID: outletID,
       start: start,
       end: end,
+      shift: salesShift,
     };
 
     APIs.post("/analysis/analysisData", payload)
@@ -164,20 +177,8 @@ const AnalysisHome = (props) => {
     }
   };
 
-  const getDateFromRange = (data) => {
-    setLoad(true);
-    if (!getPerm("6")) return swal("Warning!", "Permission denied", "info");
-
-    const formatOne = moment(new Date(data[0]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const formatTwo = moment(new Date(data[1]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    dispatch(dateRange([formatOne, formatTwo]));
-    const id = oneStationData === null ? "None" : oneStationData._id;
-    analysisDataHandler(id, formatOne, formatTwo);
+  const reloadAnalysis = (id) => {
+    refresh(id, salesShift, updatedDate);
   };
 
   return (
@@ -189,11 +190,12 @@ const AnalysisHome = (props) => {
               ml={"0px"}
               oneStation={getPerm("0")}
               allStation={getPerm("1")}
-              callback={analysisDataHandler}
+              callback={reloadAnalysis}
             />
+            <ShiftSelect ml={"10px"} />
           </LeftControls>
           <RightControls>
-            <DateRangePicker onChange={getDateFromRange} value={updatedDate} />
+            <CustomDateRangePicker />
           </RightControls>
         </TableControls>
 

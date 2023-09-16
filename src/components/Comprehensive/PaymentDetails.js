@@ -3,7 +3,7 @@ import edit from "../../assets/comp/edit.png";
 import del from "../../assets/comp/delete.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import UpdatePayments from "../Modals/DailySales/payments";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/connections/api";
@@ -12,6 +12,7 @@ import { Button } from "@mui/material";
 import PaymentsModal from "../Modals/comprehensive/payments";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
 
 const PaymentDetails = () => {
   const navigate = useNavigate();
@@ -206,238 +207,269 @@ const PaymentDetails = () => {
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      <div style={{ width: "90%" }} className="butStyle">
-        <Button
-          variant="contained"
-          onClick={resetAll}
-          sx={{
-            ...resetBut,
-            background: "#4CAF50",
-            "&:hover": {
-              backgroundColor: "#4CAF50",
-            },
-          }}>
-          Reset
-        </Button>
-        <Button
-          variant="contained"
-          onClick={openAddPayments}
-          sx={{
-            ...resetBut,
-            background: "#f44336",
-            "&:hover": {
-              backgroundColor: "#f44336",
-            },
-          }}>
-          Add
-        </Button>
-      </div>
-      <div className="initial_balance_container_mobile">
-        {/* Supply records */}
-        <div className="mobile_header">&nbsp;&nbsp;&nbsp; Bank Payments</div>
-        <div
-          style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
-          <div className="sups">
-            <div className="slide">
-              {payments.bankList.length === 0 ? (
-                <div>No record</div>
-              ) : (
-                payments.bankList.map((item, index) => {
-                  return (
-                    <MobileBankPayment key={index} data={item} type={"bank"} />
-                  );
-                })
-              )}
-            </div>
+    <React.Fragment>
+      {load ? (
+        <ThreeDots
+          height="60"
+          width="50"
+          radius="9"
+          color="#06805B"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{ marginLeft: "20px" }}
+          wrapperClassName=""
+          visible={true}
+        />
+      ) : (
+        <div style={{ width: "100%" }}>
+          <div style={{ width: "90%" }} className="butStyle">
+            <Button
+              variant="contained"
+              onClick={resetAll}
+              sx={{
+                ...resetBut,
+                background: "#4CAF50",
+                "&:hover": {
+                  backgroundColor: "#4CAF50",
+                },
+              }}>
+              Reset
+            </Button>
+            <Button
+              variant="contained"
+              onClick={openAddPayments}
+              sx={{
+                ...resetBut,
+                background: "#f44336",
+                "&:hover": {
+                  backgroundColor: "#f44336",
+                },
+              }}>
+              Add
+            </Button>
           </div>
-        </div>
-      </div>
-
-      <div className="initial_balance_container_mobile">
-        {/* Supply records */}
-        <div className="mobile_header">&nbsp;&nbsp;&nbsp; POS Payments</div>
-        <div
-          style={{ marginBottom: "20px", marginTop: "10px" }}
-          className="balance_mobile_detail">
-          <div className="sups">
-            <div className="slide">
-              {payments.posList.length === 0 ? (
-                <div>No record</div>
-              ) : (
-                payments.posList.map((item, index) => {
-                  return (
-                    <MobileBankPayment key={index} data={item} type={"pos"} />
-                  );
-                })
-              )}
+          <div className="initial_balance_container_mobile">
+            {/* Supply records */}
+            <div className="mobile_header">
+              &nbsp;&nbsp;&nbsp; Bank Payments
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="payment_details">
-        {openEdit && (
-          <UpdatePayments
-            data={oneRecord}
-            update={setRefresh}
-            open={openEdit}
-            close={setOpenEdit}
-          />
-        )}
-        {openPayments && (
-          <PaymentsModal
-            update={setRefresh}
-            open={openPayments}
-            close={setOpenPayments}
-          />
-        )}
-        <div className="details_containser">
-          <div className="details_left">
-            <div className="details_table">
-              <div className="details_title">Bank Payments</div>
-              <div className="detail_table_header">
-                <div className="detail_table_row">S/N</div>
-                <div className="detail_table_row">Bank Name</div>
-                <div className="detail_table_row">Teller No</div>
-                <div className="detail_table_row">Amount</div>
-                {getPerm("16") && (
-                  <div className="detail_table_row">Action</div>
-                )}
+            <div
+              style={{ marginBottom: "20px", marginTop: "10px" }}
+              className="balance_mobile_detail">
+              <div className="sups">
+                <div className="slide">
+                  {payments.bankList.length === 0 ? (
+                    <div>No record</div>
+                  ) : (
+                    payments.bankList.map((item, index) => {
+                      return (
+                        <MobileBankPayment
+                          key={index}
+                          data={item}
+                          type={"bank"}
+                        />
+                      );
+                    })
+                  )}
+                </div>
               </div>
+            </div>
+          </div>
 
-              {payments.bankList.length === 0 ? (
-                <div>No record</div>
-              ) : (
-                payments.bankList.map((item, index) => {
-                  return (
-                    <div key={index} className="detail_table_header">
-                      <div className="detail_table_row2">{index + 1}</div>
-                      <div className="detail_table_row2">{item.bankName}</div>
-                      <div className="detail_table_row2">
-                        {item.tellerNumber}
-                      </div>
-                      <div className="detail_table_row2">
-                        {ApproximateDecimal(item.amountPaid)}
-                      </div>
-                      {getPerm("16") && (
-                        <div style={ins} className="detail_table_row2">
-                          <img
-                            onClick={() => {
-                              updateRecord(item, "bank");
-                            }}
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              marginRight: "10px",
-                            }}
-                            src={edit}
-                            alt="icon"
-                          />
-                          <img
-                            onClick={() => {
-                              deleteRecord(item, "bank");
-                            }}
-                            style={{ width: "20px", height: "20px" }}
-                            src={del}
-                            alt="icon"
-                          />
+          <div className="initial_balance_container_mobile">
+            {/* Supply records */}
+            <div className="mobile_header">&nbsp;&nbsp;&nbsp; POS Payments</div>
+            <div
+              style={{ marginBottom: "20px", marginTop: "10px" }}
+              className="balance_mobile_detail">
+              <div className="sups">
+                <div className="slide">
+                  {payments.posList.length === 0 ? (
+                    <div>No record</div>
+                  ) : (
+                    payments.posList.map((item, index) => {
+                      return (
+                        <MobileBankPayment
+                          key={index}
+                          data={item}
+                          type={"pos"}
+                        />
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="payment_details">
+            {openEdit && (
+              <UpdatePayments
+                data={oneRecord}
+                update={setRefresh}
+                open={openEdit}
+                close={setOpenEdit}
+              />
+            )}
+            {openPayments && (
+              <PaymentsModal
+                update={setRefresh}
+                open={openPayments}
+                close={setOpenPayments}
+              />
+            )}
+            <div className="details_containser">
+              <div className="details_left">
+                <div className="details_table">
+                  <div className="details_title">Bank Payments</div>
+                  <div className="detail_table_header">
+                    <div className="detail_table_row">S/N</div>
+                    <div className="detail_table_row">Bank Name</div>
+                    <div className="detail_table_row">Teller No</div>
+                    <div className="detail_table_row">Amount</div>
+                    {getPerm("16") && (
+                      <div className="detail_table_row">Action</div>
+                    )}
+                  </div>
+
+                  {payments.bankList.length === 0 ? (
+                    <div>No record</div>
+                  ) : (
+                    payments.bankList.map((item, index) => {
+                      return (
+                        <div key={index} className="detail_table_header">
+                          <div className="detail_table_row2">{index + 1}</div>
+                          <div className="detail_table_row2">
+                            {item.bankName}
+                          </div>
+                          <div className="detail_table_row2">
+                            {item.tellerNumber}
+                          </div>
+                          <div className="detail_table_row2">
+                            {ApproximateDecimal(item.amountPaid)}
+                          </div>
+                          {getPerm("16") && (
+                            <div style={ins} className="detail_table_row2">
+                              <img
+                                onClick={() => {
+                                  updateRecord(item, "bank");
+                                }}
+                                style={{
+                                  width: "20px",
+                                  height: "20px",
+                                  marginRight: "10px",
+                                }}
+                                src={edit}
+                                alt="icon"
+                              />
+                              <img
+                                onClick={() => {
+                                  deleteRecord(item, "bank");
+                                }}
+                                style={{ width: "20px", height: "20px" }}
+                                src={del}
+                                alt="icon"
+                              />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
+                      );
+                    })
+                  )}
+                </div>
 
-            <div style={{ marginTop: "30px" }} className="details_table">
-              <div className="details_title">POS Payments</div>
-              <div className="detail_table_header">
-                <div className="detail_table_row">S/N</div>
-                <div className="detail_table_row">Bank Name</div>
-                <div className="detail_table_row">Terminal ID</div>
-                <div className="detail_table_row">Amount</div>
-                {getPerm("16") && (
-                  <div className="detail_table_row">Action</div>
-                )}
-              </div>
+                <div style={{ marginTop: "30px" }} className="details_table">
+                  <div className="details_title">POS Payments</div>
+                  <div className="detail_table_header">
+                    <div className="detail_table_row">S/N</div>
+                    <div className="detail_table_row">Bank Name</div>
+                    <div className="detail_table_row">Terminal ID</div>
+                    <div className="detail_table_row">Amount</div>
+                    {getPerm("16") && (
+                      <div className="detail_table_row">Action</div>
+                    )}
+                  </div>
 
-              {payments.posList.length === 0 ? (
-                <div>No records</div>
-              ) : (
-                payments.posList.map((item, index) => {
-                  return (
-                    <div key={index} className="detail_table_header">
-                      <div className="detail_table_row2">{index + 1}</div>
-                      <div className="detail_table_row2">{item.posName}</div>
-                      <div className="detail_table_row2">{item.terminalID}</div>
-                      <div className="detail_table_row2">
-                        {ApproximateDecimal(item.amountPaid)}
-                      </div>
-                      {getPerm("16") && (
-                        <div style={ins} className="detail_table_row2">
-                          <img
-                            onClick={() => {
-                              updateRecord(item, "pos");
-                            }}
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              marginRight: "10px",
-                            }}
-                            src={edit}
-                            alt="icon"
-                          />
-                          <img
-                            onClick={() => {
-                              deleteRecord(item, "pos");
-                            }}
-                            style={{ width: "20px", height: "20px" }}
-                            src={del}
-                            alt="icon"
-                          />
+                  {payments.posList.length === 0 ? (
+                    <div>No records</div>
+                  ) : (
+                    payments.posList.map((item, index) => {
+                      return (
+                        <div key={index} className="detail_table_header">
+                          <div className="detail_table_row2">{index + 1}</div>
+                          <div className="detail_table_row2">
+                            {item.posName}
+                          </div>
+                          <div className="detail_table_row2">
+                            {item.terminalID}
+                          </div>
+                          <div className="detail_table_row2">
+                            {ApproximateDecimal(item.amountPaid)}
+                          </div>
+                          {getPerm("16") && (
+                            <div style={ins} className="detail_table_row2">
+                              <img
+                                onClick={() => {
+                                  updateRecord(item, "pos");
+                                }}
+                                style={{
+                                  width: "20px",
+                                  height: "20px",
+                                  marginRight: "10px",
+                                }}
+                                src={edit}
+                                alt="icon"
+                              />
+                              <img
+                                onClick={() => {
+                                  deleteRecord(item, "pos");
+                                }}
+                                style={{ width: "20px", height: "20px" }}
+                                src={del}
+                                alt="icon"
+                              />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-
-          <div className="details_right">
-            <div className="summary_details">
-              <div className="detail_cell">Total Sales</div>
-              <div style={vals} className="detail_cell">
-                {ApproximateDecimal(payments.totalSales)}
+                      );
+                    })
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="summary_details">
-              <div className="detail_cell">Sales Amount (no LPO)</div>
-              <div style={vals} className="detail_cell">
-                {ApproximateDecimal(payments.salesAmount)}
-              </div>
-            </div>
+              <div className="details_right">
+                <div className="summary_details">
+                  <div className="detail_cell">Total Sales</div>
+                  <div style={vals} className="detail_cell">
+                    {ApproximateDecimal(payments.totalSales)}
+                  </div>
+                </div>
 
-            <div className="summary_details">
-              <div className="detail_cell">Net to bank</div>
-              <div style={vals} className="detail_cell">
-                {ApproximateDecimal(payments.netToBank)}
-              </div>
-            </div>
+                <div className="summary_details">
+                  <div className="detail_cell">Sales Amount (no LPO)</div>
+                  <div style={vals} className="detail_cell">
+                    {ApproximateDecimal(payments.salesAmount)}
+                  </div>
+                </div>
 
-            <div className="summary_details">
-              <div className="detail_cell">Outstanding</div>
-              <div style={vals} className="detail_cell">
-                {ApproximateDecimal(payments.outstandingBalance)}
+                <div className="summary_details">
+                  <div className="detail_cell">Net to bank</div>
+                  <div style={vals} className="detail_cell">
+                    {ApproximateDecimal(payments.netToBank)}
+                  </div>
+                </div>
+
+                <div className="summary_details">
+                  <div className="detail_cell">Outstanding</div>
+                  <div style={vals} className="detail_cell">
+                    {ApproximateDecimal(payments.outstandingBalance)}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 

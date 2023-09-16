@@ -2,8 +2,6 @@ import { Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React from "react";
 
-const mobile = window.matchMedia("(max-width: 600px)");
-
 function ButtonField(props) {
   const {
     setOpen,
