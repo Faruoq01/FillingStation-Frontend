@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -25,6 +25,7 @@ import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { ExpenseDesktopTable, ExpenseMobileTable } from "../tables/expenses";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
+import ShiftSelect from "../common/shift";
 
 const columns = [
   "S/N",
@@ -51,6 +52,7 @@ const Expenses = () => {
   const expense = useSelector((state) => state.expenses.expense);
   const updateDate = useSelector((state) => state.dailysales.updatedDate);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -77,7 +79,7 @@ const Expenses = () => {
     setOpen(true);
   };
 
-  const getExpenseData = (stationID, date, skip) => {
+  const getExpenseData = (stationID, date, skip, salesShift) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
@@ -85,6 +87,7 @@ const Expenses = () => {
       outletID: stationID,
       organisationID: resolveUserID().id,
       date: date,
+      shift: salesShift,
     };
 
     ExpenseService.getAllExpenses(payload)
@@ -98,6 +101,16 @@ const Expenses = () => {
       });
   };
 
+  const updateExpenses = useCallback((outlet, salesShift) => {
+    getExpenseData(outlet, updateDate, skip, salesShift);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const outlet = oneStationData === null ? "None" : oneStationData._id;
+    updateExpenses(outlet, salesShift);
+  }, [updateExpenses, oneStationData, salesShift]);
+
   const searchTable = (value) => {
     dispatch(searchExpenses(value));
   };
@@ -110,7 +123,7 @@ const Expenses = () => {
     setEntries(value);
     setLimit(limit);
     const getID = oneStationData === null ? "None" : oneStationData._id;
-    getExpenseData(getID, updateDate, skip);
+    getExpenseData(getID, updateDate, skip, salesShift);
   };
 
   const convertDate = (newValue) => {
@@ -131,11 +144,11 @@ const Expenses = () => {
     dispatch(dateRange([getDate, getDate]));
 
     const getID = oneStationData === null ? "None" : oneStationData._id;
-    getExpenseData(getID, getDate, skip);
+    getExpenseData(getID, getDate, skip, salesShift);
   };
 
   const stationHelper = (id) => {
-    getExpenseData(id, updateDate, skip);
+    getExpenseData(id, updateDate, skip, salesShift);
   };
 
   const desktopTableData = {
@@ -175,13 +188,14 @@ const Expenses = () => {
 
       <TableControls>
         <LeftControls>
+          <SearchField ml={"0px"} callback={searchTable} />
           <SelectStation
-            ml={"0px"}
+            ml={"10px"}
             oneStation={getPerm("0")}
             allStation={getPerm("1")}
             callback={stationHelper}
           />
-          <SearchField ml={"10px"} callback={searchTable} />
+          <ShiftSelect ml={"10px"} />
         </LeftControls>
         <RightControls>
           <LocalizationProvider dateAdapter={AdapterDayjs}>

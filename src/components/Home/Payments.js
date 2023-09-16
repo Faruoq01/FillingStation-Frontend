@@ -39,6 +39,9 @@ import {
   PosPaymentMobileTable,
 } from "../tables/pospayment";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import ShiftSelect from "../common/shift";
 
 const bankColumns = [
   "S/N",
@@ -85,6 +88,7 @@ const Payments = (props) => {
   const [setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
   const updateDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -113,7 +117,7 @@ const Payments = (props) => {
     setActiveButton(false);
   };
 
-  const getAllPayments = (stationID, date, skip) => {
+  const getAllPayments = (stationID, date, skip, salesShift) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
@@ -121,6 +125,7 @@ const Payments = (props) => {
       outletID: stationID,
       organisationID: resolveUserID().id,
       date: date,
+      shift: salesShift,
     };
 
     const bank = RecordPaymentService.getBankPayments(payload);
@@ -141,6 +146,16 @@ const Payments = (props) => {
       });
   };
 
+  const updatePayments = useCallback((outlet, salesShift) => {
+    getAllPayments(outlet, updateDate, skip, salesShift);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const outlet = oneStationData === null ? "None" : oneStationData._id;
+    updatePayments(outlet, salesShift);
+  }, [updatePayments, oneStationData, salesShift]);
+
   const searchTable = (value) => {
     dispatch(searchBankPayment(value));
     dispatch(searchPosPayment(value));
@@ -154,7 +169,7 @@ const Payments = (props) => {
     setEntries(value);
     setLimit(limit);
     const ID = oneStationData === null ? "None" : oneStationData._id;
-    getAllPayments(ID, updateDate, skip);
+    getAllPayments(ID, updateDate, skip, salesShift);
   };
 
   const confirmPayment = (data, type) => {
@@ -217,11 +232,11 @@ const Payments = (props) => {
     dispatch(dateRange([getDate, getDate]));
 
     const ID = oneStationData === null ? "None" : oneStationData._id;
-    getAllPayments(ID, getDate, skip);
+    getAllPayments(ID, getDate, skip, salesShift);
   };
 
   const stationHelper = (id) => {
-    getAllPayments(id, updateDate, skip);
+    getAllPayments(id, updateDate, skip, salesShift);
   };
 
   const desktopTableData = {
@@ -278,13 +293,14 @@ const Payments = (props) => {
 
         <TableControls>
           <LeftControls>
+            <SearchField ml={"0px"} callback={searchTable} />
             <SelectStation
-              ml={"0px"}
+              ml={"10px"}
               oneStation={getPerm("0")}
               allStation={getPerm("1")}
               callback={stationHelper}
             />
-            <SearchField ml={"10px"} callback={searchTable} />
+            <ShiftSelect ml={"10px"} />
           </LeftControls>
           <RightControls>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
