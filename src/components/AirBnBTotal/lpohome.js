@@ -189,9 +189,10 @@ const LPOHome = (props) => {
         </TableControls>
 
         <TableControls mt={"10px"}>
-          <LeftControls></LeftControls>
-          <RightControls>
+          <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+          </LeftControls>
+          <RightControls>
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>

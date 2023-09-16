@@ -22,6 +22,8 @@ import {
   DispensedLPODesktopTable,
   DispensedLPOMobileTable,
 } from "../tables/dispensedlpo";
+import { useCallback } from "react";
+import ShiftSelect from "../common/shift";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -47,6 +49,7 @@ const ProductsDispensed = () => {
   const type = useSelector((state) => state.lpo.dispensed);
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const currentDate = useSelector((state) => state.lpo.singleDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
@@ -55,13 +58,17 @@ const ProductsDispensed = () => {
   const [loading, setLoading] = useState(false);
   //   const [prints, setPrints] = useState(false);
 
-  useEffect(() => {
-    const getDate = currentDate === "" ? date2 : currentDate;
-    refresh("None", getDate, skip);
+  const getDispensed = useCallback((id, date, skip, salesShift) => {
+    refresh(id, date, skip, salesShift);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const refresh = (id, date, skip) => {
+  useEffect(() => {
+    const getDate = currentDate === "" ? date2 : currentDate;
+    getDispensed("None", getDate, skip, salesShift);
+  }, [getDispensed, currentDate, date2, skip, salesShift]);
+
+  const refresh = (id, date, skip, salesShift) => {
     setLoading(true);
 
     const payload = {
@@ -71,6 +78,7 @@ const ProductsDispensed = () => {
       organisationID: singleLPO?.organizationID,
       productType: type,
       date: date,
+      shift: salesShift,
     };
 
     LPOService.dispensed(payload)
@@ -88,7 +96,7 @@ const ProductsDispensed = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", currentDate, skip);
+    refresh("None", currentDate, skip, salesShift);
   };
 
   const convertDate = (newValue) => {
@@ -106,7 +114,7 @@ const ProductsDispensed = () => {
     setValue(newValue);
     const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
     dispatch(setLPOSalesDate(getDate));
-    refresh("None", getDate, skip);
+    refresh("None", getDate, skip, salesShift);
   };
 
   const printReport = () => {
@@ -148,6 +156,7 @@ const ProductsDispensed = () => {
         <TableControls mt={"10px"}>
           <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <ShiftSelect ml={"10px"} />
           </LeftControls>
           <RightControls>
             <PrintButton />

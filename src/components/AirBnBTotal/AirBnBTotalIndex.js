@@ -12,10 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
 import LPOService from "../../services/360station/lpo";
 import { createLPOSales } from "../../storage/lpo";
-import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
-import { dateRange } from "../../storage/dashboard";
 import { useNavigate } from "react-router-dom";
+import CustomDateRangePicker from "../common/customdaterangepicker";
+import ShiftSelect from "../common/shift";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
@@ -29,8 +29,9 @@ export default function AirBnBTotalIndex() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
-  const getAllLPOData = useCallback(() => {
+  const getAllLPOData = useCallback((updatedDate, salesShift) => {
     const formatOne = moment(new Date(updatedDate[0]))
       .format("YYYY-MM-DD HH:mm:ss")
       .split(" ")[0];
@@ -45,44 +46,23 @@ export default function AirBnBTotalIndex() {
       organisationID: singleLPO?.organizationID,
       startDate: formatOne,
       endDate: formatTwo,
+      shift: salesShift,
     };
 
     LPOService.getAllLPOSales(payload).then((data) => {
       dispatch(createLPOSales(data.lpo.lpo));
     });
-  }, [updatedDate, singleLPO?._id, singleLPO?.organizationID, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    getAllLPOData();
+    getAllLPOData(updatedDate, salesShift);
     return () => {
       if (typeof singleLPO._id === "undefined") {
-        navigate("lposales");
+        navigate("/home/lposales/lposaleshome/0");
       }
     };
-  }, [getAllLPOData, navigate, singleLPO._id]);
-
-  const onChangeRange = (date) => {
-    const formatOne = moment(new Date(date[0]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const formatTwo = moment(new Date(date[1]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    dispatch(dateRange([new Date(formatOne), new Date(formatTwo)]));
-
-    const payload = {
-      skip: 0,
-      limit: 30,
-      lpoID: singleLPO?._id,
-      organisationID: singleLPO?.organizationID,
-      startDate: formatOne,
-      endDate: formatTwo,
-    };
-
-    LPOService.getAllLPOSales(payload).then((data) => {
-      dispatch(createLPOSales(data.lpo.lpo));
-    });
-  };
+  }, [getAllLPOData, navigate, singleLPO._id, updatedDate, salesShift]);
 
   const PieChartData = () => {
     const pms = lpos.filter((data) => data.productType === "PMS");
@@ -119,8 +99,9 @@ export default function AirBnBTotalIndex() {
     <div style={styles.contain}>
       {credit && <CreditBalance open={credit} close={setCredit} />}
       <div style={styles.inner}>
-        <div className="range-picker-date">
-          <DateRangePicker onChange={onChangeRange} value={updatedDate} />
+        <div style={controls} className="range-picker-date">
+          <ShiftSelect ml={"0px"} />
+          <CustomDateRangePicker />
         </div>
         <div className="airbnb-top-wrapper">
           <AirBnBTopCardWithSwitch
@@ -215,4 +196,9 @@ const styles = {
     justifyContent: "center",
     width: "95%",
   },
+};
+
+const controls = {
+  width: "100%",
+  justifyContent: "space-between",
 };

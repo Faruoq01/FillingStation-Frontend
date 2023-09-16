@@ -2,22 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import PrintTankUpdate from "../Reports/PrintTankUpdate";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
 import { useNavigate } from "react-router-dom";
-import ButtonDatePicker from "../common/CustomDatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Stack } from "@mui/material";
 import APIs from "../../services/connections/api";
 import moment from "moment";
 import { Circle } from "@mui/icons-material";
 import { PrintButton } from "../common/buttons";
 
-const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const LPOExpense = () => {
@@ -121,39 +115,6 @@ const LPOExpense = () => {
     setPrints(true);
   };
 
-  const convertDate = (newValue) => {
-    const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
-    const date = new Date(getDate);
-    const toString = date.toDateString();
-    const [day, year, month] = toString.split(" ");
-    const finalDate = `${day} ${month} ${year}`;
-
-    return finalDate;
-  };
-
-  const updateDate = (newValue) => {
-    // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
-    setValue(newValue);
-    setLoading(true);
-    const currentDate = newValue.format("YYYY-MM-DD");
-
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      organizationID: singleLPO?.organizationID,
-      startDate: currentDate,
-      lpoID: singleLPO._id,
-    };
-
-    APIs.post("/lpo/allCreditRecord", payload)
-      .then((data) => {
-        setCreditData(data.data.credit.credit);
-        setTotal(data.data.credit.count);
-      })
-      .then(() => {
-        setLoading(false);
-      });
-  };
   const getPrice = (item) => {
     if (item.productType === "PMS") return item.PMSRate;
     if (item.productType === "AGO") return item.AGORate;
