@@ -29,12 +29,6 @@ const Controls = () => {
 
   return (
     <div style={style}>
-      <SelectStation
-        ml={"0px"}
-        oneStation={getPerm("0")}
-        allStation={getPerm("1")}
-        callback={() => {}}
-      />
       <Button
         variant="contained"
         sx={button}
@@ -43,6 +37,12 @@ const Controls = () => {
         }}>
         View comprehensive report
       </Button>
+      <SelectStation
+        ml={"10px"}
+        oneStation={getPerm("0")}
+        allStation={getPerm("1")}
+        callback={() => {}}
+      />
       <ShiftSelect />
     </div>
   );
@@ -60,7 +60,7 @@ const button = {
   height: "30px",
   background: "#06805B",
   fontSize: "12px",
-  marginLeft: mobile.matches ? "0px" : "10px",
+  marginLeft: mobile.matches ? "0px" : "0px",
   borderRadius: "0px",
   textTransform: "capitalize",
   "&:hover": {

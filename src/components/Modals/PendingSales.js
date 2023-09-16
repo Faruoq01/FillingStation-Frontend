@@ -58,13 +58,17 @@ const PendingSales = (props) => {
   };
 
   const getAllShifts = () => {
+    const parsedDate = moment(currentDate, "YYYY-MM-DD");
+    const dayOfWeek = parsedDate.format("dddd").toLowerCase();
     const today = moment().format("dddd").toLowerCase();
+    const targetDate = currentDate === "" ? today : dayOfWeek;
     const station = JSON.parse(JSON.stringify(oneStationData));
+
     if (station) {
       if (station.shift) {
         const shifts = station.shift;
-        if (today in shifts) {
-          const shiftList = shifts[today];
+        if (targetDate in shifts) {
+          const shiftList = shifts[targetDate];
           return Object.values(shiftList);
         } else {
           return [];
