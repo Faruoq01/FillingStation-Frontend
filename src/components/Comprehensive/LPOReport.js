@@ -24,6 +24,7 @@ const LPOReport = () => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
@@ -46,13 +47,14 @@ const LPOReport = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getLPOData = useCallback((updatedDate) => {
+  const getLPOData = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       date: updatedDate,
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/lpo", payload)
@@ -67,8 +69,8 @@ const LPOReport = () => {
   }, []);
 
   useEffect(() => {
-    getLPOData(currentDate);
-  }, [getLPOData, currentDate, refresh]);
+    getLPOData(currentDate, salesShift);
+  }, [getLPOData, currentDate, refresh, salesShift]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSRate;
@@ -92,25 +94,6 @@ const LPOReport = () => {
       "Error!",
       "You can only reset all but cannot delete one record!"
     );
-    // swal({
-    //   title: "Alert!",
-    //   text: "Are you sure you want to delete this record?",
-    //   icon: "warning",
-    //   buttons: true,
-    //   dangerMode: true,
-    // }).then((willDelete) => {
-    //   if (willDelete) {
-    //     APIs.post("/sales/delete/lpo", {
-    //       data: data,
-    //     })
-    //       .then(() => {
-    //         setRefresh(!refresh);
-    //       })
-    //       .then(() => {
-    //         swal("Success", "Record deleted successfully", "success");
-    //       });
-    //   }
-    // });
   };
 
   const LPORows = (props) => {
@@ -253,6 +236,7 @@ const LPOReport = () => {
       outletID: oneStationData._id,
       date: getDate,
       rt: false,
+      shift: salesShift,
     }).then(({ data }) => {
       dispatch(setSalesList(data.data));
       return data.data;

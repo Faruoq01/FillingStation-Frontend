@@ -26,6 +26,7 @@ const PaymentsModal = (props) => {
   const [productState, setProductState] = useState(1);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [bankName, setBankName] = useState("");
   const [tellerNumber, setTellerNumber] = useState("");
@@ -68,7 +69,8 @@ const PaymentsModal = (props) => {
       oneStationData,
       currentDate,
       cam,
-      gall
+      gall,
+      salesShift
     );
 
     const posPayload = posPayloadData(
@@ -79,7 +81,8 @@ const PaymentsModal = (props) => {
       oneStationData,
       currentDate,
       cam,
-      gall
+      gall,
+      salesShift
     );
 
     try {
@@ -433,7 +436,8 @@ const paymentPayload = (
   oneStationData,
   currentDate,
   cam,
-  gall
+  gall,
+  salesShift
 ) => {
   const pic = () => {
     if (cam === null && gall === null) {
@@ -453,6 +457,7 @@ const paymentPayload = (
     attachApproval: pic(),
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };
@@ -466,7 +471,8 @@ const posPayloadData = (
   oneStationData,
   currentDate,
   cam,
-  gall
+  gall,
+  salesShift
 ) => {
   const pic = () => {
     if (cam === null && gall === null) {
@@ -486,6 +492,7 @@ const posPayloadData = (
     attachApproval: pic(),
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };

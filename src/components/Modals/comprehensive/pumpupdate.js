@@ -121,6 +121,7 @@ const PumpUpdate = (props) => {
   const dispatch = useDispatch();
 
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListData = useSelector((state) => state.comprehensive.tankList);
   const pumpListData = useSelector((state) => state.comprehensive.pumpList);
@@ -298,14 +299,16 @@ const PumpUpdate = (props) => {
       currentPump,
       oneStationData,
       currentDate,
-      item
+      item,
+      salesShift
     );
 
     const getTankList = getTankListPayload(
       tankListData,
       currentTank,
       item,
-      currentDate
+      currentDate,
+      salesShift
     );
 
     const payload = {
@@ -433,7 +436,14 @@ const PumpUpdate = (props) => {
   );
 };
 
-const getSalesPayload = (tank, pump, station, currentDate, item) => {
+const getSalesPayload = (
+  tank,
+  pump,
+  station,
+  currentDate,
+  item,
+  salesShift
+) => {
   return {
     sales: item.totalSales,
     RTlitre: 0,
@@ -455,12 +465,19 @@ const getSalesPayload = (tank, pump, station, currentDate, item) => {
     outletID: station._id,
     outletName: station.outletName.concat(", ", station.alias),
     organisationID: station.organisation,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };
 };
 
-const getTankListPayload = (tankList, currentTank, item, currentDate) => {
+const getTankListPayload = (
+  tankList,
+  currentTank,
+  item,
+  currentDate,
+  salesShift
+) => {
   const otherTanks = tankList.filter((data) => data._id !== currentTank._id);
   const otherTankList = otherTanks.map((data) => {
     return {
@@ -472,6 +489,7 @@ const getTankListPayload = (tankList, currentTank, item, currentDate) => {
       tankCapacity: data.tankCapacity,
       outletID: data.outletID,
       organizationID: data.organisationID,
+      shift: salesShift,
       createdAt: currentDate,
       updatedAt: currentDate,
     };
@@ -486,6 +504,7 @@ const getTankListPayload = (tankList, currentTank, item, currentDate) => {
     tankCapacity: currentTank.tankCapacity,
     outletID: currentTank.outletID,
     organizationID: currentTank.organisationID,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };

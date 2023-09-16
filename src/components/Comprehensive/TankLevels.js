@@ -21,6 +21,7 @@ const TankLevels = () => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
@@ -42,13 +43,14 @@ const TankLevels = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getTankLevels = useCallback((updatedDate) => {
+  const getTankLevels = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       date: updatedDate,
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/tankLevels", payload)
@@ -63,8 +65,8 @@ const TankLevels = () => {
   }, []);
 
   useEffect(() => {
-    getTankLevels(currentDate);
-  }, [getTankLevels, currentDate, refresh]);
+    getTankLevels(currentDate, salesShift);
+  }, [getTankLevels, currentDate, refresh, salesShift]);
 
   const updateRecord = (data) => {
     // setOpenEdit(true);

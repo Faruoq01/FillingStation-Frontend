@@ -21,6 +21,7 @@ const ProductBalance = (props) => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const product = sales[props.type.toLowerCase()];
   const [openEdit, setOpenEdit] = useState(false);
@@ -44,7 +45,7 @@ const ProductBalance = (props) => {
     return user.permission?.dailySales[e];
   };
 
-  const getAllProduct = useCallback((updatedDate) => {
+  const getAllProduct = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
@@ -52,6 +53,7 @@ const ProductBalance = (props) => {
       outletID: oneStationData._id,
       date: updatedDate,
       productType: props.type,
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/products", payload)
@@ -67,8 +69,8 @@ const ProductBalance = (props) => {
   }, []);
 
   useEffect(() => {
-    getAllProduct(currentDate);
-  }, [getAllProduct, currentDate, refresh]);
+    getAllProduct(currentDate, salesShift);
+  }, [getAllProduct, currentDate, refresh, salesShift]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSSellingPrice;
@@ -275,10 +277,11 @@ const ProductBalance = (props) => {
         ? moment().format("YYYY-MM-DD").split()[0]
         : currentDate;
 
-    const status = await APIs.post("/sales/delete/checkStatus", {
-      org: resolveUserID().id,
-      outletID: oneStationData._id,
+    const status = await APIs.post("/sales/validateSales", {
       date: getDate,
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      shift: salesShift,
     }).then((data) => {
       return data.data.data;
     });

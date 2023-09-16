@@ -23,6 +23,7 @@ const Expenses = () => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [openExpenses, setOpenExpenses] = useState(false);
@@ -45,13 +46,14 @@ const Expenses = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getExpensesData = useCallback((updatedDate) => {
+  const getExpensesData = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       date: updatedDate,
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/expenses", payload)
@@ -66,8 +68,8 @@ const Expenses = () => {
   }, []);
 
   useEffect(() => {
-    getExpensesData(currentDate);
-  }, [getExpensesData, currentDate, refresh]);
+    getExpensesData(currentDate, salesShift);
+  }, [getExpensesData, currentDate, refresh, salesShift]);
 
   const updateRecord = (data) => {
     setOpenEdit(true);

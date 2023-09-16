@@ -14,7 +14,7 @@ import "../../styles/dailySales.scss";
 const DailysalesHome = () => {
   return (
     <React.Fragment>
-      <div className="daily-sales-container">
+      <div style={{ marginTop: "10px" }} className="daily-sales-container">
         <SalesLeftColumn />
         <SalesRightColumn />
       </div>

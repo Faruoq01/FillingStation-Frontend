@@ -36,6 +36,7 @@ const LPOSalesModal = (props) => {
   const [productState, setProductState] = useState(0);
   const [currentPump, setCurrentPump] = useState(null);
   const dispatch = useDispatch();
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [account, setAccount] = useState(null);
   const [productType, setProductType] = useState("");
@@ -88,7 +89,8 @@ const LPOSalesModal = (props) => {
       currentDate,
       cam,
       gall,
-      currentPump
+      currentPump,
+      salesShift
     );
 
     try {
@@ -407,7 +409,8 @@ const lpoPayload = (
   currentDate,
   cam,
   gall,
-  currentPump
+  currentPump,
+  salesShift
 ) => {
   const pic = () => {
     if (cam === null && gall === null) {
@@ -435,6 +438,7 @@ const lpoPayload = (
     station: oneStationData.outletName.concat(" ", oneStationData.alias),
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };

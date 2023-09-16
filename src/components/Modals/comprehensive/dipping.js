@@ -23,6 +23,7 @@ const DippingModal = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const tankListData = useSelector((state) => state.comprehensive.tankList);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const user = useSelector((state) => state.auth.user);
 
   const [afterSales, setAfterSales] = useState("");
@@ -76,7 +77,8 @@ const DippingModal = (props) => {
       oneTank.tankName,
       dipping,
       afterSales,
-      oneStationData
+      oneStationData,
+      salesShift
     );
 
     try {
@@ -235,7 +237,8 @@ const dippingPayload = (
   tankName,
   dipping,
   afterSales,
-  oneStationData
+  oneStationData,
+  salesShift
 ) => {
   return {
     tankID: tankID,
@@ -253,6 +256,7 @@ const dippingPayload = (
     DPKSellingPrice: oneStationData.DPKPrice,
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };

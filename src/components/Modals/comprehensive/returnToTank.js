@@ -105,6 +105,7 @@ const ReturnToTankModal = (props) => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const recordSales = useSelector((state) => state.comprehensive.rtMetrics);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [defaultState, setDefaultState] = useState(0);
 
@@ -267,7 +268,13 @@ const ReturnToTankModal = (props) => {
       return swal("Error", "Please enter correct details!", "error");
     setLoading(true);
 
-    const rtLoad = getRTLoad(reading, oneStationData, currentPump, currentDate);
+    const rtLoad = getRTLoad(
+      reading,
+      oneStationData,
+      currentPump,
+      currentDate,
+      salesShift
+    );
 
     const data = {
       sales: payload.sales,
@@ -399,7 +406,13 @@ const ReturnToTankModal = (props) => {
   );
 };
 
-const getRTLoad = (reading, oneStationData, currentPump, currentDate) => {
+const getRTLoad = (
+  reading,
+  oneStationData,
+  currentPump,
+  currentDate,
+  salesShift
+) => {
   return {
     rtLitre: reading,
     PMSCost: oneStationData.PMSCost,
@@ -415,6 +428,7 @@ const getRTLoad = (reading, oneStationData, currentPump, currentDate) => {
     tankName: currentPump.tankName,
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };

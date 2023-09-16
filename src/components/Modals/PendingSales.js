@@ -107,6 +107,7 @@ const PendingSales = (props) => {
     if (!isValidDateFormat(currentDate))
       return swal("Error", "Please select a valid date", "error");
     setLoading(true);
+
     const result = await APIs.post("/sales/validateSales", {
       date: currentDate,
       organizationID: oneStationData.organisation,

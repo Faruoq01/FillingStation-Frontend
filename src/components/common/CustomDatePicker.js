@@ -24,7 +24,6 @@ function ButtonField(props) {
         borderRadius: "0px",
         background: "#06805B",
         color: "#fff",
-        marginTop: mobile.matches ? "10px" : "0px",
         textTransform: "capitalize",
         "&:hover": {
           backgroundColor: "#06805B",

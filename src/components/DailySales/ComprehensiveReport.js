@@ -30,14 +30,9 @@ import swal from "sweetalert";
 import SalesService from "../../services/360station/sales";
 import APIs from "../../services/connections/api";
 import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
-import CreateProductDispensedModal from "../Modals/CreateProductDispensedModal";
-import CreateReturnToTankModal from "../Modals/CreateReturnToTankModal";
-import CreateCorporateSaleModal from "../Modals/CreateCorporateSaleModal";
-import CreateExpenseModal from "../Modals/CreateExpenseModal";
-import CreateLPOModal from "../Modals/CreateLPOModal";
-import CreateBankPaymentModal from "../Modals/CreateBankPaymentModal";
-import CreatePOSPaymentModal from "../Modals/CreatePOSPaymentModal";
-import CreateDippingModal from "../Modals/CreateDippingModal";
+import ShiftSelect from "../common/shift";
+
+const mobile = window.matchMedia("(max-width: 600px)");
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
@@ -152,30 +147,18 @@ const ComprehensiveReport = (props) => {
     <Fragment>
       <div className="comprehensive_container">
         <div className="reportings">
-          <div className="comp_result">
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-              }}>
-              <div>
-                <div style={sales}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Stack spacing={1}>
-                      <ButtonDatePicker
-                        label={`${
-                          value === null || "" ? initial : convertDate(value)
-                        }`}
-                        value={value}
-                        onChange={(newValue) => updateDate(newValue)}
-                      />
-                    </Stack>
-                  </LocalizationProvider>
-                </div>
-              </div>
-            </div>
+          <div style={buttonGroup} className="comp_result">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Stack spacing={1}>
+                <ButtonDatePicker
+                  label={`${
+                    value === null || "" ? initial : convertDate(value)
+                  }`}
+                  value={value}
+                  onChange={(newValue) => updateDate(newValue)}
+                />
+              </Stack>
+            </LocalizationProvider>
 
             <div className="resetAll">
               <Button
@@ -193,7 +176,6 @@ const ComprehensiveReport = (props) => {
                 height: "30px",
                 background: "#2196F3",
                 fontSize: "12px",
-                marginRight: "20px",
                 borderRadius: "0px",
                 textTransform: "capitalize",
                 "&:hover": {
@@ -203,6 +185,9 @@ const ComprehensiveReport = (props) => {
               onClick={openPrintModal}>
               Print
             </Button>
+          </div>
+          <div style={shifts}>
+            <ShiftSelect />
           </div>
 
           <div className="first_layer">
@@ -404,45 +389,12 @@ const ComprehensiveReport = (props) => {
           </div>
         </div>
       </div>
-      {/* {printReportStatus && (
+      {printReportStatus && (
         <ComprehensiveReportModal
           open={printReportStatus}
           close={setPrintReportStatus}
         />
       )}
-
-      <CreateProductDispensedModal
-        open={openInitialBalanceModal}
-        close={setOpenInitialBalanceModal}
-      />
-      <CreateBankPaymentModal
-        open={bankPaymentModalStatus}
-        close={setBankPaymentModalStatus}
-      />
-      <CreatePOSPaymentModal
-        open={posPaymentModalStatus}
-        close={setPosPaymentModalStatus}
-      />
-      <CreateReturnToTankModal
-        open={openReturnToTankModal}
-        close={setOpenReturnToTankModal}
-      />
-      <CreateCorporateSaleModal
-        open={openCreateCorporateSaleModalModal}
-        close={setOpenCreateCorporateSaleModalModal}
-      />
-      <CreateExpenseModal
-        open={createExpenseModalStatus}
-        close={setCreateExpenseModalStatus}
-      />
-      <CreateLPOModal
-        open={createLpoModalStatus}
-        close={setCreateLpoModalStatus}
-      />
-      <CreateDippingModal
-        open={dippingModalStatus}
-        close={setDippingModalStatus}
-      /> */}
     </Fragment>
   );
 };
@@ -461,13 +413,23 @@ const resetBut = {
   },
 };
 
-const sales = {
-  width: "100%",
+const buttonGroup = {
+  width: mobile.matches ? "100%" : "98%",
   display: "flex",
   flexDirection: "row",
+  alignItems: "center",
   justifyContent: "flex-end",
-  position: "relative",
-  alignItems: "flex-start",
+  marginBottom: "0px",
+};
+
+const shifts = {
+  width: mobile.matches ? "100%" : "98%",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  marginTop: "10px",
+  marginBottom: "10px",
 };
 
 export default ComprehensiveReport;

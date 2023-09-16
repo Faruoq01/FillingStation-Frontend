@@ -8,7 +8,7 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/connections/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import { useHistory, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setDipping, setSalesList } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
@@ -24,6 +24,7 @@ const Dipping = () => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [openDipping, setOpenDipping] = useState(false);
@@ -46,13 +47,14 @@ const Dipping = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getDippingData = useCallback((updatedDate) => {
+  const getDippingData = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       date: updatedDate,
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/dipping", payload)
@@ -67,8 +69,8 @@ const Dipping = () => {
   }, []);
 
   useEffect(() => {
-    getDippingData(currentDate);
-  }, [getDippingData, currentDate, refresh]);
+    getDippingData(currentDate, salesShift);
+  }, [getDippingData, currentDate, refresh, salesShift]);
 
   const updateRecord = (data) => {
     setOpenEdit(true);
@@ -226,6 +228,7 @@ const Dipping = () => {
       outletID: oneStationData._id,
       date: getDate,
       rt: false,
+      shift: salesShift,
     }).then(({ data }) => {
       dispatch(setSalesList(data.data));
       return data.data;

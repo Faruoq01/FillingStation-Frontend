@@ -23,6 +23,7 @@ const ReturnToTank = () => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
@@ -45,13 +46,14 @@ const ReturnToTank = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getReturnToTankData = useCallback((updatedDate) => {
+  const getReturnToTankData = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       date: updatedDate,
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/retruntotank", payload)
@@ -66,8 +68,8 @@ const ReturnToTank = () => {
   }, []);
 
   useEffect(() => {
-    getReturnToTankData(currentDate);
-  }, [getReturnToTankData, currentDate, refresh]);
+    getReturnToTankData(currentDate, salesShift);
+  }, [getReturnToTankData, currentDate, refresh, salesShift]);
 
   const rate = (data) => {
     if (data.productType === "PMS") return data.PMSPrice;
@@ -88,10 +90,11 @@ const ReturnToTank = () => {
         ? moment().format("YYYY-MM-DD").split()[0]
         : currentDate;
 
-    const status = await APIs.post("/sales/delete/checkStatus", {
-      org: resolveUserID().id,
-      outletID: oneStationData._id,
+    const status = await APIs.post("/sales/validateSales", {
       date: getDate,
+      organizationID: resolveUserID().id,
+      outletID: oneStationData._id,
+      shift: salesShift,
     }).then((data) => {
       return data.data.data;
     });
@@ -264,6 +267,7 @@ const ReturnToTank = () => {
       outletID: oneStationData._id,
       date: getDate,
       rt: true,
+      shift: salesShift,
     }).then(({ data }) => {
       dispatch(setRTSales(data.data));
       return data.data;

@@ -24,6 +24,7 @@ const ExpensesModal = (props) => {
   const [gallLoader, setGallLoader] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [expenseAmount, setExpenseAmount] = useState("");
   const [expenseName, setExpenseName] = useState("");
@@ -45,7 +46,7 @@ const ExpensesModal = (props) => {
       return swal("Warning!", "Contact field cannot be empty", "info");
     setLoading(true);
 
-    const payload = lpoPayload(
+    const payload = expensesPayload(
       currentDate,
       expenseName,
       expenseAmount,
@@ -53,7 +54,8 @@ const ExpensesModal = (props) => {
       oneStationData,
       currentDate,
       cam,
-      gall
+      gall,
+      salesShift
     );
 
     try {
@@ -312,7 +314,7 @@ const ExpensesModal = (props) => {
   );
 };
 
-const lpoPayload = (
+const expensesPayload = (
   date,
   expenseName,
   expenseAmount,
@@ -320,7 +322,8 @@ const lpoPayload = (
   oneStationData,
   currentDate,
   cam,
-  gall
+  gall,
+  salesShift
 ) => {
   const pic = () => {
     if (cam === null && gall === null) {
@@ -339,6 +342,7 @@ const lpoPayload = (
     attachApproval: pic(),
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
+    shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };

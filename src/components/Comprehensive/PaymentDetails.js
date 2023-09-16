@@ -21,6 +21,7 @@ const PaymentDetails = () => {
   const currentDate = useSelector((state) => state.dailysales.updatedDate);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
@@ -43,7 +44,7 @@ const PaymentDetails = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getPaymentDetails = useCallback((updatedDate) => {
+  const getPaymentDetails = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null) return navigate("dailysales");
     setLoad(true);
 
@@ -52,6 +53,7 @@ const PaymentDetails = () => {
       outletID: oneStationData._id,
       start: updatedDate,
       end: updatedDate,
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/payments", payload)
@@ -66,8 +68,8 @@ const PaymentDetails = () => {
   }, []);
 
   useEffect(() => {
-    getPaymentDetails(currentDate);
-  }, [getPaymentDetails, currentDate, refresh]);
+    getPaymentDetails(currentDate, salesShift);
+  }, [getPaymentDetails, currentDate, refresh, salesShift]);
 
   const updateRecord = (data, bank) => {
     setOpenEdit(true);
