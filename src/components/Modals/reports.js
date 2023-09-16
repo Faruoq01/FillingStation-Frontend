@@ -201,8 +201,6 @@ const cancelStyle = {
   color: "grey",
 };
 
-export default GenerateReports;
-
 async function printReportByCategory(payload) {
   switch (payload.section) {
     case "station": {
@@ -237,3 +235,5 @@ function downloadPDF(data) {
   link.click();
   document.body.removeChild(link);
 }
+
+export default GenerateReports;
