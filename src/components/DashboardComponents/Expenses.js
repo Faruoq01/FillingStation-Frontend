@@ -16,6 +16,7 @@ const Expenses = () => {
   const expenseData = useSelector((state) => state.dashboard.expenses);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
@@ -34,7 +35,7 @@ const Expenses = () => {
     return user.permission?.dashboard[e];
   };
 
-  const getExpenses = useCallback((date, station) => {
+  const getExpenses = useCallback((date, station, salesShift) => {
     setLoad(true);
 
     const payload = {
@@ -42,6 +43,7 @@ const Expenses = () => {
       organisation: resolveUserID().id,
       start: date[0],
       end: date[1],
+      shift: salesShift,
     };
 
     APIs.post("/dashboard/expenses", payload)
@@ -58,8 +60,8 @@ const Expenses = () => {
   }, []);
 
   useEffect(() => {
-    getExpenses(updatedDate, oneStationData);
-  }, [getExpenses, oneStationData, updatedDate]);
+    getExpenses(updatedDate, oneStationData, salesShift);
+  }, [getExpenses, oneStationData, updatedDate, salesShift]);
 
   const goToExpenses = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");

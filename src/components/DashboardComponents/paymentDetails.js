@@ -13,6 +13,7 @@ const PaymentDetails = () => {
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const paymentsDetailData = useSelector(
     (state) => state.dashboard.paymentsDetails
   );
@@ -27,7 +28,7 @@ const PaymentDetails = () => {
     }
   };
 
-  const getAssetCounts = useCallback((date, station) => {
+  const getPaymentDetails = useCallback((date, station, salesShift) => {
     setLoad(true);
 
     const payload = {
@@ -35,6 +36,7 @@ const PaymentDetails = () => {
       organisation: resolveUserID().id,
       start: date[0],
       end: date[1],
+      shift: salesShift,
     };
 
     APIs.post("/dashboard/payments", payload)
@@ -51,8 +53,8 @@ const PaymentDetails = () => {
   }, []);
 
   useEffect(() => {
-    getAssetCounts(updatedDate, oneStationData);
-  }, [getAssetCounts, oneStationData, updatedDate]);
+    getPaymentDetails(updatedDate, oneStationData, salesShift);
+  }, [getPaymentDetails, oneStationData, updatedDate, salesShift]);
 
   const goToPayments = () => {
     navigate("/home/analysis/payments");

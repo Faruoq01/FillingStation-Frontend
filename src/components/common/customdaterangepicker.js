@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { dateRange } from "../../storage/dashboard";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
+import { setDateValue } from "../../storage/dailysales";
 
 const CustomDateRangePicker = () => {
   const user = useSelector((state) => state.auth.user);
@@ -22,7 +23,14 @@ const CustomDateRangePicker = () => {
     const formatTwo = moment(new Date(date[1]))
       .format("YYYY-MM-DD HH:mm:ss")
       .split(" ")[0];
-    dispatch(dateRange([formatOne, formatTwo]));
+
+    if (formatOne === formatTwo) {
+      dispatch(setDateValue(formatOne));
+      dispatch(dateRange([formatOne, formatOne]));
+    } else {
+      dispatch(setDateValue(""));
+      dispatch(dateRange([formatOne, formatTwo]));
+    }
   };
 
   const formatDate = (inputDate) => {

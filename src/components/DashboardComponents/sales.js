@@ -18,6 +18,7 @@ const Sales = (props) => {
   const employee = useSelector((state) => state.dashboard.employees);
   const product = useSelector((state) => state.dashboard.products);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -40,7 +41,7 @@ const Sales = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const updateSalesValues = useCallback((date, station) => {
+  const updateSalesValues = useCallback((date, station, salesShift) => {
     setLoad(true);
 
     const payload = {
@@ -48,6 +49,7 @@ const Sales = (props) => {
       organisationID: resolveUserID().id,
       start: date[0],
       end: date[1],
+      shift: salesShift,
     };
 
     APIs.post("/dashboard/employees", payload)
@@ -69,8 +71,8 @@ const Sales = (props) => {
   }, [getEmployeeCounts]);
 
   useEffect(() => {
-    updateSalesValues(updatedDate, oneStationData);
-  }, [oneStationData, updateSalesValues, updatedDate]);
+    updateSalesValues(updatedDate, oneStationData, salesShift);
+  }, [oneStationData, updateSalesValues, updatedDate, salesShift]);
 
   const openSalesDisplay = () => {
     if (!getPerm("5")) return swal("Warning!", "Permission denied", "info");

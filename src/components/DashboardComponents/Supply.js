@@ -34,7 +34,7 @@ const Supply = () => {
     return user.permission?.dashboard[e];
   };
 
-  const getAssetCounts = useCallback((date, station) => {
+  const getSupply = useCallback((date, station) => {
     setLoad(true);
 
     const payload = {
@@ -58,8 +58,8 @@ const Supply = () => {
   }, []);
 
   useEffect(() => {
-    getAssetCounts(updatedDate, oneStationData);
-  }, [getAssetCounts, oneStationData, updatedDate]);
+    getSupply(updatedDate, oneStationData);
+  }, [getSupply, oneStationData, updatedDate]);
 
   const goToSupplyPage = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");

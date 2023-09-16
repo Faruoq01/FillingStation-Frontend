@@ -16,7 +16,6 @@ const IncomingOrder = () => {
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
   const incomingData = useSelector((state) => state.dailysales.incoming);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -33,7 +32,7 @@ const IncomingOrder = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getIncomingOrder = useCallback((date, station, salesShift) => {
+  const getIncomingOrder = useCallback((date, station) => {
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
@@ -41,7 +40,6 @@ const IncomingOrder = () => {
       organisationID: resolveUserID().id,
       start: date === "" ? today : date,
       end: date === "" ? today : date,
-      shift: salesShift,
     };
 
     APIs.post("/daily-sales/incoming", payload)
@@ -53,8 +51,8 @@ const IncomingOrder = () => {
   }, []);
 
   useEffect(() => {
-    getIncomingOrder(updatedDate, oneStationData, salesShift);
-  }, [getIncomingOrder, oneStationData, updatedDate, salesShift]);
+    getIncomingOrder(updatedDate, oneStationData);
+  }, [getIncomingOrder, oneStationData, updatedDate]);
 
   const goToInc = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");

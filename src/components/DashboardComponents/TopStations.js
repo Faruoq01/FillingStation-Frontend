@@ -99,7 +99,6 @@ const TopStations = () => {
   const topStationData = useSelector((state) => state.dashboard.topStations);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
-  console.log(topStationData, "stations");
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
       return { id: user._id };

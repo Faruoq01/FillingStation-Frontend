@@ -17,7 +17,6 @@ const Supply = () => {
   const suppliesData = useSelector((state) => state.dailysales.supply);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dailysales.updatedDate);
-  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const navigate = useNavigate();
   const [load, setLoad] = useState(false);
 
@@ -36,7 +35,7 @@ const Supply = () => {
     return user.permission?.dailysales[e];
   };
 
-  const getSupply = useCallback((date, station, salesShift) => {
+  const getSupply = useCallback((date, station) => {
     setLoad(true);
     const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
@@ -45,7 +44,6 @@ const Supply = () => {
       organisationID: resolveUserID().id,
       start: date === "" ? today : date,
       end: date === "" ? today : date,
-      shift: salesShift,
     };
 
     APIs.post("/daily-sales/supply", payload)
@@ -62,8 +60,8 @@ const Supply = () => {
   }, []);
 
   useEffect(() => {
-    getSupply(updatedDate, oneStationData, salesShift);
-  }, [getSupply, oneStationData, updatedDate, salesShift]);
+    getSupply(updatedDate, oneStationData);
+  }, [getSupply, oneStationData, updatedDate]);
 
   const goToSupplyPage = () => {
     if (!getPerm("7")) return swal("Warning!", "Permission denied", "info");

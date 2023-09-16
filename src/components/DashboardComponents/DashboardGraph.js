@@ -85,6 +85,7 @@ const DashboardGraph = (props) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const [currentSelection, setCurrentSelection] = useState(1);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const setWeeklyData = () => {
     const weeklyData = {
@@ -203,7 +204,7 @@ const DashboardGraph = (props) => {
     return dates;
   };
 
-  const getWeeklyGraphData = useCallback((date, station) => {
+  const getWeeklyGraphData = useCallback((date, station, salesShift) => {
     setLoad(true);
     const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
     const firstDayOfTheWeek = getLastSunday(getDate);
@@ -214,6 +215,7 @@ const DashboardGraph = (props) => {
       organisation: resolveUserID().id,
       outletID: station === null ? "None" : station?._id,
       range: range,
+      shift: salesShift,
     };
 
     APIs.post("/dashboard/weekly", payload)
@@ -230,7 +232,7 @@ const DashboardGraph = (props) => {
   }, []);
 
   const getMonthlyGraphData = useCallback(
-    (date, station) => {
+    (date, station, salesShift) => {
       const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
       const getYear = moment(getDate).format("YYYY");
       const range = [];
@@ -250,6 +252,7 @@ const DashboardGraph = (props) => {
         organisation: resolveUserID().id,
         outletID: station === null ? "None" : station?._id,
         range: range,
+        shift: salesShift,
       };
 
       APIs.post("/dashboard/monthly", payload)
@@ -263,7 +266,7 @@ const DashboardGraph = (props) => {
   );
 
   const getAnnualGraphData = useCallback(
-    (date, station) => {
+    (date, station, salesShift) => {
       const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
       const getYear = moment(getDate).format("YYYY");
       const startYear = Number(getYear) - 5;
@@ -290,6 +293,7 @@ const DashboardGraph = (props) => {
         organisation: resolveUserID().id,
         outletID: station === null ? "None" : station?._id,
         range: range,
+        shift: salesShift,
       };
 
       APIs.post("/dashboard/annually", payload)
@@ -303,15 +307,16 @@ const DashboardGraph = (props) => {
   );
 
   useEffect(() => {
-    getWeeklyGraphData(value, oneStationData);
-    getMonthlyGraphData(value, oneStationData);
-    getAnnualGraphData(value, oneStationData);
+    getWeeklyGraphData(value, oneStationData, salesShift);
+    getMonthlyGraphData(value, oneStationData, salesShift);
+    getAnnualGraphData(value, oneStationData, salesShift);
   }, [
     oneStationData,
     getWeeklyGraphData,
     value,
     getMonthlyGraphData,
     getAnnualGraphData,
+    salesShift,
   ]);
 
   useEffect(() => {
