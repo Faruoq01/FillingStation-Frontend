@@ -94,7 +94,7 @@ const selectStyle = {
   fontFamily: "Poppins",
   borderRadius: "20px",
   marginLeft: mobile.matches ? "0px" : "10px",
-  marginTop: mobile.matches ? "10px" : "0px",
+  //   marginTop: mobile.matches ? "10px" : "0px",
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #ccc",
   },

@@ -67,7 +67,7 @@ const ComprehensiveReport = (props) => {
     }
 
     if (oneStationData === null) {
-      navigate("dailysales");
+      navigate("/home/dailysales/dailysaleshome/0");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

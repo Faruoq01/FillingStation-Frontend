@@ -59,7 +59,7 @@ const LPOExpense = () => {
     getAllCreditData();
     return () => {
       if (typeof singleLPO._id === "undefined") {
-        navigate("lposales");
+        navigate("/home/lposales/lposaleshome/0");
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
