@@ -82,7 +82,7 @@ const PendingSales = (props) => {
   };
 
   const submit = async () => {
-    if (getAllShifts().length === 0) {
+    if (getAllShifts().length === 0 && currentShift !== "All shifts") {
       return swal(
         "Error",
         "Please contact admin to create shifts for this station",
@@ -261,6 +261,9 @@ const PendingSales = (props) => {
 
   const changeMenu = (item, index) => {
     setDefaultSelect(index);
+    if (index === 1) {
+      return dispatch(setCurrentShift(item));
+    }
     dispatch(setCurrentShift(item.shiftname));
   };
 
@@ -333,15 +336,23 @@ const PendingSales = (props) => {
                 <MenuItem style={menu} value={0}>
                   Please select shift
                 </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    changeMenu("All shifts", 1);
+                  }}
+                  style={menu}
+                  value={1}>
+                  Proceed without shift
+                </MenuItem>
                 {getAllShifts().map((item, index) => {
                   return (
                     <MenuItem
                       onClick={() => {
-                        changeMenu(item, index + 1);
+                        changeMenu(item, index + 2);
                       }}
                       key={index}
                       style={menu}
-                      value={index + 1}>
+                      value={index + 2}>
                       {item.shiftname}
                     </MenuItem>
                   );
