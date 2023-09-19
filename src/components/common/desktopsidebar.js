@@ -1,5 +1,5 @@
 import SideItems from "./sidebarmenu";
-import homeLogo from "../../assets/homeLogo.png";
+import stationlogo from "../../assets/stationlogo.png";
 import dashboard from "../../assets/dashboard.png";
 import dashboard2 from "../../assets/dashboard2.png";
 import dailySales from "../../assets/dailySales.png";
@@ -35,7 +35,7 @@ const DesktopSideBar = () => {
   return (
     <div style={{ background: user.sideBarMode }} className="side-bar">
       <div className="inner-side-bar">
-        <img className="home-logo" src={homeLogo} alt="icon" />
+        <img className="home-logo" src={stationlogo} alt="icon" />
         <SideItems
           marginT={"0px"}
           link={"/home/dashboard/dashboardhome/0"}

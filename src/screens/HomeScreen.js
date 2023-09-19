@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "../styles/home.scss";
 import { useNavigate, Outlet } from "react-router-dom";
 import "react-modern-drawer/dist/index.css";
@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import UserService from "../services/360station/user";
 import { updateUser } from "../storage/auth";
 import { socket } from "../services/connections/socket";
-import { useCallback } from "react";
 import OutletService from "../services/360station/outletService";
 import NotificationDrawer from "../components/common/NotificationDrawer";
 import { adminOutlet, getAllStations } from "../storage/outlet";
@@ -14,6 +13,7 @@ import TopNavBar from "../components/common/topnavbar";
 import MobileNavBar from "../components/common/mobilenavbar";
 import DesktopSideBar from "../components/common/desktopsidebar";
 import MobileSideBar from "../components/common/mobilesidebar";
+import TitleNavBar from "../components/common/titlebar";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);
@@ -183,10 +183,10 @@ const HomeScreen = () => {
       <DesktopSideBar />
       {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
       {openRight && <NotificationDrawer open={setOpenRight} />}
-
       <div
         style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
         className="main-content">
+        <TitleNavBar />
         <MobileNavBar open={setOpenRight} drawer={setIsOpen} />
         <TopNavBar open={setOpenRight} />
         <div style={inner}>
