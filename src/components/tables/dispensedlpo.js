@@ -32,7 +32,7 @@ export const DispensedLPODesktopTable = ({ data }) => {
         {!loading &&
           allOutlets.map((item, index) => {
             return (
-              <DesktopTableRows index={index}>
+              <DesktopTableRows key={index} index={index}>
                 <DesktopTableCell data={index + 1} />
                 <DesktopTableCell data={item.createdAt} />
                 <DesktopTableCell data={item.productType}>
@@ -48,6 +48,7 @@ export const DispensedLPODesktopTable = ({ data }) => {
                 <DesktopTableCell data={item[`${item.productType}Rate`]} />
                 <DesktopTableCell data={getAmount(item)} />
                 <DesktopTableCell data={item.station} />
+                <DesktopTableCell data={item.truckNo} />
               </DesktopTableRows>
             );
           })}
@@ -63,7 +64,7 @@ export const DispensedLPOMobileTable = ({ data }) => {
       {!loading &&
         allOutlets.map((item, index) => {
           return (
-            <MobileTableRows index={index}>
+            <MobileTableRows key={index} index={index}>
               <MobileTableCell
                 columns={["Date Created", "Product"]}
                 cellData={[item.createdAt, item.productType]}
@@ -75,6 +76,10 @@ export const DispensedLPOMobileTable = ({ data }) => {
               <MobileTableCell
                 columns={["Amount", "Station"]}
                 cellData={[getAmount(item), item.station]}
+              />
+              <MobileTableCell
+                columns={["", "Station"]}
+                cellData={["", item.truckNo]}
               />
             </MobileTableRows>
           );

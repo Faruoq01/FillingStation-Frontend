@@ -24,25 +24,22 @@ const LPOEditOptions = ({ handleEditDetails, handleEditRate, ...props }) => {
       sx={{
         display: "flex",
         alignItems: "center",
-      }}
-    >
+      }}>
       <div style={style(mobile).inner}>
         <button
           onClick={handleEditRate}
           style={{
             ...style(mobile).button,
             marginBottom: 4,
-          }}
-        >
+          }}>
           Edit Product Rate
         </button>
         <button
           onClick={handleEditDetails}
           style={{
             ...style(mobile).button,
-          }}
-        >
-          Edit Product Details
+          }}>
+          Edit Customer Details
         </button>
       </div>
     </Modal>

@@ -27,6 +27,7 @@ import SupplyModal from "../Modals/SupplyModal";
 import PrintSupplyRecords from "../Reports/SupplyRecords";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import DateRangeLib from "../common/DatePickerLib";
 
 const columns = [
   "S/N",
@@ -206,9 +207,10 @@ const SupplyHome = () => {
 
         <TableControls mt={"10px"}>
           <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <DateRangeLib />
           </LeftControls>
           <RightControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>

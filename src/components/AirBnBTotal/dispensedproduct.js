@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import {
   LeftControls,
@@ -8,7 +8,6 @@ import {
 import { SearchField } from "../common/searchfields";
 import { PrintButton } from "../common/buttons";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { LimitSelect } from "../common/customselect";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -17,12 +16,10 @@ import { Stack } from "@mui/material";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import { createLPOSales, setLPOSalesDate } from "../../storage/lpo";
 import LPOService from "../../services/360station/lpo";
-import { useEffect } from "react";
 import {
   DispensedLPODesktopTable,
   DispensedLPOMobileTable,
 } from "../tables/dispensedlpo";
-import { useCallback } from "react";
 import ShiftSelect from "../common/shift";
 
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -35,6 +32,7 @@ const columns = [
   "Rate",
   "Amount",
   "Station",
+  "Reference",
 ];
 
 const ProductsDispensed = () => {

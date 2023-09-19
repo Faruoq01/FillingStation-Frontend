@@ -98,11 +98,12 @@ const CreditBalance = (props) => {
     setGall("null");
   };
 
-  const setOptions = (data) => {
-    setPaymentType(data);
-    if (data === 0) return setType("bank");
-    if (data === 1) return setType("pos");
+  const setOptions = (data, index) => {
+    setPaymentType(index);
+    setType(data);
   };
+
+  const types = ["bank", "pos", "transfer"];
 
   return (
     <ModalBackground
@@ -122,26 +123,23 @@ const CreditBalance = (props) => {
       <div className="inputs">
         <div className="head-text2">Payment Method</div>
         <Select defaultValue={paymentType} sx={selection}>
-          <MenuItem
-            value={0}
-            sx={menu}
-            onClick={() => {
-              setOptions(0);
-            }}>
-            Bank
-          </MenuItem>
-          <MenuItem
-            value={1}
-            sx={menu}
-            onClick={() => {
-              setOptions(1);
-            }}>
-            POS
-          </MenuItem>
+          {types.map((item, index) => {
+            return (
+              <MenuItem
+                key={index}
+                value={index}
+                sx={menu}
+                onClick={() => {
+                  setOptions(item, index);
+                }}>
+                {item}
+              </MenuItem>
+            );
+          })}
         </Select>
       </div>
 
-      {type === "bank" && (
+      {(type === "bank" || type === "transfer") && (
         <ModalInputField
           value={bankName}
           setValue={setBankName}
@@ -150,7 +148,7 @@ const CreditBalance = (props) => {
         />
       )}
 
-      {type === "bank" && (
+      {(type === "bank" || type === "transfer") && (
         <ModalInputField
           value={accountName}
           setValue={setAccountName}
@@ -159,12 +157,12 @@ const CreditBalance = (props) => {
         />
       )}
 
-      {type === "bank" && (
+      {(type === "bank" || type === "transfer") && (
         <ModalInputField
           value={tellerNo}
           setValue={setTellerNo}
           type={"text"}
-          label={"Teller Number"}
+          label={"Reference Number"}
         />
       )}
 
@@ -190,7 +188,7 @@ const CreditBalance = (props) => {
         value={date}
         setValue={setDate}
         type={"date"}
-        label={"Date updated"}
+        label={"Date of payment"}
       />
 
       <ModalInputField

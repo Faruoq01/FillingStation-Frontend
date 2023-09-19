@@ -41,12 +41,18 @@ const EditCreditBalance = ({ open, close }) => {
       submit={submit}
       loading={loading}
       label={"Edit Credit Balance"}
-      ht={"100px"}>
+      ht={"170px"}>
+      <ModalInputField
+        value={singleLPO.creditBalance}
+        type={"number"}
+        label={"Current Credit Balance Amount"}
+        disabled={true}
+      />
       <ModalInputField
         value={creditBalance}
         setValue={setCreditBalance}
         type={"number"}
-        label={"Credit Balance Amount"}
+        label={"New Credit Balance Amount"}
       />
     </ModalBackground>
   );

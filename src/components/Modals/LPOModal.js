@@ -92,8 +92,7 @@ const LPOModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div className="modalContainer2">
         <div className="inner">
           <div className="head">
@@ -200,7 +199,7 @@ const LPOModal = (props) => {
             </div>
 
             <div className="inputs">
-              <div className="head-text2">Credit Balance</div>
+              <div className="head-text2">Credit Limit</div>
               <input
                 style={{
                   width: "96%",
@@ -330,8 +329,7 @@ const LPOModal = (props) => {
                 },
               }}
               onClick={submit}
-              variant="contained"
-            >
+              variant="contained">
               {" "}
               Save
             </Button>
