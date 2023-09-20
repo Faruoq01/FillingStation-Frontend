@@ -4,7 +4,7 @@
     --text-color: var(--spectrum-alias-text-color);
     --text-color-placeholder: var(--spectrum-global-color-gray-700);
     --text-color-invalid: var(--spectrum-global-color-red-600);
-    --highlight-background: slateblue;
+    --highlight-background: #06805B;
     --highlight-foreground: white;
     --highlight-background-invalid: var(--spectrum-global-color-static-red-600);
   
@@ -24,6 +24,7 @@
       border-radius: 0px;
       background: var(--highlight-background);
       white-space: nowrap;
+      border-radius: 5px;
   
       &[data-focus-within] {
         border-color: var(--highlight-background);
@@ -41,7 +42,7 @@
     }
   
     .react-aria-Button {
-      background: slateblue;
+      background: #06805B;
       color: white;
       border-radius: 4px;
       appearance: none;
@@ -50,16 +51,20 @@
       height: 1.429rem;
       padding: 0;
       vertical-align: middle;
-      font-size: 0.857rem;
+      font-size: 12px;
       outline: none;
       box-sizing: content-box;
       flex-shrink: 0;
-      border: 2px solid #fff;
+      border: none;
       position: sticky;
       right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
   
       &[data-focus-visible] {
-        box-shadow: 0 0 0 2px slateblue;
+        box-shadow: 0 0 0 2px #06805B;
       }
     }
   
@@ -121,7 +126,7 @@
   }
   
   .react-aria-RangeCalendar {
-    --highlight-background: slateblue;
+    --highlight-background: #06805B;
     --highlight-foreground: white;
     --button-background: var(--spectrum-global-color-gray-50);
     --button-background-pressed: var(--spectrum-global-color-gray-100);
@@ -156,7 +161,7 @@
         border-radius: 4px;
         appearance: none;
         vertical-align: middle;
-        font-size: 1rem;
+        font-size: 12px;
         width: 2rem;
         height: 2rem;
         padding: 0;
@@ -326,3 +331,11 @@
       --spectrum-alias-background-color-default: Canvas;
     }
   }
+
+  .date-format-text{
+    margin-left: 10px;
+    margin-right: 10px;
+    font-family: "Poppins";
+    color: #fff;
+    font-size: 12px;
+}

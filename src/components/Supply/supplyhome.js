@@ -207,10 +207,10 @@ const SupplyHome = () => {
 
         <TableControls mt={"10px"}>
           <LeftControls>
-            <DateRangeLib />
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <DateRangeLib />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>

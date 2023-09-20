@@ -187,10 +187,12 @@ const HomeScreen = () => {
         style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
         className="main-content">
         <TitleNavBar />
-        <MobileNavBar open={setOpenRight} drawer={setIsOpen} />
-        <TopNavBar open={setOpenRight} />
-        <div style={inner}>
-          <Outlet />
+        <div className="home-content">
+          <MobileNavBar open={setOpenRight} drawer={setIsOpen} />
+          <TopNavBar open={setOpenRight} />
+          <div style={inner}>
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
