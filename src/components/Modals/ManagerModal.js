@@ -126,6 +126,7 @@ const ManagerModal = (props) => {
       alias: alias,
       jobTitle: jobTitle,
       password: password,
+      organisation: user.organisation,
       organisationID: resolveUserID().id,
       outletID: oneStationData._id,
     };

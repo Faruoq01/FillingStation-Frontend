@@ -5,28 +5,33 @@ import { useSelector } from "react-redux";
 
 const TitleNavBar = () => {
   const user = useSelector((state) => state.auth.user);
+  const station = useSelector((state) => state.outlet.adminOutlet);
+
+  const Prices = ({ data }) => {
+    return (
+      <div className="products-price-container">
+        <div className="prod">
+          <CircleIcon sx={{ ...dot, color: "#399A19" }} />{" "}
+          <span>PMS: {data.PMSPrice}N/Ltr</span>
+        </div>
+        <div className="prod">
+          <CircleIcon sx={{ ...dot, color: "#FFA010" }} />{" "}
+          <span>AGO: {data.AGOPrice}N/Ltr</span>
+        </div>
+        <div className="prod">
+          <CircleIcon sx={{ ...dot, color: "#35393E" }} />{" "}
+          <span>DPK: {data.DPKPrice}N/Ltr</span>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <React.Fragment>
       <div className="namebar-container">
         <div className="namebar-inner">
-          <div className="name-style">
-            {user.firstname.concat(" ", user.lastname)}
-          </div>
-          <div className="products-price-container">
-            <div className="prod">
-              <CircleIcon sx={{ ...dot, color: "#399A19" }} />{" "}
-              <span>PMS: 600N/Ltr</span>
-            </div>
-            <div className="prod">
-              <CircleIcon sx={{ ...dot, color: "#FFA010" }} />{" "}
-              <span>AGO: 800N/Ltr</span>
-            </div>
-            <div className="prod">
-              <CircleIcon sx={{ ...dot, color: "#35393E" }} />{" "}
-              <span>DPK: 350N/Ltr</span>
-            </div>
-          </div>
+          <div className="name-style">{user.organisation}</div>
+          {station === null ? <span></span> : <Prices data={station} />}
         </div>
       </div>
     </React.Fragment>
