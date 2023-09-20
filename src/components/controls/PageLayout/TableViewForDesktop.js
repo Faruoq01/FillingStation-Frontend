@@ -1,5 +1,6 @@
 import React from "react";
 import ThreeDotsLoader from "../../common/ThreeDotsLoader";
+import "../../../styles/common/table.scss";
 
 export const TableViewForDesktop = ({ children, columns, ref }) => {
   return (
