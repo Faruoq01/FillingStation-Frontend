@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import SelectStation from "../common/selectstations";
 import "../../styles/daterange.scss";
 import ShiftSelect from "../common/shift";
-import CustomDateRangePicker from "../common/customdaterangepicker";
+import DateRangeLib from "../common/DatePickerLib";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -18,7 +18,7 @@ const Controls = () => {
 
   return (
     <div style={style}>
-      <CustomDateRangePicker callback={() => {}} />
+      <DateRangeLib />
       <SelectStation
         ml={"10px"}
         oneStation={getPerm("0")}

@@ -27,7 +27,9 @@ import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import ShiftSelect from "../common/shift";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import CustomDateRangePicker from "../common/customdaterangepicker";
+import DateRangeLib from "../common/DatePickerLib";
+
+const mobile = window.matchMedia("(max-width: 600px)");
 
 const AnalysisHome = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -195,7 +197,10 @@ const AnalysisHome = (props) => {
             <ShiftSelect ml={"10px"} />
           </LeftControls>
           <RightControls>
-            <CustomDateRangePicker />
+            <DateRangeLib
+              disabled={!getPerm("6")}
+              mt={mobile.matches ? "10px" : "0px"}
+            />
           </RightControls>
         </TableControls>
 

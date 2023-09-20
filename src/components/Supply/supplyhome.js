@@ -25,8 +25,6 @@ import { getAllOutletTanks } from "../../storage/outlet";
 import { SupplyDesktopTable, SupplyMobileTable } from "../tables/supply";
 import SupplyModal from "../Modals/SupplyModal";
 import PrintSupplyRecords from "../Reports/SupplyRecords";
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import DateRangeLib from "../common/DatePickerLib";
 
 const columns = [
@@ -60,8 +58,6 @@ const SupplyHome = () => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [setEditSupply] = useState(false);
-  const { pathname } = useLocation();
-  const [routes, setRoutes] = useState("");
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -77,11 +73,6 @@ const SupplyHome = () => {
     }
     return user.permission?.supply[e];
   };
-
-  useEffect(() => {
-    const route = pathname.split("/")[2];
-    setRoutes(route);
-  }, [pathname]);
 
   const openPaymentModal = () => {
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
@@ -210,7 +201,7 @@ const SupplyHome = () => {
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
-            <DateRangeLib />
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>

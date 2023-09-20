@@ -12,47 +12,91 @@ import {
 import "../../styles/common/arialdate.scss";
 import { parseDate, getLocalTimeZone } from "@internationalized/date";
 import { useDateFormatter } from "@react-aria/i18n";
-import React from "react";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import React, { useCallback, useEffect } from "react";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
+import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { setDateValue } from "../../storage/dailysales";
+import { dateRange } from "../../storage/dashboard";
 
-const DateRangeLib = () => {
-  let [range, setRange] = React.useState({
-    start: parseDate("2020-07-03"),
-    end: parseDate("2020-07-10"),
-  });
+const DateRangeLib = ({ mt = "0px", disabled = false }) => {
+  const dispatch = useDispatch();
+  const today = moment().format("YYYY-MM-DD").split(" ")[0];
   let formatter = useDateFormatter({ dateStyle: "long" });
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
+
+  let [range, setRange] = React.useState({
+    start: parseDate(today),
+    end: parseDate(today),
+  });
+
+  const setDateRange = useCallback((updatedDate) => {
+    const initiateDate = {
+      start: parseDate(updatedDate[0]),
+      end: parseDate(updatedDate[1]),
+    };
+    setRange(initiateDate);
+  }, []);
+
+  useEffect(() => {
+    setDateRange(updatedDate);
+  }, [setDateRange, updatedDate]);
+
+  const getDateRange = (data) => {
+    setRange(data);
+    const start = data.start;
+    const end = data.end;
+
+    let startDate = `${start.year}-${start.month}-${start.day}`;
+    let endDate = `${end.year}-${end.month}-${end.day}`;
+
+    startDate = moment(startDate).format("YYYY-MM-DD").split(" ")[0];
+    endDate = moment(endDate).format("YYYY-MM-DD").split(" ")[0];
+
+    if (startDate === endDate) {
+      dispatch(setDateValue(startDate));
+      dispatch(dateRange([startDate, startDate]));
+    } else {
+      dispatch(setDateValue(""));
+      dispatch(dateRange([startDate, endDate]));
+    }
+  };
 
   return (
-    <DateRangePicker value={range} onChange={setRange}>
-      <Group>
-        <div className="date-format-text">
-          {range
-            ? formatter.formatRange(
-                range.start.toDate(getLocalTimeZone()),
-                range.end.toDate(getLocalTimeZone())
-              )
-            : "--"}
-        </div>
-        <Button>
-          <InsertInvitationIcon sx={icon} />
-        </Button>
-      </Group>
-      <Popover>
-        <Dialog>
-          <RangeCalendar>
-            <header>
-              <Button slot="previous">◀</Button>
-              <Heading />
-              <Button slot="next">▶</Button>
-            </header>
-            <CalendarGrid>
-              {(date) => <CalendarCell date={date} />}
-            </CalendarGrid>
-          </RangeCalendar>
-        </Dialog>
-      </Popover>
-    </DateRangePicker>
+    <div style={{ marginTop: mt }}>
+      <DateRangePicker disabled={true} value={range} onChange={getDateRange}>
+        <Group>
+          <div className="date-format-text">
+            {range
+              ? formatter.formatRange(
+                  range.start.toDate(getLocalTimeZone()),
+                  range.end.toDate(getLocalTimeZone())
+                )
+              : "--"}
+          </div>
+          {disabled && <InsertInvitationIcon sx={icon} />}
+          {disabled || (
+            <Button>
+              <InsertInvitationIcon sx={icon} />
+            </Button>
+          )}
+        </Group>
+        <Popover>
+          <Dialog>
+            <RangeCalendar>
+              <header>
+                <Button slot="previous">◀</Button>
+                <Heading />
+                <Button slot="next">▶</Button>
+              </header>
+              <CalendarGrid>
+                {(date) => <CalendarCell date={date} />}
+              </CalendarGrid>
+            </RangeCalendar>
+          </Dialog>
+        </Popover>
+      </DateRangePicker>
+    </div>
   );
 };
 
