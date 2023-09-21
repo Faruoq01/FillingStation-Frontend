@@ -138,8 +138,8 @@ const ProductOrderHome = () => {
   };
 
   const openOrderDetails = (data) => {
-    navigate("/home/productorder/deliveredorder");
     dispatch(singleProductOrderRecord(data));
+    navigate("/home/productorder/deliveredorder");
   };
 
   const desktopTableData = {

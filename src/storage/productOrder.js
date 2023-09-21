@@ -4,6 +4,7 @@ const initialState = {
   productorder: [],
   searchData: [],
   singleProductOrder: {},
+  deliveredProduct: [],
 };
 
 export const productSlice = createSlice({
@@ -25,6 +26,9 @@ export const productSlice = createSlice({
       );
       state.productorder = search;
     },
+    setDeliveredProduct: (state, action) => {
+      state.deliveredProduct = action.payload;
+    },
     clearProductOrder: () => initialState,
   },
 });
@@ -35,6 +39,7 @@ export const {
   singleProductOrderRecord,
   searchProduct,
   clearProductOrder,
+  setDeliveredProduct,
 } = productSlice.actions;
 
 export default productSlice.reducer;

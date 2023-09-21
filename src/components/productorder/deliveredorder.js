@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import {
   LeftControls,
@@ -6,15 +6,16 @@ import {
   TableControls,
 } from "../controls/PageLayout/TableControls";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
-import { useState } from "react";
 import {
   DeliveredOrderDesktopTable,
   DeliveredOrderMobileTable,
 } from "../tables/deliveredorder";
-import { useSelector } from "react-redux";
-import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import IncomingService from "../../services/360station/IncomingService";
-import { useEffect } from "react";
+import { setDeliveredProduct } from "../../storage/productOrder";
+import { LimitSelect } from "../common/customselect";
+import { PrintButton } from "../common/buttons";
+import DateRangeLib from "../common/DatePickerLib";
 
 const columns = [
   "S/N",
@@ -32,8 +33,11 @@ const columns = [
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const DeliveredOrder = () => {
-  const deliveredOrder = [];
-  const productOrder = useSelector((state) => state.productorder.productorder);
+  const dispatch = useDispatch();
+  const product = useSelector((state) => state.productorder.singleProductOrder);
+  const deliveredOrder = useSelector(
+    (state) => state.productorder.deliveredProduct
+  );
   const [entries, setEntries] = useState(10);
 
   const [skip, setSkip] = useState(0);
@@ -43,7 +47,7 @@ const DeliveredOrder = () => {
   const [load, setLoad] = useState(false);
 
   const getIncomingList = useCallback(() => {
-    refresh();
+    refresh("None", limit, skip);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -51,17 +55,18 @@ const DeliveredOrder = () => {
     getIncomingList();
   }, [getIncomingList]);
 
-  const refresh = () => {
+  const refresh = (date, limit, skip) => {
     setLoad(true);
     const payload = {
-      productOrderID: productOrder._id,
+      productOrderID: product._id,
       limit: limit,
       skip: skip * limit,
     };
 
     IncomingService.getAllIncoming4(payload)
       .then((data) => {
-        console.log(data);
+        setTotal(data.counts);
+        dispatch(setDeliveredProduct(data.incoming));
       })
       .then(() => {
         setLoad(false);
@@ -71,6 +76,12 @@ const DeliveredOrder = () => {
   const printReport = () => {
     // if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
     // setPrints(true);
+  };
+
+  const entriesMenu = (value, limit) => {
+    setEntries(value);
+    setLimit(limit);
+    refresh("None", limit, skip);
   };
 
   const desktopTableData = {
@@ -94,13 +105,11 @@ const DeliveredOrder = () => {
       <TablePageBackground>
         <TableControls>
           <LeftControls>
-            {/* <SearchField callback={searchTable} /> */}
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
-            {/* <CreateButton
-              callback={createOrderHandler}
-              label={"Create Order"}
-            /> */}
+            <DateRangeLib />
+            <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
 
