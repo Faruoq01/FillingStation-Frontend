@@ -45,6 +45,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [customerAddress, setCustomerAddress] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerDestination, setCustomerDestination] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const handleClose = () => closeup(false);
 
@@ -94,16 +95,15 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
     let previous = previousBalance;
     let loaded = quantityLoaded;
 
-    for (let station of selectedStations) {
-      const currentBalanceUpdate =
-        Number(previous) - Number(station.incomingQuantity);
-      const loadedUpdate = Number(loaded) + Number(station.incomingQuantity);
+    if (inhouse !== "available") {
+      const currentBalanceUpdate = Number(previous) - Number(quantity);
+      const loadedUpdate = Number(loaded) + Number(quantity);
 
       const payload = {
         depotStation: depotStation,
-        destination: station.alias,
+        destination: oneStationData.alias,
         product: product,
-        quantity: station.incomingQuantity,
+        quantity: quantity,
         updateCurrentBalance: currentBalanceUpdate,
         updateQantityLoaded: loadedUpdate,
         customerName: inhouse !== "available" ? customerName : "null",
@@ -118,14 +118,48 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
         wayBillNo: wayBillNo,
         driverName: driverName,
         phoneNo: phoneNo,
-        outletName: station.outletName,
-        outletID: station._id,
-        organizationID: station.organisation,
+        outletName: oneStationData.outletName,
+        outletID: oneStationData._id,
+        organizationID: oneStationData.organisation,
       };
 
       const res = await IncomingService.createIncoming(payload);
       if (res) previous = currentBalanceUpdate;
       loaded = loadedUpdate;
+    } else {
+      for (let station of selectedStations) {
+        const currentBalanceUpdate =
+          Number(previous) - Number(station.incomingQuantity);
+        const loadedUpdate = Number(loaded) + Number(station.incomingQuantity);
+
+        const payload = {
+          depotStation: depotStation,
+          destination: station.alias,
+          product: product,
+          quantity: station.incomingQuantity,
+          updateCurrentBalance: currentBalanceUpdate,
+          updateQantityLoaded: loadedUpdate,
+          customerName: inhouse !== "available" ? customerName : "null",
+          customerAddress: inhouse !== "available" ? customerAddress : "null",
+          customerPhone: inhouse !== "available" ? customerPhone : "null",
+          customerDestination:
+            inhouse !== "available" ? customerDestination : "null",
+          dateCreated: dateCreated,
+          productOrderID: productOrderID,
+          truckNo: truckNo,
+          transporter: transporter,
+          wayBillNo: wayBillNo,
+          driverName: driverName,
+          phoneNo: phoneNo,
+          outletName: station.outletName,
+          outletID: station._id,
+          organizationID: station.organisation,
+        };
+
+        const res = await IncomingService.createIncoming(payload);
+        if (res) previous = currentBalanceUpdate;
+        loaded = loadedUpdate;
+      }
     }
 
     setLoading(false);
@@ -280,7 +314,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   return (
     <ModalBackground
       openModal={open}
-      closeModal={close}
+      closeModal={closeup}
       submit={submit}
       loading={loading}
       label={"Create Incoming Order"}>
@@ -441,6 +475,12 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
 
       {inhouse !== "available" && (
         <React.Fragment>
+          <ModalInputField
+            value={quantity}
+            setValue={setQuantity}
+            type={"text"}
+            label={"Loaded quantity"}
+          />
           <ModalInputField
             value={customerName}
             setValue={setCustomerName}
