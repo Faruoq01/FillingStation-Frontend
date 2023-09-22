@@ -7,6 +7,7 @@ const ModalInputField = ({
   type,
   label,
   disabled = false,
+  mt = "20px",
 }) => {
   const handleInput = (e) => {
     if (type !== "number" || type === "time") return setValue(e.target.value);
@@ -26,7 +27,7 @@ const ModalInputField = ({
   };
 
   return (
-    <div style={{ marginTop: "20px" }} className="inputs">
+    <div style={{ marginTop: mt }} className="inputs">
       <div className="head-text2">{label}</div>
       <OutlinedInput
         disabled={disabled}

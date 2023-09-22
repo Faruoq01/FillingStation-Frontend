@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import close from "../../assets/close.png";
-import Button from "@mui/material/Button";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Modal from "@mui/material/Modal";
-import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import IncomingService from "../../services/360station/IncomingService";
@@ -14,6 +10,8 @@ import ProductService from "../../services/360station/productService";
 import { setProductOrder } from "../../storage/productOrder";
 import { Radio } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ModalBackground from "../controls/Modal/ModalBackground";
+import ModalInputField from "../controls/Modal/ModalInputField";
 
 const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [loading, setLoading] = useState(false);
@@ -22,13 +20,13 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const dispatch = useDispatch();
   const [productType, setProductType] = useState("available");
+  const [inhouse, setInhouse] = useState("available");
   const [quantityOrdered, setQuantityOrdered] = useState("");
   const [previousBalance, setPreviousBalance] = useState("");
   const [quantityLoaded, setQuantityLoaded] = useState("");
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [depotStation, setDepotStation] = useState("");
-  const [destination, setDestination] = useState("");
   const [product, setProduct] = useState("");
   const [dateCreated, setDateCreated] = useState("");
   const [productOrderID, setProductOrderID] = useState("");
@@ -43,6 +41,11 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [loadedQuantity, setLoadedQuantity] = useState("0");
   const [searchKey, setSearchKey] = useState("");
 
+  const [customerName, setCustomerName] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerDestination, setCustomerDestination] = useState("");
+
   const handleClose = () => closeup(false);
 
   function removeSpecialCharacters(str) {
@@ -54,14 +57,20 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
       return swal("Warning!", "Transporter cannot be empty", "info");
     if (depotStation === "")
       return swal("Warning!", "Depot station field cannot be empty", "info");
-    if (destination === "")
-      return swal("Warning!", "Destination field cannot be empty", "info");
     if (product === "")
       return swal("Warning!", "Product field cannot be empty", "info");
     if (dateCreated === "")
       return swal("Warning!", "Date created field cannot be empty", "info");
     if (productOrderID === "" && productType === "available")
       return swal("Warning!", "Product order ID field cannot be empty", "info");
+    if (customerName === "" && inhouse !== "available")
+      return swal("Warning!", "Please provide customer name", "info");
+    if (customerAddress === "" && inhouse !== "available")
+      return swal("Warning!", "Please provide customer address", "info");
+    if (customerPhone === "" && inhouse !== "available")
+      return swal("Warning!", "Please provide customer phone", "info");
+    if (customerDestination === "" && inhouse !== "available")
+      return swal("Warning!", "Please provide customer destination", "info");
     if (truckNo === "")
       return swal("Warning!", "Truck No cannot be empty", "info");
     if (driverName === "")
@@ -97,6 +106,11 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
         quantity: station.incomingQuantity,
         updateCurrentBalance: currentBalanceUpdate,
         updateQantityLoaded: loadedUpdate,
+        customerName: inhouse !== "available" ? customerName : "null",
+        customerAddress: inhouse !== "available" ? customerAddress : "null",
+        customerPhone: inhouse !== "available" ? customerPhone : "null",
+        customerDestination:
+          inhouse !== "available" ? customerDestination : "null",
         dateCreated: dateCreated,
         productOrderID: productOrderID,
         truckNo: truckNo,
@@ -116,7 +130,6 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
 
     setLoading(false);
     setDepotStation("");
-    setDestination("");
     setTransporter("");
     setTruckNo("");
     setWayBillNo("");
@@ -124,6 +137,10 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
     setPhoneNumber("");
     setLoadedQuantity("0");
     setProductOrderID("");
+    setCustomerName("");
+    setCustomerAddress("");
+    setCustomerPhone("");
+    setCustomerDestination("");
     setDefault(0);
     setVal(1);
     swal("Success", "Incoming order created successfully!", "success");
@@ -218,463 +235,297 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
     }
   };
 
-  return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div className="modalContainer2">
-        <div className="inner">
-          <div className="head">
-            <div className="head-text">Create Incoming Order</div>
-            <img
-              onClick={handleClose}
-              style={{ width: "18px", height: "18px" }}
-              src={close}
-              alt={"icon"}
-            />
-          </div>
-
-          <div className="middleDiv" style={inner}>
-            <div style={{ marginTop: "15px" }} className="inputs">
-              <div className="head-text2">Choose Order Type</div>
-              <div className="radio">
-                <div className="rad-item">
-                  <Radio
-                    onClick={() => {
-                      setProductType("available");
-                    }}
-                    checked={productType === "available" ? true : false}
-                  />
-                  <div className="head-text2" style={{ marginRight: "5px" }}>
-                    Available Order
-                  </div>
-                </div>
-
-                <div className="rad-item">
-                  <Radio
-                    onClick={() => {
-                      setProductType("new");
-                    }}
-                    checked={productType === "new" ? true : false}
-                  />
-                  <div className="head-text2" style={{ marginRight: "5px" }}>
-                    New Order
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div style={{ marginTop: "15px" }} className="inputs">
-              <div className="head-text2">Product Type</div>
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={val}
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}>
-                <MenuItem style={menu} value={1}>
-                  Select Product
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    menuSelection(2, "PMS");
-                  }}
-                  style={menu}
-                  value={2}>
-                  PMS
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    menuSelection(3, "AGO");
-                  }}
-                  style={menu}
-                  value={3}>
-                  AGO
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    menuSelection(4, "DPK");
-                  }}
-                  style={menu}
-                  value={4}>
-                  DPK
-                </MenuItem>
-              </Select>
-            </div>
-
-            {productType === "available" && (
-              <div className="inputs">
-                <div className="head-text2">Product Order </div>
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={defaultState}
-                  sx={selectStyle2}>
-                  <MenuItem style={menu} value={0}>
-                    Select Product Order
-                  </MenuItem>
-                  {productOrder.map((item, index) => {
-                    return (
-                      <MenuItem
-                        key={index}
-                        style={menu}
-                        onClick={() => {
-                          changeMenu(index + 1, item);
-                        }}
-                        value={index + 1}>
-                        {item.depot}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </div>
-            )}
-
-            <div className="inputs">
-              <div className="head-text2">Supplier</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={depotStation}
-                type="text"
-                onChange={(e) => setDepotStation(e.target.value)}
-              />
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Transporter</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  fontSize: "12px",
-                  background: "#EEF2F1",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={transporter}
-                type="text"
-                onChange={(e) => setTransporter(e.target.value)}
-              />
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Destination</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-              />
-            </div>
-
-            {productType === "available" && (
-              <div className="inputs">
-                <div className="head-text2">Quantity Orderd (ltr)</div>
-                <OutlinedInput
-                  sx={{
-                    width: "100%",
-                    height: "35px",
-                    marginTop: "5px",
-                    background: "#EEF2F1",
-                    fontSize: "12px",
-                    borderRadius: "0px",
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "1px solid #777777",
-                    },
-                  }}
-                  placeholder=""
-                  type="text"
-                  disabled
-                  value={quantityOrdered}
-                />
-              </div>
-            )}
-
-            {productType === "available" && (
-              <div className="inputs">
-                <div className="head-text2">Current Balance (ltr)</div>
-                <OutlinedInput
-                  sx={{
-                    width: "100%",
-                    height: "35px",
-                    marginTop: "5px",
-                    background: "#EEF2F1",
-                    fontSize: "12px",
-                    borderRadius: "0px",
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "1px solid #777777",
-                    },
-                  }}
-                  placeholder=""
-                  type="text"
-                  disabled
-                  value={previousBalance}
-                />
-              </div>
-            )}
-
-            <div className="inputs">
-              <div className="head-text2">Select discharge stations</div>
-              <div
-                onClick={() => setStationSelect(!stationSelect)}
-                style={drop}>
-                <span style={{ marginLeft: "10px" }}>
-                  Select ({selected.length})
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loaded
-                  Quantity ( &nbsp;
-                  <span style={{ color: "green", fontWeight: "600" }}>
-                    {loadedQuantity}
-                  </span>
-                  &nbsp; )
-                </span>
-                <KeyboardArrowDownIcon sx={{ marginRight: "10px" }} />
-              </div>
-              {stationSelect && (
-                <div style={pop}>
-                  <input
-                    onChange={(e) => {
-                      searchStationList(e.target.value);
-                    }}
-                    style={searchBar}
-                    type={"text"}
-                    placeholder="Search"
-                  />
-                  {getStations(allOutlets).map((data, index) => {
-                    return (
-                      <div key={index} style={menus}>
-                        <div style={{ width: "70%" }}>
-                          <input
-                            onChange={(e) => {
-                              updateSelection(e, data);
-                            }}
-                            style={{ marginLeft: "10px" }}
-                            type={"checkbox"}
-                          />
-                          <span
-                            style={{ marginLeft: "10px", fontSize: "11px" }}>
-                            {data.outletName}, {data.city}
-                          </span>
-                        </div>
-                        <input
-                          placeholder="quantity"
-                          onChange={(e) => updateQantity(e, data)}
-                          style={{
-                            width: "30%",
-                            outline: "none",
-                            fontSize: "11px",
-                          }}
-                          type={"text"}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Date created</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                type="date"
-                value={dateCreated}
-                onChange={(e) => setDateCreated(e.target.value)}
-              />
-            </div>
-
-            {productType === "available" && (
-              <div className="inputs">
-                <div className="head-text2">Product Order ID</div>
-                <OutlinedInput
-                  sx={{
-                    width: "100%",
-                    height: "35px",
-                    marginTop: "5px",
-                    background: "#EEF2F1",
-                    fontSize: "12px",
-                    borderRadius: "0px",
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "1px solid #777777",
-                    },
-                  }}
-                  placeholder=""
-                  type="text"
-                  disabled
-                  value={productOrderID}
-                  onChange={(e) => setProductOrderID(e.target.value)}
-                />
-              </div>
-            )}
-
-            <div className="inputs">
-              <div className="head-text2">Truck No</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                type="text"
-                value={truckNo}
-                onChange={(e) => setTruckNo(e.target.value)}
-              />
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Waybill No</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                type="text"
-                value={wayBillNo}
-                onChange={(e) => setWayBillNo(e.target.value)}
-              />
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Driver's Name</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                type="text"
-                value={driverName}
-                onChange={(e) => setDriverName(e.target.value)}
-              />
-            </div>
-
-            <div className="inputs">
-              <div className="head-text2">Phone Number</div>
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                placeholder=""
-                type="text"
-                value={phoneNo}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div style={{ marginTop: "10px", height: "30px" }} className="butt">
-            <Button
-              disabled={loading}
-              sx={{
-                width: "100px",
-                height: "30px",
-                background: "#427BBE",
-                borderRadius: "3px",
-                fontSize: "10px",
-                marginTop: "0px",
-                "&:hover": {
-                  backgroundColor: "#427BBE",
-                },
+  const RadioButtonComponent = ({
+    productType,
+    setProductType,
+    labelOne,
+    labelTwo,
+    title,
+    mt,
+  }) => {
+    return (
+      <div style={{ marginTop: mt }} className="inputs">
+        <div className="head-text2">{title}</div>
+        <div className="radio">
+          <div className="rad-item">
+            <Radio
+              onClick={() => {
+                setProductType("available");
               }}
-              onClick={submit}
-              variant="contained">
-              {" "}
-              Save
-            </Button>
+              checked={productType === "available" ? true : false}
+            />
+            <div className="head-text2" style={{ marginRight: "5px" }}>
+              {labelOne}
+            </div>
+          </div>
 
-            {loading ? (
-              <ThreeDots
-                height="60"
-                width="50"
-                radius="9"
-                color="#076146"
-                ariaLabel="three-dots-loading"
-                wrapperStyle={{}}
-                wrapperClassName=""
-                visible={true}
-              />
-            ) : null}
+          <div className="rad-item">
+            <Radio
+              onClick={() => {
+                setProductType("new");
+              }}
+              checked={productType === "new" ? true : false}
+            />
+            <div className="head-text2" style={{ marginRight: "5px" }}>
+              {labelTwo}
+            </div>
           </div>
         </div>
       </div>
-    </Modal>
+    );
+  };
+
+  const PRODUCT_ENUM = ["PMS", "AGO", "DPK"];
+
+  return (
+    <ModalBackground
+      openModal={open}
+      closeModal={close}
+      submit={submit}
+      loading={loading}
+      label={"Create Incoming Order"}>
+      <RadioButtonComponent
+        productType={productType}
+        setProductType={setProductType}
+        labelOne={"Available Order"}
+        labelTwo={"New Order"}
+        title={"Choose Order Type"}
+        mt={"20px"}
+      />
+      <div style={{ marginTop: "20px" }} className="inputs">
+        <div className="head-text2">Product Type</div>
+        <Select value={val} sx={productSelect}>
+          <MenuItem style={menu} value={1}>
+            Select Product
+          </MenuItem>
+          {PRODUCT_ENUM.map((item, index) => {
+            return (
+              <MenuItem
+                onClick={() => {
+                  menuSelection(index + 2, item);
+                }}
+                style={menu}
+                value={index + 2}>
+                {item}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </div>
+
+      {productType === "available" && (
+        <div style={{ marginTop: "20px" }} className="inputs">
+          <div className="head-text2">Product Order </div>
+          <Select
+            labelId="demo-select-small"
+            id="demo-select-small"
+            value={defaultState}
+            sx={selectStyle2}>
+            <MenuItem style={menu} value={0}>
+              Select Product Order
+            </MenuItem>
+            {productOrder.map((item, index) => {
+              return (
+                <MenuItem
+                  key={index}
+                  style={menu}
+                  onClick={() => {
+                    changeMenu(index + 1, item);
+                  }}
+                  value={index + 1}>
+                  {item.depot}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </div>
+      )}
+
+      <ModalInputField
+        value={depotStation}
+        setValue={setDepotStation}
+        type={"text"}
+        label={"Supplier"}
+      />
+
+      <ModalInputField
+        value={transporter}
+        setValue={setTransporter}
+        type={"text"}
+        label={"Transporter"}
+      />
+
+      {productType === "available" && (
+        <ModalInputField
+          value={quantityOrdered}
+          type={"text"}
+          label={"Quantity Orderd (ltr)"}
+          disabled={true}
+        />
+      )}
+
+      {productType === "available" && (
+        <ModalInputField
+          value={previousBalance}
+          type={"text"}
+          label={"Quantity Orderd (ltr)"}
+          disabled={true}
+        />
+      )}
+
+      <RadioButtonComponent
+        productType={inhouse}
+        setProductType={setInhouse}
+        labelOne={"Inhouse Order"}
+        labelTwo={"Others"}
+        mt={"30px"}
+      />
+
+      {inhouse === "available" && (
+        <div style={{ marginTop: "10px" }} className="inputs">
+          <div className="head-text2">Select discharge stations</div>
+          <div onClick={() => setStationSelect(!stationSelect)} style={drop}>
+            <span style={{ marginLeft: "10px" }}>
+              Select ({selected.length})
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loaded
+              Quantity ( &nbsp;
+              <span style={{ color: "green", fontWeight: "600" }}>
+                {loadedQuantity}
+              </span>
+              &nbsp; )
+            </span>
+            <KeyboardArrowDownIcon sx={{ marginRight: "10px" }} />
+          </div>
+          {stationSelect && (
+            <div style={pop}>
+              <input
+                onChange={(e) => {
+                  searchStationList(e.target.value);
+                }}
+                style={searchBar}
+                type={"text"}
+                placeholder="Search"
+              />
+              {getStations(allOutlets).map((data, index) => {
+                return (
+                  <div key={index} style={menus}>
+                    <div style={{ width: "70%" }}>
+                      <input
+                        onChange={(e) => {
+                          updateSelection(e, data);
+                        }}
+                        style={{ marginLeft: "10px" }}
+                        type={"checkbox"}
+                      />
+                      <span style={{ marginLeft: "10px", fontSize: "11px" }}>
+                        {data.outletName}, {data.city}
+                      </span>
+                    </div>
+                    <input
+                      placeholder="quantity"
+                      onChange={(e) => updateQantity(e, data)}
+                      style={{
+                        width: "30%",
+                        outline: "none",
+                        fontSize: "11px",
+                      }}
+                      type={"text"}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {inhouse !== "available" && (
+        <React.Fragment>
+          <ModalInputField
+            value={customerName}
+            setValue={setCustomerName}
+            type={"text"}
+            label={"Customer Name"}
+          />
+          <ModalInputField
+            value={customerAddress}
+            setValue={setCustomerAddress}
+            type={"text"}
+            label={"Customer Address"}
+          />
+          <ModalInputField
+            value={customerPhone}
+            setValue={setCustomerPhone}
+            type={"text"}
+            label={"Customer Phone"}
+          />
+          <ModalInputField
+            value={customerDestination}
+            setValue={setCustomerDestination}
+            type={"text"}
+            label={"Customer Destination"}
+          />
+        </React.Fragment>
+      )}
+
+      <ModalInputField
+        value={dateCreated}
+        setValue={setDateCreated}
+        type={"date"}
+        label={"Date created"}
+      />
+
+      {productType === "available" && (
+        <ModalInputField
+          value={productOrderID}
+          setValue={setProductOrderID}
+          type={"text"}
+          label={"Product Order ID"}
+          disabled={true}
+        />
+      )}
+
+      <ModalInputField
+        value={truckNo}
+        setValue={setTruckNo}
+        type={"text"}
+        label={"Truck No"}
+      />
+
+      <ModalInputField
+        value={wayBillNo}
+        setValue={setWayBillNo}
+        type={"text"}
+        label={"Waybill No"}
+      />
+
+      <ModalInputField
+        value={driverName}
+        setValue={setDriverName}
+        type={"text"}
+        label={"Driver's Name"}
+      />
+
+      <ModalInputField
+        value={phoneNo}
+        setValue={setPhoneNumber}
+        type={"text"}
+        label={"Phone Number"}
+      />
+    </ModalBackground>
   );
+};
+
+const productSelect = {
+  width: "100%",
+  height: "35px",
+  marginTop: "5px",
+  background: "#EEF2F1",
+  fontSize: "12px",
+  borderRadius: "0px",
+  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #777777",
+  },
 };
 
 const searchBar = {
@@ -722,12 +573,6 @@ const menus = {
   justifyContent: "space-between",
 };
 
-const inner = {
-  width: "100%",
-  height: "500px",
-  overflowY: "scroll",
-};
-
 const menu = {
   fontSize: "12px",
 };
@@ -740,6 +585,7 @@ const selectStyle2 = {
   fontSize: "12px",
   outline: "none",
   borderRadius: "0px",
+  marginTop: "5px",
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #777777",
   },
