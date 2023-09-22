@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import close from "../../assets/close.png";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
 import IncomingService from "../../services/360station/IncomingService";
@@ -96,6 +95,12 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
     let loaded = quantityLoaded;
 
     if (inhouse !== "available") {
+      if (quantity <= 0)
+        return swal(
+          "Warning!",
+          `${oneStationData.alias} was assigned 0 litres, please add a quantity`,
+          "info"
+        );
       const currentBalanceUpdate = Number(previous) - Number(quantity);
       const loadedUpdate = Number(loaded) + Number(quantity);
 
@@ -128,6 +133,12 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
       loaded = loadedUpdate;
     } else {
       for (let station of selectedStations) {
+        if (station.incomingQuantity <= 0)
+          return swal(
+            "Warning!",
+            `${station.alias} was assigned 0 litres, please add a quantity`,
+            "info"
+          );
         const currentBalanceUpdate =
           Number(previous) - Number(station.incomingQuantity);
         const loadedUpdate = Number(loaded) + Number(station.incomingQuantity);
