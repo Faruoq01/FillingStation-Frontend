@@ -1,32 +1,20 @@
 import React, { useEffect } from "react";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import BarChartGraph from "../../common/BarChartGraph";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Skeleton, Stack } from "@mui/material";
-import { dateRange } from "../../../storage/dashboard";
-import swal from "sweetalert";
+import { Skeleton } from "@mui/material";
 import ApproximateDecimal from "../../common/approx";
-import ButtonDatePicker from "../../common/CustomDatePicker";
-import {
-  setDateValue,
-  expenses,
-  setLocaleDate,
-} from "../../../storage/dailysales";
+import { expenses } from "../../../storage/dailysales";
 import { useCallback } from "react";
 import APIs from "../../../services/connections/api";
+import DateRangeLib from "../../common/DatePickerLib";
+
+const mobile = window.matchMedia("(max-width: 1150px)");
 
 const ExpensesAndPayments = () => {
-  const moment = require("moment-timezone");
-  const date2 = moment().format("Do MMM YYYY");
-  const [initial, setInitial] = useState("");
-
-  const [value, setValue] = React.useState(null);
   const user = useSelector((state) => state.auth.user);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
-  const localeDate = useSelector((state) => state.dailysales.localeDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const expenseData = useSelector((state) => state.dailysales.expenses);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -42,32 +30,14 @@ const ExpensesAndPayments = () => {
     }
   };
 
-  const getPerm = (e) => {
-    if (user.userType === "superAdmin") {
-      return true;
-    }
-    return user.permission?.dailySales[e];
-  };
-
-  useEffect(() => {
-    if (updatedDate === "" || localeDate === "") {
-      setInitial(date2);
-    } else {
-      const formatedDate = moment(updatedDate).format("Do MMM YYYY");
-      setInitial(formatedDate);
-      setValue(localeDate);
-    }
-  }, [date2, localeDate, moment, updatedDate]);
-
   const getExpenses = useCallback((station, date, salesShift) => {
     setLoad(true);
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date === "" ? today : date,
-      end: date === "" ? today : date,
+      start: date[0],
+      end: date[1],
       shift: salesShift,
     };
 
@@ -88,21 +58,6 @@ const ExpensesAndPayments = () => {
     getExpenses(oneStationData, updatedDate, salesShift);
   }, [getExpenses, oneStationData, updatedDate, salesShift]);
 
-  const convertDate = (newValue) => {
-    const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
-    return getDate;
-  };
-
-  const updateDate = (newValue) => {
-    if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
-    setValue(newValue);
-
-    const getDate = newValue === "" ? initial : newValue.format("YYYY-MM-DD");
-    dispatch(setDateValue(getDate));
-    dispatch(setLocaleDate(newValue));
-    dispatch(dateRange([getDate, getDate]));
-  };
-
   const goToPagesInd = (data) => {
     if (data === "exp") return navigate("/home/analysis/expenses");
     if (data === "pay") return navigate("/home/analysis/payments");
@@ -119,17 +74,7 @@ const ExpensesAndPayments = () => {
         }}>
         <div>
           <div style={sales}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Stack spacing={1}>
-                <ButtonDatePicker
-                  label={`${
-                    value === null || "" ? initial : convertDate(value)
-                  }`}
-                  value={value}
-                  onChange={(newValue) => updateDate(newValue)}
-                />
-              </Stack>
-            </LocalizationProvider>
+            <DateRangeLib sales={true} mt={mobile.matches ? "10px" : "0px"} />
           </div>
         </div>
       </div>

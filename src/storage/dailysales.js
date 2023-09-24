@@ -16,8 +16,6 @@ const labels = [
 ];
 
 const initialState = {
-  updatedDate: "",
-  localeDate: "",
   overageType: "PMS",
   dailysales: 0,
   sales: {
@@ -121,12 +119,6 @@ export const dailysales = createSlice({
   name: "dailysales",
   initialState,
   reducers: {
-    setDateValue: (state, action) => {
-      state.updatedDate = action.payload;
-    },
-    setLocaleDate: (state, action) => {
-      state.localeDate = action.payload;
-    },
     sales: (state, action) => {
       state.sales = action.payload;
     },
@@ -170,8 +162,6 @@ export const dailysales = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   sales,
-  setDateValue,
-  setLocaleDate,
   tankLevels,
   overage,
   overageType,

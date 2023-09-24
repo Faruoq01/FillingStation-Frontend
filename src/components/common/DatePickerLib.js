@@ -16,10 +16,9 @@ import React, { useCallback, useEffect } from "react";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { setDateValue } from "../../storage/dailysales";
 import { dateRange } from "../../storage/dashboard";
 
-const DateRangeLib = ({ mt = "0px", disabled = false }) => {
+const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
   const dispatch = useDispatch();
   const today = moment().format("YYYY-MM-DD").split(" ")[0];
   let formatter = useDateFormatter({ dateStyle: "long" });
@@ -51,15 +50,11 @@ const DateRangeLib = ({ mt = "0px", disabled = false }) => {
     let endDate = `${end.year}-${end.month}-${end.day}`;
 
     startDate = moment(startDate).format("YYYY-MM-DD").split(" ")[0];
-    endDate = moment(endDate).format("YYYY-MM-DD").split(" ")[0];
+    endDate = sales
+      ? startDate
+      : moment(endDate).format("YYYY-MM-DD").split(" ")[0];
 
-    if (startDate === endDate) {
-      dispatch(setDateValue(startDate));
-      dispatch(dateRange([startDate, startDate]));
-    } else {
-      dispatch(setDateValue(""));
-      dispatch(dateRange([startDate, endDate]));
-    }
+    dispatch(dateRange([startDate, endDate]));
   };
 
   return (

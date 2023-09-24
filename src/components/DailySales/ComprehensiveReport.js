@@ -14,40 +14,30 @@ import LPOReport from "../Comprehensive/LPOReport";
 import Expenses from "../Comprehensive/Expenses";
 import Dipping from "../Comprehensive/Dipping";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ReturnToTank from "../Comprehensive/ReturnToTank";
 import PaymentDetails from "../Comprehensive/PaymentDetails";
-import { setDateValue, setLocaleDate } from "../../storage/dailysales";
-import { Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import ReportConfirmation from "../Comprehensive/ReportConfirmation";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import ButtonDatePicker from "../common/CustomDatePicker";
-import { dateRange } from "../../storage/dashboard";
 import TankLevels from "../Comprehensive/TankLevels";
 import swal from "sweetalert";
 import SalesService from "../../services/360station/sales";
 import APIs from "../../services/connections/api";
 import ComprehensiveReportModal from "../Reports/ComprehensiveReportModal";
 import ShiftSelect from "../common/shift";
+import DateRangeLib from "../common/DatePickerLib";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const ComprehensiveReport = (props) => {
   const [printReportStatus, setPrintReportStatus] = useState(false);
-  const moment = require("moment-timezone");
-  const date2 = moment().format("Do MMM YYYY");
-  const [initial, setInitial] = useState("");
-  const [value, setValue] = React.useState(null);
 
   const [collapsible, setCollapsible] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
-  const localeDate = useSelector((state) => state.dailysales.localeDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -58,34 +48,11 @@ const ComprehensiveReport = (props) => {
   };
 
   useEffect(() => {
-    if (updatedDate === "" || localeDate === "") {
-      setInitial(date2);
-    } else {
-      const formatedDate = moment(updatedDate).format("Do MMM YYYY");
-      setInitial(formatedDate);
-      setValue(localeDate);
-    }
-
     if (oneStationData === null) {
       navigate("/home/dailysales/dailysaleshome/0");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const updateDate = (newValue) => {
-    // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
-    setValue(newValue);
-
-    const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
-    dispatch(setDateValue(getDate));
-    dispatch(setLocaleDate(newValue));
-    dispatch(dateRange([new Date(getDate), new Date(getDate)]));
-  };
-
-  const convertDate = (newValue) => {
-    const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
-    return getDate;
-  };
 
   const resetAllRecords = () => {
     swal({
@@ -96,15 +63,10 @@ const ComprehensiveReport = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        const getDate =
-          updatedDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : updatedDate;
-
         const payload = {
           org: resolveUserID().id,
           outletID: oneStationData._id,
-          date: getDate,
+          date: updatedDate[0],
         };
 
         APIs.post("/sales/delete/checkStatus", payload).then((data) => {
@@ -116,7 +78,7 @@ const ComprehensiveReport = (props) => {
             );
           } else {
             const load = {
-              date: getDate,
+              date: updatedDate[0],
               station: oneStationData,
             };
             SalesService.deleteAllRecords(load).then(({ data }) => {
@@ -148,17 +110,7 @@ const ComprehensiveReport = (props) => {
       <div className="comprehensive_container">
         <div className="reportings">
           <div style={buttonGroup} className="comp_result">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Stack spacing={1}>
-                <ButtonDatePicker
-                  label={`${
-                    value === null || "" ? initial : convertDate(value)
-                  }`}
-                  value={value}
-                  onChange={(newValue) => updateDate(newValue)}
-                />
-              </Stack>
-            </LocalizationProvider>
+            <DateRangeLib sales={true} mt={mobile.matches ? "10px" : "0px"} />
 
             <div className="resetAll">
               <Button
