@@ -85,11 +85,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
   return (
     <div style={{ ...style, marginLeft: ml }}>
       {oneStation && (
-        <Select
-          labelId="demo-select-small"
-          id="demo-select-small"
-          value={defaultState}
-          sx={selectStyle2}>
+        <Select MenuProps={menuProps} value={defaultState} sx={selectStyle2}>
           <MenuItem
             onClick={() => {
               changeMenu(0, null);
@@ -114,13 +110,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
         </Select>
       )}
       {oneStation || (
-        <Select
-          labelId="demo-select-small"
-          id="demo-select-small"
-          value={0}
-          sx={selectStyle2}
-          MenuProps={menuProps}
-          disabled>
+        <Select value={0} sx={selectStyle2} MenuProps={menuProps} disabled>
           <MenuItem style={menu} value={0}>
             {!oneStation
               ? oneStationData?.outletName + ", " + oneStationData?.alias

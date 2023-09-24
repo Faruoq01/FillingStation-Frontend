@@ -8,11 +8,18 @@ const ModalInputField = ({
   label,
   disabled = false,
   mt = "20px",
+  data = null,
 }) => {
   const handleInput = (e) => {
-    if (type !== "number" || type === "time") return setValue(e.target.value);
     const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
-    setValue(removeFormat);
+    if (type !== "number" || type === "time") return setValue(e.target.value);
+
+    if (type === "number") {
+      if (data !== null) {
+        return setValue(removeFormat, data);
+      }
+      return setValue(removeFormat);
+    }
   };
 
   const getInputType = () => {

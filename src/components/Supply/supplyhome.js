@@ -26,6 +26,7 @@ import { SupplyDesktopTable, SupplyMobileTable } from "../tables/supply";
 import SupplyModal from "../Modals/SupplyModal";
 import PrintSupplyRecords from "../Reports/SupplyRecords";
 import DateRangeLib from "../common/DatePickerLib";
+import EditSupply from "../Modals/editsupply";
 
 const columns = [
   "S/N",
@@ -57,7 +58,7 @@ const SupplyHome = () => {
   const [limit, setLimit] = useState(15);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [setEditSupply] = useState(false);
+  const [editsupply, setEditSupply] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -221,6 +222,7 @@ const SupplyHome = () => {
           callback={refresh}
         />
       </TablePageBackground>
+      {editsupply && <EditSupply open={editsupply} close={setEditSupply} />}
       {open && (
         <SupplyModal
           station={oneStationData}

@@ -11,9 +11,13 @@ import {
   TableViewForMobile,
 } from "../controls/PageLayout/TableViewForMobile";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { singleSupply } from "../../storage/supply";
 // import swal from "sweetalert";
 
 const Action = ({ data, setEditSupply, refresh }) => {
+  const dispatch = useDispatch();
+
   const handleDelete = (data) => {
     // swal({
     //   title: "Alert!",
@@ -49,7 +53,7 @@ const Action = ({ data, setEditSupply, refresh }) => {
             marginRight: 5,
           }}
           onClick={() => {
-            // dispatch(singleIncomingOrderRecord(data));
+            dispatch(singleSupply(data));
             setEditSupply(true);
           }}
         />
