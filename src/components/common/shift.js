@@ -10,21 +10,19 @@ const mobile = window.matchMedia("(max-width: 600px)");
 const ShiftSelect = ({ mr = "0px", ml = "10px" }) => {
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const [defaultSelect, setDefaultSelect] = useState(0);
 
   const getAllShifts = () => {
-    const parsedDate = moment(updatedDate, "YYYY-MM-DD");
+    const parsedDate = moment(updatedDate[0], "YYYY-MM-DD");
     const dayOfWeek = parsedDate.format("dddd").toLowerCase();
-    const today = moment().format("dddd").toLowerCase();
-    const targetDate = updatedDate === "" ? today : dayOfWeek;
 
     const station = JSON.parse(JSON.stringify(oneStationData));
     if (station) {
       if (station.shift) {
         const shifts = station.shift;
-        if (targetDate in shifts) {
-          const shiftList = shifts[targetDate];
+        if (dayOfWeek in shifts) {
+          const shiftList = shifts[dayOfWeek];
           return Object.values(shiftList);
         } else {
           return [];

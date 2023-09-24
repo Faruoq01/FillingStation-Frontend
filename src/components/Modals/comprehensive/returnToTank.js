@@ -102,7 +102,7 @@ const ReturnToTankModal = (props) => {
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
 
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const recordSales = useSelector((state) => state.comprehensive.rtMetrics);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -272,7 +272,7 @@ const ReturnToTankModal = (props) => {
       reading,
       oneStationData,
       currentPump,
-      currentDate,
+      currentDate[0],
       salesShift
     );
 

@@ -7,7 +7,6 @@ import APIs from "../../../services/connections/api";
 import { netToBank } from "../../../storage/dailysales";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
 
 const NetToBank = () => {
   const user = useSelector((state) => state.auth.user);

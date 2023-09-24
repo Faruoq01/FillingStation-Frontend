@@ -8,7 +8,6 @@ import APIs from "../../../services/connections/api";
 import { lpo } from "../../../storage/dailysales";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
 
 const LPO = () => {
   const navigate = useNavigate();

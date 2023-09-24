@@ -6,7 +6,6 @@ import { useCallback, useEffect, useState } from "react";
 import swal from "sweetalert";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/connections/api";
-import moment from "moment";
 import { setProduct } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
@@ -46,7 +45,8 @@ const ProductBalance = (props) => {
   };
 
   const getAllProduct = useCallback((updatedDate, salesShift) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
@@ -58,7 +58,6 @@ const ProductBalance = (props) => {
 
     APIs.post("/comprehensive/products", payload)
       .then(({ data }) => {
-        console.log(data, "sales");
         dispatch(setProduct({ type: props.type, data: data.product }));
       })
       .then(() => {

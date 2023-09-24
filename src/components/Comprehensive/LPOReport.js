@@ -14,7 +14,6 @@ import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import LPOSalesModal from "../Modals/comprehensive/lpo";
-import moment from "moment";
 
 const LPOReport = () => {
   const navigate = useNavigate();
@@ -48,7 +47,8 @@ const LPOReport = () => {
   };
 
   const getLPOData = useCallback((updatedDate, salesShift) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

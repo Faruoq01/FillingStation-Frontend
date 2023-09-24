@@ -7,7 +7,6 @@ import swal from "sweetalert";
 import { useDispatch, useSelector } from "react-redux";
 import { Skeleton } from "@mui/material";
 import { useState } from "react";
-import moment from "moment";
 import APIs from "../../../services/connections/api";
 import { tankLevels } from "../../../storage/dailysales";
 import { tankListType } from "../../../storage/outlet";

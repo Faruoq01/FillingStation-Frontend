@@ -56,7 +56,7 @@ const ReportConfirmation = () => {
   const navigate = useNavigate();
   const [remark, setRemark] = useState("");
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
@@ -72,36 +72,24 @@ const ReportConfirmation = () => {
     }
   };
 
-  const getRemarkData = useCallback((updatedDate) => {
-    if (oneStationData === null) return navigate("dailysales");
-    setLoading(true);
-    const payload = {
-      organizationID: resolveUserID().id,
-      outletID: oneStationData._id,
-      date: updatedDate,
-    };
-
-    APIs.post("/comprehensive/remarks", payload)
-      .then(({ data }) => {
-        dispatch(setRemarkList(data.remarks));
-      })
-      .then(() => {
-        setLoading(false);
-      });
-
+  const getRemarkData = useCallback((updatedDate, currentShift) => {
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
+    refresh(updatedDate, currentShift);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getRemarkData(currentDate);
-  }, [getRemarkData, currentDate]);
+    getRemarkData(currentDate, currentShift);
+  }, [getRemarkData, currentDate, currentShift]);
 
-  const refresh = () => {
+  const refresh = (updatedDate, currentShift) => {
     setLoading(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: currentDate,
+      date: updatedDate[0],
+      shift: currentShift,
     };
 
     APIs.post("/comprehensive/remarks", payload)
@@ -129,7 +117,7 @@ const ReportConfirmation = () => {
           : user.staffName,
       image: user.image,
       remark: remark,
-      selectedDate: currentDate,
+      selectedDate: currentDate[0],
       shift: currentShift,
       outletID: oneStationData?._id,
       organisationID: oneStationData?.organisation,

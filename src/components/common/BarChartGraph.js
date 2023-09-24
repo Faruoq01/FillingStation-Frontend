@@ -49,9 +49,8 @@ const options = {
 const BarChartGraph = (props) => {
   const dispatch = useDispatch();
   const moment = require("moment-timezone");
-  const date2 = moment().format("YYYY-MM-DD").split(" ")[0];
 
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const graphData = useSelector((state) => state.dailysales.graph);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -69,7 +68,7 @@ const BarChartGraph = (props) => {
   const getMonthlyGraphData = useCallback(
     (station, salesShift) => {
       setLoad(true);
-      const getDate = updatedDate === (null || "") ? date2 : updatedDate;
+      const getDate = updatedDate[0];
       const getYear = moment(getDate).format("YYYY");
       const range = [];
 

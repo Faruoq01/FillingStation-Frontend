@@ -25,7 +25,7 @@ const PaymentsModal = (props) => {
   const [gallLoader, setGallLoader] = useState(0);
   const [productState, setProductState] = useState(1);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [bankName, setBankName] = useState("");
@@ -62,24 +62,22 @@ const PaymentsModal = (props) => {
     setLoading(true);
 
     const bankPayload = paymentPayload(
-      currentDate,
+      currentDate[0],
       bankName,
       tellerNumber,
       amountPaid,
       oneStationData,
-      currentDate,
       cam,
       gall,
       salesShift
     );
 
     const posPayload = posPayloadData(
-      currentDate,
+      currentDate[0],
       posName,
       terminalID,
       amountPaid,
       oneStationData,
-      currentDate,
       cam,
       gall,
       salesShift
@@ -304,7 +302,7 @@ const PaymentsModal = (props) => {
                   },
                 }}
                 placeholder=""
-                value={currentDate}
+                value={currentDate[0]}
                 disabled
                 type="date"
               />

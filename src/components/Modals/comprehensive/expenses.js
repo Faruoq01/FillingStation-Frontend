@@ -23,7 +23,7 @@ const ExpensesModal = (props) => {
   const [camLoader, setCamLoader] = useState(0);
   const [gallLoader, setGallLoader] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [expenseAmount, setExpenseAmount] = useState("");
@@ -47,12 +47,11 @@ const ExpensesModal = (props) => {
     setLoading(true);
 
     const payload = expensesPayload(
-      currentDate,
+      currentDate[0],
       expenseName,
       expenseAmount,
       description,
       oneStationData,
-      currentDate,
       cam,
       gall,
       salesShift
@@ -189,7 +188,7 @@ const ExpensesModal = (props) => {
                   },
                 }}
                 placeholder=""
-                value={currentDate}
+                value={currentDate[0]}
                 disabled
                 type="date"
                 // onChange={(e) => setDate(e.target.value)}

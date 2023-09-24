@@ -11,7 +11,6 @@ import { useCallback } from "react";
 import APIs from "../../services/connections/api";
 import { overage, overageType } from "../../storage/dailysales";
 import React from "react";
-import moment from "moment";
 
 const OveragesAndShortages = (props) => {
   const navigate = useNavigate();
@@ -20,7 +19,7 @@ const OveragesAndShortages = (props) => {
   const overageData = useSelector((state) => state.dailysales.overage);
   const overageTypeData = useSelector((state) => state.dailysales.overageType);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
   const user = useSelector((state) => state.auth.user);
   const [load, setLoad] = useState();
@@ -35,13 +34,12 @@ const OveragesAndShortages = (props) => {
 
   const getOverages = useCallback((station, date, salesShift) => {
     setLoad(true);
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date === "" ? today : date,
-      end: date === "" ? today : date,
+      start: date[0],
+      end: date[1],
       shift: salesShift,
     };
 

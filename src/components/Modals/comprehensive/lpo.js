@@ -29,7 +29,7 @@ const LPOSalesModal = (props) => {
   const [gallLoader, setGallLoader] = useState(0);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const salesList = useSelector((state) => state.comprehensive.salesList);
   const lpoAccount = useSelector((state) => state.comprehensive.lpoAccount);
   const [defaultState, setDefaultState] = useState(0);
@@ -86,7 +86,7 @@ const LPOSalesModal = (props) => {
       oneStationData,
       quantity,
       truckNo,
-      currentDate,
+      currentDate[0],
       cam,
       gall,
       currentPump,

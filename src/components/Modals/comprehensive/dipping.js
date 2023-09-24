@@ -21,7 +21,7 @@ const DippingModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [defaultState, setDefaultState] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const tankListData = useSelector((state) => state.comprehensive.tankList);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
   const user = useSelector((state) => state.auth.user);
@@ -69,7 +69,7 @@ const DippingModal = (props) => {
     setLoading(true);
 
     const payload = dippingPayload(
-      currentDate,
+      currentDate[0],
       oneTank._id,
       oneTank.productType,
       oneTank.currentLevel,
@@ -174,7 +174,7 @@ const DippingModal = (props) => {
             />
 
             <ModalInputField
-              value={currentDate}
+              value={currentDate[0]}
               setValue={() => {}}
               type={"date"}
               label={`Current date`}

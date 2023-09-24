@@ -47,7 +47,8 @@ const Dipping = () => {
   };
 
   const getDippingData = useCallback((updatedDate, salesShift) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,

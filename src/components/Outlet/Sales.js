@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import ApproximateDecimal from "../common/approx";
 import DashboardGraph from "../DashboardComponents/DashboardGraph";
-import moment from "moment";
 import APIs from "../../services/connections/api";
 import { tankLevels } from "../../storage/dailysales";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +27,7 @@ const Sales = (props) => {
   const tankList = useSelector((state) => state.outlet.tankList);
   const pumpList = useSelector((state) => state.outlet.pumpList);
   const oneStation = useSelector((state) => state.outlet.adminOutlet);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const [pumpAndTankMetric, setTankAndPumpMetrics] = useState({});
   const tankLevelsData = useSelector((state) => state.dailysales.tankLevels);
   const navigate = useNavigate();
@@ -144,13 +143,11 @@ const Sales = (props) => {
   };
 
   const tankLevelsUpdate = useCallback((date, station) => {
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date === "" ? today : date,
-      end: date === "" ? today : date,
+      start: date[0],
+      end: date[1],
     };
 
     APIs.post("/daily-sales/tanklevels", payload)

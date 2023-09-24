@@ -15,7 +15,7 @@ const BalanceCF = () => {
     (state) => state.comprehensive.balanceCF
   );
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const [load, setLoad] = useState(false);
 
@@ -28,12 +28,13 @@ const BalanceCF = () => {
   };
 
   const getRemarkData = useCallback((updatedDate) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate[0],
     };
 
     APIs.post("/comprehensive/balanceCF", payload)

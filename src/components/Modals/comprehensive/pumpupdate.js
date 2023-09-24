@@ -120,7 +120,7 @@ const PumpUpdate = (props) => {
   const handleClose = () => props.close(false);
   const dispatch = useDispatch();
 
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListData = useSelector((state) => state.comprehensive.tankList);
@@ -182,7 +182,7 @@ const PumpUpdate = (props) => {
     const stationTanks = OutletService.getAllOutletTanks(payload);
     const stationSupply = APIs.post("/supply/dayRecord", {
       ...payload,
-      createdAt: currentDate,
+      createdAt: currentDate[0],
     });
 
     Promise.all([stationPumps, stationTanks, stationSupply]).then((data) => {
@@ -298,7 +298,7 @@ const PumpUpdate = (props) => {
       currentTank,
       currentPump,
       oneStationData,
-      currentDate,
+      currentDate[0],
       item,
       salesShift
     );
@@ -307,14 +307,14 @@ const PumpUpdate = (props) => {
       tankListData,
       currentTank,
       item,
-      currentDate,
+      currentDate[0],
       salesShift
     );
 
     const payload = {
       sales: getSalesLoad,
       tankLevels: getTankList,
-      date: currentDate,
+      date: currentDate[0],
       station: oneStationData,
       supply: supplyListData,
     };

@@ -13,14 +13,13 @@ import { useEffect } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import ExpensesModal from "../Modals/comprehensive/expenses";
-import moment from "moment";
 
 const Expenses = () => {
   const navigate = useNavigate();
   const expenses = useSelector((state) => state.comprehensive.expenses);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
@@ -46,12 +45,13 @@ const Expenses = () => {
   };
 
   const getExpensesData = useCallback((updatedDate) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate[0],
     };
 
     APIs.post("/comprehensive/expenses", payload)
@@ -198,13 +198,8 @@ const Expenses = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const getDate =
-          currentDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate;
-
         APIs.post("/sales/delete/reset-expenses", {
-          date: getDate,
+          date: currentDate[0],
           station: oneStationData,
         }).then(() => {
           setRefresh(!refresh);

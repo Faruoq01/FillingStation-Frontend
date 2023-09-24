@@ -13,14 +13,13 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
-import moment from "moment";
 import ReturnToTankModal from "../Modals/comprehensive/returnToTank";
 
 const ReturnToTank = () => {
   const navigate = useNavigate();
   const rtVolumes = useSelector((state) => state.comprehensive.rtVolumes);
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -47,12 +46,13 @@ const ReturnToTank = () => {
   };
 
   const getReturnToTankData = useCallback((updatedDate, salesShift) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate[0],
       shift: salesShift,
     };
 
@@ -85,13 +85,9 @@ const ReturnToTank = () => {
 
   const updateRecord = async (data) => {
     setOneRecord(data);
-    const getDate =
-      currentDate === ""
-        ? moment().format("YYYY-MM-DD").split()[0]
-        : currentDate;
 
     const status = await APIs.post("/sales/validateSales", {
-      date: getDate,
+      date: currentDate[0],
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       shift: salesShift,
@@ -257,15 +253,10 @@ const ReturnToTank = () => {
   };
 
   const openSingleSaleModal = async () => {
-    const getDate =
-      currentDate === ""
-        ? moment().format("YYYY-MM-DD").split()[0]
-        : currentDate;
-
     const status = await APIs.post("/comprehensive/check-sales-today", {
       org: resolveUserID().id,
       outletID: oneStationData._id,
-      date: getDate,
+      date: currentDate[0],
       rt: true,
       shift: salesShift,
     }).then(({ data }) => {
@@ -293,13 +284,8 @@ const ReturnToTank = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const getDate =
-          currentDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate;
-
         APIs.post("/sales/delete/reset-rt", {
-          date: getDate,
+          date: currentDate[0],
           station: oneStationData,
         }).then(() => {
           setRefresh(!refresh);

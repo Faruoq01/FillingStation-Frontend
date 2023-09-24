@@ -8,20 +8,19 @@ import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/connections/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import { useHistory, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setDipping, setSalesList } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import DippingModal from "../Modals/comprehensive/dipping";
-import moment from "moment";
 
 const Dipping = () => {
   const navigate = useNavigate();
   const dipping = useSelector((state) => state.comprehensive.dipping);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
@@ -47,12 +46,13 @@ const Dipping = () => {
   };
 
   const getDippingData = useCallback((updatedDate) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate[0],
     };
 
     APIs.post("/comprehensive/dipping", payload)
@@ -216,15 +216,10 @@ const Dipping = () => {
   };
 
   const openAddDipping = async () => {
-    const getDate =
-      currentDate === ""
-        ? moment().format("YYYY-MM-DD").split()[0]
-        : currentDate;
-
     const status = await APIs.post("/comprehensive/check-sales-today", {
       org: resolveUserID().id,
       outletID: oneStationData._id,
-      date: getDate,
+      date: currentDate[0],
       rt: false,
     }).then(({ data }) => {
       dispatch(setSalesList(data.data));
@@ -247,13 +242,8 @@ const Dipping = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const getDate =
-          currentDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate;
-
         APIs.post("/sales/delete/reset-dipping", {
-          date: getDate,
+          date: currentDate[0],
           station: oneStationData,
         }).then(() => {
           setRefresh(!refresh);

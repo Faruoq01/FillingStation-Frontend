@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import ApproximateDecimal from "../../common/approx";
 import { incoming } from "../../../storage/dailysales";
 import APIs from "../../../services/connections/api";
-import moment from "moment";
 
 const IncomingOrder = () => {
   const navigate = useNavigate();

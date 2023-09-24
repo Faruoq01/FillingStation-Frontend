@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { supply } from "../../../storage/dailysales";
 import APIs from "../../../services/connections/api";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
 
 const Supply = () => {
   const dispatch = useDispatch();

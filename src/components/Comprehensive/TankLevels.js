@@ -16,7 +16,7 @@ const TankLevels = () => {
   const tankLevels = useSelector((state) => state.comprehensive.tankLevels);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -38,12 +38,13 @@ const TankLevels = () => {
   };
 
   const getTankLevels = useCallback((updatedDate, salesShift) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate[0],
       shift: salesShift,
     };
 

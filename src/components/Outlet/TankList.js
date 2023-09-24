@@ -1,8 +1,6 @@
 import { Switch } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import OutletService from "../../services/360station/outletService";
-import { getAllStations } from "../../storage/outlet";
 import "../../styles/listTanks.scss";
 import PMSTank from "./TankSingleList/PMSTank.js";
 import AGOTank from "./TankSingleList/AGOTank.js";
@@ -26,8 +24,6 @@ const ListAllTanks = () => {
 
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
-  const [defaultState, setDefault] = useState(0);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListType = useSelector((state) => state.outlet.tankListType);
   const [loader, setLoader] = useState(false);
@@ -299,23 +295,6 @@ const tankss = {
   fontSize: "16px",
   color: "green",
   fontWeight: "200",
-};
-
-const menu = {
-  fontSize: "12px",
-};
-
-const selectStyle2 = {
-  width: "200px",
-  height: "30px",
-  borderRadius: "0px",
-  background: "#F2F1F1B2",
-  color: "#000",
-  fontSize: "12px",
-  outline: "none",
-  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #777777",
-  },
 };
 
 const cover = {

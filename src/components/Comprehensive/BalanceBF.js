@@ -5,16 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import APIs from "../../services/connections/api";
 import { setBalances, setSupply } from "../../storage/comprehensive";
 import React from "react";
-import moment from "moment";
 import { ThreeDots } from "react-loader-spinner";
 
 const InitialBalance = () => {
   const navigate = useNavigate();
-  const today = moment().format("YYYY-MM-DD").split(" ")[0];
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const balances = useSelector((state) => state.comprehensive.balances);
   const { pms, ago, dpk } = useSelector((state) => state.comprehensive.supply);
   const [load, setLoad] = useState(false);
@@ -28,12 +26,13 @@ const InitialBalance = () => {
   };
 
   const getAllProductBalances = useCallback((updatedDate) => {
-    if (oneStationData === null) return navigate("dailysales");
+    if (oneStationData === null)
+      return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate === "" ? today : updatedDate,
+      date: updatedDate[0],
     };
 
     APIs.post("/comprehensive/balanceBF", payload)
