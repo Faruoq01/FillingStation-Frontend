@@ -315,7 +315,7 @@ const CreateSupply = (props) => {
             })
             .then(() => {
               setStop(false);
-              navigate("supply");
+              navigate("/home/supply/supplyhome/0");
             });
         } else {
           swal("Warning!", `You can not submit an empty supply list. `, "info");

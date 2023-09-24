@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import "../../styles/lpo.scss";
@@ -40,16 +40,21 @@ const EditSupply = ({ open, close, skip, refresh }) => {
         "error"
       );
     } else {
+      const payload = {
+        id: copy._id,
+        supply: copy,
+      };
+
+      APIs.post("/supply/update", payload)
+        .then((data) => {
+          refresh(copy.outletID, "None", skip);
+        })
+        .then(() => {
+          setLoading(false);
+          swal("Success!", "Record has been updated successfully!", "success");
+          close(false);
+        });
     }
-
-    console.log(copy, "copy");
-  };
-
-  const checkIfAllInputValidationPassed = () => {
-    // if (depotStation === "")
-    //   return swal("Warning!", "Depot station field cannot be empty", "info");
-    // if (destination === "")
-    //   return swal("Warning!", "Destination field cannot be empty", "info");
   };
 
   const getAllTanks = () => {
@@ -60,15 +65,21 @@ const EditSupply = ({ open, close, skip, refresh }) => {
   const getInputValue = (value, data) => {
     const copy = JSON.parse(JSON.stringify(oneSupply));
     copy.recipientTanks[data.id].quantity = value;
-    const tanks = Object.values(copy.recipientTanks);
-    const totalQuantity = tanks.reduce((accum, current) => {
-      return Number(accum) + Number(current.quantity);
-    }, 0);
+    const totalQuantity = suppliedQuantity(copy);
     const totalSupply = Number(copy.quantity);
+
     const diff = totalSupply - totalQuantity;
     copy.shortage = diff > 0 ? diff : 0;
     copy.overage = diff < 0 ? -diff : 0;
     dispatch(singleSupply(copy));
+  };
+
+  const suppliedQuantity = (copy) => {
+    const tanks = Object.values(copy.recipientTanks);
+    const totalQuantity = tanks.reduce((accum, current) => {
+      return Number(accum) + Number(current.quantity);
+    }, 0);
+    return totalQuantity;
   };
 
   return (
@@ -77,7 +88,7 @@ const EditSupply = ({ open, close, skip, refresh }) => {
       closeModal={close}
       submit={submit}
       loading={loading}
-      ht="420px"
+      ht="480px"
       label={"Edit Supply"}>
       <ModalInputField
         value={date}
@@ -87,6 +98,12 @@ const EditSupply = ({ open, close, skip, refresh }) => {
       />
       <ModalInputField
         value={oneSupply?.quantity}
+        type={"number"}
+        label={"Quantity Loaded"}
+        disabled={true}
+      />
+      <ModalInputField
+        value={suppliedQuantity(oneSupply)}
         type={"number"}
         label={"Quantity Supplied"}
         disabled={true}

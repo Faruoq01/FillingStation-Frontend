@@ -36,7 +36,7 @@ const columns = [
   "Waybill no",
   "Station",
   "Products",
-  "Quantity",
+  "Loaded Qty",
   "Shortage",
   "Overage",
   "Actions",
@@ -143,6 +143,7 @@ const SupplyHome = () => {
     loading: loading,
     setEditSupply: setEditSupply,
     refresh: refresh,
+    skip: skip,
   };
 
   const mobileTableData = {
@@ -150,6 +151,7 @@ const SupplyHome = () => {
     loading: loading,
     setEditSupply: setEditSupply,
     refresh: refresh,
+    skip: skip,
   };
 
   return (
@@ -222,7 +224,14 @@ const SupplyHome = () => {
           callback={refresh}
         />
       </TablePageBackground>
-      {editsupply && <EditSupply open={editsupply} close={setEditSupply} />}
+      {editsupply && (
+        <EditSupply
+          open={editsupply}
+          close={setEditSupply}
+          skip={skip}
+          refresh={refresh}
+        />
+      )}
       {open && (
         <SupplyModal
           station={oneStationData}

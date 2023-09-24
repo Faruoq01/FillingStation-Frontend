@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { singleSupply } from "../../storage/supply";
 // import swal from "sweetalert";
 
-const Action = ({ data, setEditSupply, refresh }) => {
+const Action = ({ data, setEditSupply, refresh, skip }) => {
   const dispatch = useDispatch();
 
   const handleDelete = (data) => {
@@ -72,8 +72,15 @@ const Action = ({ data, setEditSupply, refresh }) => {
 };
 
 export const SupplyDesktopTable = ({ data }) => {
-  const { columns, tablePrints, allOutlets, loading, setEditSupply, refresh } =
-    data;
+  const {
+    columns,
+    tablePrints,
+    allOutlets,
+    loading,
+    setEditSupply,
+    refresh,
+    skip,
+  } = data;
 
   return (
     <TableViewForDesktop columns={columns} ref={tablePrints}>
@@ -98,6 +105,7 @@ export const SupplyDesktopTable = ({ data }) => {
                       data={item}
                       setEditSupply={setEditSupply}
                       refresh={refresh}
+                      skip={skip}
                     />
                   }
                 />
@@ -110,7 +118,7 @@ export const SupplyDesktopTable = ({ data }) => {
 };
 
 export const SupplyMobileTable = ({ data }) => {
-  const { allOutlets, loading, setEditSupply, refresh } = data;
+  const { allOutlets, loading, setEditSupply, refresh, skip } = data;
   return (
     <TableViewForMobile rows={allOutlets} loading={loading}>
       {!loading &&
@@ -141,6 +149,7 @@ export const SupplyMobileTable = ({ data }) => {
                     data={item}
                     setEditSupply={setEditSupply}
                     refresh={refresh}
+                    skip={skip}
                   />,
                 ]}
               />
