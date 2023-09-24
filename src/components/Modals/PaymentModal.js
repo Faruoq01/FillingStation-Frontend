@@ -21,6 +21,7 @@ const PaymentModal = (props) => {
   const cert = useSelector((state) => state.regulatory.certificate);
   const reciept = useSelector((state) => state.regulatory.receipt);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const dispatch = useDispatch();
 
   const [organisation, setOrganisation] = useState("");
@@ -87,7 +88,7 @@ const PaymentModal = (props) => {
         })
         .then(() => {
           setLoading(false);
-          props.refresh();
+          props.refresh(oneStationData?._id, updateDate, props.skip);
           swal("Success!", "Payment created successfully", "success");
           handleClose();
         });

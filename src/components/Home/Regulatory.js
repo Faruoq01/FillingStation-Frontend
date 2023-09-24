@@ -26,6 +26,9 @@ import {
   RegulatoryMobileTable,
 } from "../tables/regulatory";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import DateRangeLib from "../common/DatePickerLib";
 
 const columns = [
   "S/N",
@@ -45,6 +48,7 @@ const Regulatory = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const payment = useSelector((state) => state.regulatory.payment);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
@@ -84,13 +88,24 @@ const Regulatory = () => {
     }
   };
 
-  const refresh = (id, date, skip) => {
+  const getAllRegulatory = useCallback((outlet, updateDate, skip) => {
+    refresh(outlet, updateDate, skip);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const outlet = oneStationData === null ? "None" : oneStationData._id;
+    getAllRegulatory(outlet, updateDate, skip);
+  }, [getAllRegulatory, oneStationData, skip, updateDate]);
+
+  const refresh = (id, date, skip, limit = 15) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
       limit: limit,
       outletID: id,
       organisationID: resolveUserID().id,
+      date: date,
     };
     PaymentService.getAllPayment(payload)
       .then((data) => {
@@ -109,7 +124,8 @@ const Regulatory = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", "None", skip);
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    refresh(id, updateDate, skip, limit);
   };
 
   const printReport = () => {
@@ -123,7 +139,7 @@ const Regulatory = () => {
   };
 
   const stationHelper = (id) => {
-    refresh(id, "None", skip);
+    refresh(id, updateDate, skip);
   };
 
   const desktopTableData = {
@@ -191,6 +207,7 @@ const Regulatory = () => {
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
@@ -206,7 +223,7 @@ const Regulatory = () => {
           limit={limit}
           total={total}
           setSkip={setSkip}
-          updateDate={"None"}
+          updateDate={updateDate}
           callback={refresh}
         />
       </TablePageBackground>
@@ -223,6 +240,7 @@ const Regulatory = () => {
           open={open}
           close={setOpen}
           refresh={refresh}
+          skip={skip}
         />
       }
       {prints && (
