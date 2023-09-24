@@ -14,6 +14,12 @@ import { setTankLevelList } from "../../storage/dailysales";
 import APIs from "../../services/connections/api";
 import DateRangeLib from "../common/DatePickerLib";
 import SelectStation from "../common/selectstations";
+import ShiftSelect from "../common/shift";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -151,22 +157,20 @@ const ListAllTanks = () => {
   return (
     <React.Fragment>
       <div style={{ width: "96%" }} className="listContainer">
-        <div
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-          className="stat">
-          <SelectStation
-            ml={"10px"}
-            oneStation={getPerm("0")}
-            allStation={getPerm("1")}
-            callback={stationHelper}
-          />
-          <div>
-            <DateRangeLib sales={true} mt={mobile.matches ? "10px" : "0px"} />
-          </div>
-        </div>
+        <TableControls>
+          <LeftControls>
+            <SelectStation
+              ml={"10px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+            <ShiftSelect ml={"10px"} />
+          </LeftControls>
+          <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+          </RightControls>
+        </TableControls>
 
         <div className="mains">
           {loader ? (

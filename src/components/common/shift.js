@@ -11,7 +11,7 @@ const ShiftSelect = ({ mr = "0px", ml = "10px" }) => {
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
-  const [defaultSelect, setDefaultSelect] = useState(0);
+  const [defaultSelect, setDefaultSelect] = useState(1);
 
   const getAllShifts = () => {
     const parsedDate = moment(updatedDate[0], "YYYY-MM-DD");
@@ -36,12 +36,8 @@ const ShiftSelect = ({ mr = "0px", ml = "10px" }) => {
   };
 
   useEffect(() => {
-    if (oneStationData === null) {
-      dispatch(setSalesShift("All shifts"));
-      setDefaultSelect(1);
-    } else {
-      setDefaultSelect(0);
-    }
+    dispatch(setSalesShift("All shifts"));
+    setDefaultSelect(1);
   }, [dispatch, oneStationData]);
 
   const changeMenu = (item, index) => {
@@ -56,9 +52,6 @@ const ShiftSelect = ({ mr = "0px", ml = "10px" }) => {
     <Select
       value={defaultSelect}
       sx={{ ...selectStyle, marginRight: mr, marginLeft: ml }}>
-      <MenuItem value={0} style={menu}>
-        Select shift
-      </MenuItem>
       <MenuItem
         onClick={() => {
           changeMenu("All shifts", 1);

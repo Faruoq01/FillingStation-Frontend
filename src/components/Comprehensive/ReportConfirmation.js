@@ -89,7 +89,7 @@ const ReportConfirmation = () => {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       date: updatedDate[0],
-      shift: currentShift,
+      shift: currentShift === "" ? "All shifts" : currentShift,
     };
 
     APIs.post("/comprehensive/remarks", payload)
@@ -118,14 +118,14 @@ const ReportConfirmation = () => {
       image: user.image,
       remark: remark,
       selectedDate: currentDate[0],
-      shift: currentShift,
+      shift: currentShift === "" ? "All shifts" : currentShift,
       outletID: oneStationData?._id,
       organisationID: oneStationData?.organisation,
     };
 
     APIs.post("/sales/remark", payload)
       .then((data) => {
-        refresh();
+        refresh(currentDate, currentShift);
       })
       .then(() => {
         setRemark("");
