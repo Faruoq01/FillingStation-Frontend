@@ -5,7 +5,6 @@ import PrintTankUpdate from "../Reports/PrintTankUpdate";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
 import { useNavigate } from "react-router-dom";
-import APIs from "../../services/connections/api";
 import { Circle } from "@mui/icons-material";
 import { PrintButton } from "../common/buttons";
 import {
@@ -67,6 +66,7 @@ const LPOExpense = () => {
     LPOService.getAllLPOSales(payload)
       .then((data) => {
         dispatch(createLPOSales(data.lpo.lpo));
+        setTotal(data.lpo.count);
       })
       .then(() => {
         setLoading(false);

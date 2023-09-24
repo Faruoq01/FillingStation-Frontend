@@ -5,22 +5,18 @@ import {
   RightControls,
   TableControls,
 } from "../controls/PageLayout/TableControls";
-import { SearchField } from "../common/searchfields";
 import { PrintButton } from "../common/buttons";
 import { useDispatch, useSelector } from "react-redux";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { LimitSelect } from "../common/customselect";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Stack } from "@mui/material";
-import ButtonDatePicker from "../common/CustomDatePicker";
-import { createLPOSales, setLPOSalesDate } from "../../storage/lpo";
+import { createLPOSales } from "../../storage/lpo";
 import LPOService from "../../services/360station/lpo";
 import {
   DispensedLPODesktopTable,
   DispensedLPOMobileTable,
 } from "../tables/dispensedlpo";
 import ShiftSelect from "../common/shift";
+import DateRangeLib from "../common/DatePickerLib";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -36,17 +32,11 @@ const columns = [
 ];
 
 const ProductsDispensed = () => {
-  const date = new Date();
-  const toString = date.toDateString();
-  const [day, year, month] = toString.split(" ");
-  const date2 = `${day} ${month} ${year}`;
-  const [value, setValue] = React.useState(null);
-
   const dispatch = useDispatch();
   const lpos = useSelector((state) => state.lpo.lpoSales);
   const type = useSelector((state) => state.lpo.dispensed);
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
-  const currentDate = useSelector((state) => state.lpo.singleDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const [entries, setEntries] = useState(10);
@@ -54,7 +44,6 @@ const ProductsDispensed = () => {
   const [limit, setLimit] = useState(15);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  //   const [prints, setPrints] = useState(false);
 
   const getDispensed = useCallback((id, date, skip, salesShift) => {
     refresh(id, date, skip, salesShift);
@@ -62,11 +51,10 @@ const ProductsDispensed = () => {
   }, []);
 
   useEffect(() => {
-    const getDate = currentDate === "" ? date2 : currentDate;
-    getDispensed("None", getDate, skip, salesShift);
-  }, [getDispensed, currentDate, date2, skip, salesShift]);
+    getDispensed("None", currentDate, skip, salesShift);
+  }, [getDispensed, currentDate, skip, salesShift]);
 
-  const refresh = (id, date, skip, salesShift) => {
+  const refresh = (id, date, skip, salesShift, limit = 15) => {
     setLoading(true);
 
     const payload = {
@@ -89,30 +77,10 @@ const ProductsDispensed = () => {
       });
   };
 
-  const searchTable = () => {};
-
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", currentDate, skip, salesShift);
-  };
-
-  const convertDate = (newValue) => {
-    const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
-    const date = new Date(getDate);
-    const toString = date.toDateString();
-    const [day, year, month] = toString.split(" ");
-    const finalDate = `${day} ${month} ${year}`;
-
-    return finalDate;
-  };
-
-  const updateDated = (newValue) => {
-    // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
-    setValue(newValue);
-    const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
-    dispatch(setLPOSalesDate(getDate));
-    refresh("None", getDate, skip, salesShift);
+    refresh("None", currentDate, skip, salesShift, limit);
   };
 
   const printReport = () => {
@@ -137,27 +105,12 @@ const ProductsDispensed = () => {
       <TablePageBackground>
         <TableControls>
           <LeftControls>
-            <SearchField callback={searchTable} />
-          </LeftControls>
-          <RightControls>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Stack spacing={1}>
-                <ButtonDatePicker
-                  label={`${value == null || "" ? date2 : convertDate(value)}`}
-                  value={value}
-                  onChange={(newValue) => updateDated(newValue)}
-                />
-              </Stack>
-            </LocalizationProvider>
-          </RightControls>
-        </TableControls>
-        <TableControls mt={"10px"}>
-          <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
             <ShiftSelect ml={"10px"} />
           </LeftControls>
           <RightControls>
-            <PrintButton />
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+            <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
 
