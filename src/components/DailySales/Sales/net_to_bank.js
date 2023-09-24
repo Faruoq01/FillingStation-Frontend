@@ -13,7 +13,7 @@ const NetToBank = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const paymentsDetailData = useSelector((state) => state.dailysales.netToBank);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
   const navigate = useNavigate();
@@ -29,13 +29,12 @@ const NetToBank = () => {
 
   const getNetToBank = useCallback((date, station, salesShift) => {
     setLoad(true);
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisation: resolveUserID().id,
-      start: date === "" ? today : date,
-      end: date === "" ? today : date,
+      start: date[0],
+      end: date[0],
       shift: salesShift,
     };
 

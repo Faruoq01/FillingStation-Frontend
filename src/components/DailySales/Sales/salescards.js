@@ -15,7 +15,7 @@ const SalesCards = () => {
   const [load, setLoad] = useState();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
   const salesData = useSelector((state) => state.dailysales.sales);
 
@@ -36,13 +36,12 @@ const SalesCards = () => {
 
   const updateSalesValues = useCallback((date, station, salesShift) => {
     setLoad(true);
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
 
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date === "" ? today : date,
-      end: date === "" ? today : date,
+      start: date[0],
+      end: date[0],
       shift: salesShift,
     };
 

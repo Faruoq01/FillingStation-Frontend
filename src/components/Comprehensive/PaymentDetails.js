@@ -10,7 +10,6 @@ import APIs from "../../services/connections/api";
 import { paymentDetails } from "../../storage/comprehensive";
 import { Button } from "@mui/material";
 import PaymentsModal from "../Modals/comprehensive/payments";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 
@@ -19,7 +18,7 @@ const PaymentDetails = () => {
   const payments = useSelector((state) => state.comprehensive.paymentDetails);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -52,8 +51,8 @@ const PaymentDetails = () => {
     const payload = {
       organisation: resolveUserID().id,
       outletID: oneStationData._id,
-      start: updatedDate,
-      end: updatedDate,
+      start: updatedDate[0],
+      end: updatedDate[1],
       shift: salesShift,
     };
 
@@ -186,12 +185,8 @@ const PaymentDetails = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const getDate =
-          currentDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate;
         const payload = {
-          date: getDate,
+          date: currentDate[0],
           station: oneStationData,
         };
 

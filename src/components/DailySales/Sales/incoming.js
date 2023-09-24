@@ -13,7 +13,7 @@ const IncomingOrder = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const updatedDate = useSelector((state) => state.dailysales.updatedDate);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const incomingData = useSelector((state) => state.dailysales.incoming);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
@@ -33,13 +33,11 @@ const IncomingOrder = () => {
   };
 
   const getIncomingOrder = useCallback((date, station) => {
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
-      start: date === "" ? today : date,
-      end: date === "" ? today : date,
+      start: date[0],
+      end: date[0],
     };
 
     APIs.post("/daily-sales/incoming", payload)

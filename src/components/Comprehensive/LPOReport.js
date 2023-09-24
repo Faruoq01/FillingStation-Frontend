@@ -21,7 +21,7 @@ const LPOReport = () => {
   const lpo = useSelector((state) => state.comprehensive.lpo);
 
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -53,7 +53,7 @@ const LPOReport = () => {
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate[0],
       shift: salesShift,
     };
 
@@ -226,15 +226,10 @@ const LPOReport = () => {
   };
 
   const openLPOForToday = async () => {
-    const getDate =
-      currentDate === ""
-        ? moment().format("YYYY-MM-DD").split()[0]
-        : currentDate;
-
     const status = await APIs.post("/comprehensive/check-sales-today", {
       org: resolveUserID().id,
       outletID: oneStationData._id,
-      date: getDate,
+      date: currentDate[0],
       rt: false,
       shift: salesShift,
     }).then(({ data }) => {
@@ -258,13 +253,8 @@ const LPOReport = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const getDate =
-          currentDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate;
-
         APIs.post("/sales/delete/reset-lpo", {
-          date: getDate,
+          date: currentDate[0],
           station: oneStationData,
         }).then(() => {
           setRefresh(!refresh);

@@ -18,7 +18,7 @@ const ProductBalance = (props) => {
   const navigate = useNavigate();
   const sales = useSelector((state) => state.comprehensive.sales);
   const dispatch = useDispatch();
-  const currentDate = useSelector((state) => state.dailysales.updatedDate);
+  const currentDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -51,7 +51,7 @@ const ProductBalance = (props) => {
     const payload = {
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
-      date: updatedDate,
+      date: updatedDate[0],
       productType: props.type,
       shift: salesShift,
     };
@@ -116,15 +116,10 @@ const ProductBalance = (props) => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const getDate =
-          currentDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate;
-
         const status = await APIs.post("/sales/delete/checkStatus", {
           org: resolveUserID().id,
           outletID: oneStationData._id,
-          date: getDate,
+          date: currentDate[0],
         }).then((data) => {
           return data.data.data;
         });
@@ -143,7 +138,7 @@ const ProductBalance = (props) => {
             .then(({ data }) => {
               if (data.status === "last") {
                 APIs.post("/sales/delete/supply", {
-                  date: getDate,
+                  date: currentDate[0],
                   station: oneStationData,
                 });
               }
@@ -272,13 +267,8 @@ const ProductBalance = (props) => {
   };
 
   const openSingleSaleModal = async () => {
-    const getDate =
-      currentDate === ""
-        ? moment().format("YYYY-MM-DD").split()[0]
-        : currentDate;
-
     const status = await APIs.post("/sales/validateSales", {
-      date: getDate,
+      date: currentDate[0],
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
       shift: salesShift,
@@ -306,15 +296,10 @@ const ProductBalance = (props) => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        const getDate =
-          currentDate === ""
-            ? moment().format("YYYY-MM-DD").split()[0]
-            : currentDate;
-
         const payload = {
           org: resolveUserID().id,
           outletID: oneStationData._id,
-          date: getDate,
+          date: currentDate[0],
         };
 
         APIs.post("/sales/delete/checkStatus", payload).then((data) => {
@@ -326,7 +311,7 @@ const ProductBalance = (props) => {
             );
           } else {
             const load = {
-              date: getDate,
+              date: currentDate[0],
               station: oneStationData,
             };
             APIs.post("/sales/delete/reset-sales", load).then(({ data }) => {
