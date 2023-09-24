@@ -12,10 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
 import LPOService from "../../services/360station/lpo";
 import { createLPOSales } from "../../storage/lpo";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import CustomDateRangePicker from "../common/customdaterangepicker";
 import ShiftSelect from "../common/shift";
+import DateRangeLib from "../common/DatePickerLib";
+
+const mobile = window.matchMedia("(max-width: 1150px)");
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 ChartJS.overrides["doughnut"].plugins.legend.position = "bottom";
@@ -32,20 +33,13 @@ export default function AirBnBTotalIndex() {
   const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const getAllLPOData = useCallback((updatedDate, salesShift) => {
-    const formatOne = moment(new Date(updatedDate[0]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const formatTwo = moment(new Date(updatedDate[1]))
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
     const payload = {
       skip: 0,
       limit: 30,
       lpoID: singleLPO?._id,
       organisationID: singleLPO?.organizationID,
-      startDate: formatOne,
-      endDate: formatTwo,
+      startDate: updatedDate[0],
+      endDate: updatedDate[1],
       shift: salesShift,
     };
 
@@ -101,7 +95,7 @@ export default function AirBnBTotalIndex() {
       <div style={styles.inner}>
         <div style={controls} className="range-picker-date">
           <ShiftSelect ml={"0px"} />
-          <CustomDateRangePicker />
+          <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
         </div>
         <div className="airbnb-top-wrapper">
           <AirBnBTopCardWithSwitch
