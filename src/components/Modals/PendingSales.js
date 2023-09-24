@@ -342,7 +342,7 @@ const PendingSales = (props) => {
                   }}
                   style={menu}
                   value={1}>
-                  Proceed without shift
+                  All day shifts
                 </MenuItem>
                 {getAllShifts().map((item, index) => {
                   return (

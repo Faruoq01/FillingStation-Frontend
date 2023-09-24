@@ -7,20 +7,21 @@ const TableNavigation = ({
   setSkip,
   updateDate,
   callback,
+  salesShift = "All shifts",
 }) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const nextPage = () => {
     setSkip((prev) => prev + 1);
     const getID = oneStationData === null ? "None" : oneStationData._id;
-    callback(getID, updateDate, skip + 1);
+    callback(getID, updateDate, skip + 1, salesShift);
   };
 
   const prevPage = () => {
     if (skip < 1) return;
     setSkip((prev) => prev - 1);
     const getID = oneStationData === null ? "None" : oneStationData._id;
-    callback(getID, updateDate, skip - 1);
+    callback(getID, updateDate, skip - 1, salesShift);
   };
   return (
     <div className="footer">

@@ -5,7 +5,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { Stack } from "@mui/material";
 import RecordPaymentService from "../../services/360station/recordPayment";
 import {
   allBankPayment,
@@ -15,11 +14,6 @@ import {
 } from "../../storage/payment";
 import swal from "sweetalert";
 import DailySalesService from "../../services/360station/DailySales";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { setDateValue } from "../../storage/dailysales";
-import { dateRange } from "../../storage/dashboard";
-import ButtonDatePicker from "../common/CustomDatePicker";
 import {
   LeftControls,
   RightControls,
@@ -42,6 +36,7 @@ import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import ShiftSelect from "../common/shift";
+import DateRangeLib from "../common/DatePickerLib";
 
 const bankColumns = [
   "S/N",
@@ -68,12 +63,6 @@ const posColumns = [
 const mobile = window.matchMedia("(max-width: 1150px)");
 
 const Payments = (props) => {
-  const date = new Date();
-  const toString = date.toDateString();
-  const [day, year, month] = toString.split(" ");
-  const date2 = `${day} ${month} ${year}`;
-  const [value, setValue] = React.useState(null);
-
   const [setLpo] = React.useState(false);
   const user = useSelector((state) => state.auth.user);
   const bank = useSelector((state) => state.payments.bank);
@@ -87,7 +76,7 @@ const Payments = (props) => {
   const [total1, setTotal1] = useState(0);
   const [setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
-  const updateDate = useSelector((state) => state.dailysales.updatedDate);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const resolveUserID = () => {
@@ -146,15 +135,15 @@ const Payments = (props) => {
       });
   };
 
-  const updatePayments = useCallback((outlet, salesShift) => {
+  const updatePayments = useCallback((outlet, updateDate, salesShift) => {
     getAllPayments(outlet, updateDate, skip, salesShift);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const outlet = oneStationData === null ? "None" : oneStationData._id;
-    updatePayments(outlet, salesShift);
-  }, [updatePayments, oneStationData, salesShift]);
+    updatePayments(outlet, updateDate, salesShift);
+  }, [updatePayments, oneStationData, salesShift, updateDate]);
 
   const searchTable = (value) => {
     dispatch(searchBankPayment(value));
@@ -211,28 +200,6 @@ const Payments = (props) => {
           });
       }
     });
-  };
-
-  const convertDate = (newValue) => {
-    const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
-    const date = new Date(getDate);
-    const toString = date.toDateString();
-    const [day, year, month] = toString.split(" ");
-    const finalDate = `${day} ${month} ${year}`;
-
-    return finalDate;
-  };
-
-  const updateDated = (newValue) => {
-    // if(!getPerm('4')) return swal("Warning!", "Permission denied", "info");
-    setValue(newValue);
-
-    const getDate = newValue === "" ? date2 : newValue.format("YYYY-MM-DD");
-    dispatch(setDateValue(getDate));
-    dispatch(dateRange([getDate, getDate]));
-
-    const ID = oneStationData === null ? "None" : oneStationData._id;
-    getAllPayments(ID, getDate, skip, salesShift);
   };
 
   const stationHelper = (id) => {
@@ -303,15 +270,7 @@ const Payments = (props) => {
             <ShiftSelect ml={"10px"} />
           </LeftControls>
           <RightControls>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Stack spacing={1}>
-                <ButtonDatePicker
-                  label={`${value == null || "" ? date2 : convertDate(value)}`}
-                  value={value}
-                  onChange={(newValue) => updateDated(newValue)}
-                />
-              </Stack>
-            </LocalizationProvider>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
           </RightControls>
         </TableControls>
 
@@ -352,6 +311,7 @@ const Payments = (props) => {
           setSkip={setSkip}
           updateDate={updateDate}
           callback={getAllPayments}
+          salesShift={salesShift}
         />
       </TablePageBackground>
     </React.Fragment>
