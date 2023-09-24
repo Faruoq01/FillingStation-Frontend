@@ -34,6 +34,7 @@ const IncomingOrderEditModal = ({ open, close, skip, refresh }) => {
   const [driverName, setDriverName] = useState(incomingOrder.driverName ?? "");
   const [phoneNo, setPhoneNumber] = useState(incomingOrder.phoneNo);
   const [quantity, setQuantity] = useState("");
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const handleClose = () => close(false);
 
@@ -66,7 +67,7 @@ const IncomingOrderEditModal = ({ open, close, skip, refresh }) => {
 
     IncomingService.updateIncoming(payload)
       .then(() => {
-        refresh(oneStationData._id, "None", skip);
+        refresh(oneStationData._id, updateDate, skip);
         handleClose();
       })
       .then(() => {

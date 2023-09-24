@@ -45,6 +45,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerDestination, setCustomerDestination] = useState("");
   const [quantity, setQuantity] = useState("");
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const handleClose = () => closeup(false);
 
@@ -189,7 +190,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
     setDefault(0);
     setVal(1);
     swal("Success", "Incoming order created successfully!", "success");
-    refresh(oneStationData._id, "None", skip);
+    refresh(oneStationData._id, updateDate, skip);
     handleClose();
   };
 

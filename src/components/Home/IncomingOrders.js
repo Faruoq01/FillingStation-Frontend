@@ -28,6 +28,9 @@ import {
   IncomingOrderDesktopTable,
   IncomingOrderMobileTable,
 } from "../tables/incomingorder";
+import DateRangeLib from "../common/DatePickerLib";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const columns = [
   "S/N",
@@ -58,6 +61,8 @@ const IncomingOrder = () => {
   const [total, setTotal] = useState(0);
   const [prints, setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -74,7 +79,14 @@ const IncomingOrder = () => {
     return user.permission?.incomingOrder[e];
   };
 
-  const [open, setOpen] = useState(false);
+  const getIncomingOrder = useCallback((updateDate, skip) => {
+    refresh("None", updateDate, skip);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getIncomingOrder(updateDate, skip);
+  }, [getIncomingOrder, updateDate, skip]);
 
   const openCreateModal = () => {
     if (oneStationData === null)
@@ -83,13 +95,14 @@ const IncomingOrder = () => {
     setOpen(true);
   };
 
-  const refresh = (id, date, skip) => {
+  const refresh = (id, date, skip, limit = 15) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
       limit: limit,
       outletID: id,
       organisationID: resolveUserID().id,
+      date: date,
     };
 
     IncomingService.getAllIncoming(payload)
@@ -114,11 +127,11 @@ const IncomingOrder = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", "None", skip);
+    refresh("None", updateDate, skip, limit);
   };
 
   const stationHelper = (id) => {
-    refresh(id, "None", skip);
+    refresh(id, updateDate, skip);
   };
 
   const desktopTableData = {
@@ -186,6 +199,7 @@ const IncomingOrder = () => {
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
