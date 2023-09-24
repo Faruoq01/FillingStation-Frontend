@@ -13,30 +13,56 @@ import {
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { singleSupply } from "../../storage/supply";
+import swal from "sweetalert";
+import APIs from "../../services/connections/api";
 // import swal from "sweetalert";
 
 const Action = ({ data, setEditSupply, refresh, skip }) => {
   const dispatch = useDispatch();
 
-  const handleDelete = (data) => {
-    // swal({
-    //   title: "Alert!",
-    //   text: "Are you sure you want to delete this record?",
-    //   icon: "warning",
-    //   buttons: true,
-    //   dangerMode: true,
-    // }).then((willDelete) => {
-    //   if (willDelete) {
-    //     // IncomingService.deleteIncoming({
-    //     //   id: data._id,
-    //     //   quantity: data.quantity,
-    //     //   productOrderID: data.productOrderID,
-    //     // }).then(() => {
-    //     //   refresh();
-    //     //   swal("Success", "Incoming order deleted successfully!", "success");
-    //     // });
-    //   }
-    // });
+  const handleDelete = (supply) => {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to delete this record?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const result = await APIs.post("/sales/validateSales", {
+          date: supply.createdAt,
+          organizationID: supply.organizationID,
+          outletID: supply.outletID,
+          shift: "All shifts",
+        }).then((data) => {
+          return data.data.data;
+        });
+
+        if (result) {
+          return swal(
+            "Error!",
+            "Record has been saved for this day already, you have to remove all records made beyond this date to update this record!",
+            "error"
+          );
+        } else {
+          const payload = {
+            id: supply._id,
+          };
+
+          APIs.post("/supply/delete", payload)
+            .then((data) => {
+              refresh(supply.outletID, "None", skip);
+            })
+            .then(() => {
+              swal(
+                "Success!",
+                "Record has been updated successfully!",
+                "success"
+              );
+            });
+        }
+      }
+    });
   };
 
   return (
