@@ -4,32 +4,40 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import OutletService from "../../services/360station/outletService";
-import { getAllStations, adminOutlet } from "../../storage/outlet";
 import { ThreeDots } from "react-loader-spinner";
-import DateRangePicker from "@wojtekmaj/react-daterange-picker";
-import DashboardService from "../../services/360station/dashboard";
-import { overageType, overages } from "../../storage/dailysales";
-import { dateRange } from "../../storage/dashboard";
+import { overageType } from "../../storage/dailysales";
 import ApproximateDecimal from "../common/approx";
 import APIs from "../../services/connections/api";
 import { setDipping } from "../../storage/analysis";
+import DateRangeLib from "../common/DatePickerLib";
+import TableNavigation from "../controls/PageLayout/TableNavigation";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
+import { SearchField } from "../common/searchfields";
+import SelectStation from "../common/selectstations";
+import ShiftSelect from "../common/shift";
+import { LimitSelect } from "../common/customselect";
+import { PrintButton } from "../common/buttons";
+
+const mobile = window.matchMedia("(max-width: 1150px)");
 
 const OverageList = () => {
   const dispatch = useDispatch();
-  const moment = require("moment-timezone");
-  const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const dipping = useSelector((state) => state.analysis.dipping);
   const user = useSelector((state) => state.auth.user);
-  const [defaultState, setDefault] = useState(0);
   const [defaultState2, setDefault2] = useState(10);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(15);
+  const [entries, setEntries] = useState(10);
+  const [limit, setLimit] = useState(15);
   const [total] = useState(0);
   const [loading, setLoading] = useState(false);
   const overageTypeData = useSelector((state) => state.dailysales.overageType);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -46,70 +54,17 @@ const OverageList = () => {
     return user?.permission?.expenses[e];
   };
 
-  const getAllProductData = useCallback(() => {
-    if (oneStationData !== null) {
-      if (getPerm("0") || getPerm("1") || user.userType === "superAdmin") {
-        const findID = allOutlets.findIndex(
-          (data) => data._id === oneStationData._id
-        );
-        setDefault(findID + 1);
-
-        const startDate = moment(updatedDate[0])
-          .format("YYYY-MM-DD HH:mm:ss")
-          .split(" ")[0];
-        const endDate = moment(updatedDate[1])
-          .format("YYYY-MM-DD HH:mm:ss")
-          .split(" ")[0];
-
-        getDippingData(oneStationData._id, [startDate, endDate], skip);
-        return;
-      }
-    }
-
-    setLoading(true);
-    const payload = {
-      organisation: resolveUserID().id,
-    };
-
-    OutletService.getAllOutletStations(payload)
-      .then((data) => {
-        dispatch(getAllStations(data.station));
-        if (
-          (getPerm("0") || user.userType === "superAdmin") &&
-          oneStationData === null
-        ) {
-          if (!getPerm("1")) setDefault(1);
-          dispatch(adminOutlet(null));
-          return "None";
-        } else {
-          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-            (data) => {
-              dispatch(adminOutlet(data.station));
-            }
-          );
-
-          return user.outletID;
-        }
-      })
-      .then((data) => {
-        const startDate = moment(updatedDate[0])
-          .format("YYYY-MM-DD HH:mm:ss")
-          .split(" ")[0];
-        const endDate = moment(updatedDate[1])
-          .format("YYYY-MM-DD HH:mm:ss")
-          .split(" ")[0];
-
-        getDippingData(data, [startDate, endDate], skip);
-      });
-
+  const getAllProductData = useCallback((updateDate, outlet, salesShift) => {
+    getDippingData(outlet, updateDate, skip, salesShift);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getAllProductData();
-  }, [getAllProductData]);
+    const outlet = oneStationData === null ? "None" : oneStationData._id;
+    getAllProductData(updateDate, outlet, salesShift);
+  }, [getAllProductData, updateDate, oneStationData, salesShift]);
 
-  const getDippingData = (stationID, date, skip) => {
+  const getDippingData = (stationID, date, skip, salesShift) => {
     setLoading(true);
     const [start, end] = date;
 
@@ -120,6 +75,7 @@ const OverageList = () => {
       organisationID: resolveUserID().id,
       start: start,
       end: end,
+      shift: salesShift,
     };
 
     APIs.post("/analysis/dipping", payload)
@@ -134,48 +90,6 @@ const OverageList = () => {
       });
   };
 
-  const changeMenu = (index, item) => {
-    setDefault(index);
-    dispatch(adminOutlet(item));
-
-    const startDate = moment(updatedDate[0])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const endDate = moment(updatedDate[1])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    const ID = item === null ? "None" : item._id;
-    getDippingData(ID, [startDate, endDate], skip);
-  };
-
-  const nextPage = () => {
-    setSkip((prev) => prev + 1);
-    const startDate = moment(updatedDate[0])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const endDate = moment(updatedDate[1])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    const ID = oneStationData === null ? "None" : oneStationData._id;
-    getDippingData(ID, [startDate, endDate], skip + 1);
-  };
-
-  const prevPage = () => {
-    if (skip < 1) return;
-    setSkip((prev) => prev - 1);
-    const startDate = moment(updatedDate[0])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const endDate = moment(updatedDate[1])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    const ID = oneStationData === null ? "None" : oneStationData._id;
-    getDippingData(ID, [startDate, endDate], skip - 1);
-  };
-
   const status = (data) => {
     const total = Number(data.dipping) - Number(data.afterSales);
     if (total === 0) {
@@ -187,22 +101,22 @@ const OverageList = () => {
     }
   };
 
-  const getDateFromRange = (data) => {
-    const startDate = moment(data[0])
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const endDate = moment(data[1]).format("YYYY-MM-DD HH:mm:ss").split(" ")[0];
-    dispatch(dateRange([startDate, endDate]));
-
-    const ID = oneStationData === null ? "None" : oneStationData._id;
-    getDippingData(ID, [startDate, endDate], skip);
-  };
-
   const getDippingResult = () => {
     const productCategory = dipping.filter(
       (data) => data.productType === overageTypeData
     );
     return productCategory;
+  };
+
+  const printReport = () => {
+    // setPrints(true);
+  };
+
+  const entriesMenu = (value, limit) => {
+    setEntries(value);
+    setLimit(limit);
+    const getID = oneStationData === null ? "None" : oneStationData._id;
+    getDippingData(getID, updateDate, skip, salesShift);
   };
 
   const selectedType = (data) => {
@@ -216,95 +130,65 @@ const OverageList = () => {
     }
   };
 
+  const stationHelper = (id) => {
+    getDippingData(id, updateDate, skip, salesShift);
+  };
+
+  const searchTable = (value) => {};
+
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
       <div className="inner-pay">
-        <div className="search">
-          <div className="input-cont">
-            <div className="second-select">
-              {getPerm("0") && (
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={defaultState}
-                  sx={selectStyle2}>
-                  <MenuItem
-                    onClick={() => {
-                      changeMenu(0, null);
-                    }}
-                    style={menu}
-                    value={0}>
-                    All Stations
-                  </MenuItem>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <MenuItem
-                        key={index}
-                        style={menu}
-                        onClick={() => {
-                          changeMenu(index + 1, item);
-                        }}
-                        value={index + 1}>
-                        {item.outletName + ", " + item.alias}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              )}
-              {getPerm("0") || (
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={0}
-                  sx={selectStyle2}
-                  disabled>
-                  <MenuItem style={menu} value={0}>
-                    {!getPerm("0")
-                      ? oneStationData?.outletName +
-                        ", " +
-                        oneStationData?.alias
-                      : "No station created"}
-                  </MenuItem>
-                </Select>
-              )}
-            </div>
-          </div>
-          <div style={{ width: "auto" }} className="butt">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={defaultState2}
-              style={selectMe}>
+        <TableControls>
+          <LeftControls>
+            <SearchField ml={"0px"} callback={searchTable} />
+            <SelectStation
+              ml={"10px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+          </LeftControls>
+          <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+          </RightControls>
+        </TableControls>
+
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <ShiftSelect ml={"10px"} />
+          </LeftControls>
+          <RightControls>
+            <Select value={defaultState2} sx={selectMe}>
               <MenuItem
+                value={10}
                 onClick={() => {
                   selectedType(10);
                 }}
-                style={menu}
-                value={10}>
+                sx={menu}>
                 PMS
               </MenuItem>
               <MenuItem
+                value={20}
                 onClick={() => {
                   selectedType(20);
                 }}
-                style={menu}
-                value={20}>
+                sx={menu}>
                 AGO
               </MenuItem>
               <MenuItem
+                value={30}
                 onClick={() => {
                   selectedType(30);
                 }}
-                style={menu}
-                value={30}>
+                sx={menu}>
                 DPK
               </MenuItem>
             </Select>
-            <DateRangePicker onChange={getDateFromRange} value={updatedDate} />
-          </div>
-        </div>
-
-        <div></div>
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
 
         <div style={{ marginTop: "10px" }} className="table-container">
           <div className="table-head">
@@ -362,21 +246,15 @@ const OverageList = () => {
           </div>
         </div>
 
-        <div className="footer">
-          <div style={{ fontSize: "14px" }}>
-            Showing {(skip + 1) * limit - (limit - 1)} to {(skip + 1) * limit}{" "}
-            of {total} entries
-          </div>
-          <div className="nav">
-            <button onClick={prevPage} className="but">
-              Previous
-            </button>
-            <div className="num">{skip + 1}</div>
-            <button onClick={nextPage} className="but2">
-              Next
-            </button>
-          </div>
-        </div>
+        <TableNavigation
+          skip={skip}
+          limit={limit}
+          total={total}
+          setSkip={setSkip}
+          updateDate={updateDate}
+          callback={getDippingData}
+          salesShift={salesShift}
+        />
       </div>
     </div>
   );
@@ -384,7 +262,6 @@ const OverageList = () => {
 
 const selectMe = {
   height: "30px",
-  marginRight: "10px",
   borderRadius: "0px",
   background: "#F2F1F1B2",
   color: "#000",
@@ -417,20 +294,6 @@ const short2 = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-};
-
-const selectStyle2 = {
-  width: "100%",
-  height: "35px",
-  borderRadius: "0px",
-  background: "#F2F1F1B2",
-  color: "grey",
-  fontSize: "12px",
-  outline: "none",
-  fontFamily: "Poppins",
-  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #777777",
-  },
 };
 
 const place = {
