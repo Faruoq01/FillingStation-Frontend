@@ -10,6 +10,7 @@ import APIs from "../../services/connections/api";
 const EditSupply = ({ open, close, skip, refresh }) => {
   const dispatch = useDispatch();
   const oneSupply = useSelector((state) => state.supply.singleSupply);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState("");
 
@@ -47,7 +48,7 @@ const EditSupply = ({ open, close, skip, refresh }) => {
 
       APIs.post("/supply/update", payload)
         .then((data) => {
-          refresh(copy.outletID, "None", skip);
+          refresh(copy.outletID, updateDate, skip);
         })
         .then(() => {
           setLoading(false);

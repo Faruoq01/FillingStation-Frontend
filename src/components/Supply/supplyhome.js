@@ -23,10 +23,11 @@ import { createIncomingOrder } from "../../storage/incomingOrder";
 import OutletService from "../../services/360station/outletService";
 import { getAllOutletTanks } from "../../storage/outlet";
 import { SupplyDesktopTable, SupplyMobileTable } from "../tables/supply";
-import SupplyModal from "../Modals/SupplyModal";
 import PrintSupplyRecords from "../Reports/SupplyRecords";
 import DateRangeLib from "../common/DatePickerLib";
 import EditSupply from "../Modals/editsupply";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const columns = [
   "S/N",
@@ -45,11 +46,11 @@ const columns = [
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const SupplyHome = () => {
-  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const supply = useSelector((state) => state.supply.supply);
   const [prints, setPrints] = useState(false);
@@ -84,13 +85,24 @@ const SupplyHome = () => {
     navigate("/home/supply/createsupply");
   };
 
-  const refresh = (id, date, skip) => {
+  const getAllSupply = useCallback((outlet, updateDate, skip) => {
+    refresh(outlet, updateDate, skip);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const outlet = oneStationData === null ? "None" : oneStationData._id;
+    getAllSupply(outlet, updateDate, skip);
+  }, [getAllSupply, oneStationData, skip, updateDate]);
+
+  const refresh = (id, date, skip, limit = 15) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
       limit: limit,
       outletID: id,
       organisationID: resolveUserID().id,
+      date: date,
     };
 
     SupplyService.getAllSupply(payload)
@@ -129,11 +141,12 @@ const SupplyHome = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", "None", "None");
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    refresh(id, updateDate, skip, limit);
   };
 
   const stationHelper = (id) => {
-    refresh(id, "None", skip);
+    refresh(id, updateDate, skip);
   };
 
   const desktopTableData = {
@@ -220,7 +233,7 @@ const SupplyHome = () => {
           limit={limit}
           total={total}
           setSkip={setSkip}
-          updateDate={"None"}
+          updateDate={updateDate}
           callback={refresh}
         />
       </TablePageBackground>
@@ -229,14 +242,6 @@ const SupplyHome = () => {
           open={editsupply}
           close={setEditSupply}
           skip={skip}
-          refresh={refresh}
-        />
-      )}
-      {open && (
-        <SupplyModal
-          station={oneStationData}
-          open={open}
-          close={setOpen}
           refresh={refresh}
         />
       )}
