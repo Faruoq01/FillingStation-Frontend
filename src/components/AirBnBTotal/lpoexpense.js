@@ -1,29 +1,34 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../../styles/payments.scss";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PrintTankUpdate from "../Reports/PrintTankUpdate";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
 import { useNavigate } from "react-router-dom";
 import APIs from "../../services/connections/api";
-import moment from "moment";
 import { Circle } from "@mui/icons-material";
 import { PrintButton } from "../common/buttons";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
+import DateRangeLib from "../common/DatePickerLib";
+import ShiftSelect from "../common/shift";
+import { LimitSelect } from "../common/customselect";
+import TableNavigation from "../controls/PageLayout/TableNavigation";
+import LPOService from "../../services/360station/lpo";
+import { createLPOSales } from "../../storage/lpo";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const LPOExpense = () => {
-  const date = new Date();
-  const toString = date.toDateString();
-  const [day, year, month] = toString.split(" ");
-  const date2 = `${day} ${month} ${year}`;
-  const [value, setValue] = React.useState(null);
+  const dispatch = useDispatch();
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
 
   const tankList = useSelector((state) => state.outlet.tankList);
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
-  const lpos = useSelector((state) => state.lpo.lpoSales);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -31,84 +36,47 @@ const LPOExpense = () => {
   const [prints, setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [creditData, setCreditData] = useState([]);
+  const lpos = useSelector((state) => state.lpo.lpoSales);
 
-  const getAllCreditData = useCallback(() => {
-    setLoading(true);
-    const currentDate = moment().format("YYYY-MM-DD").split()[0];
-
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      organizationID: singleLPO?.organizationID,
-      startDate: currentDate,
-      lpoID: singleLPO._id,
-    };
-
-    APIs.post("/lpo/allCreditRecord", payload)
-      .then((data) => {
-        setCreditData(data.data.credit.credit);
-        setTotal(data.data.credit.count);
-      })
-      .then(() => {
-        setLoading(false);
-      });
-  }, [limit, singleLPO._id, singleLPO?.organizationID, skip]);
+  const getAllCreditData = useCallback((updateDate, salesShift, skip) => {
+    refresh("None", updateDate, salesShift, skip);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    getAllCreditData();
+    getAllCreditData(updateDate, salesShift, skip);
     return () => {
       if (typeof singleLPO._id === "undefined") {
         navigate("/home/lposales/lposaleshome/0");
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getAllCreditData, navigate, singleLPO._id, skip, updateDate, salesShift]);
 
-  const refresh = (skip) => {
-    if (skip < 0) return;
+  const refresh = (id, updateDate, salesShift, skip, limit = 15) => {
     setLoading(true);
-    const currentDate =
-      value === null
-        ? moment().format("YYYY-MM-DD").split()[0]
-        : value.format("YYYY-MM-DD");
 
     const payload = {
       skip: skip * limit,
       limit: limit,
-      organizationID: singleLPO?.organizationID,
-      startDate: currentDate,
-      lpoID: singleLPO._id,
+      lpoID: singleLPO?._id,
+      organisationID: singleLPO?.organizationID,
+      startDate: updateDate[0],
+      endDate: updateDate[1],
     };
 
-    APIs.post("/lpo/allCreditRecord", payload)
+    LPOService.getAllLPOSales(payload)
       .then((data) => {
-        setCreditData(data.data.credit.credit);
-        setTotal(data.data.credit.count);
+        dispatch(createLPOSales(data.lpo.lpo));
       })
       .then(() => {
         setLoading(false);
       });
   };
 
-  const nextPage = () => {
-    if (!(skip < 0)) {
-      setSkip((prev) => prev + 1);
-    }
-    refresh(skip + 1);
-  };
-
-  const prevPage = () => {
-    if (!(skip <= 0)) {
-      setSkip((prev) => prev - 1);
-    }
-    refresh(skip - 1);
-  };
-
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh();
+    refresh("None", updateDate, salesShift, skip, limit);
   };
 
   const printReport = () => {
@@ -130,6 +98,12 @@ const LPOExpense = () => {
       return Number(item.DPKRate) * Number(item.lpoLitre);
   };
 
+  const getColor = {
+    PMS: "#399A19",
+    AGO: "#FFA010",
+    DPK: "#35393E",
+  };
+
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
       {prints && (
@@ -140,51 +114,23 @@ const LPOExpense = () => {
         />
       )}
       <div className="inner-pay">
-        <div style={{ marginTop: "0px" }} className="search2">
-          <div className="butt2">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={entries}
-              sx={selectStyle2}>
-              <MenuItem style={menu} value={10}>
-                Show entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(20, 15);
-                }}
-                style={menu}
-                value={20}>
-                15 entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(30, 30);
-                }}
-                style={menu}
-                value={30}>
-                30 entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(40, 100);
-                }}
-                style={menu}
-                value={40}>
-                100 entries
-              </MenuItem>
-            </Select>
-          </div>
-          <PrintButton callback={printReport} />
-        </div>
+        <TableControls>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <ShiftSelect ml={"10px"} />
+          </LeftControls>
+          <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
 
         {mobile.matches ? (
           !loading ? (
-            creditData.length === 0 ? (
+            lpos.length === 0 ? (
               <div style={place}>No data</div>
             ) : (
-              creditData.map((item, index) => {
+              lpos.map((item, index) => {
                 return (
                   <div key={index} className="mobile-table-container">
                     <div className="inner-container">
@@ -254,7 +200,7 @@ const LPOExpense = () => {
                         <div className="column">
                           <Circle
                             style={{
-                              color: "#1B6602",
+                              color: getColor[data.productType],
                               fontSize: 10,
                               marginRight: 4,
                             }}
@@ -290,37 +236,18 @@ const LPOExpense = () => {
           </div>
         )}
 
-        <div className="footer">
-          <div style={{ fontSize: "12px" }}>
-            Showing {(skip + 1) * limit - (limit - 1)} to {(skip + 1) * limit}{" "}
-            of {total} entries
-          </div>
-          <div className="nav">
-            <button onClick={prevPage} className="but">
-              Previous
-            </button>
-            <div className="num">{skip + 1}</div>
-            <button onClick={nextPage} className="but2">
-              Next
-            </button>
-          </div>
-        </div>
+        <TableNavigation
+          skip={skip}
+          limit={limit}
+          total={total}
+          setSkip={setSkip}
+          updateDate={updateDate}
+          callback={refresh}
+          salesShift={salesShift}
+        />
       </div>
     </div>
   );
-};
-
-const selectStyle2 = {
-  width: "100%",
-  height: "35px",
-  borderRadius: "0px",
-  background: "#F2F1F1B2",
-  color: "#000",
-  fontSize: "13px",
-  outline: "none",
-  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    border: "1px solid #777777",
-  },
 };
 
 const place = {
@@ -329,10 +256,6 @@ const place = {
   fontSize: "13px",
   marginTop: "20px",
   color: "green",
-};
-
-const menu = {
-  fontSize: "13px",
 };
 
 const load = {

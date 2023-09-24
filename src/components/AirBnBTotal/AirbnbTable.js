@@ -33,7 +33,6 @@ export default function AirbnbTable() {
     };
 
     LPOService.getAllLPOSales(payload).then((data) => {
-      console.log(data, "dd");
       dispatch(createLPOSales(data.lpo.lpo));
     });
   };

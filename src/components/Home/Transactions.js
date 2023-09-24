@@ -44,7 +44,7 @@ const Transactions = () => {
     getAllCreditData(updateDate, salesShift);
     return () => {
       if (typeof singleLPO._id === "undefined") {
-        navigate("lposales");
+        navigate("/home/lposales/lposaleshome/0");
       }
     };
   }, [getAllCreditData, navigate, singleLPO._id, updateDate, salesShift]);
