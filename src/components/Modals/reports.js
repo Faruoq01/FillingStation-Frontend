@@ -8,11 +8,11 @@ import OutletReport from "../../services/reports/outlet";
 import PrintReportPage from "./showreportpane";
 import { setPDFData } from "../../storage/outlet";
 import ReportsAPI from "../../services/connections/reportsapi";
-import axios from "axios";
+import { lpoColumns, stationColumns } from "../../modules/defaulttablecolumns";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
-const GenerateReports = ({ open, close, section }) => {
+const GenerateReports = ({ open, close, section, data }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
@@ -29,10 +29,25 @@ const GenerateReports = ({ open, close, section }) => {
     }
   };
 
+  const processSection = () => {
+    switch (section) {
+      case "station": {
+        DefaultColumns.getStation(allOutlets, setHeaders, setSelectedFields);
+        break;
+      }
+
+      case "lpo": {
+        DefaultColumns.getLPO(data, setHeaders, setSelectedFields);
+        break;
+      }
+
+      default: {
+      }
+    }
+  };
+
   useEffect(() => {
-    const oneStation = allOutlets ? allOutlets[0] : [];
-    const keys = Object.keys(oneStation);
-    setHeaders(keys);
+    processSection();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,7 +61,16 @@ const GenerateReports = ({ open, close, section }) => {
     setHeaders([...headers, field]);
   };
 
-  const payload = {
+  const printPayload = {
+    type: "print",
+    section: section,
+    organizationID: resolveUserID().id,
+    outletID: oneStationData?._id,
+    columns: selectedFields,
+  };
+
+  const pdfPayload = {
+    type: "pdf",
     section: section,
     organizationID: resolveUserID().id,
     outletID: oneStationData?._id,
@@ -54,11 +78,11 @@ const GenerateReports = ({ open, close, section }) => {
   };
 
   const downloadPDF = async () => {
-    downloadByCategory(payload);
+    downloadByCategory(pdfPayload);
   };
 
   const printReport = async () => {
-    const data = await printReportByCategory(payload);
+    const data = await printReportByCategory(printPayload);
     dispatch(setPDFData(data));
     setOpen(true);
   };
@@ -127,6 +151,24 @@ const SelectList = ({ callback, menus }) => {
       })}
     </Select>
   );
+};
+
+const DefaultColumns = {
+  getStation: (allOutlets, setHeaders, setSelectedFields) => {
+    const oneStation = allOutlets ? allOutlets[0] : [];
+    let keys = Object.keys(oneStation);
+    keys = keys.filter((data) => !stationColumns.includes(data));
+    setHeaders(keys);
+    setSelectedFields(stationColumns);
+  },
+
+  getLPO: (data, setHeaders, setSelectedFields) => {
+    const lpo = data ? data[0] : [];
+    let keys = Object.keys(lpo);
+    keys = keys.filter((data) => !lpoColumns.includes(data));
+    setHeaders(keys);
+    setSelectedFields(lpoColumns);
+  },
 };
 
 const selectStyle2 = {
@@ -207,6 +249,10 @@ async function printReportByCategory(payload) {
       const data = await OutletReport.getStationPrints(payload);
       return data;
     }
+    case "lpo": {
+      const data = await OutletReport.getLPOPrints(payload);
+      return data;
+    }
     default: {
     }
   }
@@ -215,7 +261,14 @@ async function printReportByCategory(payload) {
 async function downloadByCategory(payload) {
   switch (payload.section) {
     case "station": {
-      const { data } = await ReportsAPI.post("/outlet/pdf", payload, {
+      const { data } = await ReportsAPI.post("/outlet", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "lpo": {
+      const { data } = await ReportsAPI.post("/lpo", payload, {
         responseType: "blob",
       });
       downloadPDF(data);

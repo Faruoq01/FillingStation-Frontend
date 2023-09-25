@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { createLPO, searchLPO, singleLPORecord } from "../../storage/lpo";
 import { useDispatch } from "react-redux";
 import LPORateModal from "../Modals/SetLPORate";
-import LPOReport from "../Reports/LpoReport";
 import swal from "sweetalert";
 import LPOEditOptions from "../Modals/LPOEditOptions";
 import LPOModalEdit from "../Modals/LPOModalEdit";
@@ -23,6 +22,7 @@ import { CreateButton, PrintButton } from "../common/buttons";
 import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { LPODesktopTable, LPOMobileTable } from "../tables/lpo";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -143,7 +143,6 @@ const LPOHome = (props) => {
 
   const desktopTableData = {
     columns: columns,
-    tablePrints: printReport,
     allOutlets: lpos,
     loading: loading,
     setEditOptionsModal: setEditOptionsModal,
@@ -212,6 +211,14 @@ const LPOHome = (props) => {
           callback={refresh}
         />
       </TablePageBackground>
+      {prints && (
+        <GenerateReports
+          open={prints}
+          close={setPrints}
+          section={"lpo"}
+          data={lpos}
+        />
+      )}
       <LPOModalEdit
         refresh={refresh}
         close={setLpoModalEditStatus}
@@ -239,9 +246,6 @@ const LPOHome = (props) => {
           refresh={refresh}
         />
       }
-      {prints && (
-        <LPOReport allOutlets={lpos} open={prints} close={setPrints} />
-      )}
     </React.Fragment>
   );
 };

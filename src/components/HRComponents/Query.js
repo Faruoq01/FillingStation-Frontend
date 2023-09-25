@@ -9,26 +9,32 @@ import QueryModal from "../Modals/QueryModal";
 import { useDispatch, useSelector } from "react-redux";
 import QueryService from "../../services/360station/query";
 import { createQuery, searchQuery } from "../../storage/query";
-import OutletService from "../../services/360station/outletService";
-import { OutlinedInput } from "@mui/material";
-import { adminOutlet, getAllStations } from "../../storage/outlet";
 import QueryReport from "../Reports/QueryReport";
 import ViewQuery from "../Modals/ViewQuery";
 import swal from "sweetalert";
 import UpdateQuery from "../Modals/UpdateQuery";
 import { ThreeDots } from "react-loader-spinner";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
+import { LimitSelect } from "../common/customselect";
+import { CreateButton, PrintButton } from "../common/buttons";
+import { SearchField } from "../common/searchfields";
+import SelectStation from "../common/selectstations";
+import TableNavigation from "../controls/PageLayout/TableNavigation";
+import DateRangeLib from "../common/DatePickerLib";
 
-const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const Query = () => {
   const [open, setOpen] = useState(false);
-  const [defaultState, setDefault] = useState(0);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const queryData = useSelector((state) => state.query.query);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const [prints, setPrints] = useState(false);
   const [openQuery, setOpenQuery] = useState(false);
   const [description, setDesc] = useState("");
@@ -65,108 +71,28 @@ const Query = () => {
     }
   };
 
-  const getAllQueryData = useCallback(() => {
-    if (oneStationData !== null) {
-      if (getPerm("9") || getPerm("10") || user.userType === "superAdmin") {
-        const findID = allOutlets.findIndex(
-          (data) => data._id === oneStationData._id
-        );
-        setDefault(findID + 1);
-
-        const payload = {
-          skip: skip * limit,
-          limit: limit,
-          outletID: oneStationData._id,
-          organisationID: resolveUserID().id,
-        };
-        QueryService.allQueryRecords(payload).then((data) => {
-          setLoading(false);
-          setTotal(data.query.count);
-          dispatch(createQuery(data.query.query));
-        });
-
-        return;
-      }
-    }
-
-    setLoading(true);
-    const payload = {
-      organisation: resolveUserID().id,
-    };
-
-    OutletService.getAllOutletStations(payload)
-      .then((data) => {
-        dispatch(getAllStations(data.station));
-        if (
-          (getPerm("9") || user.userType === "superAdmin") &&
-          oneStationData === null
-        ) {
-          if (!getPerm("10")) setDefault(1);
-          dispatch(adminOutlet(null));
-          return "None";
-        } else {
-          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-            (data) => {
-              dispatch(adminOutlet(data.station));
-            }
-          );
-
-          return user.outletID;
-        }
-      })
-      .then((data) => {
-        const payload = {
-          skip: skip * limit,
-          limit: limit,
-          outletID: data,
-          organisationID: resolveUserID().id,
-        };
-        QueryService.allQueryRecords(payload).then((data) => {
-          setLoading(false);
-          setTotal(data.query.count);
-          dispatch(createQuery(data.query.query));
-        });
-      });
+  const getAllQueryData = useCallback((outlet, updateDate, skip) => {
+    refresh(outlet, updateDate, skip);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getAllQueryData();
-  }, [getAllQueryData]);
+    const outlet = oneStationData === null ? "None" : oneStationData?._id;
+    getAllQueryData(outlet, updateDate, skip);
+  }, [getAllQueryData, skip, updateDate, oneStationData]);
 
-  const refresh = (skip) => {
+  const refresh = (id, updateDate, skip, limit = 15) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
       limit: limit,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
+      outletID: id,
       organisationID: resolveUserID().id,
+      date: updateDate,
     };
     QueryService.allQueryRecords(payload)
       .then((data) => {
         setTotal(data.query.count);
-        dispatch(createQuery(data.query.query));
-      })
-      .then(() => {
-        setLoading(false);
-      });
-  };
-
-  const changeMenu = (index, item) => {
-    if (!getPerm("11") && item === null)
-      return swal("Warning!", "Permission denied", "info");
-    setLoading(true);
-    setDefault(index);
-    dispatch(adminOutlet(item));
-
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      outletID: item === null ? "None" : item?._id,
-      organisationID: resolveUserID().id,
-    };
-    QueryService.allQueryRecords(payload)
-      .then((data) => {
         dispatch(createQuery(data.query.query));
       })
       .then(() => {
@@ -213,24 +139,16 @@ const Query = () => {
     setUpdate(true);
   };
 
-  const nextPage = () => {
-    setSkip((prev) => prev + 1);
-    refresh(skip + 1);
-  };
-
-  const prevPage = () => {
-    if (skip < 1) return;
-    setSkip((prev) => prev - 1);
-    refresh(skip - 1);
-  };
-
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh(skip);
+    const id = oneStationData === null ? "None" : oneStationData?._id;
+    refresh(id, updateDate, skip, limit);
   };
 
-  const goToHistory = () => {};
+  const stationHelper = (id) => {
+    refresh(id, updateDate, skip);
+  };
 
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
@@ -273,172 +191,30 @@ const Query = () => {
           </div>
         </div>
 
-        <div className="search">
-          <div className="input-cont">
-            <div className="second-select">
-              {getPerm("9") && (
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={defaultState}
-                  sx={selectStyle2}>
-                  <MenuItem
-                    onClick={() => {
-                      changeMenu(0, null);
-                    }}
-                    style={menu}
-                    value={0}>
-                    All Stations
-                  </MenuItem>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <MenuItem
-                        key={index}
-                        style={menu}
-                        onClick={() => {
-                          changeMenu(index + 1, item);
-                        }}
-                        value={index + 1}>
-                        {item.outletName + ", " + item.alias}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              )}
-              {getPerm("9") || (
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={0}
-                  sx={selectStyle2}
-                  disabled>
-                  <MenuItem style={menu} value={0}>
-                    {!getPerm("9")
-                      ? oneStationData?.outletName +
-                        ", " +
-                        oneStationData?.alias
-                      : "No station created"}
-                  </MenuItem>
-                </Select>
-              )}
-            </div>
-            <div className="second-select">
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                type="text"
-                placeholder="Search"
-                onChange={(e) => {
-                  searchTable(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ width: "100px" }} className="butt">
-            <Button
-              sx={{
-                width: "100%",
-                height: "30px",
-                background: "#427BBE",
-                borderRadius: "0px",
-                fontSize: "10px",
-                "&:hover": {
-                  backgroundColor: "#427BBE",
-                },
-              }}
-              onClick={handleQuery}
-              variant="contained">
-              {" "}
-              Add Query
-            </Button>
-          </div>
-        </div>
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <SearchField ml={"0px"} callback={searchTable} />
+            <SelectStation
+              ml={"10px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+          </LeftControls>
+          <RightControls>
+            <CreateButton callback={handleQuery} label={"Add Query"} />
+          </RightControls>
+        </TableControls>
 
-        <div className="search2">
-          <div className="butt2">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={entries}
-              sx={selectStyle2}>
-              <MenuItem style={menu} value={10}>
-                Show entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(20, 15);
-                }}
-                style={menu}
-                value={20}>
-                15 entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(30, 30);
-                }}
-                style={menu}
-                value={30}>
-                30 entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(40, 100);
-                }}
-                style={menu}
-                value={40}>
-                100 entries
-              </MenuItem>
-            </Select>
-          </div>
-          <div
-            style={{ width: mediaMatch.matches ? "100%" : "190px" }}
-            className="input-cont2">
-            <Button
-              sx={{
-                width: mediaMatch.matches ? "100%" : "100px",
-                height: "30px",
-                background: "#58A0DF",
-                borderRadius: "0px",
-                fontSize: "10px",
-                display: mediaMatch.matches && "none",
-                marginTop: mediaMatch.matches ? "10px" : "0px",
-                "&:hover": {
-                  backgroundColor: "#58A0DF",
-                },
-              }}
-              onClick={goToHistory}
-              variant="contained">
-              {" "}
-              History
-            </Button>
-            <Button
-              sx={{
-                width: mediaMatch.matches ? "100%" : "80px",
-                height: "30px",
-                background: "#F36A4C",
-                borderRadius: "0px",
-                fontSize: "10px",
-                display: mediaMatch.matches && "none",
-                marginTop: mediaMatch.matches ? "10px" : "0px",
-                "&:hover": {
-                  backgroundColor: "#F36A4C",
-                },
-              }}
-              onClick={printReport}
-              variant="contained">
-              {" "}
-              Print
-            </Button>
-          </div>
-        </div>
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+          </LeftControls>
+          <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
 
         {mobile.matches ? (
           !loading ? (
@@ -611,21 +387,14 @@ const Query = () => {
           </div>
         )}
 
-        <div className="footer">
-          <div style={{ fontSize: "12px" }}>
-            Showing {(skip + 1) * limit - (limit - 1)} to {(skip + 1) * limit}{" "}
-            of {total} entries
-          </div>
-          <div className="nav">
-            <button onClick={prevPage} className="but">
-              Previous
-            </button>
-            <div className="num">{skip + 1}</div>
-            <button onClick={nextPage} className="but2">
-              Next
-            </button>
-          </div>
-        </div>
+        <TableNavigation
+          skip={skip}
+          limit={limit}
+          total={total}
+          setSkip={setSkip}
+          updateDate={updateDate}
+          callback={refresh}
+        />
       </div>
     </div>
   );
@@ -642,10 +411,6 @@ const selectStyle2 = {
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #777777",
   },
-};
-
-const menu = {
-  fontSize: "12px",
 };
 
 const place = {

@@ -83,15 +83,14 @@ export const LPODesktopTable = ({ data }) => {
     return user.permission?.corporateSales[e];
   };
 
-  const { columns, tablePrints, allOutlets, loading, setEditOptionsModal } =
-    data;
+  const { columns, allOutlets, loading, setEditOptionsModal } = data;
 
   const triggerRowCallback = (e, data) => {
     openLPOSales(getPerm, data, navigate, dispatch);
   };
 
   return (
-    <TableViewForDesktop columns={columns} ref={tablePrints}>
+    <TableViewForDesktop columns={columns}>
       <DesktopTableRowContainer rows={allOutlets} loading={loading}>
         {!loading &&
           allOutlets.map((item, index) => {
