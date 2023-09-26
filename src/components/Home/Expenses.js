@@ -194,9 +194,6 @@ const Expenses = () => {
           data={expense}
         />
       )}
-      {/* {prints && (
-        <ExpenseReport allOutlets={expense} open={prints} close={setPrints} />
-      )} */}
     </TablePageBackground>
   );
 };

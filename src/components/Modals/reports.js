@@ -8,8 +8,10 @@ import PrintReportPage from "./showreportpane";
 import { setPDFData } from "../../storage/outlet";
 import ReportsAPI from "../../services/connections/reportsapi";
 import {
+  bankColumns,
   expenseColumns,
   lpoColumns,
+  posColumns,
   stationColumns,
 } from "../../modules/defaulttablecolumns";
 
@@ -61,6 +63,26 @@ const GenerateReports = ({ open, close, section, data }) => {
           setHeaders,
           setSelectedFields,
           expenseColumns
+        );
+        break;
+      }
+
+      case "bank": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          bankColumns
+        );
+        break;
+      }
+
+      case "pos": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          posColumns
         );
         break;
       }
@@ -275,6 +297,14 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/expenses", payload);
       return data;
     }
+    case "bank": {
+      const { data } = await ReportsAPI.post("/payment", payload);
+      return data;
+    }
+    case "pos": {
+      const { data } = await ReportsAPI.post("/pospayment", payload);
+      return data;
+    }
     default: {
     }
   }
@@ -298,6 +328,20 @@ async function downloadByCategory(payload) {
     }
     case "expenses": {
       const { data } = await ReportsAPI.post("/expenses", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "bank": {
+      const { data } = await ReportsAPI.post("/payment", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "pos": {
+      const { data } = await ReportsAPI.post("/pospayment", payload, {
         responseType: "blob",
       });
       downloadPDF(data);

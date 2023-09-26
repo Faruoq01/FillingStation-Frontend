@@ -22,3 +22,19 @@ export const expenseColumns = [
   "description",
   "expenseAmount",
 ];
+
+export const bankColumns = [
+  "bankName",
+  "tellerNumber",
+  "amountPaid",
+  "paymentDate",
+  "confirmation",
+];
+
+export const posColumns = [
+  "posName",
+  "terminalID",
+  "amountPaid",
+  "paymentDate",
+  "confirmation",
+];

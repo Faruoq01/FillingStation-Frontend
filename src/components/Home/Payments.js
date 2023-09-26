@@ -37,6 +37,7 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import ShiftSelect from "../common/shift";
 import DateRangeLib from "../common/DatePickerLib";
+import GenerateReports from "../Modals/reports";
 
 const bankColumns = [
   "S/N",
@@ -67,6 +68,7 @@ const Payments = (props) => {
   const user = useSelector((state) => state.auth.user);
   const bank = useSelector((state) => state.payments.bank);
   const pos = useSelector((state) => state.payments.pos);
+  const [prints, setPrints] = useState(false);
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const [activeButton, setActiveButton] = useState(false);
@@ -74,7 +76,6 @@ const Payments = (props) => {
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
   const [total1, setTotal1] = useState(0);
-  const [setPrints] = useState(false);
   const [loading, setLoading] = useState(false);
   const updateDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -314,6 +315,14 @@ const Payments = (props) => {
           salesShift={salesShift}
         />
       </TablePageBackground>
+      {prints && (
+        <GenerateReports
+          open={prints}
+          close={setPrints}
+          section={activeButton ? "pos" : "bank"}
+          data={activeButton ? pos : bank}
+        />
+      )}
     </React.Fragment>
   );
 };
