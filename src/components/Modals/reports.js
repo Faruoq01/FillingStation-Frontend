@@ -9,8 +9,10 @@ import { setPDFData } from "../../storage/outlet";
 import ReportsAPI from "../../services/connections/reportsapi";
 import {
   bankColumns,
+  creditColumns,
   expenseColumns,
   lpoColumns,
+  lposalesColumns,
   overageColumns,
   posColumns,
   stationColumns,
@@ -94,6 +96,26 @@ const GenerateReports = ({ open, close, section, data }) => {
           setHeaders,
           setSelectedFields,
           overageColumns
+        );
+        break;
+      }
+
+      case "transaction": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          creditColumns
+        );
+        break;
+      }
+
+      case "lposales": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          lposalesColumns
         );
         break;
       }
@@ -320,6 +342,14 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/varience", payload);
       return data;
     }
+    case "transaction": {
+      const { data } = await ReportsAPI.post("/creditbalance", payload);
+      return data;
+    }
+    case "lposales": {
+      const { data } = await ReportsAPI.post("/lposales", payload);
+      return data;
+    }
     default: {
     }
   }
@@ -364,6 +394,20 @@ async function downloadByCategory(payload) {
     }
     case "overage": {
       const { data } = await ReportsAPI.post("/varience", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "transaction": {
+      const { data } = await ReportsAPI.post("/creditbalance", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "lposales": {
+      const { data } = await ReportsAPI.post("/lposales", payload, {
         responseType: "blob",
       });
       downloadPDF(data);

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../../styles/payments.scss";
 import { useDispatch, useSelector } from "react-redux";
-import PrintTankUpdate from "../Reports/PrintTankUpdate";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +17,7 @@ import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import LPOService from "../../services/360station/lpo";
 import { createLPOSales } from "../../storage/lpo";
+import GenerateReports from "../Modals/reports";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -25,8 +25,6 @@ const LPOExpense = () => {
   const dispatch = useDispatch();
   const updateDate = useSelector((state) => state.dashboard.dateRange);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
-
-  const tankList = useSelector((state) => state.outlet.tankList);
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);
@@ -106,13 +104,6 @@ const LPOExpense = () => {
 
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
-      {prints && (
-        <PrintTankUpdate
-          allOutlets={tankList}
-          open={prints}
-          close={setPrints}
-        />
-      )}
       <div className="inner-pay">
         <TableControls>
           <LeftControls>
@@ -245,6 +236,15 @@ const LPOExpense = () => {
           callback={refresh}
           salesShift={salesShift}
         />
+
+        {prints && (
+          <GenerateReports
+            open={prints}
+            close={setPrints}
+            section={"lposales"}
+            data={lpos}
+          />
+        )}
       </div>
     </div>
   );

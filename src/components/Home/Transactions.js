@@ -16,6 +16,7 @@ import ShiftSelect from "../common/shift";
 import { LimitSelect } from "../common/customselect";
 import { PrintButton } from "../common/buttons";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
+import GenerateReports from "../Modals/reports";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -83,13 +84,6 @@ const Transactions = () => {
 
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
-      {prints && (
-        <PrintTankUpdate
-          allOutlets={tankList}
-          open={prints}
-          close={setPrints}
-        />
-      )}
       <div className="inner-pay">
         <TableControls>
           <LeftControls>
@@ -213,6 +207,15 @@ const Transactions = () => {
           callback={refresh}
           salesShift={salesShift}
         />
+
+        {prints && (
+          <GenerateReports
+            open={prints}
+            close={setPrints}
+            section={"transaction"}
+            data={creditData}
+          />
+        )}
       </div>
     </div>
   );

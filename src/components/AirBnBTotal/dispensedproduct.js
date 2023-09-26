@@ -17,6 +17,7 @@ import {
 } from "../tables/dispensedlpo";
 import ShiftSelect from "../common/shift";
 import DateRangeLib from "../common/DatePickerLib";
+import GenerateReports from "../Modals/reports";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -44,6 +45,7 @@ const ProductsDispensed = () => {
   const [limit, setLimit] = useState(15);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [prints, setPrints] = useState(false);
 
   const getDispensed = useCallback((id, date, skip, salesShift) => {
     refresh(id, date, skip, salesShift);
@@ -85,7 +87,7 @@ const ProductsDispensed = () => {
 
   const printReport = () => {
     // if (!getPerm("5")) return swal("Warning!", "Permission denied", "info");
-    // setPrints(true);
+    setPrints(true);
   };
 
   const desktopTableData = {
@@ -129,6 +131,14 @@ const ProductsDispensed = () => {
           callback={refresh}
         />
       </TablePageBackground>
+      {prints && (
+        <GenerateReports
+          open={prints}
+          close={setPrints}
+          section={"lposales"}
+          data={lpos}
+        />
+      )}
     </React.Fragment>
   );
 };

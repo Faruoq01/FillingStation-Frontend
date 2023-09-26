@@ -40,3 +40,19 @@ export const posColumns = [
 ];
 
 export const overageColumns = ["createdAt", "afterSales", "dipping"];
+
+export const creditColumns = [
+  "createdAt",
+  "credit",
+  "debit",
+  "balance",
+  "description",
+];
+
+export const lposalesColumns = [
+  "createdAt",
+  "productType",
+  "lpoLitre",
+  "station",
+  "truckNo",
+];
