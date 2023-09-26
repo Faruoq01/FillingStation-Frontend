@@ -38,3 +38,5 @@ export const posColumns = [
   "paymentDate",
   "confirmation",
 ];
+
+export const overageColumns = ["createdAt", "afterSales", "dipping"];

@@ -21,6 +21,7 @@ import SelectStation from "../common/selectstations";
 import ShiftSelect from "../common/shift";
 import { LimitSelect } from "../common/customselect";
 import { PrintButton } from "../common/buttons";
+import GenerateReports from "../Modals/reports";
 
 const mobile = window.matchMedia("(max-width: 1150px)");
 
@@ -38,6 +39,7 @@ const OverageList = () => {
   const [loading, setLoading] = useState(false);
   const overageTypeData = useSelector((state) => state.dailysales.overageType);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
+  const [prints, setPrints] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -109,7 +111,7 @@ const OverageList = () => {
   };
 
   const printReport = () => {
-    // setPrints(true);
+    setPrints(true);
   };
 
   const entriesMenu = (value, limit) => {
@@ -255,6 +257,15 @@ const OverageList = () => {
           callback={getDippingData}
           salesShift={salesShift}
         />
+
+        {prints && (
+          <GenerateReports
+            open={prints}
+            close={setPrints}
+            section={"overage"}
+            data={dipping}
+          />
+        )}
       </div>
     </div>
   );

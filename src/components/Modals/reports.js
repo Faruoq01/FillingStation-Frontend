@@ -11,6 +11,7 @@ import {
   bankColumns,
   expenseColumns,
   lpoColumns,
+  overageColumns,
   posColumns,
   stationColumns,
 } from "../../modules/defaulttablecolumns";
@@ -83,6 +84,16 @@ const GenerateReports = ({ open, close, section, data }) => {
           setHeaders,
           setSelectedFields,
           posColumns
+        );
+        break;
+      }
+
+      case "overage": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          overageColumns
         );
         break;
       }
@@ -305,6 +316,10 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/pospayment", payload);
       return data;
     }
+    case "overage": {
+      const { data } = await ReportsAPI.post("/varience", payload);
+      return data;
+    }
     default: {
     }
   }
@@ -342,6 +357,13 @@ async function downloadByCategory(payload) {
     }
     case "pos": {
       const { data } = await ReportsAPI.post("/pospayment", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "overage": {
+      const { data } = await ReportsAPI.post("/varience", payload, {
         responseType: "blob",
       });
       downloadPDF(data);
