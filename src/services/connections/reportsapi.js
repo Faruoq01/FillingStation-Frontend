@@ -4,8 +4,8 @@ import { logout } from "../../storage/logout";
 import { setConnection } from "../../storage/auth";
 import swal from "sweetalert";
 // import config from "../../constants";
-const BASE_URL = "https://360station.co/report/";
-// const BASE_URL = "http://localhost:4000/report/";
+// const BASE_URL = "https://360station.co/report/";
+const BASE_URL = "http://localhost:4000/";
 
 const ReportsAPI = axios.create({
   baseURL: BASE_URL,

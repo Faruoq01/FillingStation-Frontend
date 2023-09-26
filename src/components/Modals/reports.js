@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { MenuItem, Select } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import OutletReport from "../../services/reports/outlet";
 import PrintReportPage from "./showreportpane";
 import { setPDFData } from "../../storage/outlet";
 import ReportsAPI from "../../services/connections/reportsapi";
@@ -32,12 +31,22 @@ const GenerateReports = ({ open, close, section, data }) => {
   const processSection = () => {
     switch (section) {
       case "station": {
-        DefaultColumns.getStation(allOutlets, setHeaders, setSelectedFields);
+        DefaultColumns.getColumns(
+          allOutlets,
+          setHeaders,
+          setSelectedFields,
+          stationColumns
+        );
         break;
       }
 
       case "lpo": {
-        DefaultColumns.getLPO(data, setHeaders, setSelectedFields);
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          lpoColumns
+        );
         break;
       }
 
@@ -154,20 +163,12 @@ const SelectList = ({ callback, menus }) => {
 };
 
 const DefaultColumns = {
-  getStation: (allOutlets, setHeaders, setSelectedFields) => {
-    const oneStation = allOutlets ? allOutlets[0] : [];
-    let keys = Object.keys(oneStation);
-    keys = keys.filter((data) => !stationColumns.includes(data));
+  getColumns: (Item, setHeaders, setSelectedFields, column) => {
+    const fields = Item ? Item[0] : [];
+    let keys = Object.keys(fields);
+    keys = keys.filter((data) => !column.includes(data));
     setHeaders(keys);
-    setSelectedFields(stationColumns);
-  },
-
-  getLPO: (data, setHeaders, setSelectedFields) => {
-    const lpo = data ? data[0] : [];
-    let keys = Object.keys(lpo);
-    keys = keys.filter((data) => !lpoColumns.includes(data));
-    setHeaders(keys);
-    setSelectedFields(lpoColumns);
+    setSelectedFields(column);
   },
 };
 
@@ -246,11 +247,11 @@ const cancelStyle = {
 async function printReportByCategory(payload) {
   switch (payload.section) {
     case "station": {
-      const data = await OutletReport.getStationPrints(payload);
+      const { data } = await ReportsAPI.post("/outlet", payload);
       return data;
     }
     case "lpo": {
-      const data = await OutletReport.getLPOPrints(payload);
+      const { data } = await ReportsAPI.post("/lpo", payload);
       return data;
     }
     default: {
