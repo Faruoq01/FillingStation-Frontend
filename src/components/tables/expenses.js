@@ -39,7 +39,7 @@ export const ExpenseDesktopTable = ({ data }) => {
             return (
               <DesktopTableRows index={index}>
                 <DesktopTableCell data={index + 1} />
-                <DesktopTableCell data={item.createdAt.split("T")[0]} />
+                <DesktopTableCell data={item.createdAt} />
                 <DesktopTableCell data={item.dateCreated} />
                 <DesktopTableCell data={item.expenseName} />
                 <DesktopTableCell data={item.description} />

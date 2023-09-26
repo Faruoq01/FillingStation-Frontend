@@ -7,14 +7,19 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import PrintReportPage from "./showreportpane";
 import { setPDFData } from "../../storage/outlet";
 import ReportsAPI from "../../services/connections/reportsapi";
-import { lpoColumns, stationColumns } from "../../modules/defaulttablecolumns";
+import {
+  expenseColumns,
+  lpoColumns,
+  stationColumns,
+} from "../../modules/defaulttablecolumns";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const GenerateReports = ({ open, close, section, data }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const station = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const [headers, setHeaders] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
@@ -50,6 +55,16 @@ const GenerateReports = ({ open, close, section, data }) => {
         break;
       }
 
+      case "expenses": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          expenseColumns
+        );
+        break;
+      }
+
       default: {
       }
     }
@@ -74,16 +89,18 @@ const GenerateReports = ({ open, close, section, data }) => {
     type: "print",
     section: section,
     organizationID: resolveUserID().id,
-    outletID: oneStationData?._id,
+    outletID: station === null ? "None" : station?._id,
     columns: selectedFields,
+    date: updateDate,
   };
 
   const pdfPayload = {
     type: "pdf",
     section: section,
     organizationID: resolveUserID().id,
-    outletID: oneStationData?._id,
+    outletID: station === null ? "None" : station?._id,
     columns: selectedFields,
+    date: updateDate,
   };
 
   const downloadPDF = async () => {
@@ -254,6 +271,10 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/lpo", payload);
       return data;
     }
+    case "expenses": {
+      const { data } = await ReportsAPI.post("/expenses", payload);
+      return data;
+    }
     default: {
     }
   }
@@ -270,6 +291,13 @@ async function downloadByCategory(payload) {
     }
     case "lpo": {
       const { data } = await ReportsAPI.post("/lpo", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "expenses": {
+      const { data } = await ReportsAPI.post("/expenses", payload, {
         responseType: "blob",
       });
       downloadPDF(data);

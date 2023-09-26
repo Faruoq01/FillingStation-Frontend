@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import ExpenseService from "../../services/360station/expense";
 import { allExpenses, searchExpenses } from "../../storage/expenses";
-import ExpenseReport from "../Reports/ExpenseReport";
 import {
   LeftControls,
   RightControls,
@@ -21,6 +20,7 @@ import { ExpenseDesktopTable, ExpenseMobileTable } from "../tables/expenses";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import ShiftSelect from "../common/shift";
 import DateRangeLib from "../common/DatePickerLib";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -155,10 +155,9 @@ const Expenses = () => {
             allStation={getPerm("1")}
             callback={stationHelper}
           />
-          <ShiftSelect ml={"10px"} />
         </LeftControls>
         <RightControls>
-          <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+          <ShiftSelect ml={"10px"} />
         </RightControls>
       </TableControls>
 
@@ -167,6 +166,7 @@ const Expenses = () => {
           <LimitSelect entries={entries} entriesMenu={entriesMenu} />
         </LeftControls>
         <RightControls>
+          <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
           <PrintButton callback={printReport} />
         </RightControls>
       </TableControls>
@@ -187,8 +187,16 @@ const Expenses = () => {
         salesShift={salesShift}
       />
       {prints && (
-        <ExpenseReport allOutlets={expense} open={prints} close={setPrints} />
+        <GenerateReports
+          open={prints}
+          close={setPrints}
+          section={"expenses"}
+          data={expense}
+        />
       )}
+      {/* {prints && (
+        <ExpenseReport allOutlets={expense} open={prints} close={setPrints} />
+      )} */}
     </TablePageBackground>
   );
 };

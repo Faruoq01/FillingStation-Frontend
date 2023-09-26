@@ -14,3 +14,11 @@ export const lpoColumns = [
   "currentBalance",
   "paymentStructure",
 ];
+
+export const expenseColumns = [
+  "createdAt",
+  "dateCreated",
+  "expenseName",
+  "description",
+  "expenseAmount",
+];
