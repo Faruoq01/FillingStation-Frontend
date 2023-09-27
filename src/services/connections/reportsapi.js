@@ -3,12 +3,10 @@ import { store } from "../../storage/store";
 import { logout } from "../../storage/logout";
 import { setConnection } from "../../storage/auth";
 import swal from "sweetalert";
-// import config from "../../constants";
-const BASE_URL = "https://360station.co/report/";
-// const BASE_URL = "http://localhost:4000/";
+import config from "../../constants";
 
 const ReportsAPI = axios.create({
-  baseURL: BASE_URL,
+  baseURL: `${config.REPORTS_URL}/report/`,
   headers: {
     Accept: "application/json",
     Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
