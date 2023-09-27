@@ -56,3 +56,54 @@ export const lposalesColumns = [
   "station",
   "truckNo",
 ];
+
+export const productColumns = [
+  "createdAt",
+  "depot",
+  "depotAddress",
+  "productType",
+  "quantity",
+  "quantityLoaded",
+  "currentBalance",
+];
+
+export const deliveredOrderColumns = [
+  "createdAt",
+  "depotStation",
+  "destination",
+  "product",
+  "quantity",
+  "truckNo",
+  "deliveryStatus",
+  "shortage",
+  "overage",
+];
+
+export const incomingOrderColumns = [
+  "createdAt",
+  "depotStation",
+  "destination",
+  "product",
+  "quantity",
+  "truckNo",
+  "deliveryStatus",
+];
+
+export const regulatoryColumns = [
+  "createdAt",
+  "organisationalName",
+  "amount",
+  "contactPerson",
+  "description",
+];
+
+export const supplyColumns = [
+  "date",
+  "truckNo",
+  "wayBillNo",
+  "outletName",
+  "productType",
+  "quantity",
+  "shortage",
+  "overage",
+];

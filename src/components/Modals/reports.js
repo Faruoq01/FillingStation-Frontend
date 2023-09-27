@@ -10,12 +10,17 @@ import ReportsAPI from "../../services/connections/reportsapi";
 import {
   bankColumns,
   creditColumns,
+  deliveredOrderColumns,
   expenseColumns,
+  incomingOrderColumns,
   lpoColumns,
   lposalesColumns,
   overageColumns,
   posColumns,
+  productColumns,
+  regulatoryColumns,
   stationColumns,
+  supplyColumns,
 } from "../../modules/defaulttablecolumns";
 
 const mobile = window.matchMedia("(max-width: 600px)");
@@ -116,6 +121,56 @@ const GenerateReports = ({ open, close, section, data }) => {
           setHeaders,
           setSelectedFields,
           lposalesColumns
+        );
+        break;
+      }
+
+      case "product": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          productColumns
+        );
+        break;
+      }
+
+      case "deliveredOrder": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          deliveredOrderColumns
+        );
+        break;
+      }
+
+      case "incoming": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          incomingOrderColumns
+        );
+        break;
+      }
+
+      case "regulatory": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          regulatoryColumns
+        );
+        break;
+      }
+
+      case "supply": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          supplyColumns
         );
         break;
       }
@@ -350,6 +405,26 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/lposales", payload);
       return data;
     }
+    case "product": {
+      const { data } = await ReportsAPI.post("/productorder", payload);
+      return data;
+    }
+    case "deliveredOrder": {
+      const { data } = await ReportsAPI.post("/deliveredorder", payload);
+      return data;
+    }
+    case "incoming": {
+      const { data } = await ReportsAPI.post("/incomingorder", payload);
+      return data;
+    }
+    case "regulatory": {
+      const { data } = await ReportsAPI.post("/regulatory", payload);
+      return data;
+    }
+    case "supply": {
+      const { data } = await ReportsAPI.post("/supply", payload);
+      return data;
+    }
     default: {
     }
   }
@@ -408,6 +483,41 @@ async function downloadByCategory(payload) {
     }
     case "lposales": {
       const { data } = await ReportsAPI.post("/lposales", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "product": {
+      const { data } = await ReportsAPI.post("/productorder", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "deliveredOrder": {
+      const { data } = await ReportsAPI.post("/deliveredorder", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "incoming": {
+      const { data } = await ReportsAPI.post("/incomingorder", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "regulatory": {
+      const { data } = await ReportsAPI.post("/regulatory", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "supply": {
+      const { data } = await ReportsAPI.post("/supply", payload, {
         responseType: "blob",
       });
       downloadPDF(data);

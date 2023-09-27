@@ -16,6 +16,7 @@ import { setDeliveredProduct } from "../../storage/productOrder";
 import { LimitSelect } from "../common/customselect";
 import { PrintButton } from "../common/buttons";
 import DateRangeLib from "../common/DatePickerLib";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -43,24 +44,26 @@ const DeliveredOrder = () => {
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
   const [total, setTotal] = useState(0);
-  //   const [prints, setPrints] = useState(false);
+  const [prints, setPrints] = useState(false);
   const [load, setLoad] = useState(false);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
-  const getIncomingList = useCallback(() => {
-    refresh("None", limit, skip);
+  const getIncomingList = useCallback((updateDate, skip) => {
+    refresh("None", updateDate, skip);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getIncomingList();
-  }, [getIncomingList]);
+    getIncomingList(updateDate, skip);
+  }, [getIncomingList, updateDate, skip]);
 
-  const refresh = (date, limit, skip) => {
+  const refresh = (date, updateDate, skip, limit = 15) => {
     setLoad(true);
     const payload = {
       productOrderID: product._id,
       limit: limit,
       skip: skip * limit,
+      date: updateDate,
     };
 
     IncomingService.getAllIncoming4(payload)
@@ -75,13 +78,13 @@ const DeliveredOrder = () => {
 
   const printReport = () => {
     // if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
-    // setPrints(true);
+    setPrints(true);
   };
 
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", limit, skip);
+    refresh("None", updateDate, skip, limit);
   };
 
   const desktopTableData = {
@@ -108,7 +111,7 @@ const DeliveredOrder = () => {
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
-            <DateRangeLib />
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
@@ -124,10 +127,18 @@ const DeliveredOrder = () => {
           limit={limit}
           total={total}
           setSkip={setSkip}
-          updateDate={"None"}
+          updateDate={updateDate}
           callback={refresh}
         />
       </TablePageBackground>
+      {prints && (
+        <GenerateReports
+          open={prints}
+          close={setPrints}
+          section={"deliveredOrder"}
+          data={deliveredOrder}
+        />
+      )}
     </React.Fragment>
   );
 };

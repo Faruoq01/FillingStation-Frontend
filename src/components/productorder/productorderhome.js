@@ -11,7 +11,6 @@ import {
 } from "../../storage/productOrder";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import ProductReport from "../Reports/ProductReport";
 import swal from "sweetalert";
 import ProductOrderEditModal from "../Modals/ProductOrderEditModal";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
@@ -29,6 +28,8 @@ import {
   ProductMobileTable,
 } from "../tables/productorder";
 import { useNavigate } from "react-router-dom";
+import DateRangeLib from "../common/DatePickerLib";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -52,6 +53,7 @@ const ProductOrderHome = () => {
   const user = useSelector((state) => state.auth.user);
   const productOrder = useSelector((state) => state.productorder.productorder);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const [entries, setEntries] = useState(10);
 
@@ -81,35 +83,22 @@ const ProductOrderHome = () => {
     setOpen(true);
   };
 
-  const getAllProductData = useCallback(() => {
-    setLoading(true);
-
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      organisationID: resolveUserID().id,
-    };
-
-    ProductService.getAllProductOrder(payload).then((data) => {
-      setLoading(false);
-      setTotal(data.product.count);
-      dispatch(setProductOrder(data.product.product));
-    });
-
+  const getAllProductData = useCallback((updateDate, skip) => {
+    refresh("None", updateDate, skip);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getAllProductData();
-  }, [getAllProductData]);
+    getAllProductData(updateDate, skip);
+  }, [getAllProductData, updateDate, skip]);
 
-  const refresh = (id, date, skip) => {
+  const refresh = (id, date, skip, limit = 15) => {
     setLoading(true);
     const payload = {
       skip: skip * limit,
       limit: limit,
-      outletID: id,
       organisationID: resolveUserID().id,
+      date: date,
     };
 
     ProductService.getAllProductOrder(payload)
@@ -134,7 +123,7 @@ const ProductOrderHome = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", "None", skip);
+    refresh("None", updateDate, skip, limit);
   };
 
   const openOrderDetails = (data) => {
@@ -203,6 +192,7 @@ const ProductOrderHome = () => {
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
           </LeftControls>
           <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
@@ -218,7 +208,7 @@ const ProductOrderHome = () => {
           limit={limit}
           total={total}
           setSkip={setSkip}
-          updateDate={"None"}
+          updateDate={updateDate}
           callback={refresh}
         />
       </TablePageBackground>
@@ -238,10 +228,11 @@ const ProductOrderHome = () => {
         />
       )}
       {prints && (
-        <ProductReport
-          allOutlets={productOrder}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"product"}
+          data={productOrder}
         />
       )}
     </Fragment>

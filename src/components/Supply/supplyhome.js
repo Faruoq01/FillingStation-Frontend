@@ -28,6 +28,7 @@ import DateRangeLib from "../common/DatePickerLib";
 import EditSupply from "../Modals/editsupply";
 import { useEffect } from "react";
 import { useCallback } from "react";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -246,10 +247,11 @@ const SupplyHome = () => {
         />
       )}
       {prints && (
-        <PrintSupplyRecords
-          allOutlets={supply}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"supply"}
+          data={supply}
         />
       )}
     </React.Fragment>

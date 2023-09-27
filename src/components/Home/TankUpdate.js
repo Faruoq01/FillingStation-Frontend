@@ -148,23 +148,16 @@ const TankUpdate = () => {
 
         <TableControls>
           <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <SearchField ml={"10px"} callback={searchTable} />
+          </LeftControls>
+          <RightControls>
             <SelectStation
               ml={"0px"}
               oneStation={getPerm("0")}
               allStation={getPerm("1")}
               callback={stationHelper}
             />
-            <SearchField ml={"10px"} callback={searchTable} />
-          </LeftControls>
-          <RightControls></RightControls>
-        </TableControls>
-
-        <TableControls mt={"10px"}>
-          <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-          </LeftControls>
-          <RightControls>
-            <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
 

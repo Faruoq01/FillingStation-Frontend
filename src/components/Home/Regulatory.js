@@ -9,7 +9,6 @@ import PaymentEditModal from "../Modals/PaymentEditModal";
 
 import { createPayment, searchPayment } from "../../storage/regulatory";
 import ViewPayment from "../Modals/ViewPayment";
-import RegulatoryReports from "../Reports/RegulatoryReports";
 import swal from "sweetalert";
 import {
   LeftControls,
@@ -29,6 +28,7 @@ import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import DateRangeLib from "../common/DatePickerLib";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -244,10 +244,11 @@ const Regulatory = () => {
         />
       }
       {prints && (
-        <RegulatoryReports
-          allOutlets={payment}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"regulatory"}
+          data={payment}
         />
       )}
       {openPayment && (

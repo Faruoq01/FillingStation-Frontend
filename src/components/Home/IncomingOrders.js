@@ -10,7 +10,6 @@ import {
   searchIncoming,
 } from "../../storage/incomingOrder";
 import IncomingService from "../../services/360station/IncomingService";
-import IncomingReport from "../Reports/IncomingReport";
 import swal from "sweetalert";
 import IncomingOrderEditModal from "../Modals/IncomingOrderEditModal";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
@@ -31,6 +30,7 @@ import {
 import DateRangeLib from "../common/DatePickerLib";
 import { useEffect } from "react";
 import { useCallback } from "react";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -237,10 +237,11 @@ const IncomingOrder = () => {
         />
       }
       {prints && (
-        <IncomingReport
-          allOutlets={incomingOrder}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"incoming"}
+          data={incomingOrder}
         />
       )}
     </Fragment>
