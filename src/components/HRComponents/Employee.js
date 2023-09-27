@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import AdminUserService from "../../services/360station/adminUsers";
 import { searchStaffs, storeStaffUsers } from "../../storage/employee";
-import PrintStaffRecords from "../Reports/StaffRecord";
 import ManagerModal from "../Modals/ManagerModal";
 import swal from "sweetalert";
 import EditStaffModal from "../Modals/EditStaffModal";
@@ -23,6 +22,7 @@ import { CreateButton, PrintButton } from "../common/buttons";
 import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { EmployeeDesktopTable, EmployeeMobileTable } from "../tables/employees";
+import GenerateReports from "../Modals/reports";
 
 const columns = [
   "S/N",
@@ -218,7 +218,6 @@ const Employee = () => {
               allStation={getPerm("1")}
               callback={stationHelper}
             />
-            <SearchField ml={"10px"} callback={searchTable} />
           </LeftControls>
           <RightControls>
             <CreateButton callback={openModal} label={"Add Employee"} />
@@ -228,6 +227,7 @@ const Employee = () => {
         <TableControls mt={"10px"}>
           <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <SearchField ml={"10px"} callback={searchTable} />
           </LeftControls>
           <RightControls>
             <UserSelect filter={filter} roles={roles} filterMenu={filterMenu} />
@@ -268,10 +268,11 @@ const Employee = () => {
       }
       {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
       {prints && (
-        <PrintStaffRecords
-          allOutlets={staffUsers}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"employee"}
+          data={staffUsers}
         />
       )}
     </React.Fragment>

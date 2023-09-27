@@ -8,7 +8,6 @@ import { createSalary, searchSalary } from "../../storage/salary";
 import { useDispatch, useSelector } from "react-redux";
 import UpdateSalary from "../Modals/UpdateSalary";
 import swal from "sweetalert";
-import SalaryReports from "../Reports/SalaryReport";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import {
   LeftControls,
@@ -21,6 +20,7 @@ import { CreateButton, PrintButton } from "../common/buttons";
 import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { SalaryDesktopTable, SalaryMobileTable } from "../tables/salary";
+import GenerateReports from "../Modals/reports";
 
 const columns = ["S/N", "Position", "Level", "Salary range", "Actions"];
 
@@ -158,7 +158,6 @@ const Salary = () => {
               allStation={getPerm("1")}
               callback={stationHelper}
             />
-            <SearchField ml={"10px"} callback={searchTable} />
           </LeftControls>
           <RightControls>
             <CreateButton callback={openSalaryModal} label={"Add Salary"} />
@@ -168,6 +167,7 @@ const Salary = () => {
         <TableControls mt={"10px"}>
           <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <SearchField ml={"10px"} callback={searchTable} />
           </LeftControls>
           <RightControls>
             <PrintButton callback={printReport} />
@@ -206,10 +206,11 @@ const Salary = () => {
         />
       }
       {prints && (
-        <SalaryReports
-          allOutlets={salaryData}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"salary"}
+          data={salaryData}
         />
       )}
     </React.Fragment>

@@ -2,19 +2,17 @@ import React, { useState } from "react";
 import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
 import avatar from "../../assets/avatar.png";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import PrintStaffRecords from "../Reports/StaffRecord";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import APIs from "../../services/connections/api";
 import { searchdashStaffs, setEmployeeList } from "../../storage/dashboard";
 import { ThreeDots } from "react-loader-spinner";
-
-const mediaMatch = window.matchMedia("(max-width: 530px)");
+import GenerateReports from "../Modals/reports";
+import { PrintButton } from "../common/buttons";
 
 const DashboardEmployee = () => {
   const [prints, setPrints] = useState(false);
@@ -65,10 +63,11 @@ const DashboardEmployee = () => {
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
       {prints && (
-        <PrintStaffRecords
-          allOutlets={employees}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"employee"}
+          data={employees}
         />
       )}
       <div className="inner-pay">
@@ -117,45 +116,7 @@ const DashboardEmployee = () => {
               }}
             />
           </div>
-          <div
-            style={{ width: mediaMatch.matches ? "100%" : "190px" }}
-            className="input-cont2">
-            <Button
-              sx={{
-                width: mediaMatch.matches ? "100%" : "100px",
-                height: "30px",
-                background: "#58A0DF",
-                borderRadius: "3px",
-                fontSize: "10px",
-                display: mediaMatch.matches && "none",
-                marginTop: mediaMatch.matches ? "10px" : "0px",
-                "&:hover": {
-                  backgroundColor: "#58A0DF",
-                },
-              }}
-              variant="contained">
-              {" "}
-              History
-            </Button>
-            <Button
-              sx={{
-                width: mediaMatch.matches ? "100%" : "80px",
-                height: "30px",
-                background: "#F36A4C",
-                borderRadius: "3px",
-                fontSize: "10px",
-                display: mediaMatch.matches && "none",
-                marginTop: mediaMatch.matches ? "10px" : "0px",
-                "&:hover": {
-                  backgroundColor: "#F36A4C",
-                },
-              }}
-              onClick={printReport}
-              variant="contained">
-              {" "}
-              Print
-            </Button>
-          </div>
+          <PrintButton callback={printReport} />
         </div>
 
         <div className="table-container">

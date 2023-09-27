@@ -8,9 +8,11 @@ import PrintReportPage from "./showreportpane";
 import { setPDFData } from "../../storage/outlet";
 import ReportsAPI from "../../services/connections/reportsapi";
 import {
+  attendanceColumns,
   bankColumns,
   creditColumns,
   deliveredOrderColumns,
+  employeeColumns,
   expenseColumns,
   incomingOrderColumns,
   lpoColumns,
@@ -18,7 +20,9 @@ import {
   overageColumns,
   posColumns,
   productColumns,
+  queryColumns,
   regulatoryColumns,
+  salaryColumns,
   stationColumns,
   supplyColumns,
 } from "../../modules/defaulttablecolumns";
@@ -171,6 +175,46 @@ const GenerateReports = ({ open, close, section, data }) => {
           setHeaders,
           setSelectedFields,
           supplyColumns
+        );
+        break;
+      }
+
+      case "employee": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          employeeColumns
+        );
+        break;
+      }
+
+      case "salary": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          salaryColumns
+        );
+        break;
+      }
+
+      case "query": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          queryColumns
+        );
+        break;
+      }
+
+      case "attendance": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          attendanceColumns
         );
         break;
       }
@@ -425,6 +469,22 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/supply", payload);
       return data;
     }
+    case "employee": {
+      const { data } = await ReportsAPI.post("/employee", payload);
+      return data;
+    }
+    case "salary": {
+      const { data } = await ReportsAPI.post("/salary", payload);
+      return data;
+    }
+    case "query": {
+      const { data } = await ReportsAPI.post("/query", payload);
+      return data;
+    }
+    case "attendance": {
+      const { data } = await ReportsAPI.post("/attendance", payload);
+      return data;
+    }
     default: {
     }
   }
@@ -518,6 +578,34 @@ async function downloadByCategory(payload) {
     }
     case "supply": {
       const { data } = await ReportsAPI.post("/supply", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "employee": {
+      const { data } = await ReportsAPI.post("/employee", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "salary": {
+      const { data } = await ReportsAPI.post("/salary", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "query": {
+      const { data } = await ReportsAPI.post("/query", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "attendance": {
+      const { data } = await ReportsAPI.post("/attendance", payload, {
         responseType: "blob",
       });
       downloadPDF(data);

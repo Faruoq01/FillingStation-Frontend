@@ -13,8 +13,9 @@ import { MenuItem, Select } from "@mui/material";
 const AttendanceModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [defaultState, setDefault] = useState(0);
-  const staffUsers = useSelector((state) => state.employee.staffUsers);
+  const staffUsers = useSelector((state) => state.dashboard.employeeList);
   const oneStation = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const [employeeName, setEmployeeName] = useState("");
   const [workingHour, setWorkingHour] = useState("");
   const [clockIn, setClockIn] = useState("");
@@ -55,13 +56,17 @@ const AttendanceModal = (props) => {
         }
       })
       .then(() => {
+        const id = oneStation === null ? "None" : oneStation._id;
+        props.refresh(id, updateDate, props.skip);
+      })
+      .then(() => {
         setLoading(false);
-        props.refresh();
         handleClose();
       });
   };
 
-  const changeMenu = (index, item) => {
+  const changeMenu = (item, index) => {
+    console.log(index);
     setEmployeeName(item);
     setDefault(index);
   };
@@ -105,7 +110,7 @@ const AttendanceModal = (props) => {
                       key={index}
                       style={menu}
                       onClick={() => {
-                        changeMenu(index, item);
+                        changeMenu(item, index + 1);
                       }}
                       value={index + 1}>
                       {item.staffName}
@@ -150,7 +155,7 @@ const AttendanceModal = (props) => {
             </div>
           </div>
 
-          <div style={{ marginTop: "10px" }} className="butt">
+          <div style={{ marginTop: "10px", height: "30px" }} className="butt">
             <Button
               sx={{
                 width: "100px",

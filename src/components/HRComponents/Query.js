@@ -9,7 +9,6 @@ import QueryModal from "../Modals/QueryModal";
 import { useDispatch, useSelector } from "react-redux";
 import QueryService from "../../services/360station/query";
 import { createQuery, searchQuery } from "../../storage/query";
-import QueryReport from "../Reports/QueryReport";
 import ViewQuery from "../Modals/ViewQuery";
 import swal from "sweetalert";
 import UpdateQuery from "../Modals/UpdateQuery";
@@ -25,6 +24,7 @@ import { SearchField } from "../common/searchfields";
 import SelectStation from "../common/selectstations";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import DateRangeLib from "../common/DatePickerLib";
+import GenerateReports from "../Modals/reports";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -161,9 +161,6 @@ const Query = () => {
           refresh={refresh}
         />
       }
-      {prints && (
-        <QueryReport allOutlets={queryData} open={prints} close={setPrints} />
-      )}
       {openQuery && (
         <ViewQuery open={openQuery} close={setOpenQuery} desc={description} />
       )}
@@ -193,9 +190,8 @@ const Query = () => {
 
         <TableControls mt={"10px"}>
           <LeftControls>
-            <SearchField ml={"0px"} callback={searchTable} />
             <SelectStation
-              ml={"10px"}
+              ml={"0px"}
               oneStation={getPerm("0")}
               allStation={getPerm("1")}
               callback={stationHelper}
@@ -209,6 +205,7 @@ const Query = () => {
         <TableControls mt={"10px"}>
           <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <SearchField ml={"10px"} callback={searchTable} />
           </LeftControls>
           <RightControls>
             <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
@@ -395,6 +392,15 @@ const Query = () => {
           updateDate={updateDate}
           callback={refresh}
         />
+
+        {prints && (
+          <GenerateReports
+            open={prints}
+            close={setPrints}
+            section={"query"}
+            data={queryData}
+          />
+        )}
       </div>
     </div>
   );

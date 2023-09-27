@@ -107,3 +107,28 @@ export const supplyColumns = [
   "shortage",
   "overage",
 ];
+
+export const employeeColumns = [
+  "staffName",
+  "sex",
+  "email",
+  "phone",
+  "dateEmployed",
+  "role",
+];
+
+export const salaryColumns = ["position", "level", "low_range", "high_range"];
+
+export const queryColumns = [
+  "createdAt",
+  "employeeName",
+  "queryTitle",
+  "description",
+];
+
+export const attendanceColumns = [
+  "createdAt",
+  "employeeName",
+  "timeIn",
+  "timeOut",
+];

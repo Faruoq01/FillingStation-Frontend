@@ -10,7 +10,7 @@ export const attendanceSlice = createSlice({
   initialState,
   reducers: {
     createAttendance: (state, action) => {
-      state.query = action.payload;
+      state.attendance = action.payload;
       state.searchData = action.payload;
     },
     searchQuery: (state, action) => {
@@ -19,9 +19,9 @@ export const attendanceSlice = createSlice({
           !data.employeeName
             .toUpperCase()
             .indexOf(action.payload.toUpperCase()) ||
-          !data.queryTitle.toUpperCase().indexOf(action.payload.toUpperCase())
+          !data.createdAt.toUpperCase().indexOf(action.payload.toUpperCase())
       );
-      state.query = search;
+      state.attendance = search;
     },
     clearAttendance: () => initialState,
   },

@@ -7,29 +7,33 @@ import AttendanceModal from "../Modals/Attendance";
 import AtendanceService from "../../services/360station/attendance";
 import { useDispatch, useSelector } from "react-redux";
 import { createAttendance } from "../../storage/attendance";
-import OutletService from "../../services/360station/outletService";
-import { adminOutlet, getAllStations } from "../../storage/outlet";
-import { OutlinedInput } from "@mui/material";
-import AdminUserService from "../../services/360station/adminUsers";
-import { storeStaffUsers } from "../../storage/employee";
 import ClockOutModal from "../Modals/AttendanceClockOut";
-import PrintAttendanceRecords from "../Reports/Attendance";
 import swal from "sweetalert";
 import { ThreeDots } from "react-loader-spinner";
+import {
+  LeftControls,
+  RightControls,
+  TableControls,
+} from "../controls/PageLayout/TableControls";
+import { LimitSelect } from "../common/customselect";
+import DateRangeLib from "../common/DatePickerLib";
+import { CreateButton, PrintButton } from "../common/buttons";
+import { SearchField } from "../common/searchfields";
+import SelectStation from "../common/selectstations";
+import GenerateReports from "../Modals/reports";
+import APIs from "../../services/connections/api";
+import { setEmployeeList } from "../../storage/dashboard";
 
-const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const Attendance = () => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
-  const [defaultState, setDefault] = useState(0);
-  const moment = require("moment-timezone");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const attendanceData = useSelector((state) => state.attendance.attendance);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -74,194 +78,44 @@ const Attendance = () => {
     }
   };
 
-  const getAllAtendanceData = useCallback((getDataRange) => {
-    if (oneStationData !== null) {
-      if (getPerm("13") || getPerm("14") || user.userType === "superAdmin") {
-        const findID = allOutlets.findIndex(
-          (data) => data._id === oneStationData._id
-        );
-        setDefault(findID + 1);
-
-        const payload = {
-          skip: skip * limit,
-          limit: limit,
-          today: getDataRange.today,
-          tomorrow: getDataRange.tomorrow,
-          outletID: oneStationData._id,
-          organisationID: resolveUserID().id,
-        };
-        AdminUserService.allStaffUserRecords(payload)
-          .then((data) => {
-            setLoading(false);
-            dispatch(storeStaffUsers(data.staff.staff));
-          })
-          .then(() => {
-            AtendanceService.allAttendanceRecords(payload).then((data) => {
-              setTotal(data.attendance.count);
-              dispatch(createAttendance(data.attendance.attendance));
-            });
-          });
-
-        return;
-      }
-    }
-
-    setLoading(true);
-    const payload = {
-      organisation: resolveUserID().id,
-    };
-
-    OutletService.getAllOutletStations(payload)
-      .then((data) => {
-        dispatch(getAllStations(data.station));
-        if (
-          (getPerm("13") || user.userType === "superAdmin") &&
-          oneStationData === null
-        ) {
-          if (!getPerm("14")) setDefault(1);
-          dispatch(adminOutlet(null));
-          return "None";
-        } else {
-          OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-            (data) => {
-              dispatch(adminOutlet(data.station));
-            }
-          );
-
-          return user.outletID;
-        }
-      })
-      .then((data) => {
-        const payload = {
-          skip: skip * limit,
-          limit: limit,
-          today: getDataRange.today,
-          tomorrow: getDataRange.tomorrow,
-          outletID: data,
-          organisationID: resolveUserID().id,
-        };
-        AdminUserService.allStaffUserRecords(payload)
-          .then((data) => {
-            setLoading(false);
-            dispatch(storeStaffUsers(data.staff.staff));
-          })
-          .then(() => {
-            AtendanceService.allAttendanceRecords(payload).then((data) => {
-              setTotal(data.attendance.count);
-              dispatch(createAttendance(data.attendance.attendance));
-            });
-          });
-      });
-
+  const getAllAtendanceData = useCallback((id, updateDate, skip) => {
+    refresh(id, updateDate, skip);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getTodayAndTomorrow = () => {
-    const today = moment();
-    const todayMoment = moment().format("YYYY-MM-DD HH:mm:ss").split(" ")[0];
-    const tomorrowMoment = today.clone().add(1, "days");
-    return {
-      today: todayMoment,
-      tomorrow: tomorrowMoment.format("YYYY-MM-DD HH:mm:ss").split(" ")[0],
-    };
-  };
-
   useEffect(() => {
-    const getDataRange = getTodayAndTomorrow();
-    getAllAtendanceData(getDataRange);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getAllAtendanceData]);
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    getAllAtendanceData(id, updateDate, skip);
+  }, [getAllAtendanceData, oneStationData, skip, updateDate]);
 
-  const refresh = () => {
+  const refresh = (id, date, skip, limit = 15) => {
     setLoading(true);
-    const range = getTodayAndTomorrow();
     const payload = {
       skip: skip * limit,
       limit: limit,
-      today: range.today,
-      tomorrow: range.tomorrow,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
+      today: date[0],
+      tomorrow: date[1],
+      outletID: id,
       organisationID: resolveUserID().id,
     };
-    AdminUserService.allStaffUserRecords(payload)
-      .then((data) => {
-        dispatch(storeStaffUsers(data.staff.staff));
+
+    APIs.post("/dashboard/employee", payload)
+      .then(({ data }) => {
+        dispatch(setEmployeeList(data.employee));
       })
       .then(() => {
         AtendanceService.allAttendanceRecords(payload).then((data) => {
-          setLoading(false);
           setTotal(data.attendance.count);
           dispatch(createAttendance(data.attendance.attendance));
         });
-      });
-  };
-
-  const changeMenu = (index, item) => {
-    if (!getPerm("14") && item === null)
-      return swal("Warning!", "Permission denied", "info");
-
-    setLoading(true);
-    setDefault(index);
-    const range = getTodayAndTomorrow();
-    dispatch(adminOutlet(item));
-
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      today: range.today,
-      tomorrow: range.tomorrow,
-      outletID: item === null ? "None" : item?._id,
-      organisationID: resolveUserID().id,
-    };
-
-    const menyPayload = {
-      today: range.today,
-      tomorrow: range.tomorrow,
-      outletID: item === null ? "None" : item?._id,
-      organisationID: resolveUserID().id,
-    };
-
-    AdminUserService.allStaffUserRecords(menyPayload)
-      .then((data) => {
-        dispatch(storeStaffUsers(data.staff.staff));
       })
       .then(() => {
-        AtendanceService.allAttendanceRecords(payload).then((data) => {
-          setLoading(false);
-          setTotal(data.attendance.count);
-          dispatch(createAttendance(data.attendance.attendance));
-        });
+        setLoading(false);
       });
-    AtendanceService.allAttendanceRecords(payload).then((data) => {
-      setTotal(data.attendance.count);
-      dispatch(createAttendance(data.attendance.attendance));
-    });
   };
 
   const searchTable = (value, e) => {
     e.preventDefault();
-    const today = moment(value);
-    const todayMoment = moment(value)
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-    const tomorrowMoment = today
-      .clone()
-      .add(1, "days")
-      .format("YYYY-MM-DD HH:mm:ss")
-      .split(" ")[0];
-
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      today: todayMoment,
-      tomorrow: tomorrowMoment,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      organisationID: resolveUserID().id,
-    };
-    AtendanceService.allAttendanceRecords(payload).then((data) => {
-      setTotal(data.attendance.count);
-      dispatch(createAttendance(data.attendance.attendance));
-    });
   };
 
   const convertToMinutes = (time) => {
@@ -291,7 +145,8 @@ const Attendance = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh(skip);
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    refresh(id, updateDate, skip, limit);
   };
 
   const printReport = () => {
@@ -299,7 +154,8 @@ const Attendance = () => {
     setPrints(true);
   };
 
-  const goToHistory = () => {
+  const stationHelper = (id) => {
+    refresh(id, updateDate, skip);
   };
 
   return (
@@ -310,6 +166,7 @@ const Attendance = () => {
           open={open}
           close={setOpen}
           refresh={refresh}
+          skip={skip}
         />
       }
       {
@@ -321,10 +178,11 @@ const Attendance = () => {
         />
       }
       {prints && (
-        <PrintAttendanceRecords
-          allOutlets={attendanceData}
+        <GenerateReports
           open={prints}
           close={setPrints}
+          section={"attendance"}
+          data={attendanceData}
         />
       )}
       <div className="inner-pay">
@@ -355,175 +213,30 @@ const Attendance = () => {
           </div>
         </div>
 
-        <div className="search">
-          <div className="input-cont">
-            <div className="second-select">
-              {getPerm("13") && (
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={defaultState}
-                  sx={selectStyle2}>
-                  <MenuItem
-                    onClick={() => {
-                      changeMenu(0, null);
-                    }}
-                    style={menu}
-                    value={0}>
-                    All Stations
-                  </MenuItem>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <MenuItem
-                        key={index}
-                        style={menu}
-                        onClick={() => {
-                          changeMenu(index + 1, item);
-                        }}
-                        value={index + 1}>
-                        {item.outletName + ", " + item.alias}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              )}
-              {getPerm("13") || (
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={0}
-                  sx={selectStyle2}
-                  disabled>
-                  <MenuItem style={menu} value={0}>
-                    {!getPerm("13")
-                      ? oneStationData?.outletName +
-                        ", " +
-                        oneStationData?.alias
-                      : "No station created"}
-                  </MenuItem>
-                </Select>
-              )}
-            </div>
-            <div className="second-select">
-              <OutlinedInput
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  background: "#054834",
-                  fontSize: "12px",
-                  color: "#fff",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}
-                type="date"
-                placeholder="Search"
-                onChange={(e) => {
-                  searchTable(e.target.value, e);
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ width: "140px" }} className="butt">
-            {
-              <Button
-                sx={{
-                  width: "100%",
-                  height: "30px",
-                  background: "#427BBE",
-                  borderRadius: "0px",
-                  fontSize: "10px",
-                  "&:hover": {
-                    backgroundColor: "#427BBE",
-                  },
-                }}
-                onClick={openModal}
-                variant="contained">
-                {" "}
-                Post Attendance
-              </Button>
-            }
-          </div>
-        </div>
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <SelectStation
+              ml={"0px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+          </LeftControls>
+          <RightControls>
+            <CreateButton callback={openModal} label={"Post Attendance"} />
+          </RightControls>
+        </TableControls>
 
-        <div className="search2">
-          <div className="butt2">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={entries}
-              sx={selectStyle2}>
-              <MenuItem style={menu} value={10}>
-                Show entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(20, 15);
-                }}
-                style={menu}
-                value={20}>
-                15 entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(30, 30);
-                }}
-                style={menu}
-                value={30}>
-                30 entries
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  entriesMenu(40, 100);
-                }}
-                style={menu}
-                value={40}>
-                100 entries
-              </MenuItem>
-            </Select>
-          </div>
-          <div
-            style={{ width: mediaMatch.matches ? "100%" : "190px" }}
-            className="input-cont2">
-            <Button
-              sx={{
-                width: mediaMatch.matches ? "100%" : "100px",
-                height: "30px",
-                background: "#58A0DF",
-                borderRadius: "0px",
-                fontSize: "10px",
-                display: mediaMatch.matches && "none",
-                marginTop: mediaMatch.matches ? "10px" : "0px",
-                "&:hover": {
-                  backgroundColor: "#58A0DF",
-                },
-              }}
-              onClick={goToHistory}
-              variant="contained">
-              {" "}
-              History
-            </Button>
-            <Button
-              sx={{
-                width: mediaMatch.matches ? "100%" : "80px",
-                height: "30px",
-                background: "#F36A4C",
-                borderRadius: "0px",
-                fontSize: "10px",
-                display: mediaMatch.matches && "none",
-                marginTop: mediaMatch.matches ? "10px" : "0px",
-                "&:hover": {
-                  backgroundColor: "#F36A4C",
-                },
-              }}
-              onClick={printReport}
-              variant="contained">
-              {" "}
-              Print
-            </Button>
-          </div>
-        </div>
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            <SearchField ml={"10px"} callback={searchTable} />
+          </LeftControls>
+          <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
 
         {mobile.matches ? (
           !loading ? (
