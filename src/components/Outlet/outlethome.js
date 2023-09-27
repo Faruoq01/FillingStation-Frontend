@@ -202,7 +202,12 @@ const OutletHome = (props) => {
       </TablePageBackground>
 
       {prints && (
-        <GenerateReports open={prints} close={setPrints} section={"station"} />
+        <GenerateReports
+          open={prints}
+          close={setPrints}
+          section={"station"}
+          data={allOutlets}
+        />
       )}
       {open === 1 && <CreateStation getStations={getAllStationData} />}
       {open === 2 && <CreateStationAssets />}

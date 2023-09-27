@@ -35,10 +35,10 @@ const GenerateReports = ({ open, close, section, data }) => {
   const user = useSelector((state) => state.auth.user);
   const station = useSelector((state) => state.outlet.adminOutlet);
   const updateDate = useSelector((state) => state.dashboard.dateRange);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const [headers, setHeaders] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
   const [openReport, setOpen] = useState(false);
+  const [loading, setLoading] = useState(null);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -52,7 +52,7 @@ const GenerateReports = ({ open, close, section, data }) => {
     switch (section) {
       case "station": {
         DefaultColumns.getColumns(
-          allOutlets,
+          data,
           setHeaders,
           setSelectedFields,
           stationColumns
@@ -261,14 +261,18 @@ const GenerateReports = ({ open, close, section, data }) => {
   const downloadPDF = async () => {
     if (data.length === 0)
       return swal("Warning", "There is no record in this date range", "info");
-    downloadByCategory(pdfPayload);
+    setLoading("pdf");
+    await downloadByCategory(pdfPayload);
+    setLoading(null);
   };
 
   const printReport = async () => {
     if (data.length === 0)
       return swal("Warning", "There is no record in this date range", "info");
+    setLoading("print");
     const result = await printReportByCategory(printPayload);
     dispatch(setPDFData(result));
+    setLoading(null);
     setOpen(true);
   };
 
@@ -281,6 +285,7 @@ const GenerateReports = ({ open, close, section, data }) => {
         report={true}
         pdf={downloadPDF}
         print={printReport}
+        loading={loading}
         label={"Generate Reports Settings"}>
         <SelectList callback={addToList} menus={headers} />
         <div style={selectedFields.length === 0 ? container2 : container}>

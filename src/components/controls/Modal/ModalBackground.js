@@ -49,15 +49,49 @@ const ModalBackground = ({
               sx={button}
               onClick={report ? pdf : submit}
               variant="contained">
-              {report ? "Download PDF" : "Save"}
+              {report ? (
+                loading === "pdf" ? (
+                  <ThreeDots
+                    height="60"
+                    width="50"
+                    radius="9"
+                    color="#fff"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClassName=""
+                    visible={true}
+                  />
+                ) : (
+                  "Download PDF"
+                )
+              ) : (
+                "Save"
+              )}
             </Button>
             {report && (
               <Button sx={button2} onClick={print} variant="contained">
-                {report ? "Print Report" : "Save"}
+                {report ? (
+                  loading === "print" ? (
+                    <ThreeDots
+                      height="60"
+                      width="50"
+                      radius="9"
+                      color="#fff"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClassName=""
+                      visible={true}
+                    />
+                  ) : (
+                    "Print Report"
+                  )
+                ) : (
+                  "Save"
+                )}
               </Button>
             )}
 
-            {loading ? (
+            {loading && !report ? (
               <ThreeDots
                 height="60"
                 width="50"
