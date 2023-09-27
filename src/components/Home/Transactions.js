@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../../styles/payments.scss";
 import { useSelector } from "react-redux";
-import PrintTankUpdate from "../Reports/PrintTankUpdate";
 import { ThreeDots } from "react-loader-spinner";
 import ApproximateDecimal from "../common/approx";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +24,6 @@ const Transactions = () => {
   const salesShift = useSelector((state) => state.dailysales.salesShift);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
-  const tankList = useSelector((state) => state.outlet.tankList);
   const singleLPO = useSelector((state) => state.lpo.singleLPO);
   const [entries, setEntries] = useState(10);
   const [skip, setSkip] = useState(0);

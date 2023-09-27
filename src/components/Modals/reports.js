@@ -26,6 +26,7 @@ import {
   stationColumns,
   supplyColumns,
 } from "../../modules/defaulttablecolumns";
+import swal from "sweetalert";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -258,12 +259,16 @@ const GenerateReports = ({ open, close, section, data }) => {
   };
 
   const downloadPDF = async () => {
+    if (data.length === 0)
+      return swal("Warning", "There is no record in this date range", "info");
     downloadByCategory(pdfPayload);
   };
 
   const printReport = async () => {
-    const data = await printReportByCategory(printPayload);
-    dispatch(setPDFData(data));
+    if (data.length === 0)
+      return swal("Warning", "There is no record in this date range", "info");
+    const result = await printReportByCategory(printPayload);
+    dispatch(setPDFData(result));
     setOpen(true);
   };
 
@@ -335,7 +340,8 @@ const SelectList = ({ callback, menus }) => {
 
 const DefaultColumns = {
   getColumns: (Item, setHeaders, setSelectedFields, column) => {
-    const fields = Item ? Item[0] : [];
+    if (Item.length === 0) return;
+    const fields = Item[0];
     let keys = Object.keys(fields);
     keys = keys.filter((data) => !column.includes(data));
     setHeaders(keys);

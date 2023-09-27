@@ -23,7 +23,6 @@ import { createIncomingOrder } from "../../storage/incomingOrder";
 import OutletService from "../../services/360station/outletService";
 import { getAllOutletTanks } from "../../storage/outlet";
 import { SupplyDesktopTable, SupplyMobileTable } from "../tables/supply";
-import PrintSupplyRecords from "../Reports/SupplyRecords";
 import DateRangeLib from "../common/DatePickerLib";
 import EditSupply from "../Modals/editsupply";
 import { useEffect } from "react";
