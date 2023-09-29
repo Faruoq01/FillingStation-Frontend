@@ -55,6 +55,7 @@ import ProductsDispensed from "./components/AirBnBTotal/dispensedproduct";
 import EmployeeShifts from "./components/HRComponents/employeeshifts";
 import DeliveredOrder from "./components/productorder/deliveredorder";
 import ProductOrderHome from "./components/productorder/productorderhome";
+import ListOutstanding from "./components/DailySales/outstanding";
 
 function App() {
   useEffect(() => {
@@ -83,6 +84,7 @@ function App() {
             <Route path="comprehensive" element={<ComprehensiveReport />} />
             <Route path="tanklist" element={<ListAllTanks />} />
             <Route path="dailysalesoverage" element={<SalesOverageList />} />
+            <Route path="outstanding" element={<ListOutstanding />} />
           </Route>
           <Route path="mystation" element={<Outlets />}>
             <Route path="mystationhome/:index" element={<OutletHome />} />

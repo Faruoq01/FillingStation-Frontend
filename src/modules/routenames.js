@@ -11,6 +11,7 @@ export const routeNames = {
   "/home/dailysales/comprehensive": "Comprehensive Report",
   "/home/dailysales/tanklist": "Daily Tank Updates",
   "/home/dailysales/dailysalesoverage": "Daily Overage Details",
+  "/home/dailysales/outstanding": "Outstanding Payments",
   "/home/mystation/mystationhome/0": "My Station",
   "/home/mystation/sales": "My Station Sales",
   "/home/mystation/tanks": "My Station Tanks",

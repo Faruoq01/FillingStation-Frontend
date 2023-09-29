@@ -55,7 +55,7 @@ const NetToBank = () => {
   }, [getNetToBank, oneStationData, updatedDate, salesShift]);
 
   const goToPayments = () => {
-    navigate("/home/analysis/payments");
+    navigate("/home/dailysales/outstanding");
   };
 
   return (
