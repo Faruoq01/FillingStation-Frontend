@@ -4,8 +4,6 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import ExpenseService from "../../services/360station/expense";
-import { allExpenses, searchExpenses } from "../../storage/expenses";
 import {
   LeftControls,
   RightControls,
@@ -16,20 +14,25 @@ import SelectStation from "../common/selectstations";
 import { PrintButton } from "../common/buttons";
 import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
-import { ExpenseDesktopTable, ExpenseMobileTable } from "../tables/expenses";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import ShiftSelect from "../common/shift";
 import DateRangeLib from "../common/DatePickerLib";
 import GenerateReports from "../Modals/reports";
+import moment from "moment";
+import APIs from "../../services/connections/api";
+import { setOutstanding } from "../../storage/dailysales";
+import {
+  OutstandingDesktopTable,
+  OutstandingMobileTable,
+} from "../tables/outstanding";
 
 const columns = [
   "S/N",
   "Date Created",
-  "Expense Date",
-  "Expense Name",
-  "Description",
-  "Expense Amount",
-  "Action",
+  "Bank payment",
+  "POS payment",
+  "Net to bank",
+  "Outstanding",
 ];
 
 const mobile = window.matchMedia("(max-width: 1150px)");
@@ -37,7 +40,7 @@ const mobile = window.matchMedia("(max-width: 1150px)");
 const ListOutstanding = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const expense = useSelector((state) => state.expenses.expense);
+  const outData = useSelector((state) => state.dailysales.outstanding);
   const updateDate = useSelector((state) => state.dashboard.dateRange);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -63,40 +66,46 @@ const ListOutstanding = () => {
     return user?.permission?.expenses[e];
   };
 
-  const getExpenseData = (stationID, date, skip, salesShift) => {
+  const getOutstanding = (stationID, date, skip, salesShift) => {
     setLoading(true);
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      outletID: stationID,
-      organisationID: resolveUserID().id,
-      date: date,
-      shift: salesShift,
-    };
+    const dates = getDatesInRange(date[0], date[1]);
+    const range = dates.splice(skip * limit, limit);
+    const copyRange = [...range];
+    const payload = copyRange.map((data) => {
+      return {
+        outletID: stationID,
+        organisation: resolveUserID().id,
+        start: data,
+        end: data,
+        shift: salesShift,
+      };
+    });
+    setTotal(range.length);
 
-    ExpenseService.getAllExpenses(payload)
-      .then((data) => {
-        setLoading(false);
-        setTotal(data.expense.count);
-        dispatch(allExpenses(data.expense.expense));
+    APIs.post("/daily-sales/outstanding", { data: payload })
+      .then(({ data }) => {
+        dispatch(setOutstanding(data.outstanding));
       })
       .then(() => {
+        setLoading(false);
+      })
+      .catch((err) => {
         setLoading(false);
       });
   };
 
-  const updateExpenses = useCallback((outlet, salesShift, updateDate) => {
-    getExpenseData(outlet, updateDate, skip, salesShift);
+  const updateOutstanding = useCallback((outlet, salesShift, updateDate) => {
+    getOutstanding(outlet, updateDate, skip, salesShift);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const outlet = oneStationData === null ? "None" : oneStationData._id;
-    updateExpenses(outlet, salesShift, updateDate);
-  }, [updateExpenses, oneStationData, salesShift, updateDate]);
+    updateOutstanding(outlet, salesShift, updateDate);
+  }, [updateOutstanding, oneStationData, salesShift, updateDate]);
 
   const searchTable = (value) => {
-    dispatch(searchExpenses(value));
+    // dispatch(searchExpenses(value));
   };
 
   const printReport = () => {
@@ -107,22 +116,35 @@ const ListOutstanding = () => {
     setEntries(value);
     setLimit(limit);
     const getID = oneStationData === null ? "None" : oneStationData._id;
-    getExpenseData(getID, updateDate, skip, salesShift);
+    getOutstanding(getID, updateDate, skip, salesShift);
   };
 
   const stationHelper = (id) => {
-    getExpenseData(id, updateDate, skip, salesShift);
+    getOutstanding(id, updateDate, skip, salesShift);
   };
+
+  function getDatesInRange(startDate, endDate) {
+    const dates = [];
+    let currentDate = moment(startDate);
+    const stopDate = moment(endDate);
+
+    while (currentDate <= stopDate) {
+      dates.push(currentDate.format("YYYY-MM-DD"));
+      currentDate = currentDate.clone().add(1, "days");
+    }
+
+    return dates;
+  }
 
   const desktopTableData = {
     columns: columns,
     tablePrints: printReport,
-    allOutlets: expense,
+    allOutlets: outData,
     loading: loading,
   };
 
   const mobileTableData = {
-    allOutlets: expense,
+    allOutlets: outData,
     loading: loading,
   };
 
@@ -172,9 +194,9 @@ const ListOutstanding = () => {
       </TableControls>
 
       {mobile.matches ? (
-        <ExpenseMobileTable data={mobileTableData} />
+        <OutstandingMobileTable data={mobileTableData} />
       ) : (
-        <ExpenseDesktopTable data={desktopTableData} />
+        <OutstandingDesktopTable data={desktopTableData} />
       )}
 
       <TableNavigation
@@ -183,15 +205,15 @@ const ListOutstanding = () => {
         total={total}
         setSkip={setSkip}
         updateDate={updateDate}
-        callback={getExpenseData}
+        callback={getOutstanding}
         salesShift={salesShift}
       />
       {prints && (
         <GenerateReports
           open={prints}
           close={setPrints}
-          section={"expenses"}
-          data={expense}
+          section={"outstanding"}
+          data={outData}
         />
       )}
     </TablePageBackground>

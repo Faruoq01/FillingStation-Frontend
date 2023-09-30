@@ -113,6 +113,7 @@ const initialState = {
   incoming: [],
   tankLevelList: [],
   salesShift: "",
+  outstanding: [],
 };
 
 export const dailysales = createSlice({
@@ -155,6 +156,9 @@ export const dailysales = createSlice({
     setSalesShift: (state, action) => {
       state.salesShift = action.payload;
     },
+    setOutstanding: (state, action) => {
+      state.outstanding = action.payload;
+    },
     clearSales: () => initialState,
   },
 });
@@ -174,6 +178,7 @@ export const {
   setTankLevelList,
   clearSales,
   setSalesShift,
+  setOutstanding,
 } = dailysales.actions;
 
 export default dailysales.reducer;

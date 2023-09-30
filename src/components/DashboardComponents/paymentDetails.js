@@ -57,7 +57,7 @@ const PaymentDetails = () => {
   }, [getPaymentDetails, oneStationData, updatedDate, salesShift]);
 
   const goToPayments = () => {
-    navigate("/home/analysis/payments");
+    navigate("/home/dailysales/outstanding");
   };
 
   return (

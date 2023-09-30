@@ -17,6 +17,7 @@ import {
   incomingOrderColumns,
   lpoColumns,
   lposalesColumns,
+  outstandingColumns,
   overageColumns,
   posColumns,
   productColumns,
@@ -216,6 +217,16 @@ const GenerateReports = ({ open, close, section, data }) => {
           setHeaders,
           setSelectedFields,
           attendanceColumns
+        );
+        break;
+      }
+
+      case "outstanding": {
+        DefaultColumns.getColumns(
+          data,
+          setHeaders,
+          setSelectedFields,
+          outstandingColumns
         );
         break;
       }
@@ -496,6 +507,10 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/attendance", payload);
       return data;
     }
+    case "outstanding": {
+      const { data } = await ReportsAPI.post("/outstanding", payload);
+      return data;
+    }
     default: {
     }
   }
@@ -617,6 +632,13 @@ async function downloadByCategory(payload) {
     }
     case "attendance": {
       const { data } = await ReportsAPI.post("/attendance", payload, {
+        responseType: "blob",
+      });
+      downloadPDF(data);
+      break;
+    }
+    case "outstanding": {
+      const { data } = await ReportsAPI.post("/outstanding", payload, {
         responseType: "blob",
       });
       downloadPDF(data);

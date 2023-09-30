@@ -132,3 +132,11 @@ export const attendanceColumns = [
   "timeIn",
   "timeOut",
 ];
+
+export const outstandingColumns = [
+  "createdAt",
+  "bankPayments",
+  "posPayments",
+  "netToBank",
+  "outstandingBalance",
+];
