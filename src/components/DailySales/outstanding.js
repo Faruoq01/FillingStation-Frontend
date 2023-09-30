@@ -189,7 +189,7 @@ const ListOutstanding = () => {
         </LeftControls>
         <RightControls>
           <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
-          <PrintButton callback={printReport} />
+          {/* <PrintButton callback={printReport} /> */}
         </RightControls>
       </TableControls>
 

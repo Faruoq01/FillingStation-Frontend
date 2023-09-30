@@ -17,7 +17,6 @@ import {
   incomingOrderColumns,
   lpoColumns,
   lposalesColumns,
-  outstandingColumns,
   overageColumns,
   posColumns,
   productColumns,
@@ -28,6 +27,7 @@ import {
   supplyColumns,
 } from "../../modules/defaulttablecolumns";
 import swal from "sweetalert";
+import moment from "moment";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -221,15 +221,26 @@ const GenerateReports = ({ open, close, section, data }) => {
         break;
       }
 
-      case "outstanding": {
-        DefaultColumns.getColumns(
-          data,
-          setHeaders,
-          setSelectedFields,
-          outstandingColumns
-        );
-        break;
-      }
+      // case "outstanding": {
+      //   const dates = getDatesInRange(updateDate[0], updateDate[1]);
+      //   const copyRange = [...dates];
+      //   const payload = copyRange.map((data) => {
+      //     return {
+      //       outletID: station,
+      //       organisation: resolveUserID().id,
+      //       start: data,
+      //       end: data,
+      //       shift: salesShift,
+      //     };
+      //   });
+      //   DefaultColumns.getColumns(
+      //     payload,
+      //     setHeaders,
+      //     setSelectedFields,
+      //     outstandingColumns
+      //   );
+      //   break;
+      // }
 
       default: {
       }
@@ -507,10 +518,10 @@ async function printReportByCategory(payload) {
       const { data } = await ReportsAPI.post("/attendance", payload);
       return data;
     }
-    case "outstanding": {
-      const { data } = await ReportsAPI.post("/outstanding", payload);
-      return data;
-    }
+    // case "outstanding": {
+    //   const { data } = await ReportsAPI.post("/outstanding", payload);
+    //   return data;
+    // }
     default: {
     }
   }
@@ -637,17 +648,30 @@ async function downloadByCategory(payload) {
       downloadPDF(data);
       break;
     }
-    case "outstanding": {
-      const { data } = await ReportsAPI.post("/outstanding", payload, {
-        responseType: "blob",
-      });
-      downloadPDF(data);
-      break;
-    }
+    // case "outstanding": {
+    //   const { data } = await ReportsAPI.post("/outstanding", payload, {
+    //     responseType: "blob",
+    //   });
+    //   downloadPDF(data);
+    //   break;
+    // }
     default: {
     }
   }
 }
+
+// function getDatesInRange(startDate, endDate) {
+//   const dates = [];
+//   let currentDate = moment(startDate);
+//   const stopDate = moment(endDate);
+
+//   while (currentDate <= stopDate) {
+//     dates.push(currentDate.format("YYYY-MM-DD"));
+//     currentDate = currentDate.clone().add(1, "days");
+//   }
+
+//   return dates;
+// }
 
 function downloadPDF(data) {
   const url = window.URL.createObjectURL(new Blob([data]));
