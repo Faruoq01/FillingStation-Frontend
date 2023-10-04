@@ -23,6 +23,7 @@ const AddShiftsModal = ({ day, open, close }) => {
   const user = useSelector((state) => state.auth.user);
   const employees = useSelector((state) => state.settings.orgEmployee);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const dispatch = useDispatch();
   const [defaultState, setDefaultState] = useState(0);
   const [loading, setLoading] = useState(false);
