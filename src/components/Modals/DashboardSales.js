@@ -4,7 +4,9 @@ import pumpHead from "../../assets/pumpHead.png";
 import Modal from "@mui/material/Modal";
 import "../../styles/cost.scss";
 import ApproximateDecimal from "../common/approx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setSalesType } from "../../storage/dashboard";
 
 const DashboardSales = (props) => {
   const { pms, ago, dpk } = useSelector((state) => state.dashboard.products);
@@ -32,85 +34,48 @@ const DashboardSales = (props) => {
             />
           </div>
           <div className="cont">
-            <div className="card">
-              <div className="inCard">
-                <div className="left">
-                  <img
-                    src={pumpHead}
-                    style={{ width: "80px", height: "80px" }}
-                    alt="icon"
-                  />
-                </div>
-                <div className="right">
-                  <div className="content">
-                    <span className="head">PMS</span>
-                    <span className="head">
-                      {ApproximateDecimal(pms.sales)} Ltrs
-                    </span>
-                    <div style={{ marginTop: "10px" }} className="cont">
-                      Sales Amount
-                    </div>
-                    <div className="cont">
-                      NGN {ApproximateDecimal(pms.amount)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="card">
-              <div className="inCard">
-                <div className="left">
-                  <img
-                    src={pumpHead}
-                    style={{ width: "80px", height: "80px" }}
-                    alt="icon"
-                  />
-                </div>
-                <div className="right">
-                  <div className="content">
-                    <span className="head">AGO</span>
-                    <span className="head">
-                      {ApproximateDecimal(ago.sales)} Ltrs
-                    </span>
-                    <div style={{ marginTop: "10px" }} className="cont">
-                      Sales Amount
-                    </div>
-                    <div className="cont">
-                      NGN {ApproximateDecimal(ago.amount)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="card">
-              <div className="inCard">
-                <div className="left">
-                  <img
-                    src={pumpHead}
-                    style={{ width: "80px", height: "80px" }}
-                    alt="icon"
-                  />
-                </div>
-                <div className="right">
-                  <div className="content">
-                    <span className="head">DPK</span>
-                    <span className="head">
-                      {ApproximateDecimal(dpk.sales)} Ltrs
-                    </span>
-                    <div style={{ marginTop: "10px" }} className="cont">
-                      Sales Amount
-                    </div>
-                    <div className="cont">
-                      NGN {ApproximateDecimal(dpk.amount)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Card product={pms} type={"PMS"} />
+            <Card product={ago} type={"AGO"} />
+            <Card product={dpk} type={"DPK"} />
           </div>
         </div>
       </div>
     </Modal>
+  );
+};
+
+const Card = ({ product, type }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const goToSales = () => {
+    dispatch(setSalesType(type));
+    navigate("/home/dashboard/saleslist");
+  };
+  return (
+    <div onClick={goToSales} className="card">
+      <div className="inCard">
+        <div className="left">
+          <img
+            src={pumpHead}
+            style={{ width: "80px", height: "80px" }}
+            alt="icon"
+          />
+        </div>
+        <div className="right">
+          <div className="content">
+            <span className="head">{type}</span>
+            <span className="head">
+              {ApproximateDecimal(product.sales)} Ltrs
+            </span>
+            <div style={{ marginTop: "10px" }} className="cont">
+              Sales Amount
+            </div>
+            <div className="cont">NGN {ApproximateDecimal(product.amount)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

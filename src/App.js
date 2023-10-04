@@ -56,6 +56,7 @@ import EmployeeShifts from "./components/HRComponents/employeeshifts";
 import DeliveredOrder from "./components/productorder/deliveredorder";
 import ProductOrderHome from "./components/productorder/productorderhome";
 import ListOutstanding from "./components/DailySales/outstanding";
+import ListSales from "./components/DashboardComponents/saleslist";
 
 function App() {
   useEffect(() => {
@@ -75,6 +76,7 @@ function App() {
             <Route path="dashboardoverage" element={<OverageList />} />
             <Route path="stationtanks" element={<StationTanks />} />
             <Route path="stationpumps" element={<StationPumps />} />
+            <Route path="saleslist" element={<ListSales />} />
           </Route>
           <Route path="dailysales" element={<DailySales />}>
             <Route path="dailysaleshome/:index" element={<DailysalesHome />} />
