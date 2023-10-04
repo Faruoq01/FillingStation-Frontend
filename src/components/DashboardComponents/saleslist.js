@@ -18,21 +18,21 @@ import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import ShiftSelect from "../common/shift";
 import DateRangeLib from "../common/DatePickerLib";
 import GenerateReports from "../Modals/reports";
-import moment from "moment";
 import APIs from "../../services/connections/api";
-import { setOutstanding } from "../../storage/dailysales";
+import { setSalesList } from "../../storage/dashboard";
 import {
-  OutstandingDesktopTable,
-  OutstandingMobileTable,
-} from "../tables/outstanding";
+  SalesListDesktopTable,
+  SalesListMobileTable,
+} from "../tables/saleslist";
 
 const columns = [
   "S/N",
   "Date Created",
-  "Bank payment",
-  "POS payment",
-  "Net to bank",
-  "Outstanding",
+  "Station",
+  "Pump Name",
+  "Product",
+  "Sales",
+  "Amount",
 ];
 
 const mobile = window.matchMedia("(max-width: 1150px)");
@@ -40,7 +40,7 @@ const mobile = window.matchMedia("(max-width: 1150px)");
 const ListSales = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const outData = useSelector((state) => state.dailysales.outstanding);
+  const outData = useSelector((state) => state.dashboard.saleslist);
   const updateDate = useSelector((state) => state.dashboard.dateRange);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
@@ -67,7 +67,7 @@ const ListSales = () => {
     return user?.permission?.expenses[e];
   };
 
-  const getOutstanding = (stationID, date, skip, salesShift) => {
+  const getOutstanding = (stationID, date, skip, salesShift, limit = 15) => {
     setLoading(true);
     const payload = {
       outletID: stationID,
@@ -75,11 +75,14 @@ const ListSales = () => {
       date: date,
       shift: salesShift,
       productType: salesType,
+      skip: skip * limit,
+      limit: limit,
     };
 
-    APIs.post("/daily-sales/outstanding", { data: payload })
+    APIs.post("/dashboard/salesList", payload)
       .then(({ data }) => {
-        dispatch(setOutstanding(data.outstanding));
+        dispatch(setSalesList(data.sales));
+        setTotal(data.counts);
       })
       .then(() => {
         setLoading(false);
@@ -89,15 +92,15 @@ const ListSales = () => {
       });
   };
 
-  const updateOutstanding = useCallback((outlet, salesShift, updateDate) => {
+  const updateSalesList = useCallback((outlet, salesShift, updateDate) => {
     getOutstanding(outlet, updateDate, skip, salesShift);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const outlet = oneStationData === null ? "None" : oneStationData._id;
-    updateOutstanding(outlet, salesShift, updateDate);
-  }, [updateOutstanding, oneStationData, salesShift, updateDate]);
+    updateSalesList(outlet, salesShift, updateDate);
+  }, [updateSalesList, oneStationData, salesShift, updateDate]);
 
   const searchTable = (value) => {
     // dispatch(searchExpenses(value));
@@ -111,25 +114,12 @@ const ListSales = () => {
     setEntries(value);
     setLimit(limit);
     const getID = oneStationData === null ? "None" : oneStationData._id;
-    getOutstanding(getID, updateDate, skip, salesShift);
+    getOutstanding(getID, updateDate, skip, salesShift, limit);
   };
 
   const stationHelper = (id) => {
     getOutstanding(id, updateDate, skip, salesShift);
   };
-
-  function getDatesInRange(startDate, endDate) {
-    const dates = [];
-    let currentDate = moment(startDate);
-    const stopDate = moment(endDate);
-
-    while (currentDate <= stopDate) {
-      dates.push(currentDate.format("YYYY-MM-DD"));
-      currentDate = currentDate.clone().add(1, "days");
-    }
-
-    return dates;
-  }
 
   const desktopTableData = {
     columns: columns,
@@ -189,9 +179,9 @@ const ListSales = () => {
       </TableControls>
 
       {mobile.matches ? (
-        <OutstandingMobileTable data={mobileTableData} />
+        <SalesListMobileTable data={mobileTableData} />
       ) : (
-        <OutstandingDesktopTable data={desktopTableData} />
+        <SalesListDesktopTable data={desktopTableData} />
       )}
 
       <TableNavigation

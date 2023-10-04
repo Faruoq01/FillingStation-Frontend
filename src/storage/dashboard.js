@@ -107,6 +107,7 @@ const initialState = {
   incoming: [],
   overageType: "PMS",
   salesType: "",
+  saleslist: [],
   dateRange: [today, today],
   asset: "",
   assetsList: [],
@@ -186,6 +187,9 @@ export const dashboard = createSlice({
     setSalesType: (state, action) => {
       state.salesType = action.payload;
     },
+    setSalesList: (state, action) => {
+      state.saleslist = action.payload;
+    },
     clearDashboard: () => initialState,
   },
 });
@@ -213,6 +217,7 @@ export const {
   searchdashStaffs,
   setSalesType,
   clearDashboard,
+  setSalesList,
 } = dashboard.actions;
 
 export default dashboard.reducer;

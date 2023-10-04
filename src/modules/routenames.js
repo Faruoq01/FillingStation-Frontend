@@ -4,6 +4,7 @@ export const routeNames = {
   "/home/dashboard/dashboardoverage": "Sales Overage Details",
   "/home/dashboard/stationtanks": "Station Tank Assets",
   "/home/dashboard/stationpumps": "Station Pumps Assets",
+  "/home/dashboard/saleslist": "Daily Sales List",
   "/home/dailysales/dailysaleshome/0": "Daily Sales",
   "/home/dailysales/pmssales": "PMS Daily Sales",
   "/home/dailysales/agosales": "AGO Daily Sales",
