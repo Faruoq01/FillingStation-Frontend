@@ -40,6 +40,7 @@ const initialState = {
   lpo: [],
   searchData2: [],
   currentShift: "",
+  productType: "PMS",
 };
 
 export const recordsalesSlice = createSlice({
@@ -235,6 +236,9 @@ export const recordsalesSlice = createSlice({
     setCurrentShift: (state, action) => {
       state.currentShift = action.payload;
     },
+    setProductType: (state, action) => {
+      state.productType = action.payload;
+    },
     clearRecordSales: () => initialState,
   },
 });
@@ -269,6 +273,7 @@ export const {
   tankList,
   clearRecordSales,
   setCurrentShift,
+  setProductType,
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;
