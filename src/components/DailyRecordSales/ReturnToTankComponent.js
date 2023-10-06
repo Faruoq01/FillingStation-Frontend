@@ -17,13 +17,8 @@ const ReturnToTank = (props) => {
 
   ////////////////////////////////////////////////////////////
   const dispatch = useDispatch();
-  const records = useSelector((state) => state.recordsales.load);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
-
-  console.log(selectedPumps, "selected pumps");
-  console.log(selectedTanks, "selected tanks");
-  console.log(records, "records");
 
   const getPMSPump = useCallback(() => {
     const newList = [...selectedPumps];

@@ -52,7 +52,7 @@ export const outletSlice = createSlice({
           outlet: null,
           pumps: [],
           beforeSales: craze.currentLevel,
-          afterSales: 0,
+          afterSales: craze.afterSales,
           RTlitre: 0,
         };
       });

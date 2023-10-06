@@ -15,8 +15,9 @@ import swal from "sweetalert";
 import EditTank from "../Modals/outlet/edittank";
 import { ThreeDots } from "react-loader-spinner";
 import CreateNewPump from "../Modals/outlet/createnewpump";
+import APIs from "../../services/connections/api";
 
-const Tank = (props) => {
+const Tank = () => {
   const [tabs, setTabs] = useState(0);
   const [PMSTank, setPMSTank] = useState([]);
   const [AGOTank, setAGOTank] = useState([]);
@@ -33,6 +34,14 @@ const Tank = (props) => {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
+
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
       return true;
@@ -45,24 +54,31 @@ const Tank = (props) => {
     dispatch(openModal(2));
   };
 
-  const getAllStationTanks = useCallback(() => {
+  const getTanksLists = useCallback((outlet) => {
+    refresh(outlet);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const outlet = oneStation === null ? "None" : oneStation._id;
+    getTanksLists(outlet);
+  }, [getTanksLists, oneStation]);
+
+  const refresh = (outlet) => {
     setLoading(true);
     const payload = {
-      organisationID: oneStation?.organisation,
-      outletID: oneStation?._id,
+      organisationID: resolveUserID().id,
+      outletID: outlet,
     };
-    OutletService.getAllOutletTanks(payload)
-      .then((data) => {
-        dispatch(getAllOutletTanks(data.stations));
+
+    APIs.post("/daily-sales/all-tanks", payload)
+      .then(({ data }) => {
+        dispatch(getAllOutletTanks(data.tanks));
       })
       .then(() => {
         setLoading(false);
       });
-  }, [oneStation?._id, oneStation?.organisation, dispatch]);
-
-  useEffect(() => {
-    getAllStationTanks();
-  }, [getAllStationTanks]);
+  };
 
   useEffect(() => {
     getSeparateTanks(tankList);
@@ -93,12 +109,14 @@ const Tank = (props) => {
   const activateTank = (e, data) => {
     const payload = {
       id: data._id,
+      organisationID: resolveUserID().id,
+      outletID: oneStation._id,
       activeState: e.target.checked ? "1" : "0",
     };
     OutletService.activateTanks(payload).then((data) => {
       if (data.code === 200)
         swal("Success!", "Tank active state updated successfully", "success");
-      getAllStationTanks();
+      refresh(oneStation._id);
     });
   };
 
@@ -119,7 +137,7 @@ const Tank = (props) => {
         OutletService.deleteTanks(payload).then((data) => {
           if (data.code === 200)
             swal("Success!", "Tank deleted successfully", "success");
-          getAllStationTanks();
+          refresh(oneStation._id);
         });
       }
     });
@@ -168,15 +186,13 @@ const Tank = (props) => {
               </div>
             </div>
             <div className="right">
-              <div>
-                {props.data.activeState === "0" ? "Inactive" : "Active"}
-              </div>
+              <div>{props.data.activeState === 0 ? "Inactive" : "Active"}</div>
               <IOSSwitch
                 onClick={(e) => {
                   activateTank(e, props.data);
                 }}
                 sx={{ m: 1 }}
-                defaultChecked={props.data.activeState === "0" ? false : true}
+                defaultChecked={props.data.activeState === 0 ? false : true}
               />
             </div>
           </div>
@@ -245,7 +261,7 @@ const Tank = (props) => {
                 background: "#F2F1F1",
                 color: "#000",
               }}
-              value={props.data.currentLevel}
+              value={props.data.afterSales}
             />
           </div>
 
@@ -505,13 +521,17 @@ const Tank = (props) => {
     );
   };
 
+  const updateAllTanks = () => {
+    refresh(oneStation._id);
+  };
+
   return (
     <div className="tanksContainer">
       {open === 2 && (
         <AddTank
           tabs={tabs}
           data={oneStation?.state}
-          refresh={getAllStationTanks}
+          refresh={updateAllTanks}
         />
       )}
       {open === 3 && <CreateNewPump tabs={tabs} allTank={tankList} />}
@@ -521,7 +541,7 @@ const Tank = (props) => {
           open={openEditTank}
           close={setOpenEditTank}
           data={currentTank}
-          refresh={getAllStationTanks}
+          refresh={updateAllTanks}
         />
       )}
       <div className="pump-container">
