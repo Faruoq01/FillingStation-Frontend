@@ -79,6 +79,12 @@ const AddTank = (props) => {
       previousLevel: "None",
       quantityAdded: "None",
       currentLevel: removeSpecialCharacters(currentStock),
+      PMSCostPrice: oneStation?.PMSCost,
+      PMSSellingPrice: oneStation?.PMSPrice,
+      AGOCostPrice: oneStation?.AGOCost,
+      AGOSellingPrice: oneStation?.AGOPrice,
+      DPKCostPrice: oneStation?.DPKCost,
+      DPKSellingPrice: oneStation?.DPKPrice,
     };
 
     OutletService.registerTanks(data)
