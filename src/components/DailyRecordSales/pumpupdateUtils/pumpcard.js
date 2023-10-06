@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import pump1 from "../../../assets/pump1.png";
 import { updateSelectedPumps } from "../../../storage/recordsales";
 import swal from "sweetalert";
+import ApproximateDecimal from "../../common/approx";
 const mediaMatch = window.matchMedia("(max-width: 500px)");
 
 const PumpCard = ({ item, index }) => {
@@ -20,8 +21,8 @@ const PumpCard = ({ item, index }) => {
   const updateTotalizer = (e, totalizerDiff, index, pump) => {
     if (productType === "PMS") {
       /*###########################################
-                    Update the pump readings for PMS
-                ############################################*/
+            Update the pump readings for PMS
+        ############################################*/
 
       const onlyPMS = [...tankListData].filter(
         (data) => data.productType === "PMS"
@@ -43,8 +44,8 @@ const PumpCard = ({ item, index }) => {
       dispatch(updateSelectedPumps(selectedPMS));
     } else if (productType === "AGO") {
       /*###########################################
-                    Update the pump readings for AGO
-                ############################################*/
+            Update the pump readings for AGO
+        ############################################*/
 
       const onlyAGO = [...tankListData].filter(
         (data) => data.productType === "AGO"
@@ -66,8 +67,8 @@ const PumpCard = ({ item, index }) => {
       dispatch(updateSelectedPumps(selectedAGO));
     } else if (productType === "DPK") {
       /*###########################################
-                    Update the pump readings for DPK
-                ############################################*/
+            Update the pump readings for DPK
+        ############################################*/
 
       const onlyDPK = [...tankListData].filter(
         (data) => data.productType === "DPK"
@@ -137,24 +138,40 @@ const PumpCard = ({ item, index }) => {
     }
   };
 
+  const computedSales = (item) => {
+    const newMeter = Number(item.newTotalizer);
+    const currentMeter = Number(item.totalizerReading);
+    console.log(newMeter, "new meter");
+    if (!isNaN(newMeter)) {
+      return ApproximateDecimal(newMeter - currentMeter);
+    }
+    return ApproximateDecimal(0);
+  };
+
   return (
     <div
       style={{
         width: mediaMatch.matches ? "100%" : "270px",
-        height: "300px",
+        height: "auto",
       }}
       key={index}
       className="item">
       <img
-        style={{ width: "55px", height: "60px", marginTop: "10px" }}
+        style={{ width: "55px", height: "60px", marginTop: "15px" }}
         src={pump1}
         alt="icon"
       />
       <div className="pop">
         {item.pumpName} ({item.hostTankName})
       </div>
-      <div style={{ marginTop: "10px" }} className="label">
+      <div style={label} className="label">
         Date: {item.updatedAt.split("T")[0]}
+      </div>
+      <div style={label2} className="label">
+        Sales:{" "}
+        <span style={{ color: computedSales(item) < 0 ? "red" : "green" }}>
+          {computedSales(item)}
+        </span>
       </div>
       <div style={{ width: "94%" }}>
         <div style={{ marginTop: "10px" }} className="label">
@@ -175,6 +192,7 @@ const PumpCard = ({ item, index }) => {
           style={{
             ...imps,
             width: "94%",
+            marginBottom: "15px",
             border:
               Number(item.totalizerReading) > Number(item.newTotalizer) &&
               item.newTotalizer !== "0"
@@ -197,6 +215,18 @@ const imps = {
   outline: "none",
   border: "1px solid #000",
   paddingLeft: "10px",
+};
+
+const label = {
+  width: "94%",
+  marginTop: "10px",
+};
+
+const label2 = {
+  width: "94%",
+  marginTop: "10px",
+  fontSize: "14px",
+  color: "green",
 };
 
 export default PumpCard;

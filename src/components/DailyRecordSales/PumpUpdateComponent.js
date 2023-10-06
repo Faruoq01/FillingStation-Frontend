@@ -6,9 +6,8 @@ import PumpCard from "./pumpupdateUtils/pumpcard";
 import PumpIndicators from "./pumpupdateUtils/pumpindicator";
 
 const PumpUpdateComponent = (props) => {
-  const productType = useSelector((state) => state.recordsales.productType);
-
   const dispatch = useDispatch();
+  const productType = useSelector((state) => state.recordsales.productType);
 
   //////////////////////////////////////////////////////////////
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
