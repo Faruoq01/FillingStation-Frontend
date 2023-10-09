@@ -9,7 +9,7 @@ import APIs from "../../services/connections/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { setDipping, setSalesList } from "../../storage/comprehensive";
+import { setSalesList, setTankLevels } from "../../storage/comprehensive";
 import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
@@ -17,7 +17,7 @@ import DippingModal from "../Modals/comprehensive/dipping";
 
 const Dipping = () => {
   const navigate = useNavigate();
-  const dipping = useSelector((state) => state.comprehensive.dipping);
+  const dipping = useSelector((state) => state.comprehensive.tankLevels);
 
   const dispatch = useDispatch();
   const currentDate = useSelector((state) => state.dashboard.dateRange);
@@ -46,7 +46,7 @@ const Dipping = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getDippingData = useCallback((updatedDate, salesShift) => {
+  const getTankLevels = useCallback((updatedDate, salesShift) => {
     if (oneStationData === null)
       return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
@@ -57,9 +57,9 @@ const Dipping = () => {
       shift: salesShift,
     };
 
-    APIs.post("/comprehensive/dipping", payload)
+    APIs.post("/comprehensive/tankLevels", payload)
       .then(({ data }) => {
-        dispatch(setDipping(data.dipping));
+        dispatch(setTankLevels(data.tankLevels));
       })
       .then(() => {
         setLoad(false);
@@ -69,8 +69,8 @@ const Dipping = () => {
   }, []);
 
   useEffect(() => {
-    getDippingData(currentDate, salesShift);
-  }, [getDippingData, currentDate, refresh, salesShift]);
+    getTankLevels(currentDate, salesShift);
+  }, [getTankLevels, currentDate, refresh, salesShift]);
 
   const updateRecord = (data) => {
     setOpenEdit(true);

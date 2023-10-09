@@ -30,14 +30,14 @@ const EditTank = (props) => {
     setTankName(props.data.tankName.split(" ")[1]);
     setTankHeight(props.data.tankHeight);
     setTankCapacity(props.data.tankCapacity);
-    setCurrentStock(props.data.currentLevel);
-    setOldStock(props.data.currentLevel);
+    setCurrentStock(props.data.afterSales);
+    setOldStock(props.data.afterSales);
     setDeadStockLevel(props.data.deadStockLevel);
     setCalibrationDate(props.data.calibrationDate);
     setProductType(props.data.productType);
   }, [
     props.data.calibrationDate,
-    props.data.currentLevel,
+    props.data.afterSales,
     props.data.deadStockLevel,
     props.data.productType,
     props.data.tankCapacity,
@@ -70,10 +70,9 @@ const EditTank = (props) => {
       tankCapacity: tankCapacity,
       deadStockLevel: deadStockLevel,
       calibrationDate: calibrationDate,
-      currentLevel: currentStock,
+      afterSales: currentStock,
       organisationID: oneStation?.organisation,
       outletID: oneStation?._id,
-      oldStock: oldStock,
     };
 
     OutletService.updateTank(payload)
