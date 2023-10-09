@@ -35,6 +35,7 @@ const DippingComponents = (props) => {
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const currentShift = useSelector((state) => state.recordsales.currentShift);
+  console.log(dippingPayloadData, "tank list data");
 
   const getStationTanks = useCallback(() => {
     const copyTanks = JSON.parse(JSON.stringify(tankListData));

@@ -132,28 +132,28 @@ const PendingSales = (props) => {
     return user.permission?.recordSales[e];
   };
 
-  const updateTanksWithSupplies = (tankListData, daySupply) => {
-    if (daySupply.length === 0 || tankListData.length === 0) {
-      dispatch(tankList(tankListData));
-    } else {
-      const copyTanks = JSON.parse(JSON.stringify(tankListData));
-      for (const supply of daySupply) {
-        const recipient = Object.values(supply.recipientTanks);
-        for (const tank of recipient) {
-          const findID = copyTanks.findIndex((data) => data._id === tank.id);
-          if (findID !== -1) {
-            const newLevel =
-              Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
-            copyTanks[findID] = {
-              ...copyTanks[findID],
-              currentLevel: newLevel,
-            };
-          }
-        }
-      }
-      dispatch(tankList(copyTanks));
-    }
-  };
+  // const updateTanksWithSupplies = (tankListData, daySupply) => {
+  //   if (daySupply.length === 0 || tankListData.length === 0) {
+  //     dispatch(tankList(tankListData));
+  //   } else {
+  //     const copyTanks = JSON.parse(JSON.stringify(tankListData));
+  //     for (const supply of daySupply) {
+  //       const recipient = Object.values(supply.recipientTanks);
+  //       for (const tank of recipient) {
+  //         const findID = copyTanks.findIndex((data) => data._id === tank.id);
+  //         if (findID !== -1) {
+  //           const newLevel =
+  //             Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
+  //           copyTanks[findID] = {
+  //             ...copyTanks[findID],
+  //             currentLevel: newLevel,
+  //           };
+  //         }
+  //       }
+  //     }
+  //     dispatch(tankList(copyTanks));
+  //   }
+  // };
 
   const updateDate = (newValue) => {
     if (oneStationData === null)
@@ -238,7 +238,7 @@ const PendingSales = (props) => {
 
       ///////////////// station supplies /////////////////
       dispatch(daySupply(supply.data.supply));
-      updateTanksWithSupplies(outletTanks, supply.data.supply);
+      dispatch(tankList(outletTanks));
       dispatch(changeDate(date));
       setDateLoader(false);
     });

@@ -4,10 +4,7 @@ import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import {
-  updateSelectedPumps,
-  updateSelectedTanks,
-} from "../../storage/recordsales";
+import { updateSelectedPumps } from "../../storage/recordsales";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
