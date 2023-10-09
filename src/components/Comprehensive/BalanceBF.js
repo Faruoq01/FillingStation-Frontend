@@ -13,6 +13,7 @@ const InitialBalance = () => {
   const user = useSelector((state) => state.auth.user);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const salesShift = useSelector((state) => state.dailysales.salesShift);
   const balances = useSelector((state) => state.comprehensive.balances);
   const { pms, ago, dpk } = useSelector((state) => state.comprehensive.supply);
   const [load, setLoad] = useState(false);
@@ -25,31 +26,31 @@ const InitialBalance = () => {
     }
   };
 
-  const getAllProductBalances = useCallback((updatedDate) => {
+  const getAllProductBalances = useCallback((date, station, salesShift) => {
     if (oneStationData === null)
       return navigate("/home/dailysales/dailysaleshome/0");
     setLoad(true);
     const payload = {
       organizationID: resolveUserID().id,
-      outletID: oneStationData._id,
-      date: updatedDate[0],
+      outletID: station._id,
+      date: date[0],
+      shift: salesShift,
     };
 
     APIs.post("/comprehensive/balanceBF", payload)
       .then(({ data }) => {
-        dispatch(setBalances(data.data.balanceCF));
-        dispatch(setSupply(data.data.supply));
+        dispatch(setBalances(data.balanceBF));
+        dispatch(setSupply(data.supply));
       })
       .then(() => {
         setLoad(false);
       });
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getAllProductBalances(updatedDate);
-  }, [getAllProductBalances, updatedDate]);
+    getAllProductBalances(updatedDate, oneStationData, salesShift);
+  }, [getAllProductBalances, updatedDate, oneStationData, salesShift]);
 
   const calculateSum = (data, supply) => {
     const actaulSupply = supply?.quantity;
