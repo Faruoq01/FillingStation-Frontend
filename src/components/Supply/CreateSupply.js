@@ -10,10 +10,10 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import "../../styles/supplystyle.scss";
 import SupplyService from "../../services/360station/supplyService";
 import IncomingService from "../../services/360station/IncomingService";
-import OutletService from "../../services/360station/outletService";
 import { BallTriangle } from "react-loader-spinner";
 import { getAllOutletTanks } from "../../storage/outlet";
 import { useNavigate } from "react-router-dom";
+import APIs from "../../services/connections/api";
 
 const CreateSupply = (props) => {
   const navigate = useNavigate();
@@ -67,14 +67,14 @@ const CreateSupply = (props) => {
       setIncomingList(data.incoming.incoming);
     });
 
-    OutletService.getAllOutletTanks(income).then((data) => {
-      dispatch(getAllOutletTanks(data.stations));
+    APIs.post("/daily-sales/all-tanks", income).then(({ data }) => {
+      dispatch(getAllOutletTanks(data.tanks));
     });
   };
 
   useEffect(() => {
     if (oneStationData === null) {
-      navigate("supply");
+      navigate("/home/supply/supplyhome/0");
     } else {
       getAllIncoming();
     }
@@ -83,7 +83,7 @@ const CreateSupply = (props) => {
   }, []);
 
   const incomingTanks = (e, data) => {
-    const room = Number(data.tankCapacity) - Number(data.currentLevel);
+    const room = Number(data.tankCapacity) - Number(data.afterSales);
     let addedQuantity = Number(removeSpecialCharacters(e.target.value));
 
     if (addedQuantity > room) {
@@ -99,7 +99,7 @@ const CreateSupply = (props) => {
       );
 
       const total = String(
-        Number(cloneSelectedTanks[findID].currentLevel) + addedQuantity
+        Number(cloneSelectedTanks[findID].afterSales) + addedQuantity
       );
 
       cloneSelectedTanks[findID].newLevel = total;
@@ -175,7 +175,6 @@ const CreateSupply = (props) => {
         recipientTanks: tanks,
         incomingID: selectedIncomingOrders._id,
         date: supplyDate,
-        tankUpdate: selected,
         outletID: oneStationData?._id,
         organizationID: oneStationData?.organisation,
       };
@@ -294,7 +293,7 @@ const CreateSupply = (props) => {
           const payload = {
             load: supplyList,
           };
-
+          console.log(payload, "payload");
           SupplyService.createSupply(payload)
             .then((data) => {
               if (data.status === "failed") {
@@ -470,7 +469,7 @@ const CreateSupply = (props) => {
                   className="tank-input"
                   type={"text"}
                   style={{ width: "98%" }}
-                  placeholder={`Current level: ${data.currentLevel}`}
+                  placeholder={`Current level: ${data.afterSales}`}
                 />
               </div>
             );

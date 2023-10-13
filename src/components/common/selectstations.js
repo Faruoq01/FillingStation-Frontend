@@ -150,7 +150,7 @@ const menu = {
 const menuProps = {
   PaperProps: {
     style: {
-      maxHeight: "200px",
+      maxHeight: "300px",
     },
   },
 };

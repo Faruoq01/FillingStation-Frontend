@@ -21,7 +21,7 @@ const PumpSelector = ({ data, index }) => {
     if (tankListData.lenth === 0)
       return swal("Alert", "Please refresh tanks not loaded!", "warning");
     const tankClone = JSON.parse(JSON.stringify(tankListData));
-    const tankID = tankClone.findIndex((data) => data._id === pump.hostTank);
+    const tankID = tankClone.findIndex((data) => data.tankID === pump.hostTank);
 
     switch (pump.productType) {
       case "PMS": {
@@ -69,7 +69,7 @@ const PumpSelector = ({ data, index }) => {
 
   const deselect = (index, pump) => {
     const tankClone = JSON.parse(JSON.stringify(tankListData));
-    const tankID = tankClone.findIndex((data) => data._id === pump.hostTank);
+    const tankID = tankClone.findIndex((data) => data.tankID === pump.hostTank);
 
     switch (pump.productType) {
       case "PMS": {

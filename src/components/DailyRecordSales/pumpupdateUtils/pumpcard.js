@@ -97,7 +97,7 @@ const PumpCard = ({ item, index }) => {
     if (selectedTanks.length !== 0) {
       const clonedTanks = JSON.parse(JSON.stringify(selectedTanks));
       const connectedTank = clonedTanks.filter(
-        (data) => data._id === pump.hostTank
+        (data) => data.tankID === pump.hostTank
       );
 
       if (connectedTank.length !== 0) {

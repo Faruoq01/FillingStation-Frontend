@@ -45,8 +45,9 @@ const Sales = (props) => {
       organisationID: oneStation?.organisation,
       outletID: oneStation?._id,
     };
-    OutletService.getAllOutletTanks(payload).then((data) => {
-      dispatch(getAllOutletTanks(data.stations));
+
+    APIs.post("/daily-sales/all-tanks", payload).then(({ data }) => {
+      dispatch(getAllOutletTanks(data.tanks));
     });
 
     OutletService.getAllStationPumps(payload).then((data) => {

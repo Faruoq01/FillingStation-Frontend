@@ -133,7 +133,7 @@ const ReturnToTankModal = (props) => {
       organisationID: resolveUserID().id,
     };
 
-    OutletService.getAllOutletTanks(payload).then((tanks) => {
+    APIs.post("/daily-sales/all-tanks", payload).then((tanks) => {
       const outletTanks = tanks.stations.map((data) => {
         const newData = {
           ...data,

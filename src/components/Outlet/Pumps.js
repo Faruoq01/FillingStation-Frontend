@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import EditPump from "../Modals/outlet/editpump";
 import { ThreeDots } from "react-loader-spinner";
 import CreatePumpFromTank from "../Modals/outlet/createpumpfromtank";
+import APIs from "../../services/connections/api";
 
 const Pump = (props) => {
   const [tabs, setTabs] = useState(0);
@@ -54,9 +55,13 @@ const Pump = (props) => {
         setLoading(false);
       });
 
-    OutletService.getAllOutletTanks(payload).then((data) => {
-      dispatch(getAllOutletTanks(data.stations));
-    });
+    APIs.post("/daily-sales/all-tanks", payload)
+      .then(({ data }) => {
+        dispatch(getAllOutletTanks(data.tanks));
+      })
+      .then(() => {
+        setLoading(false);
+      });
   }, [oneStation?._id, oneStation?.organisation, dispatch]);
 
   useEffect(() => {

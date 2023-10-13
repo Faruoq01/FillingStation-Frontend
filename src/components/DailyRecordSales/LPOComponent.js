@@ -327,7 +327,7 @@ const LPOComponent = (props) => {
       // update tank payload
       const newTankList = [...selectedTanks];
       const tankID = newTankList.findIndex(
-        (data) => data._id === dispensedPump.hostTank
+        (data) => data.tankID === dispensedPump.hostTank
       );
       if (tankID === -1) {
         setQuantity("");

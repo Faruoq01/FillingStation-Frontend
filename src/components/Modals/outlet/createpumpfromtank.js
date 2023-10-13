@@ -9,9 +9,13 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import swal from "sweetalert";
 import OutletService from "../../../services/360station/outletService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import APIs from "../../../services/connections/api";
+import { getAllOutletTanks } from "../../../storage/outlet";
 
 const CreatePumpFromTank = (props) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const [defaultState, setDefaultState] = useState(0);
   const [productType, setProduct] = useState("PMS");
   const [pumpName, setPumpName] = useState("");
@@ -22,6 +26,14 @@ const CreatePumpFromTank = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const handleClose = () => props.close(false);
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
   useEffect(() => {
     if (props.tabs === 0) {
@@ -42,10 +54,10 @@ const CreatePumpFromTank = (props) => {
       outletID: oneStationData._id,
       productType: productType,
     };
-    OutletService.getAllOutletTanks2(payload).then((data) => {
-      setAllTanks(data.stations);
+    APIs.post("/daily-sales/all-tanks2", payload).then(({ data }) => {
+      setAllTanks(data.tanks);
     });
-  }, [oneStationData._id, oneStationData.organisation, productType]);
+  }, [dispatch, oneStationData._id, oneStationData.organisation, productType]);
 
   function removeSpecialCharacters(str) {
     return str.replace(/[^0-9.]/g, "");
@@ -64,11 +76,11 @@ const CreatePumpFromTank = (props) => {
 
     const payload = {
       pumpName: pumpName,
-      hostTank: currentTank._id,
+      hostTank: currentTank.tankID,
       hostTankName: currentTank.tankName,
       productType: productType,
       totalizerReading: removeSpecialCharacters(totalizer),
-      organisationID: currentTank.organisationID,
+      organisationID: resolveUserID().id,
       outletID: currentTank.outletID,
     };
 

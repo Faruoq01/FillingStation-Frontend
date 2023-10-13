@@ -28,6 +28,7 @@ import EditSupply from "../Modals/editsupply";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import GenerateReports from "../Modals/reports";
+import APIs from "../../services/connections/api";
 
 const columns = [
   "S/N",
@@ -124,8 +125,8 @@ const SupplyHome = () => {
       dispatch(createIncomingOrder(data.incoming.incoming));
     });
 
-    OutletService.getAllOutletTanks(income).then((data) => {
-      dispatch(getAllOutletTanks(data.stations));
+    APIs.post("/daily-sales/all-tanks", payload).then(({ data }) => {
+      dispatch(getAllOutletTanks(data.tanks));
     });
   };
 

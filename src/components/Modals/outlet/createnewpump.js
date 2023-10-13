@@ -14,6 +14,7 @@ import swal from "sweetalert";
 import OutletService from "../../../services/360station/outletService";
 
 const CreateNewPump = (props) => {
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const open = useSelector((state) => state.outlet.openModal);
   const oneTank = useSelector((state) => state.outlet.oneTank);
@@ -26,6 +27,14 @@ const CreateNewPump = (props) => {
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
   const handleClose = () => dispatch(closeModal(0));
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
   function removeSpecialCharacters(str) {
     return str.replace(/[^0-9.]/g, "");
@@ -47,11 +56,11 @@ const CreateNewPump = (props) => {
 
     const payload = {
       pumpName: pumpName,
-      hostTank: oneTank?._id,
+      hostTank: oneTank?.tankID,
       hostTankName: oneTank?.tankName,
       productType: productType,
       totalizerReading: removeSpecialCharacters(totalizer),
-      organisationID: oneTank?.organisationID,
+      organisationID: resolveUserID().id,
       outletID: oneTank?.outletID,
     };
 

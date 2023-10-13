@@ -179,7 +179,8 @@ const PumpUpdate = (props) => {
     };
 
     const stationPumps = OutletService.getAllStationPumps(payload);
-    const stationTanks = OutletService.getAllOutletTanks(payload);
+    const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
+    // const stationTanks = OutletService.getAllOutletTanks(payload);
     const stationSupply = APIs.post("/supply/dayRecord", {
       ...payload,
       createdAt: currentDate[0],
@@ -237,7 +238,9 @@ const PumpUpdate = (props) => {
     const totalLevels = extractType.reduce((accum, current) => {
       return Number(accum) + Number(current.currentLevel);
     }, 0);
-    const hostTank = tankListClone.filter((data) => data._id === pump.hostTank);
+    const hostTank = tankListClone.filter(
+      (data) => data.tankID === pump.hostTank
+    );
     if (hostTank.length === 0) {
       swal(
         "Error",

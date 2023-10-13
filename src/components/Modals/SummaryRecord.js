@@ -283,7 +283,7 @@ const SummaryRecord = (props) => {
     );
 
     const allTankPumps = updatedPumps.filter(
-      (pump) => pump.hostTank === tank._id
+      (pump) => pump.hostTank === tank.tankID
     );
 
     const productSales = allProductPumps.reduce((accum, current) => {

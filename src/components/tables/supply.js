@@ -46,7 +46,7 @@ const Action = ({ data, setEditSupply, refresh, skip }) => {
           );
         } else {
           const payload = {
-            id: supply._id,
+            supply: supply,
           };
 
           APIs.post("/supply/delete", payload)

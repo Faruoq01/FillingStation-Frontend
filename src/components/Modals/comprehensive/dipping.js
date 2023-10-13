@@ -11,7 +11,6 @@ import "../../../styles/lpo.scss";
 import APIs from "../../../services/connections/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import OutletService from "../../../services/360station/outletService";
 import { setTankList } from "../../../storage/comprehensive";
 import { MenuItem, Select } from "@mui/material";
 import ModalInputField from "../../controls/Modal/ModalInputField";
@@ -48,7 +47,7 @@ const DippingModal = (props) => {
       organisationID: resolveUserID().id,
     };
 
-    OutletService.getAllOutletTanks(payload).then((data) => {
+    APIs.post("/daily-sales/all-tanks", payload).then(({ data }) => {
       dispatch(setTankList(data.stations));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,8 +95,8 @@ const DippingModal = (props) => {
     setDefaultState(index);
     setOneTank(tank);
 
-    setBeforeSales(tank.previousLevel);
-    setAfterSales(tank.currentLevel);
+    setBeforeSales(tank.currentLevel);
+    setAfterSales(tank.afterSales);
     setTankCapacity(tank.tankCapacity);
   };
 

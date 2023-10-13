@@ -35,7 +35,7 @@ const DippingComponents = (props) => {
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const currentShift = useSelector((state) => state.recordsales.currentShift);
-  console.log(dippingPayloadData, "tank list data");
+  console.log(tankListData, "tank list data");
 
   const getStationTanks = useCallback(() => {
     const copyTanks = JSON.parse(JSON.stringify(tankListData));
@@ -88,7 +88,7 @@ const DippingComponents = (props) => {
         }, 0);
 
         const levelAfterSales =
-          Number(item.currentLevel) - totalSales + totalSalesRT;
+          Number(item.afterSales) - totalSales + totalSalesRT;
         let clonedPMS = { ...item };
         clonedPMS = {
           ...clonedPMS,
@@ -102,7 +102,7 @@ const DippingComponents = (props) => {
         const payload = {
           tankID: item._id,
           productType: item.productType,
-          currentLevel: item.currentLevel,
+          currentLevel: item.afterSales,
           tankCapacity: item.tankCapacity,
           dipping: removeFormat,
           afterSales: levelAfterSales,
@@ -148,7 +148,7 @@ const DippingComponents = (props) => {
         }, 0);
 
         const levelAfterSales =
-          Number(item.currentLevel) - totalSales + totalSalesRT;
+          Number(item.afterSales) - totalSales + totalSalesRT;
         let clonedAGO = { ...item };
         clonedAGO = {
           ...clonedAGO,
@@ -162,7 +162,7 @@ const DippingComponents = (props) => {
         const payload = {
           tankID: item._id,
           productType: item.productType,
-          currentLevel: item.currentLevel,
+          currentLevel: item.afterSales,
           tankCapacity: item.tankCapacity,
           dipping: removeFormat,
           afterSales: levelAfterSales,
@@ -207,7 +207,7 @@ const DippingComponents = (props) => {
         }, 0);
 
         const levelAfterSales =
-          Number(item.currentLevel) - totalSales + totalSalesRT;
+          Number(item.afterSales) - totalSales + totalSalesRT;
         let clonedDPK = { ...item };
         clonedDPK = {
           ...clonedDPK,
@@ -221,7 +221,7 @@ const DippingComponents = (props) => {
         const payload = {
           tankID: item._id,
           productType: item.productType,
-          currentLevel: item.currentLevel,
+          currentLevel: item.afterSales,
           tankCapacity: item.tankCapacity,
           dipping: removeFormat,
           afterSales: levelAfterSales,
@@ -344,7 +344,7 @@ const DippingComponents = (props) => {
                 <div
                   style={{
                     justifyContent: "flex-start",
-                    height: "230px",
+                    height: "210px",
                     marginLeft: "20px",
                     marginRight: "0px",
                   }}
@@ -361,11 +361,11 @@ const DippingComponents = (props) => {
                   <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  <div
+                  {/* <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.currentLevel
-                  )}`}</div>
+                    item.afterSales
+                  )}`}</div> */}
                   <div style={{ marginTop: "10px" }} className="label">
                     Dipping (Litres)
                   </div>
@@ -404,7 +404,7 @@ const DippingComponents = (props) => {
                 <div
                   style={{
                     justifyContent: "flex-start",
-                    height: "230px",
+                    height: "210px",
                     marginLeft: "20px",
                     marginRight: "0px",
                   }}
@@ -421,11 +421,11 @@ const DippingComponents = (props) => {
                   <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  <div
+                  {/* <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.currentLevel
-                  )}`}</div>
+                    item.afterSales
+                  )}`}</div> */}
                   <div style={{ marginTop: "10px" }} className="label">
                     Dipping (Litres)
                   </div>
@@ -464,7 +464,7 @@ const DippingComponents = (props) => {
                 <div
                   style={{
                     justifyContent: "flex-start",
-                    height: "230px",
+                    height: "210px",
                     marginLeft: "20px",
                     marginRight: "0px",
                   }}
@@ -481,11 +481,11 @@ const DippingComponents = (props) => {
                   <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  <div
+                  {/* <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.currentLevel
-                  )}`}</div>
+                    item.afterSales
+                  )}`}</div> */}
                   <div style={{ marginTop: "10px" }} className="label">
                     Dipping (Litres)
                   </div>

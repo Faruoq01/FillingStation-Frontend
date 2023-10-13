@@ -188,60 +188,64 @@ const PendingSales = (props) => {
     };
 
     const stationPumps = OutletService.getAllStationPumps(payload);
-    const stationTanks = OutletService.getAllOutletTanks(payload);
+    const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
+    // const stationTanks = OutletService.getAllOutletTanks(payload);
     const orgLpo = LPOService.getAllLPO(payload);
     const supply = APIs.post("/supply/dayRecord", {
       ...payload,
       createdAt: date,
     });
 
-    Promise.all([stationPumps, stationTanks, orgLpo, supply]).then((data) => {
-      const [pumps, tanks, lpo, supply] = data;
+    Promise.all([stationPumps, stationTanks, orgLpo, supply])
+      .then((data) => {
+        const [pumps, tanks, lpo, supply] = data;
 
-      ///////////////// station pumps //////////////////////
-      const copyData = JSON.parse(JSON.stringify(pumps));
-      const updated = copyData.map((data) => {
-        let pumps = { ...data };
-        return {
-          ...pumps,
-          identity: null,
-          closingMeter: 0,
-          newTotalizer: "Enter closing meter",
-          RTlitre: 0,
-          sales: 0,
-        };
+        ///////////////// station pumps //////////////////////
+        const copyData = JSON.parse(JSON.stringify(pumps));
+        const updated = copyData.map((data) => {
+          let pumps = { ...data };
+          return {
+            ...pumps,
+            identity: null,
+            closingMeter: 0,
+            newTotalizer: "Enter closing meter",
+            RTlitre: 0,
+            sales: 0,
+          };
+        });
+        const PMS = updated.filter((data) => data.productType === "PMS");
+        const AGO = updated.filter((data) => data.productType === "AGO");
+        const DPK = updated.filter((data) => data.productType === "DPK");
+        dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
+
+        ///////////////// station tanks //////////////////////
+        const outletTanks = tanks.data.tanks.map((data) => {
+          const newData = {
+            ...data,
+            label: data.tankName,
+            value: data._id,
+            dippingValue: 0,
+            sales: 0,
+            outlet: null,
+            pumps: [],
+            beforeSales: data.currentLevel,
+            afterSales: 0,
+            RTlitre: 0,
+          };
+          return newData;
+        });
+
+        ///////////////// station lpo //////////////////////
+        dispatch(createLPO(lpo.lpo.lpo));
+
+        ///////////////// station supplies /////////////////
+        dispatch(daySupply(supply.data.supply));
+        dispatch(tankList(outletTanks));
+        dispatch(changeDate(date));
+      })
+      .then(() => {
+        setDateLoader(false);
       });
-      const PMS = updated.filter((data) => data.productType === "PMS");
-      const AGO = updated.filter((data) => data.productType === "AGO");
-      const DPK = updated.filter((data) => data.productType === "DPK");
-      dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
-
-      ///////////////// station tanks //////////////////////
-      const outletTanks = tanks.stations.map((data) => {
-        const newData = {
-          ...data,
-          label: data.tankName,
-          value: data._id,
-          dippingValue: 0,
-          sales: 0,
-          outlet: null,
-          pumps: [],
-          beforeSales: data.currentLevel,
-          afterSales: 0,
-          RTlitre: 0,
-        };
-        return newData;
-      });
-
-      ///////////////// station lpo //////////////////////
-      dispatch(createLPO(lpo.lpo.lpo));
-
-      ///////////////// station supplies /////////////////
-      dispatch(daySupply(supply.data.supply));
-      dispatch(tankList(outletTanks));
-      dispatch(changeDate(date));
-      setDateLoader(false);
-    });
   };
 
   const convertDate = (newValue) => {
