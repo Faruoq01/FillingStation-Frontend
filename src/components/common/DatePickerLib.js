@@ -42,7 +42,6 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
   }, [setDateRange, updatedDate]);
 
   const getDateRange = (data) => {
-    setRange(data);
     const start = data.start;
     const end = data.end;
 
@@ -55,6 +54,12 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
       : moment(endDate).format("YYYY-MM-DD").split(" ")[0];
 
     dispatch(dateRange([startDate, endDate]));
+
+    const constructDate = {
+      start: parseDate(startDate),
+      end: parseDate(endDate),
+    };
+    setRange(constructDate);
   };
 
   return (
