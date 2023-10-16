@@ -891,7 +891,7 @@ const getSalesPayload = (tank, pump, currentDate, currentShift) => {
   return {
     sales: pump.sales,
     RTlitre: pump.RTlitre,
-    tankID: tank._id,
+    tankID: tank.tankID,
     tankName: tank.tankName,
     pumpID: pump._id,
     pumpName: pump.pumpName,
@@ -924,7 +924,7 @@ const getPumpPayloads = (pump) => {
 
 const getTankPayloads = (tank) => {
   return {
-    id: tank._id,
+    id: tank.tankID,
     productType: tank.productType,
     tankName: tank.tankName,
     previousLevel: tank.currentLevel,
@@ -947,7 +947,7 @@ const getRTPayload = (tank, pump, currentDate, currentShift) => {
     DPKPrice: tank.outlet.DPKPrice,
     productType: tank.productType,
     pumpID: pump._id,
-    tankID: tank._id,
+    tankID: tank.tankID,
     pumpName: pump.pumpName,
     tankName: tank.tankName,
     outletID: tank.outletID,
@@ -979,7 +979,7 @@ const getTankLevelsPayload = (level, currentDate, currentShift) => {
     afterSales: level.afterSales,
     tankCapacity: level.tankCapacity,
     outletID: level.outletID,
-    tankID: level._id,
+    tankID: level.tankID,
     organizationID: level.organizationID,
     shift: currentShift,
     createdAt: currentDate,
