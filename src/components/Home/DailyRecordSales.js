@@ -393,7 +393,7 @@ const DailyRecordSales = () => {
           ...data,
           label: data.tankName,
           value: data._id,
-          dippingValue: 0,
+          dipping: 0,
           sales: 0,
           outlet: null,
           pumps: [],

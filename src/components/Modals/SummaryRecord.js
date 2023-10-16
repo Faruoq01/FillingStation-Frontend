@@ -304,13 +304,11 @@ const SummaryRecord = (props) => {
   };
 
   const updateAllTanks = () => {
-    if (tankList.length === 0) {
-      handleClose();
-      return swal(
-        "Error",
-        "Tank list cannot be empty please refresh!",
-        "error"
-      );
+    for (let tank of tankList) {
+      if (tank.dipping === 0) {
+        handleClose();
+        return swal("Error", "Please enter all dipping values!", "error");
+      }
     }
     if (typeof currentDate !== "string") {
       handleClose();
