@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@mui/material";
 import swal from "sweetalert";
 import {
-  balanceCF,
   creditPayloadObject,
   rtPayload,
   salesPayload,
@@ -246,14 +245,10 @@ const SummaryRecord = (props) => {
   );
   const bankPayloadData = useSelector((state) => state.recordsales.bankPayload);
   const posPayloadData = useSelector((state) => state.recordsales.posPayload);
-  const dippingPayloadData = useSelector(
-    (state) => state.recordsales.dippingPayload
-  );
   const tanksPayloadData = useSelector(
     (state) => state.recordsales.tanksPayload
   );
 
-  const balanceCFRecord = useSelector((state) => state.recordsales.balanceCF);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const daySupplyData = useSelector((state) => state.supply.daySupply);
   const tankList = useSelector((state) => state.recordsales.tankList);
@@ -309,13 +304,13 @@ const SummaryRecord = (props) => {
   };
 
   const updateAllTanks = () => {
-    if (dippingPayloadData.length === 0) {
+    if (tankList.length === 0) {
       handleClose();
-      return swal("Error", "Dipping record cannot be empty!", "error");
-    }
-    if (dippingPayloadData.length !== tankList.length) {
-      handleClose();
-      return swal("Error", "Please record dipping for all tanks!", "error");
+      return swal(
+        "Error",
+        "Tank list cannot be empty please refresh!",
+        "error"
+      );
     }
     if (typeof currentDate !== "string") {
       handleClose();
@@ -340,7 +335,7 @@ const SummaryRecord = (props) => {
     const updatedSet = [...updatedTanks];
     let tankSet = [...tankList];
     for (let tank of updatedSet) {
-      tankSet = tankSet.filter((data) => data._id !== tank._id);
+      tankSet = tankSet.filter((data) => data.tankID !== tank.tankID);
     }
     const updatedTankList = [...updatedSet, ...tankSet];
     const shuttled = updatedTankList.map((data) => {
@@ -430,20 +425,6 @@ const SummaryRecord = (props) => {
     );
 
     dispatch(rtPayload(uniqueRTPumps));
-
-    /*############# Getting payloads for balanceCF ###############*/
-    const selectedProducts = {};
-    for (const product of updatedTanks) {
-      if (!selectedProducts[product.productType]) {
-        selectedProducts[product.productType] = product;
-      }
-    }
-    const getArraysOfCF = Object.values(selectedProducts);
-    const balanceCFData = getArraysOfCF.map((data) => {
-      const done = getBalanceCF(data, currentDate);
-      return done;
-    });
-    dispatch(balanceCF(balanceCFData));
   };
 
   useEffect(() => {
@@ -502,11 +483,6 @@ const SummaryRecord = (props) => {
           station: oneStationData,
           pospayments: posPayloadData,
         }),
-        SalesService.dipping({
-          ...settings,
-          station: oneStationData,
-          dipping: dippingPayloadData,
-        }),
         SalesService.tankLevels({
           ...settings,
           station: oneStationData,
@@ -516,11 +492,6 @@ const SummaryRecord = (props) => {
           ...settings,
           station: oneStationData,
           debits: creditPayloadObjectData,
-        }),
-        SalesService.balanceCF({
-          ...settings,
-          station: oneStationData,
-          balanceCF: balanceCFRecord,
         }),
         SalesService.supply({
           ...settings,
@@ -752,10 +723,10 @@ const SummaryRecord = (props) => {
               <div style={texts}>Dipping</div>
             </div>
 
-            {dippingPayloadData?.length === 0 ? (
+            {tanksPayloadData?.length === 0 ? (
               <div style={men}>No records</div>
             ) : (
-              dippingPayloadData?.map((data, index) => {
+              tanksPayloadData?.map((data, index) => {
                 return (
                   <div key={index} className="other_label">
                     <div className="other_inner">
@@ -989,6 +960,19 @@ const getRTPayload = (tank, pump, currentDate, currentShift) => {
 
 const getTankLevelsPayload = (level, currentDate, currentShift) => {
   return {
+    tankHeight: level.tankHeight,
+    deadStockLevel: level.deadStockLevel,
+    dipping: level.dipping,
+    calibrationDate: level.calibrationDate,
+    station: level.station,
+    quantityAdded: level.quantityAdded,
+    activeState: level.activeState,
+    PMSCostPrice: level.PMSCostPrice,
+    PMSSellingPrice: level.PMSSellingPrice,
+    AGOCostPrice: level.AGOCostPrice,
+    AGOSellingPrice: level.AGOSellingPrice,
+    DPKCostPrice: level.DPKCostPrice,
+    DPKSellingPrice: level.DPKSellingPrice,
     currentLevel: level.currentLevel,
     tankName: level.tankName,
     productType: level.productType,
@@ -996,24 +980,24 @@ const getTankLevelsPayload = (level, currentDate, currentShift) => {
     tankCapacity: level.tankCapacity,
     outletID: level.outletID,
     tankID: level._id,
-    organizationID: level.organisationID,
+    organizationID: level.organizationID,
     shift: currentShift,
     createdAt: currentDate,
     updatedAt: currentDate,
   };
 };
 
-const getBalanceCF = (sales, currentDate) => {
-  return {
-    balanceCF: sales.balanceCF,
-    initialState: "0",
-    productType: sales.productType,
-    outletID: sales.outletID,
-    organizationID: sales.organisationID,
-    createdAt: currentDate,
-    updatedAt: currentDate,
-  };
-};
+// const getBalanceCF = (sales, currentDate) => {
+//   return {
+//     balanceCF: sales.balanceCF,
+//     initialState: "0",
+//     productType: sales.productType,
+//     outletID: sales.outletID,
+//     organizationID: sales.organisationID,
+//     createdAt: currentDate,
+//     updatedAt: currentDate,
+//   };
+// };
 
 const add = {
   width: "100%",

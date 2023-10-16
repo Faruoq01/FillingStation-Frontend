@@ -228,7 +228,9 @@ const PendingSales = (props) => {
             sales: 0,
             outlet: null,
             pumps: [],
-            beforeSales: data.currentLevel,
+            beforeSales: data.afterSales,
+            previousLevel: data.beforeSales,
+            currentLevel: data.afterSales,
             afterSales: 0,
             RTlitre: 0,
           };

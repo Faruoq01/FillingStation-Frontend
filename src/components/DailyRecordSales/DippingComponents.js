@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import me4 from "../../assets/me4.png";
-import { dippingPayload } from "../../storage/recordsales";
+import { tankList, updateSelectedTanks } from "../../storage/recordsales";
 import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 
@@ -24,23 +24,17 @@ const DippingComponents = (props) => {
   const dispatch = useDispatch();
 
   /////////////////////////////////////////////////////////
-  const dippingPayloadData = useSelector(
-    (state) => state.recordsales.dippingPayload
-  );
   const [pms, setPMS] = useState([]);
   const [ago, setAGO] = useState([]);
   const [dpk, setDPK] = useState([]);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const tankListData = useSelector((state) => state.recordsales.tankList);
-  const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const currentShift = useSelector((state) => state.recordsales.currentShift);
-  console.log(tankListData, "tank list data");
+  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
 
   const getStationTanks = useCallback(() => {
     const copyTanks = JSON.parse(JSON.stringify(tankListData));
     const outletTanks = copyTanks.map((data) => {
-      const newData = { ...data, label: data.tankName, value: data._id };
+      const newData = { ...data, label: data.tankName, value: data.tankID };
       return newData;
     });
 
@@ -74,182 +68,45 @@ const DippingComponents = (props) => {
 
   const setTotalizer = (e, item, index) => {
     const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
+    const tankCopy = JSON.parse(JSON.stringify(item));
+    tankCopy.dipping = removeFormat;
+
+    const tankListCopy = JSON.parse(JSON.stringify(tankListData));
+    const selectedTanksCopy = JSON.parse(JSON.stringify(selectedTanks));
+    const findID = tankListCopy.findIndex(
+      (data) => data.tankID === item.tankID
+    );
+    if (findID !== -1) {
+      tankListCopy[findID] = tankCopy;
+      dispatch(tankList(tankListCopy));
+    }
+
+    const tankIndex = selectedTanksCopy.findIndex(
+      (data) => data.tankID === item.tankID
+    );
+
+    if (tankIndex !== -1) {
+      selectedTanksCopy[tankIndex] = tankCopy;
+      dispatch(updateSelectedTanks(selectedTanksCopy));
+    }
+
     switch (item.productType) {
       case "PMS": {
-        const connectedPumps = selectedPumps.filter(
-          (data) => data.hostTank === item._id
-        );
-        const totalSales = connectedPumps.reduce((accum, current) => {
-          return Number(accum) + Number(current.sales);
-        }, 0);
-
-        const totalSalesRT = connectedPumps.reduce((accum, current) => {
-          return Number(accum) + Number(current.RTlitre);
-        }, 0);
-
-        const levelAfterSales =
-          Number(item.afterSales) - totalSales + totalSalesRT;
-        let clonedPMS = { ...item };
-        clonedPMS = {
-          ...clonedPMS,
-          dippingValue: removeFormat,
-          afterSales: levelAfterSales,
-        };
-        const newPMSList = [...pms];
-        newPMSList[index] = clonedPMS;
-        setPMS(newPMSList);
-
-        const payload = {
-          tankID: item._id,
-          productType: item.productType,
-          currentLevel: item.afterSales,
-          tankCapacity: item.tankCapacity,
-          dipping: removeFormat,
-          afterSales: levelAfterSales,
-          tankName: item.tankName,
-          PMSCostPrice: oneStationData.PMSCost,
-          PMSSellingPrice: oneStationData.PMSPrice,
-          AGOCostPrice: oneStationData.AGOCost,
-          AGOSellingPrice: oneStationData.AGOPrice,
-          DPKCostPrice: oneStationData.DPKCost,
-          DPKSellingPrice: oneStationData.DPKPrice,
-          outletID: oneStationData._id,
-          organizationID: oneStationData.organisation,
-          shift: currentShift,
-          createdAt: currentDate,
-          updatedAt: currentDate,
-        };
-
-        const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData)); // Create a deep copy
-        const indices = copyDipping.findIndex(
-          (data) => data.tankID === item._id
-        );
-
-        if (indices === -1) {
-          copyDipping.push(payload);
-          dispatch(dippingPayload(copyDipping));
-        } else {
-          copyDipping[indices] = payload;
-          dispatch(dippingPayload(copyDipping));
-        }
+        const pmsCopy = JSON.parse(JSON.stringify(pms));
+        pmsCopy.splice(index, 1, tankCopy);
+        setPMS(pmsCopy);
         break;
       }
-
       case "AGO": {
-        const connectedPumps = selectedPumps.filter(
-          (data) => data.hostTank === item._id
-        );
-        const totalSales = connectedPumps.reduce((accum, current) => {
-          return Number(accum) + Number(current.sales);
-        }, 0);
-
-        const totalSalesRT = connectedPumps.reduce((accum, current) => {
-          return Number(accum) + Number(current.RTlitre);
-        }, 0);
-
-        const levelAfterSales =
-          Number(item.afterSales) - totalSales + totalSalesRT;
-        let clonedAGO = { ...item };
-        clonedAGO = {
-          ...clonedAGO,
-          dippingValue: removeFormat,
-          afterSales: levelAfterSales,
-        };
-        const newAGOList = [...ago];
-        newAGOList[index] = clonedAGO;
-        setAGO(newAGOList);
-
-        const payload = {
-          tankID: item._id,
-          productType: item.productType,
-          currentLevel: item.afterSales,
-          tankCapacity: item.tankCapacity,
-          dipping: removeFormat,
-          afterSales: levelAfterSales,
-          tankName: item.tankName,
-          PMSCostPrice: oneStationData.PMSCost,
-          PMSSellingPrice: oneStationData.PMSPrice,
-          AGOCostPrice: oneStationData.AGOCost,
-          AGOSellingPrice: oneStationData.AGOPrice,
-          DPKCostPrice: oneStationData.DPKCost,
-          DPKSellingPrice: oneStationData.DPKPrice,
-          outletID: oneStationData._id,
-          organizationID: oneStationData.organisation,
-          shift: currentShift,
-          createdAt: currentDate,
-          updatedAt: currentDate,
-        };
-
-        const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData));
-        const indices = copyDipping.findIndex(
-          (data) => data.tankID === item._id
-        );
-        if (indices === -1) {
-          copyDipping.push(payload);
-          dispatch(dippingPayload(copyDipping));
-        } else {
-          copyDipping[indices] = payload;
-          dispatch(dippingPayload(copyDipping));
-        }
+        const agoCopy = JSON.parse(JSON.stringify(ago));
+        agoCopy.splice(index, 1, tankCopy);
+        setAGO(agoCopy);
         break;
       }
-
       case "DPK": {
-        const connectedPumps = selectedPumps.filter(
-          (data) => data.hostTank === item._id
-        );
-        const totalSales = connectedPumps.reduce((accum, current) => {
-          return Number(accum) + Number(current.sales);
-        }, 0);
-
-        const totalSalesRT = connectedPumps.reduce((accum, current) => {
-          return Number(accum) + Number(current.RTlitre);
-        }, 0);
-
-        const levelAfterSales =
-          Number(item.afterSales) - totalSales + totalSalesRT;
-        let clonedDPK = { ...item };
-        clonedDPK = {
-          ...clonedDPK,
-          dippingValue: removeFormat,
-          afterSales: levelAfterSales,
-        };
-        const newDPKList = [...dpk];
-        newDPKList[index] = clonedDPK;
-        setDPK(newDPKList);
-
-        const payload = {
-          tankID: item._id,
-          productType: item.productType,
-          currentLevel: item.afterSales,
-          tankCapacity: item.tankCapacity,
-          dipping: removeFormat,
-          afterSales: levelAfterSales,
-          tankName: item.tankName,
-          PMSCostPrice: oneStationData.PMSCost,
-          PMSSellingPrice: oneStationData.PMSPrice,
-          AGOCostPrice: oneStationData.AGOCost,
-          AGOSellingPrice: oneStationData.AGOPrice,
-          DPKCostPrice: oneStationData.DPKCost,
-          DPKSellingPrice: oneStationData.DPKPrice,
-          outletID: oneStationData._id,
-          organizationID: oneStationData.organisation,
-          shift: currentShift,
-          createdAt: currentDate,
-          updatedAt: currentDate,
-        };
-
-        const copyDipping = JSON.parse(JSON.stringify(dippingPayloadData));
-        const indices = copyDipping.findIndex(
-          (data) => data.tankID === item._id
-        );
-        if (indices === -1) {
-          copyDipping.push(payload);
-          dispatch(dippingPayload(copyDipping));
-        } else {
-          copyDipping[indices] = payload;
-          dispatch(dippingPayload(copyDipping));
-        }
+        const dpkCopy = JSON.parse(JSON.stringify(dpk));
+        dpkCopy.splice(index, 1, tankCopy);
+        setDPK(dpkCopy);
         break;
       }
       default: {
@@ -344,7 +201,7 @@ const DippingComponents = (props) => {
                 <div
                   style={{
                     justifyContent: "flex-start",
-                    height: "210px",
+                    height: "230px",
                     marginLeft: "20px",
                     marginRight: "0px",
                   }}
@@ -361,17 +218,17 @@ const DippingComponents = (props) => {
                   <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  {/* <div
+                  <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.afterSales
-                  )}`}</div> */}
+                    item.currentLevel
+                  )}`}</div>
                   <div style={{ marginTop: "10px" }} className="label">
                     Dipping (Litres)
                   </div>
 
                   <input
-                    value={ApproximateDecimal(item.dippingValue)}
+                    value={ApproximateDecimal(item.dipping)}
                     onChange={(e) => setTotalizer(e, item, index)}
                     style={imps}
                     type="text"
@@ -404,7 +261,7 @@ const DippingComponents = (props) => {
                 <div
                   style={{
                     justifyContent: "flex-start",
-                    height: "210px",
+                    height: "230px",
                     marginLeft: "20px",
                     marginRight: "0px",
                   }}
@@ -421,17 +278,17 @@ const DippingComponents = (props) => {
                   <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  {/* <div
+                  <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.afterSales
-                  )}`}</div> */}
+                    item.currentLevel
+                  )}`}</div>
                   <div style={{ marginTop: "10px" }} className="label">
                     Dipping (Litres)
                   </div>
 
                   <input
-                    value={ApproximateDecimal(item.dippingValue)}
+                    value={ApproximateDecimal(item.dipping)}
                     onChange={(e) => setTotalizer(e, item, index)}
                     style={imps}
                     type="text"
@@ -464,7 +321,7 @@ const DippingComponents = (props) => {
                 <div
                   style={{
                     justifyContent: "flex-start",
-                    height: "210px",
+                    height: "230px",
                     marginLeft: "20px",
                     marginRight: "0px",
                   }}
@@ -481,17 +338,17 @@ const DippingComponents = (props) => {
                   <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  {/* <div
+                  <div
                     style={{ marginTop: "5px", color: "green" }}
                     className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.afterSales
-                  )}`}</div> */}
+                    item.currentLevel
+                  )}`}</div>
                   <div style={{ marginTop: "10px" }} className="label">
                     Dipping (Litres)
                   </div>
 
                   <input
-                    value={ApproximateDecimal(item.dippingValue)}
+                    value={ApproximateDecimal(item.dipping)}
                     onChange={(e) => setTotalizer(e, item, index)}
                     style={imps}
                     type="text"
