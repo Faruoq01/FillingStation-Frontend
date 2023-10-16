@@ -150,7 +150,7 @@ const ReturnToTank = (props) => {
     if (selectedTanks.length !== 0) {
       const clonedTanks = [...selectedTanks];
       const currentTank = clonedTanks.filter(
-        (data) => data._id === item.hostTank
+        (data) => data.tankID === item.hostTank
       );
 
       if (currentTank.length !== 0) {

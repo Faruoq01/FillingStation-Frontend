@@ -499,6 +499,8 @@ const SummaryRecord = (props) => {
           supply: daySupplyData,
         }),
       ];
+
+      console.log(payload, "payload");
       Promise.allSettled(payload)
         .then((results) => {
           handleClose();
@@ -951,7 +953,7 @@ const getRTPayload = (tank, pump, currentDate, currentShift) => {
     pumpName: pump.pumpName,
     tankName: tank.tankName,
     outletID: tank.outletID,
-    organizationID: tank.organisationID,
+    organizationID: tank.organizationID,
     shift: currentShift,
     createdAt: currentDate,
     updatedAt: currentDate,
@@ -986,18 +988,6 @@ const getTankLevelsPayload = (level, currentDate, currentShift) => {
     updatedAt: currentDate,
   };
 };
-
-// const getBalanceCF = (sales, currentDate) => {
-//   return {
-//     balanceCF: sales.balanceCF,
-//     initialState: "0",
-//     productType: sales.productType,
-//     outletID: sales.outletID,
-//     organizationID: sales.organisationID,
-//     createdAt: currentDate,
-//     updatedAt: currentDate,
-//   };
-// };
 
 const add = {
   width: "100%",
