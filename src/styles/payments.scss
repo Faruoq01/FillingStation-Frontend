@@ -312,16 +312,8 @@
     margin-top: 20px;
 }
 
-@media (max-width: 1150px){
-    .paymentsCaontainer{
-        margin-top: 80px;
-    }
-}
-
 @media (max-width: 1000px){
     .paymentsCaontainer{
-        margin-top: 80px;
-
         .inner-pay{
             .search{
                 .input-cont{
@@ -342,6 +334,7 @@
 
 @media (max-width: 530px){
     .paymentsCaontainer{
+        margin-top: 20px;
         .inner-pay{
             .action{
                 display: flex;

@@ -189,59 +189,59 @@ const HomeScreen = () => {
   };
 
   return (
-    <Grid container>
-      <Hidden mdUp>
-        <Grid xs={12} sm={12} item>
-          <Box sx={mobileTop}>
-            <MobileAppBar />
-          </Box>
-        </Grid>
-      </Hidden>
-      <Hidden mdDown>
-        <Grid md={2} lg={2} xl={2} item>
-          <Box sx={sidebar}>
-            <DesktopSideBar />
-            {isOpen && (
-              <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />
-            )}
-            {openRight && <NotificationDrawer open={setOpenRight} />}
-          </Box>
-        </Grid>
-      </Hidden>
-      <Grid
-        sx={{ marginTop: isSmallScreen ? "60px" : "0px" }}
-        xs={12}
-        sm={12}
-        md={10}
-        lg={10}
-        xl={10}
-        item>
-        <Box sx={main}>
-          <Grid container>
-            <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
-              <Box sx={mobileTop}>
-                <TitleNavBar />
-              </Box>
-            </Grid>
-            <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
-              <SimpleBarReact style={{ maxHeight: "92vh" }}>
-                <div style={inner}>
-                  <TopNavBar open={setOpenRight} />
-                  <Outlet />
-                </div>
-              </SimpleBarReact>
-            </Grid>
+    <React.Fragment>
+      <Grid container>
+        <Hidden mdUp>
+          <Grid xs={12} sm={12} item>
+            <Box sx={mobileTop}>
+              <MobileAppBar toggle={toggleDrawer} open={isOpen} />
+            </Box>
           </Grid>
-        </Box>
-      </Grid>
-      <Hidden mdUp>
-        <Grid xs={12} sm={12} item>
-          <Box sx={mobileTop}>
-            <AppBottomNavigation />
+        </Hidden>
+        <Hidden mdDown>
+          <Grid md={2} lg={2} xl={2} item>
+            <Box sx={sidebar}>
+              <DesktopSideBar />
+            </Box>
+          </Grid>
+        </Hidden>
+        <Grid
+          sx={{ marginTop: isSmallScreen ? "60px" : "0px" }}
+          xs={12}
+          sm={12}
+          md={10}
+          lg={10}
+          xl={10}
+          item>
+          <Box sx={main}>
+            <Grid container>
+              <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
+                <Box sx={mobileTop}>
+                  <TitleNavBar />
+                </Box>
+              </Grid>
+              <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
+                <SimpleBarReact style={{ maxHeight: "92vh" }}>
+                  <div style={inner}>
+                    <TopNavBar open={setOpenRight} />
+                    <Outlet />
+                  </div>
+                </SimpleBarReact>
+              </Grid>
+            </Grid>
           </Box>
         </Grid>
-      </Hidden>
-    </Grid>
+        <Hidden mdUp>
+          <Grid xs={12} sm={12} item>
+            <Box sx={mobileTop}>
+              <AppBottomNavigation />
+            </Box>
+          </Grid>
+        </Hidden>
+      </Grid>
+      {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
+      {openRight && <NotificationDrawer open={setOpenRight} />}
+    </React.Fragment>
     // <div className="home-container">
     //   <DesktopSideBar />
     // {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
@@ -265,7 +265,6 @@ const HomeScreen = () => {
 const sidebar = {
   width: "100%",
   height: "100vh",
-  background: "red",
 };
 
 const main = {

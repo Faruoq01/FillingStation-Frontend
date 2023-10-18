@@ -436,18 +436,6 @@
 }
 
 @media (max-width: 1150px){
-    .daily-sales-container{
-        margin-top: 80px;
-
-        .daily-left{
-            .item-dash-daily{
-                .dash-item{
-                    
-                }
-            }
-        }
-    }
-
     .sales{
         width: 100%;
         overflow-x: scroll;
@@ -464,6 +452,7 @@
 
 @media (max-width: 950px){
     .daily-sales-container{
+        margin-top: 20px;
         flex-direction: column;
 
         .daily-left{

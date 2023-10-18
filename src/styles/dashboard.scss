@@ -561,14 +561,9 @@
     }
 }
 
-@media (max-width: 1150px){
+@media (max-width: 960px){
     .dashboardContainer{
-        margin-top: 80px;
-    }
-}
-
-@media (max-width: 950px){
-    .dashboardContainer{
+        margin-top: 20px;
         flex-direction: column;
 
         .left-dash{

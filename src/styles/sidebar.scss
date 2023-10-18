@@ -7,8 +7,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    position: sticky;
-    top: 0;
 
     .inner-side-bar{
         width: 85%;
@@ -97,7 +95,13 @@
 
 @media (max-width: 600px){
     .side-bar{
-        width: 250px;
         overflow: hidden;
+
+        .inner-side-bar{
+            .home-logo{
+                margin-left: 30px;
+                height: 55px;
+            }
+        }
     }
 }

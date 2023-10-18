@@ -56,11 +56,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar({ toggle, open }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
-  const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
@@ -71,13 +70,12 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(null);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const closeSideBar = () => {
+    toggle();
   };
 
   const menuId = "primary-search-account-menu";
@@ -94,10 +92,22 @@ export default function PrimarySearchAppBar() {
         vertical: "top",
         horizontal: "right",
       }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}>
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      open={isMobileMenuOpen}
+      onClose={() => {
+        handleMobileMenuClose();
+      }}>
+      <MenuItem
+        onClick={() => {
+          handleMobileMenuClose();
+        }}>
+        Profile
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMobileMenuClose();
+        }}>
+        My account
+      </MenuItem>
     </Menu>
   );
 
@@ -160,7 +170,7 @@ export default function PrimarySearchAppBar() {
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}>
-            <MenuIcon />
+            <MenuIcon onClick={closeSideBar} />
           </IconButton>
           <Typography
             variant="h6"
