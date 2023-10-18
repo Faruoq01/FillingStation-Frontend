@@ -64,17 +64,10 @@
     background: #555;
 }
 
-@media (max-width: 1150px){
-    .salesContainer2{
-        margin-top: 80px;
-    }
-}
-
 @media (max-width: 1000px){
     .salesContainer2{
         width: 100%;
         height: auto;
-        margin-top: 80px;
         margin-bottom: 30px;
 
         .inner{

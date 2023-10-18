@@ -5,6 +5,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-top: 50px;
 
     .action{
         display: none;
@@ -260,8 +261,8 @@
 
 @media (max-width: 1000px){
     .settingsContainer{
+        margin-top: 20px;
         height: auto;
-        margin-top: 80px;
 
         .action{
             display: flex;
