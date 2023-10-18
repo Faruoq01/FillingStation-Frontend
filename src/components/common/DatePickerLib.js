@@ -29,6 +29,8 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
     end: parseDate(today),
   });
 
+  console.log(range, "date range");
+
   const setDateRange = useCallback((updatedDate) => {
     const initiateDate = {
       start: parseDate(updatedDate[0]),

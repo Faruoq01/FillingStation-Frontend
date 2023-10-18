@@ -10,6 +10,7 @@ import { updateUser } from "../../storage/auth";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { routeNames } from "../../modules/routenames";
+import "../../styles/topbarnote.scss";
 
 const TopNavBar = ({ open }) => {
   const dispatch = useDispatch();

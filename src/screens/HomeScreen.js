@@ -14,6 +14,13 @@ import MobileNavBar from "../components/common/mobilenavbar";
 import DesktopSideBar from "../components/common/desktopsidebar";
 import MobileSideBar from "../components/common/mobilesidebar";
 import TitleNavBar from "../components/common/titlebar";
+import { Grid, Box, Hidden } from "@mui/material";
+import MobileAppBar from "../components/common/appbar";
+import AppBottomNavigation from "../components/common/appnavigation";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import SimpleBarReact from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
 
 const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);
@@ -23,6 +30,9 @@ const HomeScreen = () => {
   const online = useSelector((data) => data.auth.connection);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
+
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -179,24 +189,93 @@ const HomeScreen = () => {
   };
 
   return (
-    <div className="home-container">
-      <DesktopSideBar />
-      {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
-      {openRight && <NotificationDrawer open={setOpenRight} />}
-      <div
-        style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
-        className="main-content">
-        <TitleNavBar />
-        <div className="home-content">
-          <MobileNavBar open={setOpenRight} drawer={setIsOpen} />
-          <TopNavBar open={setOpenRight} />
-          <div style={inner}>
-            <Outlet />
-          </div>
-        </div>
-      </div>
-    </div>
+    <Grid container>
+      <Hidden mdUp>
+        <Grid xs={12} sm={12} item>
+          <Box sx={mobileTop}>
+            <MobileAppBar />
+          </Box>
+        </Grid>
+      </Hidden>
+      <Hidden mdDown>
+        <Grid md={2} lg={2} xl={2} item>
+          <Box sx={sidebar}>
+            <DesktopSideBar />
+            {isOpen && (
+              <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />
+            )}
+            {openRight && <NotificationDrawer open={setOpenRight} />}
+          </Box>
+        </Grid>
+      </Hidden>
+      <Grid
+        sx={{ marginTop: isSmallScreen ? "60px" : "0px" }}
+        xs={12}
+        sm={12}
+        md={10}
+        lg={10}
+        xl={10}
+        item>
+        <Box sx={main}>
+          <Grid container>
+            <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
+              <Box sx={mobileTop}>
+                <TitleNavBar />
+              </Box>
+            </Grid>
+            <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
+              <SimpleBarReact style={{ maxHeight: "92vh" }}>
+                <div style={inner}>
+                  <TopNavBar open={setOpenRight} />
+                  <Outlet />
+                </div>
+              </SimpleBarReact>
+            </Grid>
+          </Grid>
+        </Box>
+      </Grid>
+      <Hidden mdUp>
+        <Grid xs={12} sm={12} item>
+          <Box sx={mobileTop}>
+            <AppBottomNavigation />
+          </Box>
+        </Grid>
+      </Hidden>
+    </Grid>
+    // <div className="home-container">
+    //   <DesktopSideBar />
+    // {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
+    // {openRight && <NotificationDrawer open={setOpenRight} />}
+    //   <div
+    //     style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
+    //     className="main-content">
+    //     <TitleNavBar />
+    // <div className="home-content">
+    //   <MobileNavBar open={setOpenRight} drawer={setIsOpen} />
+    //   <TopNavBar open={setOpenRight} />
+    //   <div style={inner}>
+    //     <Outlet />
+    //   </div>
+    // </div>
+    //   </div>
+    // </div>
   );
+};
+
+const sidebar = {
+  width: "100%",
+  height: "100vh",
+  background: "red",
+};
+
+const main = {
+  width: "100%",
+  minHeight: "100vh",
+};
+
+const mobileTop = {
+  width: "100%",
+  background: "yellow",
 };
 
 const inner = {
