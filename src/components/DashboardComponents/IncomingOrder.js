@@ -14,6 +14,7 @@ const IncomingOrder = () => {
   const user = useSelector((state) => state.auth.user);
   const incomingData = useSelector((state) => state.dashboard.incoming);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -30,10 +31,12 @@ const IncomingOrder = () => {
     return user.permission?.dailySales[e];
   };
 
-  const getIncomingOrder = useCallback((station) => {
+  const getIncomingOrder = useCallback((station, updateDate) => {
     const payload = {
       outletID: station === null ? "None" : station._id,
       organisationID: resolveUserID().id,
+      start: updateDate[0],
+      end: updateDate[1],
     };
 
     APIs.post("/dashboard/incoming", payload)
@@ -45,8 +48,8 @@ const IncomingOrder = () => {
   }, []);
 
   useEffect(() => {
-    getIncomingOrder(oneStationData);
-  }, [getIncomingOrder, oneStationData]);
+    getIncomingOrder(oneStationData, updateDate);
+  }, [getIncomingOrder, oneStationData, updateDate]);
 
   const goToInc = () => {
     if (!getPerm("8")) return swal("Warning!", "Permission denied", "info");

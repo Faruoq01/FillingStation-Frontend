@@ -79,14 +79,15 @@ const IncomingOrder = () => {
     return user.permission?.incomingOrder[e];
   };
 
-  const getIncomingOrder = useCallback((updateDate, skip) => {
-    refresh("None", updateDate, skip);
+  const getIncomingOrder = useCallback((outletID, updateDate, skip) => {
+    refresh(outletID, updateDate, skip);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getIncomingOrder(updateDate, skip);
-  }, [getIncomingOrder, updateDate, skip]);
+    const outletID = oneStationData === null ? "None" : oneStationData._id;
+    getIncomingOrder(outletID, updateDate, skip);
+  }, [getIncomingOrder, updateDate, skip, oneStationData]);
 
   const openCreateModal = () => {
     if (oneStationData === null)
@@ -127,7 +128,8 @@ const IncomingOrder = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", updateDate, skip, limit);
+    const outletID = oneStationData === null ? "None" : oneStationData._id;
+    refresh(outletID, updateDate, skip, limit);
   };
 
   const stationHelper = (id) => {
@@ -215,7 +217,7 @@ const IncomingOrder = () => {
           limit={limit}
           total={total}
           setSkip={setSkip}
-          updateDate={"None"}
+          updateDate={updateDate}
           callback={refresh}
         />
       </TablePageBackground>

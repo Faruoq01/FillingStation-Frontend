@@ -19,6 +19,7 @@ import IncomingService from "../../services/360station/IncomingService";
 const Action = ({ data, setIncomingOrderEditModal, refresh, skip }) => {
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const handleDelete = (data) => {
     swal({
@@ -34,7 +35,7 @@ const Action = ({ data, setIncomingOrderEditModal, refresh, skip }) => {
           quantity: data.quantity,
           productOrderID: data.productOrderID,
         }).then(() => {
-          refresh(oneStationData._id, "None", skip);
+          refresh(oneStationData._id, updateDate, skip);
           swal("Success", "Incoming order deleted successfully!", "success");
         });
       }
