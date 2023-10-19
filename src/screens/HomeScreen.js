@@ -34,6 +34,12 @@ const HomeScreen = () => {
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
+  const hideScrollbarOnMobile = () => {
+    if (isSmallScreen) {
+      document.body.style.overflow = "hidden";
+    }
+  };
+
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
       return { id: user._id };
@@ -55,6 +61,8 @@ const HomeScreen = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
       dispatch(updateUser(data.user));
     });
+
+    hideScrollbarOnMobile();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user._id, user.userType, user.outletID, dispatch]);
