@@ -29,8 +29,6 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
     end: parseDate(today),
   });
 
-  console.log(range, "date range");
-
   const setDateRange = useCallback((updatedDate) => {
     const initiateDate = {
       start: parseDate(updatedDate[0]),
@@ -43,38 +41,48 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
     setDateRange(updatedDate);
   }, [setDateRange, updatedDate]);
 
+  const getFormat = (day) => {
+    if(day.toString().length === 1){
+      return `0${day}`
+    }
+    return day.toString();
+  }
+
   const getDateRange = (data) => {
     const start = data.start;
     const end = data.end;
 
-    let startDate = `${start.year}-${start.month}-${start.day}`;
-    let endDate = `${end.year}-${end.month}-${end.day}`;
+    let startDate = `${start.year}-${getFormat(start.month)}-${getFormat(start.day)}`;
+    let endDate = `${end.year}-${getFormat(end.month)}-${getFormat(end.day)}`;
 
-    startDate = moment(startDate).format("YYYY-MM-DD").split(" ")[0];
-    endDate = sales
-      ? startDate
-      : moment(endDate).format("YYYY-MM-DD").split(" ")[0];
+    const startMoment = moment(startDate).format("YYYY-MM-DD").split(' ')[0];
+    const endMoment = sales? startMoment: moment(endDate).format('YYYY-MM-DD').split(' ')[0];
 
     dispatch(dateRange([startDate, endDate]));
 
     const constructDate = {
-      start: parseDate(startDate),
-      end: parseDate(endDate),
+      start: parseDate(startMoment),
+      end: parseDate(endMoment),
     };
     setRange(constructDate);
   };
+
+  const dateFormat = (date) => {
+    const start = moment(date[0]).format('D MMM').split(' ')[0];
+    const end = moment(date[1]).format('D MMM, YYYY').split(' ')[0];
+
+    if(date[0] === date[1]){
+      return end;
+    }
+    return start.concat(" - ", end);
+  }
 
   return (
     <div style={{ marginTop: mt }}>
       <DateRangePicker disabled={true} value={range} onChange={getDateRange}>
         <Group>
           <div className="date-format-text">
-            {range
-              ? formatter.formatRange(
-                  range.start.toDate(getLocalTimeZone()),
-                  range.end.toDate(getLocalTimeZone())
-                )
-              : "--"}
+              {dateFormat(updatedDate)}
           </div>
           {disabled && <InsertInvitationIcon sx={icon} />}
           {disabled || (
