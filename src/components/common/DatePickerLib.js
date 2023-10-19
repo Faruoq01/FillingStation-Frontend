@@ -10,8 +10,7 @@ import {
   RangeCalendar,
 } from "react-aria-components";
 import "../../styles/common/arialdate.scss";
-import { parseDate, getLocalTimeZone } from "@internationalized/date";
-import { useDateFormatter } from "@react-aria/i18n";
+import { parseDate } from "@internationalized/date";
 import React, { useCallback, useEffect } from "react";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 import moment from "moment";
@@ -21,7 +20,6 @@ import { dateRange } from "../../storage/dashboard";
 const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
   const dispatch = useDispatch();
   const today = moment().format("YYYY-MM-DD").split(" ")[0];
-  let formatter = useDateFormatter({ dateStyle: "long" });
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
 
   let [range, setRange] = React.useState({
@@ -42,21 +40,25 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
   }, [setDateRange, updatedDate]);
 
   const getFormat = (day) => {
-    if(day.toString().length === 1){
-      return `0${day}`
+    if (day.toString().length === 1) {
+      return `0${day}`;
     }
     return day.toString();
-  }
+  };
 
   const getDateRange = (data) => {
     const start = data.start;
     const end = data.end;
 
-    let startDate = `${start.year}-${getFormat(start.month)}-${getFormat(start.day)}`;
+    let startDate = `${start.year}-${getFormat(start.month)}-${getFormat(
+      start.day
+    )}`;
     let endDate = `${end.year}-${getFormat(end.month)}-${getFormat(end.day)}`;
 
-    const startMoment = moment(startDate).format("YYYY-MM-DD").split(' ')[0];
-    const endMoment = sales? startMoment: moment(endDate).format('YYYY-MM-DD').split(' ')[0];
+    const startMoment = moment(startDate).format("YYYY-MM-DD");
+    const endMoment = sales
+      ? startMoment
+      : moment(endDate).format("YYYY-MM-DD");
 
     dispatch(dateRange([startDate, endDate]));
 
@@ -68,22 +70,20 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
   };
 
   const dateFormat = (date) => {
-    const start = moment(date[0]).format('D MMM').split(' ')[0];
-    const end = moment(date[1]).format('D MMM, YYYY').split(' ')[0];
+    const start = moment(date[0]).format("D MMM");
+    const end = moment(date[1]).format("D MMM, YYYY");
 
-    if(date[0] === date[1]){
+    if (date[0] === date[1]) {
       return end;
     }
     return start.concat(" - ", end);
-  }
+  };
 
   return (
     <div style={{ marginTop: mt }}>
       <DateRangePicker disabled={true} value={range} onChange={getDateRange}>
         <Group>
-          <div className="date-format-text">
-              {dateFormat(updatedDate)}
-          </div>
+          <div className="date-format-text">{dateFormat(updatedDate)}</div>
           {disabled && <InsertInvitationIcon sx={icon} />}
           {disabled || (
             <Button>
