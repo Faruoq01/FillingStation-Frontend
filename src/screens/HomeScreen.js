@@ -290,6 +290,7 @@ const inner = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+  paddingBottom: "50px",
 };
 
 export default HomeScreen;
