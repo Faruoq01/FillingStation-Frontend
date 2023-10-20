@@ -230,7 +230,11 @@ const HomeScreen = () => {
               </Grid>
               <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
                 <SimpleBarReact style={{ maxHeight: "92vh" }}>
-                  <div style={inner}>
+                  <div
+                    style={{
+                      ...inner,
+                      paddingBottom: isSmallScreen ? "100px" : "50px",
+                    }}>
                     <TopNavBar open={setOpenRight} />
                     <Outlet />
                   </div>
@@ -290,7 +294,6 @@ const inner = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  paddingBottom: "50px",
 };
 
 export default HomeScreen;
