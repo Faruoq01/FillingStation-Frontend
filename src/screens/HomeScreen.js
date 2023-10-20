@@ -199,6 +199,7 @@ const HomeScreen = () => {
   return (
     <React.Fragment>
       <Grid container>
+        {openRight && <NotificationDrawer open={setOpenRight} />}
         <Hidden mdUp>
           <Grid xs={12} sm={12} item>
             <Box sx={mobileTop}>
@@ -252,25 +253,7 @@ const HomeScreen = () => {
         </Hidden>
       </Grid>
       {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
-      {openRight && <NotificationDrawer open={setOpenRight} />}
     </React.Fragment>
-    // <div className="home-container">
-    //   <DesktopSideBar />
-    // {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
-    // {openRight && <NotificationDrawer open={setOpenRight} />}
-    //   <div
-    //     style={{ background: user.isDark === "0" ? "#fff" : "#404040" }}
-    //     className="main-content">
-    //     <TitleNavBar />
-    // <div className="home-content">
-    //   <MobileNavBar open={setOpenRight} drawer={setIsOpen} />
-    //   <TopNavBar open={setOpenRight} />
-    //   <div style={inner}>
-    //     <Outlet />
-    //   </div>
-    // </div>
-    //   </div>
-    // </div>
   );
 };
 
