@@ -133,19 +133,10 @@ const ProductBalance = (props) => {
           APIs.post("/sales/delete/pumpUpdate", {
             record: data,
             station: oneStationData,
-          })
-            .then(({ data }) => {
-              if (data.status === "last") {
-                APIs.post("/sales/delete/supply", {
-                  date: currentDate[0],
-                  station: oneStationData,
-                });
-              }
-            })
-            .then(() => {
-              setRefresh(!refresh);
-              swal("Success", "Record deleted successfully", "success");
-            });
+          }).then(() => {
+            setRefresh(!refresh);
+            swal("Success", "Record deleted successfully", "success");
+          });
         }
       }
     });

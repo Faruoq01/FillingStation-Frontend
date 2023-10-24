@@ -77,26 +77,6 @@ const Dipping = () => {
     setOneRecord(data);
   };
 
-  const deleteRecord = (data) => {
-    swal({
-      title: "Alert!",
-      text: "Are you sure you want to delete this record?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        APIs.post("/sales/delete/dipping", { id: data._id })
-          .then((data) => {
-            setRefresh(!refresh);
-          })
-          .then(() => {
-            swal("Success", "Record deleted successfully", "success");
-          });
-      }
-    });
-  };
-
   const DippingRow = (props) => {
     return (
       <div style={{ marginTop: "5px" }} className="product_balance_header">
@@ -131,9 +111,6 @@ const Dipping = () => {
               alt="icon"
             />
             <img
-              onClick={() => {
-                deleteRecord(props.data);
-              }}
               style={{ width: "20px", height: "20px" }}
               src={del}
               alt="icon"
@@ -200,9 +177,6 @@ const Dipping = () => {
                     alt="icon"
                   />
                   <img
-                    onClick={() => {
-                      deleteRecord(data);
-                    }}
                     style={{ width: "20px", height: "20px" }}
                     src={del}
                     alt="icon"

@@ -7,33 +7,19 @@ import { ThreeDots } from "react-loader-spinner";
 import swal from "sweetalert";
 import "../../../styles/lpo.scss";
 import { useEffect } from "react";
-import DailySalesService from "../../../services/360station/DailySales";
-import { useDispatch, useSelector } from "react-redux";
 import APIs from "../../../services/connections/api";
 
 const UpdateDipping = (props) => {
-  const user = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
-  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.dailysales.currentDate);
   const [loading, setLoading] = useState(false);
   const [currentLevel, setCurrentLevel] = useState("");
   const [dipping, setDipping] = useState("");
 
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
-
   const handleClose = () => props.close(false);
 
   useEffect(() => {
-    setCurrentLevel(props.data.currentLevel);
+    setCurrentLevel(props.data.afterSales);
     setDipping(props.data.dipping);
-  }, [props.data.currentLevel, props.data.dipping]);
+  }, [props.data.afterSales, props.data.dipping]);
 
   const submit = () => {
     if (currentLevel === "")
