@@ -26,10 +26,6 @@ const EditPump = (props) => {
 
   const handleClose = () => dispatch(props.close(false));
 
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
-
   const handleOpen = () => {
     if (hostTank === null)
       return swal("Warning!", "Please select host tank", "info");
@@ -46,10 +42,10 @@ const EditPump = (props) => {
     const data = {
       id: props.data._id,
       pumpName: pumpName,
-      hostTank: hostTank._id,
+      hostTank: hostTank.tankID,
       productType: productType,
-      totalizerReading: removeSpecialCharacters(totalizer),
-      organisationID: hostTank.organisationID,
+      totalizerReading: totalizer,
+      organisationID: hostTank.organizationID,
       outletID: hostTank.outletID,
       hostTankName: hostTank.tankName,
     };
@@ -72,7 +68,7 @@ const EditPump = (props) => {
 
   useEffect(() => {
     const findID = props.allTank.findIndex(
-      (data) => data._id === props.data.hostTank
+      (data) => data.tankID === props.data.hostTank
     );
     setProduct(props.data.productType);
     setTotalizer(props.data.totalizerReading);
@@ -230,7 +226,7 @@ const EditPump = (props) => {
               }}
               placeholder=""
               value={totalizer}
-              type="text"
+              type="number"
               onChange={(e) => setTotalizer(e.target.value)}
             />
           </div>
