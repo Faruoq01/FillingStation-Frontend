@@ -110,11 +110,6 @@ const Dipping = () => {
               src={edit}
               alt="icon"
             />
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src={del}
-              alt="icon"
-            />
           </div>
         )}
       </div>
@@ -176,11 +171,6 @@ const Dipping = () => {
                     src={edit}
                     alt="icon"
                   />
-                  <img
-                    style={{ width: "20px", height: "20px" }}
-                    src={del}
-                    alt="icon"
-                  />
                 </div>
               )}
             </div>
@@ -191,44 +181,44 @@ const Dipping = () => {
     );
   };
 
-  const openAddDipping = async () => {
-    const status = await APIs.post("/comprehensive/check-sales-today", {
-      org: resolveUserID().id,
-      outletID: oneStationData._id,
-      date: currentDate[0],
-      rt: false,
-      shift: salesShift,
-    }).then(({ data }) => {
-      dispatch(setSalesList(data.data));
-      return data.data;
-    });
+  // const openAddDipping = async () => {
+  //   const status = await APIs.post("/comprehensive/check-sales-today", {
+  //     org: resolveUserID().id,
+  //     outletID: oneStationData._id,
+  //     date: currentDate[0],
+  //     rt: false,
+  //     shift: salesShift,
+  //   }).then(({ data }) => {
+  //     dispatch(setSalesList(data.data));
+  //     return data.data;
+  //   });
 
-    if (status.length === 0) {
-      swal("Error", "Can only add lpo if there was sales today!", "error");
-    } else {
-      setOpenDipping(true);
-    }
-  };
+  //   if (status.length === 0) {
+  //     swal("Error", "Can only add lpo if there was sales today!", "error");
+  //   } else {
+  //     setOpenDipping(true);
+  //   }
+  // };
 
-  const resetAll = () => {
-    swal({
-      title: "Alert!",
-      text: "Are you sure you want to delete all record?, this will erase all records on the current selected date only.",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        APIs.post("/sales/delete/reset-dipping", {
-          date: currentDate[0],
-          station: oneStationData,
-        }).then(() => {
-          setRefresh(!refresh);
-          swal("Success", "Record deleted successfully", "success");
-        });
-      }
-    });
-  };
+  // const resetAll = () => {
+  //   swal({
+  //     title: "Alert!",
+  //     text: "Are you sure you want to delete all record?, this will erase all records on the current selected date only.",
+  //     icon: "warning",
+  //     buttons: true,
+  //     dangerMode: true,
+  //   }).then(async (willDelete) => {
+  //     if (willDelete) {
+  //       APIs.post("/sales/delete/reset-dipping", {
+  //         date: currentDate[0],
+  //         station: oneStationData,
+  //       }).then(() => {
+  //         setRefresh(!refresh);
+  //         swal("Success", "Record deleted successfully", "success");
+  //       });
+  //     }
+  //   });
+  // };
 
   return (
     <React.Fragment>
@@ -245,7 +235,7 @@ const Dipping = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
-          <div style={{ width: "95%" }} className="butStyle">
+          {/* <div style={{ width: "95%" }} className="butStyle">
             <Button
               variant="contained"
               onClick={resetAll}
@@ -270,7 +260,7 @@ const Dipping = () => {
               }}>
               Add
             </Button>
-          </div>
+          </div> */}
           <div className="initial_balance_container">
             {openEdit && (
               <UpdateDipping
