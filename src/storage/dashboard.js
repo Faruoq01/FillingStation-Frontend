@@ -51,24 +51,9 @@ const initialState = {
     "2027",
   ],
   overage: {
-    pms: {
-      dipping: 0,
-      currentLevel: 0,
-      capacity: 0,
-      supply: 0,
-    },
-    ago: {
-      dipping: 0,
-      currentLevel: 0,
-      capacity: 0,
-      supply: 0,
-    },
-    dpk: {
-      dipping: 0,
-      currentLevel: 0,
-      capacity: 0,
-      supply: 0,
-    },
+    dipping: 0,
+    currentLevel: 0,
+    capacity: 0,
   },
   assets: {
     tanks: {

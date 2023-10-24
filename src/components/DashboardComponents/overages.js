@@ -30,44 +30,45 @@ const OveragesAndShortages = (props) => {
     }
   };
 
-  const getOverages = useCallback((station, date, salesShift) => {
-    setLoad(true);
-    const payload = {
-      organisation: resolveUserID().id,
-      outletID: station === null ? "None" : station?._id,
-      start: date[0],
-      end: date[1],
-      shift: salesShift,
-    };
-    APIs.post("/dashboard/last-overage", payload)
-      .then(({ data }) => {
-        console.log(data, "overages");
-        // dispatch(overage(data.overage));
-      })
-      .then(() => {
-        setLoad(false);
-      })
-      .catch((err) => {
-        setLoad(false);
-      });
+  const getOverages = useCallback(
+    (station, date, salesShift, overageTypeData) => {
+      setLoad(true);
+      const payload = {
+        organisation: resolveUserID().id,
+        outletID: station === null ? "None" : station?._id,
+        start: date[0],
+        end: date[1],
+        shift: salesShift,
+        productType: overageTypeData,
+      };
+      APIs.post("/dashboard/last-overage", payload)
+        .then(({ data }) => {
+          dispatch(overage(data.overage));
+        })
+        .then(() => {
+          setLoad(false);
+        })
+        .catch((err) => {
+          setLoad(false);
+        });
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    []
+  );
 
   useEffect(() => {
-    getOverages(oneStationData, updatedDate, salesShift);
-  }, [getOverages, oneStationData, updatedDate, salesShift]);
+    getOverages(oneStationData, updatedDate, salesShift, overageTypeData);
+  }, [getOverages, oneStationData, updatedDate, salesShift, overageTypeData]);
 
   const getDippingResult = () => {
-    const product = overageData[overageTypeData.toLowerCase()];
-
-    const currentCent = (product.currentLevel / product.capacity) * 100;
-    const dippingCent = (product.dipping / product.capacity) * 100;
+    const currentCent = (overageData.afterSales / overageData.capacity) * 100;
+    const dippingCent = (overageData.dipping / overageData.capacity) * 100;
 
     const detail = {
       currentCent: isNaN(currentCent) ? 0 : currentCent,
       dippingCent: isNaN(dippingCent) ? 0 : dippingCent,
-      currentLevel: product.currentLevel,
-      dipping: product.dipping,
+      afterSales: overageData.afterSales,
+      dipping: overageData.dipping,
     };
 
     return detail;
@@ -150,7 +151,7 @@ const OveragesAndShortages = (props) => {
   };
 
   const status = () => {
-    const total = getDippingResult().dipping - getDippingResult().currentLevel;
+    const total = getDippingResult().dipping - getDippingResult().afterSales;
     if (total < 0) {
       return "Shortage";
     } else if (total === 0) {
@@ -206,7 +207,7 @@ const OveragesAndShortages = (props) => {
             <div className="labelsOverage">
               <div>
                 <div style={title}>
-                  {ApproximateDecimal(getDippingResult().currentLevel)} Ltrs
+                  {ApproximateDecimal(getDippingResult().afterSales)} Ltrs
                 </div>
                 <div style={label}>Current Level </div>
               </div>
@@ -223,7 +224,7 @@ const OveragesAndShortages = (props) => {
               <div>
                 <div style={title}>
                   {ApproximateDecimal(
-                    getDippingResult().dipping - getDippingResult().currentLevel
+                    getDippingResult().dipping - getDippingResult().afterSales
                   )}{" "}
                   Ltrs
                 </div>
