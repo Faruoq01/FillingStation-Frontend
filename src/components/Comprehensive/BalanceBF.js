@@ -16,6 +16,7 @@ const InitialBalance = () => {
   const salesShift = useSelector((state) => state.dailysales.salesShift);
   const balances = useSelector((state) => state.comprehensive.balances);
   const { pms, ago, dpk } = useSelector((state) => state.comprehensive.supply);
+  console.log(pms, "supply");
   const [load, setLoad] = useState(false);
 
   const resolveUserID = () => {
@@ -39,6 +40,7 @@ const InitialBalance = () => {
 
     APIs.post("/comprehensive/balanceBF", payload)
       .then(({ data }) => {
+        console.log(data.supply, "supply");
         dispatch(setBalances(data.balanceBF));
         dispatch(setSupply(data.supply));
       })

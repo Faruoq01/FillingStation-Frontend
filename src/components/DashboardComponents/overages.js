@@ -39,9 +39,10 @@ const OveragesAndShortages = (props) => {
       end: date[1],
       shift: salesShift,
     };
-    APIs.post("/dashboard/overage", payload)
+    APIs.post("/dashboard/last-overage", payload)
       .then(({ data }) => {
-        dispatch(overage(data.overage));
+        console.log(data, "overages");
+        // dispatch(overage(data.overage));
       })
       .then(() => {
         setLoad(false);
