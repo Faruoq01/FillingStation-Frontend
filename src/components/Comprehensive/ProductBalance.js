@@ -101,9 +101,25 @@ const ProductBalance = (props) => {
     return totalSum;
   };
 
-  const openEditModal = (data) => {
-    setOneRecord(data);
-    setOpenEdit(true);
+  const openEditModal = async (data) => {
+    const status = await APIs.post("/sales/delete/checkStatus", {
+      org: resolveUserID().id,
+      outletID: oneStationData._id,
+      date: currentDate[0],
+    }).then((data) => {
+      return data.data.data;
+    });
+
+    if (status) {
+      swal(
+        "Error!",
+        "You can not update record if the next day record was entered for balance calculations!",
+        "error"
+      );
+    } else {
+      setOneRecord(data);
+      setOpenEdit(true);
+    }
   };
 
   const deleteRecord = (data) => {
@@ -126,7 +142,7 @@ const ProductBalance = (props) => {
         if (status) {
           swal(
             "Error!",
-            "You can only delete from latest record as balance calculations depends on it!",
+            "You can not delete record if the next day record was entered for balance calculations!",
             "error"
           );
         } else {
@@ -296,7 +312,7 @@ const ProductBalance = (props) => {
           if (data.data.data) {
             swal(
               "Error!",
-              "You can only delete from latest record as balance calculations depends on it!",
+              "You can not reset record if the next day record was entered for balance calculations!",
               "error"
             );
           } else {
@@ -305,15 +321,8 @@ const ProductBalance = (props) => {
               station: oneStationData,
             };
             APIs.post("/sales/delete/reset-sales", load).then(({ data }) => {
-              if (data.status !== "empty") {
-                APIs.post("/sales/delete/supply", load).then(() => {
-                  setRefresh(!refresh);
-                  swal("Success", "Record deleted successfully", "success");
-                });
-              } else {
-                setRefresh(!refresh);
-                swal("Success", "Record deleted successfully", "success");
-              }
+              setRefresh(!refresh);
+              swal("Success", "Record deleted successfully", "success");
             });
           }
         });

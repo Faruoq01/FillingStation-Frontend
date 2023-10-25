@@ -173,9 +173,15 @@ const PumpUpdate = (props) => {
           ...data,
           sales: 0,
           outlet: null,
-          beforeSales: data.afterSales,
+          beforeSales:
+            currentDate[0] === data.createdAt
+              ? data.currentLevel
+              : data.afterSales,
           afterSales: 0,
-          currentLevel: data.afterSales,
+          currentLevel:
+            currentDate[0] === data.createdAt
+              ? data.currentLevel
+              : data.afterSales,
           dipping: 0,
         };
         return newData;

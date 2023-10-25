@@ -24,13 +24,7 @@ const Sales = (props) => {
     setProductType(props.data.productType);
     setOpeneningMeter(props.data.openingMeter);
     setClosingMeter(props.data.closingMeter);
-    setRate(
-      props.data.producType === "PMS"
-        ? props.data.PMSSellingPrice
-        : props.data.producType === "AGO"
-        ? props.data.AGOSellingPrice
-        : props.data.DPKSellingPrice
-    );
+    setRate(props["data"][`${props.data.productType}SellingPrice`]);
   }, [
     props,
     props.data.AGOSellingPrice,
@@ -64,6 +58,7 @@ const Sales = (props) => {
     APIs.post("/comprehensive/update-sales", {
       sale: props.data,
       closing: closingMeter,
+      rate: rate,
     }).then(() => {
       props.update((prev) => !prev);
       setLoading(false);
@@ -187,7 +182,6 @@ const Sales = (props) => {
                 Rate
               </div>
               <OutlinedInput
-                disabled
                 sx={{
                   width: "100%",
                   height: "35px",
@@ -200,7 +194,7 @@ const Sales = (props) => {
                   },
                 }}
                 placeholder=""
-                type="text"
+                type="number"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
               />
