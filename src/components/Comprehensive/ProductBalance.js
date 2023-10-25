@@ -257,7 +257,7 @@ const ProductBalance = (props) => {
   };
 
   const openSingleSaleModal = async () => {
-    const status = await APIs.post("/sales/validateSales", {
+    const status = await APIs.post("/comprehensive/validate-sales", {
       date: currentDate[0],
       organizationID: resolveUserID().id,
       outletID: oneStationData._id,
@@ -269,7 +269,7 @@ const ProductBalance = (props) => {
     if (status) {
       swal(
         "Error",
-        "Can only add a pump before the next sale is recorded to maintain data consistency!",
+        "Can only add a pump before the next day is recorded to maintain data consistency!",
         "error"
       );
     } else {
@@ -357,6 +357,7 @@ const ProductBalance = (props) => {
                 update={setRefresh}
                 open={openAdd}
                 close={setOpenAdd}
+                type={props.type}
               />
             )}
             {props.sales && (

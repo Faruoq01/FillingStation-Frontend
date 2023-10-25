@@ -10,11 +10,7 @@ import ApproximateDecimal from "../../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import APIs from "../../../services/connections/api";
 import OutletService from "../../../services/360station/outletService";
-import {
-  setPumpList,
-  setSupplyList,
-  setTankList,
-} from "../../../storage/comprehensive";
+import { setPumpList, setTankList } from "../../../storage/comprehensive";
 
 const FuelCard = (props) => {
   return (
@@ -125,7 +121,6 @@ const PumpUpdate = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListData = useSelector((state) => state.comprehensive.tankList);
   const pumpListData = useSelector((state) => state.comprehensive.pumpList);
-  const supplyListData = useSelector((state) => state.comprehensive.supplyList);
 
   const [defaultState, setDefaultState] = useState(0);
 
@@ -147,31 +142,6 @@ const PumpUpdate = (props) => {
     }
   };
 
-  const updateTanksWithSupplies = (tankListData, daySupply) => {
-    if (daySupply.length === 0 || tankListData.length === 0) {
-      dispatch(setTankList(tankListData));
-    } else {
-      const copyTanks = JSON.parse(JSON.stringify(tankListData));
-      for (const supply of daySupply) {
-        const recipient = Object.values(supply.recipientTanks);
-        for (const tank of recipient) {
-          const findID = copyTanks.findIndex((data) => data._id === tank.id);
-          if (findID !== -1) {
-            const newLevel =
-              Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
-            copyTanks[findID] = {
-              ...copyTanks[findID],
-              beforeSales: newLevel,
-              currentLevel: newLevel,
-              supply: copyTanks[findID].supply + Number(tank.quantity),
-            };
-          }
-        }
-      }
-      dispatch(setTankList(copyTanks));
-    }
-  };
-
   const getAllPumpsAndTanks = useCallback(() => {
     const payload = {
       outletID: oneStationData._id,
@@ -180,14 +150,9 @@ const PumpUpdate = (props) => {
 
     const stationPumps = OutletService.getAllStationPumps(payload);
     const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
-    // const stationTanks = OutletService.getAllOutletTanks(payload);
-    const stationSupply = APIs.post("/supply/dayRecord", {
-      ...payload,
-      createdAt: currentDate[0],
-    });
 
-    Promise.all([stationPumps, stationTanks, stationSupply]).then((data) => {
-      const [pumps, tanks, supply] = data;
+    Promise.all([stationPumps, stationTanks]).then((data) => {
+      const [pumps, tanks] = data;
 
       ///////////////// station pumps //////////////////////
       const copyData = JSON.parse(JSON.stringify(pumps));
@@ -203,22 +168,20 @@ const PumpUpdate = (props) => {
       dispatch(setPumpList(updated));
 
       ///////////////// station tanks //////////////////////
-      const outletTanks = tanks.stations.map((data) => {
+      const outletTanks = tanks.data.tanks.map((data) => {
         const newData = {
           ...data,
           sales: 0,
           outlet: null,
-          beforeSales: data.currentLevel,
+          beforeSales: data.afterSales,
           afterSales: 0,
-          supply: 0,
+          currentLevel: data.afterSales,
+          dipping: 0,
         };
         return newData;
       });
-      dispatch(setTankList(outletTanks));
 
-      ///////////////// station supply //////////////////////
-      updateTanksWithSupplies(outletTanks, supply.data.supply);
-      dispatch(setSupplyList(supply.data.supply));
+      dispatch(setTankList(outletTanks));
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -259,7 +222,6 @@ const PumpUpdate = (props) => {
       itemClone.afterSales = tank.currentLevel;
       itemClone.totalTankLevel = totalLevels;
       itemClone.balanceCF = totalLevels;
-      itemClone.supply = tank.supply;
       itemClone.openingMeter = pump.totalizerReading;
       setItem(itemClone);
     }
@@ -319,7 +281,6 @@ const PumpUpdate = (props) => {
       tankLevels: getTankList,
       date: currentDate[0],
       station: oneStationData,
-      supply: supplyListData,
     };
 
     await APIs.post("/comprehensive/create-sales", payload);
@@ -327,6 +288,13 @@ const PumpUpdate = (props) => {
     props.update((prev) => !prev);
     swal("Success!", "Record saved successfully!", "success");
     handleClose();
+  };
+
+  const pumpListFiltered = () => {
+    const filtered = pumpListData.filter(
+      (data) => data.productType === props.type
+    );
+    return filtered;
   };
 
   return (
@@ -372,7 +340,7 @@ const PumpUpdate = (props) => {
             <MenuItem style={menu} value={0}>
               Select Station
             </MenuItem>
-            {pumpListData.map((item, index) => {
+            {pumpListFiltered().map((item, index) => {
               return (
                 <MenuItem
                   key={index}
@@ -450,7 +418,7 @@ const getSalesPayload = (
   return {
     sales: item.totalSales,
     RTlitre: 0,
-    tankID: tank._id,
+    tankID: tank.tankID,
     tankName: tank.tankName,
     pumpID: pump._id,
     pumpName: pump.pumpName,
@@ -481,17 +449,32 @@ const getTankListPayload = (
   currentDate,
   salesShift
 ) => {
-  const otherTanks = tankList.filter((data) => data._id !== currentTank._id);
+  const otherTanks = tankList.filter(
+    (data) => data.tankID !== currentTank.tankID
+  );
   const otherTankList = otherTanks.map((data) => {
     return {
+      tankHeight: data.tankHeight,
+      deadStockLevel: data.deadStockLevel,
+      dipping: data.dipping,
+      calibrationDate: data.calibrationDate,
+      station: data.station,
+      quantityAdded: data.quantityAdded,
+      activeState: data.activeState,
+      PMSCostPrice: data.PMSCostPrice,
+      PMSSellingPrice: data.PMSSellingPrice,
+      AGOCostPrice: data.AGOCostPrice,
+      AGOSellingPrice: data.AGOSellingPrice,
+      DPKCostPrice: data.DPKCostPrice,
+      DPKSellingPrice: data.DPKSellingPrice,
       currentLevel: data.currentLevel,
       tankName: data.tankName,
       productType: data.productType,
       afterSales: data.currentLevel,
-      tankID: data._id,
+      tankID: data.tankID,
       tankCapacity: data.tankCapacity,
       outletID: data.outletID,
-      organizationID: data.organisationID,
+      organizationID: data.organizationID,
       shift: salesShift,
       createdAt: currentDate,
       updatedAt: currentDate,
@@ -499,14 +482,27 @@ const getTankListPayload = (
   });
 
   const presentTank = {
+    tankHeight: currentTank.tankHeight,
+    deadStockLevel: currentTank.deadStockLevel,
+    dipping: currentTank.dipping,
+    calibrationDate: currentTank.calibrationDate,
+    station: currentTank.station,
+    quantityAdded: currentTank.quantityAdded,
+    activeState: currentTank.activeState,
+    PMSCostPrice: currentTank.PMSCostPrice,
+    PMSSellingPrice: currentTank.PMSSellingPrice,
+    AGOCostPrice: currentTank.AGOCostPrice,
+    AGOSellingPrice: currentTank.AGOSellingPrice,
+    DPKCostPrice: currentTank.DPKCostPrice,
+    DPKSellingPrice: currentTank.DPKSellingPrice,
     currentLevel: currentTank.currentLevel,
     tankName: currentTank.tankName,
     productType: currentTank.productType,
     afterSales: item.afterSales,
-    tankID: currentTank._id,
+    tankID: currentTank.tankID,
     tankCapacity: currentTank.tankCapacity,
     outletID: currentTank.outletID,
-    organizationID: currentTank.organisationID,
+    organizationID: currentTank.organizationID,
     shift: salesShift,
     createdAt: currentDate,
     updatedAt: currentDate,
