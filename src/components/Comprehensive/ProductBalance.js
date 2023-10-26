@@ -69,7 +69,7 @@ const ProductBalance = (props) => {
 
   useEffect(() => {
     getAllProduct(currentDate, salesShift);
-  }, [getAllProduct, currentDate, refresh, salesShift]);
+  }, [getAllProduct, currentDate, refresh, salesShift, props.refresh]);
 
   const rate = (row, type) => {
     if (type === "PMS") return row.PMSSellingPrice;
@@ -321,7 +321,7 @@ const ProductBalance = (props) => {
               station: oneStationData,
             };
             APIs.post("/sales/delete/reset-sales", load).then(({ data }) => {
-              setRefresh(!refresh);
+              props.setRefresh(!props.refresh);
               swal("Success", "Record deleted successfully", "success");
             });
           }

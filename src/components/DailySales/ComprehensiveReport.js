@@ -38,6 +38,7 @@ const ComprehensiveReport = (props) => {
   const updatedDate = useSelector((state) => state.dashboard.dateRange);
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
+  const [refresh, setRefresh] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -170,13 +171,28 @@ const ComprehensiveReport = (props) => {
 
             <div className="first_mid_layer">
               {collapsible === 1 && (
-                <ProductBalance type={"PMS"} sales={true} />
+                <ProductBalance
+                  type={"PMS"}
+                  sales={true}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
               )}
               {collapsible === 1 && (
-                <ProductBalance type={"AGO"} sales={true} />
+                <ProductBalance
+                  type={"AGO"}
+                  sales={true}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
               )}
               {collapsible === 1 && (
-                <ProductBalance type={"DPK"} sales={true} />
+                <ProductBalance
+                  type={"DPK"}
+                  sales={true}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
               )}
             </div>
           </div>

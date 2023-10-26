@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import close from "../../../assets/close.png";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Button, MenuItem, Select, Skeleton } from "@mui/material";
 import swal from "sweetalert";
 import "../../../styles/summary.scss";
 import { useState } from "react";
@@ -98,6 +98,7 @@ const FuelCard = (props) => {
 const PumpUpdate = (props) => {
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
+  const [salesLoad, setSalesLoad] = useState(false);
   const [reading, setReading] = useState("");
   const [currentTank, setCurrentTank] = useState(null);
   const [currentPump, setCurrentPump] = useState(null);
@@ -173,16 +174,11 @@ const PumpUpdate = (props) => {
           ...data,
           sales: 0,
           outlet: null,
-          beforeSales:
-            currentDate[0] === data.createdAt
-              ? data.currentLevel
-              : data.afterSales,
+          beforeSales: data.afterSales,
           afterSales: 0,
-          currentLevel:
-            currentDate[0] === data.createdAt
-              ? data.currentLevel
-              : data.afterSales,
+          currentLevel: data.currentLevel,
           dipping: 0,
+          prevSales: 0,
         };
         return newData;
       });
@@ -197,19 +193,40 @@ const PumpUpdate = (props) => {
     getAllPumpsAndTanks();
   }, [getAllPumpsAndTanks]);
 
-  const selectPump = (index, pump) => {
+  // const getSales = async (type) => {
+  //   setSalesLoad(true);
+  //   const payload = {
+  //     organizationID: resolveUserID().id,
+  //     outletID: oneStationData._id,
+  //     date: currentDate[0],
+  //     productType: type,
+  //     shift: salesShift,
+  //   };
+
+  //   const { data } = await APIs.post("/comprehensive/products", payload);
+  //   setSalesLoad(false);
+  //   return data.product;
+  // };
+
+  const selectPump = async (index, pump) => {
     setDefaultState(index);
     setReading("");
+    // const salesList = await getSales(pump.productType);
+
     const tankListClone = JSON.parse(JSON.stringify(tankListData));
     const extractType = tankListClone.filter(
       (data) => data.productType === pump.productType
     );
     const totalLevels = extractType.reduce((accum, current) => {
-      return Number(accum) + Number(current.currentLevel);
+      return Number(accum) + Number(current.beforeSales);
     }, 0);
     const hostTank = tankListClone.filter(
       (data) => data.tankID === pump.hostTank
     );
+    // const prevSales = salesList.reduce((accum, current) => {
+    //   return Number(accum) + Number(current.sales);
+    // }, 0);
+
     if (hostTank.length === 0) {
       swal(
         "Error",
@@ -223,12 +240,13 @@ const PumpUpdate = (props) => {
       const itemClone = { ...item };
       itemClone.productType = tank.productType;
       itemClone.tankName = tank.tankName;
-      itemClone.currentLevel = tank.currentLevel;
+      itemClone.currentLevel = tank.beforeSales;
       itemClone.totalSales = 0;
-      itemClone.afterSales = tank.currentLevel;
+      itemClone.afterSales = tank.beforeSales;
       itemClone.totalTankLevel = totalLevels;
       itemClone.balanceCF = totalLevels;
       itemClone.openingMeter = pump.totalizerReading;
+      // itemClone.prevSales = prevSales;
       setItem(itemClone);
     }
   };
@@ -335,7 +353,17 @@ const PumpUpdate = (props) => {
 
         <div style={inner} className="inner">
           <div style={{ width: "94%" }} className="tank_label">
-            <FuelCard data={item} getBackground={getBackground} />
+            {salesLoad ? (
+              <Skeleton
+                sx={{ borderRadius: "5px", background: "#f7f7f7" }}
+                animation="wave"
+                variant="rectangular"
+                width={"100%"}
+                height={250}
+              />
+            ) : (
+              <FuelCard data={item} getBackground={getBackground} />
+            )}
           </div>
 
           <Select
@@ -476,7 +504,7 @@ const getTankListPayload = (
       currentLevel: data.currentLevel,
       tankName: data.tankName,
       productType: data.productType,
-      afterSales: data.currentLevel,
+      afterSales: data.beforeSales,
       tankID: data.tankID,
       tankCapacity: data.tankCapacity,
       outletID: data.outletID,
