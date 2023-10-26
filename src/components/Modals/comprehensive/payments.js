@@ -432,7 +432,6 @@ const paymentPayload = (
   tellerNumber,
   amountPaid,
   oneStationData,
-  currentDate,
   cam,
   gall,
   salesShift
@@ -456,8 +455,8 @@ const paymentPayload = (
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
     shift: salesShift,
-    createdAt: currentDate,
-    updatedAt: currentDate,
+    createdAt: date,
+    updatedAt: date,
   };
 };
 

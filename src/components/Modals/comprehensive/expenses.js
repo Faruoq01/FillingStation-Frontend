@@ -319,7 +319,6 @@ const expensesPayload = (
   expenseAmount,
   description,
   oneStationData,
-  currentDate,
   cam,
   gall,
   salesShift
@@ -342,8 +341,8 @@ const expensesPayload = (
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
     shift: salesShift,
-    createdAt: currentDate,
-    updatedAt: currentDate,
+    createdAt: date,
+    updatedAt: date,
   };
 };
 
