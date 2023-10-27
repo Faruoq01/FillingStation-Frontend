@@ -256,11 +256,7 @@ const HomeScreen = () => {
                 <SimpleBarReact
                   style={{
                     ...scrollBar,
-                    maxHeight: isSmallScreen
-                      ? matchTabs()
-                        ? "85vh"
-                        : "90vh"
-                      : "91vh",
+                    maxHeight: "91vh",
                   }}>
                   <div style={inner}>
                     <TopNavBar open={setOpenRight} />
@@ -289,6 +285,7 @@ const HomeScreen = () => {
 const scrollBar = {
   marginTop: "10px",
   overflowX: "hidden",
+  paddingBottom: "60px",
 };
 
 const sidebar = {

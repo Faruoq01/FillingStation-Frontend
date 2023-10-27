@@ -29,7 +29,7 @@ import tank2 from "../../assets/tank2.png";
 import { useSelector } from "react-redux";
 import "../../styles/sidebar.scss";
 
-const DesktopSideBar = () => {
+const DesktopSideBar = (props) => {
   const user = useSelector((state) => state.auth.user);
 
   return (
@@ -42,6 +42,7 @@ const DesktopSideBar = () => {
           name={"Dashboard"}
           icon={dashboard}
           icon2={dashboard2}
+          close={props.close}
         />
         <SideItems
           marginT={"45px"}
@@ -49,6 +50,7 @@ const DesktopSideBar = () => {
           name={"Daily Sales"}
           icon={dailySales2}
           icon2={dailySales}
+          close={props.close}
         />
         <SideItems
           marginT={"90px"}
@@ -56,6 +58,7 @@ const DesktopSideBar = () => {
           name={"My Stations"}
           icon={outlet2}
           icon2={outlet}
+          close={props.close}
         />
         <SideItems
           marginT={"135px"}
@@ -63,6 +66,7 @@ const DesktopSideBar = () => {
           name={"Record Sales"}
           icon={recordSales2}
           icon2={recordSales}
+          close={props.close}
         />
         <SideItems
           marginT={"180px"}
@@ -70,6 +74,7 @@ const DesktopSideBar = () => {
           name={"Analysis"}
           icon={analysis22}
           icon2={analysis}
+          close={props.close}
         />
         <SideItems
           marginT={"225px"}
@@ -77,6 +82,7 @@ const DesktopSideBar = () => {
           name={"Corporate Sales"}
           icon={lpo2}
           icon2={lpo}
+          close={props.close}
         />
         <SideItems
           marginT={"270px"}
@@ -84,6 +90,7 @@ const DesktopSideBar = () => {
           name={"Product Orders"}
           icon={productOrders2}
           icon2={productOrders}
+          close={props.close}
         />
         <SideItems
           marginT={"315px"}
@@ -91,6 +98,7 @@ const DesktopSideBar = () => {
           name={"Incoming Orders"}
           icon={incOrders2}
           icon2={incOrders}
+          close={props.close}
         />
         <SideItems
           marginT={"360px"}
@@ -98,6 +106,7 @@ const DesktopSideBar = () => {
           name={"Supply"}
           icon={expenses2}
           icon2={expenses}
+          close={props.close}
         />
         <SideItems
           marginT={"405px"}
@@ -105,6 +114,7 @@ const DesktopSideBar = () => {
           name={"Regulatory Pay"}
           icon={regulatory2}
           icon2={regulatory}
+          close={props.close}
         />
         <SideItems
           marginT={"450px"}
@@ -112,6 +122,7 @@ const DesktopSideBar = () => {
           name={"Tank Update"}
           icon={tank2}
           icon2={tank}
+          close={props.close}
         />
         <SideItems
           marginT={"495px"}
@@ -119,6 +130,7 @@ const DesktopSideBar = () => {
           name={"Human Resources"}
           icon={hr2}
           icon2={hr}
+          close={props.close}
         />
         <SideItems
           marginT={"540px"}
@@ -126,6 +138,7 @@ const DesktopSideBar = () => {
           name={"Settings"}
           icon={settings2}
           icon2={settings}
+          close={props.close}
         />
       </div>
     </div>

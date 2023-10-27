@@ -5,7 +5,7 @@ import darkMode from "../../assets/darkMode.png";
 import { useEffect } from "react";
 import { useState } from "react";
 
-const SideItems = ({ marginT, link, name, icon, icon2 }) => {
+const SideItems = ({ marginT, link, name, icon, icon2, close }) => {
   const user = useSelector((state) => state.auth.user);
   const { pathname } = useLocation();
   const [activeRoute, setActiveRoute] = useState("");
@@ -17,9 +17,9 @@ const SideItems = ({ marginT, link, name, icon, icon2 }) => {
   return (
     <Link className="link" to={link}>
       <div
-        // onClick={() => {
-        //   setNames(name);
-        // }}
+        onClick={() => {
+          close();
+        }}
         style={{ marginTop: marginT }}
         className="item-container">
         {activeRoute.split("/")[2] === link.split("/")[2] ? (

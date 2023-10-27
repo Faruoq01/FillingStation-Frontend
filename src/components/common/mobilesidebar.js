@@ -7,7 +7,7 @@ const MobileSideBar = ({ isOpen, toggleDrawer }) => {
     <React.Fragment>
       <Drawer open={isOpen} onClose={toggleDrawer} direction="left">
         <Box sx={sidebar}>
-          <DesktopSideBar />
+          <DesktopSideBar close={toggleDrawer} />
         </Box>
       </Drawer>
     </React.Fragment>
