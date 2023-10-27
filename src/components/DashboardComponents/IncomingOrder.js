@@ -105,7 +105,7 @@ const IncomingOrder = () => {
       <div style={{ width: "100%", marginBottom: "40px" }}>
         <div className="table-view">
           <div className="table-text">Outlets</div>
-          <div className="table-text">Date approved</div>
+          <div className="table-text">Date</div>
           <div className="table-text">Depot</div>
           <div className="table-text">Products</div>
           <div className="table-text">Quantity</div>

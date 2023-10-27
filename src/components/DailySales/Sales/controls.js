@@ -35,15 +35,17 @@ const Controls = () => {
         onClick={() => {
           openDailySales();
         }}>
-        View comprehensive report
+        Comprehensive report
       </Button>
-      <SelectStation
-        ml={"10px"}
-        oneStation={getPerm("0")}
-        allStation={getPerm("1")}
-        callback={() => {}}
-      />
-      <ShiftSelect />
+      <div style={filters}>
+        <SelectStation
+          ml={mobile.matches ? "0px" : "10px"}
+          oneStation={getPerm("0")}
+          allStation={getPerm("1")}
+          callback={() => {}}
+        />
+        <ShiftSelect />
+      </div>
     </div>
   );
 };
@@ -54,8 +56,14 @@ const style = {
   flexDirection: mobile.matches ? "column" : "row",
 };
 
+const filters = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  marginTop: mobile.matches ? "5px" : "0px",
+};
+
 const button = {
-  minWidth: mobile.matches ? "225px" : "120px",
   maxWidth: "300px",
   height: "30px",
   background: "#06805B",

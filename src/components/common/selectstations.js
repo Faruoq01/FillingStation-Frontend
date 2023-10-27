@@ -129,7 +129,6 @@ const style = {
 };
 
 const selectStyle2 = {
-  minWidth: mobile.matches ? "225px" : "120px",
   maxWidth: "300px",
   height: "30px",
   borderRadius: "20px",

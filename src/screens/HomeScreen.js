@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "../styles/home.scss";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "react-modern-drawer/dist/index.css";
 import { useDispatch, useSelector } from "react-redux";
 import UserService from "../services/360station/user";
@@ -22,6 +22,13 @@ import { useTheme } from "@mui/material/styles";
 import SimpleBarReact from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
+const tabLinks = [
+  "/home/dashboard/dashboardhome/0",
+  "/home/dailysales/dailysaleshome/0",
+  "/home/recordsales",
+  "/home/settings",
+];
+
 const HomeScreen = () => {
   const user = useSelector((state) => state.auth.user);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -30,6 +37,7 @@ const HomeScreen = () => {
   const online = useSelector((data) => data.auth.connection);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -196,17 +204,32 @@ const HomeScreen = () => {
     setIsOpen((prevState) => !prevState);
   };
 
+  const matchTabs = () => {
+    return tabLinks.includes(location.pathname);
+  };
+
   return (
     <React.Fragment>
       <Grid container>
         {openRight && <NotificationDrawer open={setOpenRight} />}
-        <Hidden mdUp>
-          <Grid xs={12} sm={12} item>
-            <Box sx={mobileTop}>
-              <MobileAppBar toggle={toggleDrawer} open={isOpen} />
-            </Box>
-          </Grid>
-        </Hidden>
+        {matchTabs() && (
+          <Hidden mdUp>
+            <Grid xs={12} sm={12} item>
+              <Box sx={mobileTop}>
+                <MobileAppBar toggle={toggleDrawer} open={isOpen} />
+              </Box>
+            </Grid>
+          </Hidden>
+        )}
+        {matchTabs() || (
+          <Hidden mdUp>
+            <Grid xs={12} sm={12} item>
+              <Box sx={mobileTop}>
+                <MobileNavBar toggle={toggleDrawer} open={isOpen} />
+              </Box>
+            </Grid>
+          </Hidden>
+        )}
         <Hidden mdDown>
           <Grid md={2} lg={2} xl={2} item>
             <Box sx={sidebar}>
@@ -230,12 +253,16 @@ const HomeScreen = () => {
                 </Box>
               </Grid>
               <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
-                <SimpleBarReact style={{ maxHeight: "92vh" }}>
-                  <div
-                    style={{
-                      ...inner,
-                      paddingBottom: isSmallScreen ? "100px" : "50px",
-                    }}>
+                <SimpleBarReact
+                  style={{
+                    ...scrollBar,
+                    maxHeight: isSmallScreen
+                      ? matchTabs()
+                        ? "85vh"
+                        : "90vh"
+                      : "91vh",
+                  }}>
+                  <div style={inner}>
                     <TopNavBar open={setOpenRight} />
                     <Outlet />
                   </div>
@@ -244,17 +271,24 @@ const HomeScreen = () => {
             </Grid>
           </Box>
         </Grid>
-        <Hidden mdUp>
-          <Grid xs={12} sm={12} item>
-            <Box sx={mobileTop}>
-              <AppBottomNavigation />
-            </Box>
-          </Grid>
-        </Hidden>
+        {matchTabs() && (
+          <Hidden mdUp>
+            <Grid xs={12} sm={12} item>
+              <Box sx={mobileTop}>
+                <AppBottomNavigation />
+              </Box>
+            </Grid>
+          </Hidden>
+        )}
       </Grid>
       {isOpen && <MobileSideBar isOpen={isOpen} toggleDrawer={toggleDrawer} />}
     </React.Fragment>
   );
+};
+
+const scrollBar = {
+  marginTop: "10px",
+  overflowX: "hidden",
 };
 
 const sidebar = {

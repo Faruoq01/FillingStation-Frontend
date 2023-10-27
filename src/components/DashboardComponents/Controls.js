@@ -19,21 +19,32 @@ const Controls = () => {
   return (
     <div style={style}>
       <DateRangeLib />
-      <SelectStation
-        ml={"10px"}
-        oneStation={getPerm("0")}
-        allStation={getPerm("1")}
-        callback={() => {}}
-      />
-      <ShiftSelect />
+      <div style={filters}>
+        <SelectStation
+          ml={mobile.matches ? "0px" : "10px"}
+          oneStation={getPerm("0")}
+          allStation={getPerm("1")}
+          callback={() => {}}
+        />
+        <ShiftSelect />
+      </div>
     </div>
   );
 };
 
 const style = {
+  width: "100%",
   margin: "0px",
   display: "flex",
   flexDirection: mobile.matches ? "column" : "row",
+  marginTop: mobile.matches ? "5px" : "0px",
+};
+
+const filters = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  marginTop: mobile.matches ? "5px" : "0px",
 };
 
 export default Controls;

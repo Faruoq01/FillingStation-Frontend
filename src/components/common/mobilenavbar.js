@@ -1,7 +1,7 @@
 import { AppBar, Badge, IconButton, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import search from "../../assets/search.png";
 import note from "../../assets/note.png";
@@ -11,21 +11,21 @@ import UserService from "../../services/360station/user";
 import { updateUser } from "../../storage/auth";
 import { useEffect } from "react";
 import { routeNames } from "../../modules/routenames";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
 const MobileNavBar = ({ open, drawer }) => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const user = useSelector((state) => state.auth.user);
-  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const singleLPO = useSelector((state) => state.lpoReducer.singleLPO);
   const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     setName(routeNames[pathname]);
   }, [pathname]);
 
   const toggleDrawer = () => {
-    drawer((prevState) => !prevState);
+    navigate(-1);
   };
 
   const switchDarkMode = () => {
@@ -59,7 +59,7 @@ const MobileNavBar = ({ open, drawer }) => {
 
   return (
     <div className="mobile-bar">
-      <AppBar sx={{ background: "#06805B", zIndex: "50" }} position="absolute">
+      <AppBar sx={{ background: "#ccc", zIndex: "50" }} position="fixed">
         <Toolbar>
           <IconButton
             size="large"
@@ -68,10 +68,10 @@ const MobileNavBar = ({ open, drawer }) => {
             aria-label="menu"
             sx={{ mr: 2 }}
             onClick={toggleDrawer}>
-            <MenuIcon />
+            <KeyboardBackspaceIcon sx={{ color: "#000" }} />
           </IconButton>
           <span style={roots}>{getStationDetails(name)}</span>
-          <div className="side-app-bar">
+          <div style={navbar} className="side-app-bar">
             <IconButton
               size="large"
               edge="start"
@@ -130,10 +130,17 @@ const MobileNavBar = ({ open, drawer }) => {
 
 const roots = {
   width: "100%",
-  fontSize: "14px",
+  fontSize: "15px",
   display: "flex",
   flexDirection: "row",
   justifyContent: "flex-start",
+  color: "#000",
+  fontFamily: "Poppins",
+};
+
+const navbar = {
+  display: "flex",
+  flexDirection: "row",
 };
 
 export default MobileNavBar;

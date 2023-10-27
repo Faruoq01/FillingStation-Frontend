@@ -11,10 +11,14 @@ import LPO from "./Sales/lpo";
 import IncomingOrder from "./Sales/incoming";
 import "../../styles/dailySales.scss";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 const DailysalesHome = () => {
   return (
     <React.Fragment>
-      <div className="daily-sales-container">
+      <div
+        style={{ marginTop: mobile.matches && "0px" }}
+        className="daily-sales-container">
         <SalesLeftColumn />
         <SalesRightColumn />
       </div>
