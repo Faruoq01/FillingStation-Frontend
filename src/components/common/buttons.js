@@ -1,10 +1,15 @@
 import { Button } from "@mui/material";
 const mobile = window.matchMedia("(max-width: 600px)");
 
-export const CreateButton = ({ callback, label }) => {
+export const CreateButton = ({
+  callback,
+  label,
+  ml = "0px",
+  radius = false,
+}) => {
   return (
     <Button
-      sx={style}
+      sx={{ ...style, marginLeft: ml, borderRadius: radius ? "20px" : "0px" }}
       onClick={() => {
         callback(1);
       }}

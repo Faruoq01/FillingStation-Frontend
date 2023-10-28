@@ -219,9 +219,7 @@ const Employee = () => {
               callback={stationHelper}
             />
           </LeftControls>
-          <RightControls>
-            <CreateButton callback={openModal} label={"Add Employee"} />
-          </RightControls>
+          <RightControls></RightControls>
         </TableControls>
 
         <TableControls mt={"10px"}>
@@ -231,6 +229,12 @@ const Employee = () => {
           </LeftControls>
           <RightControls>
             <PrintButton callback={printReport} />
+            <CreateButton
+              ml={"10px"}
+              callback={openModal}
+              label={"Add Employee"}
+              radius={true}
+            />
           </RightControls>
         </TableControls>
 

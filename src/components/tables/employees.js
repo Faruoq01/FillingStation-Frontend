@@ -20,7 +20,7 @@ const Action = ({ item, openEmployee, setEditStaff }) => {
   const dispatch = useDispatch();
 
   return (
-    <div style={{}} className="actions">
+    <div style={{ width: "70px" }} className="actions">
       <img
         onClick={() => {
           openEmployee(item);
