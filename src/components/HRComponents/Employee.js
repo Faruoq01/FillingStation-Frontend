@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -23,6 +23,7 @@ import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { EmployeeDesktopTable, EmployeeMobileTable } from "../tables/employees";
 import GenerateReports from "../Modals/reports";
 import StaffModal from "../Modals/CreateStaffModal";
+import APIs from "../../services/connections/api";
 
 const columns = [
   "S/N",
@@ -96,37 +97,34 @@ const Employee = () => {
     setOpen2(true);
   };
 
-  const refresh = (id, date, skip) => {
+  const refresh = (id, date, skip, limit = 15) => {
     setLoading(true);
     const payload = {
-      filter: roles[filter],
       skip: skip * limit,
       limit: limit,
       outletID: id,
       organisationID: resolveUserID().id,
     };
-    AdminUserService.filterRecords(payload)
-      .then((data) => {
-        setTotal(data.staff.count);
-        setCroles(data.staff.roles);
 
-        const cloneRoles = [
-          "All Users",
-          "Admin",
-          "Accountant",
-          "Manager",
-          "Staff",
-        ];
-        const extensions = [
-          ...new Set(data.staff.roles.map((data) => data.role)),
-        ];
-        setRoles(cloneRoles.concat(extensions));
-        dispatch(storeStaffUsers(data.staff.staff));
+    APIs.post("/hr/employee/managers", payload)
+      .then(({ data }) => {
+        setTotal(data.count);
+        dispatch(storeStaffUsers(data.employees));
       })
       .then(() => {
         setLoading(false);
       });
   };
+
+  const getEmployeeData = useCallback((id, skip) => {
+    refresh(id, "None", skip);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    getEmployeeData(id, skip);
+  }, [getEmployeeData, oneStationData, skip]);
 
   const printReport = () => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
@@ -140,24 +138,7 @@ const Employee = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", "None", skip);
-  };
-
-  const filterMenu = (data, index) => {
-    if (!getPerm("3")) return swal("Warning!", "Permission denied", "info");
-    setFilter(index);
-
-    const payload = {
-      skip: skip * limit,
-      limit: limit,
-      filter: data,
-      outletID: oneStationData === null ? "None" : oneStationData?._id,
-      organisationID: resolveUserID().id,
-    };
-
-    AdminUserService.filterRecords(payload).then((data) => {
-      dispatch(storeStaffUsers(data.staff.staff));
-    });
+    refresh("None", "None", skip, limit);
   };
 
   const stationHelper = (id) => {
@@ -178,6 +159,11 @@ const Employee = () => {
     loading: loading,
     openEmployee: openEmployee,
     setEditStaff: setEditStaff,
+  };
+
+  const reload = () => {
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    refresh(id, "None", skip);
   };
 
   return (
@@ -257,7 +243,7 @@ const Employee = () => {
         <EditStaffModal
           open={editStaff}
           close={setEditStaff}
-          refresh={refresh}
+          refresh={reload}
         />
       )}
       {
@@ -266,7 +252,7 @@ const Employee = () => {
           open={open}
           close={setOpen}
           allOutlets={allOutlets}
-          refresh={refresh}
+          refresh={reload}
         />
       }
       {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
