@@ -21,6 +21,8 @@ const HumanResourcesHome = (props) => {
       navigate("/home/hr/attendance");
     } else if (data.name === "Employee Shifts") {
       navigate("/home/hr/shifts");
+    } else if (data.name === "Admin Office") {
+      navigate("/home/hr/admin");
     }
   };
 
@@ -32,7 +34,7 @@ const HumanResourcesHome = (props) => {
           handleNavigation(props);
         }}
         className="first-image">
-        <div style={{ marginRight: "10px" }} className="inner-first-image">
+        <div className="inner-first-image">
           <div className="top-first-image">
             <div className="top-icon">
               <img
@@ -66,6 +68,7 @@ const HumanResourcesHome = (props) => {
           <DashboardImage image={hr3} name={"Query"} value={"41"} />
           <DashboardImage image={hr5} name={"Attendance"} value={"41"} />
           <DashboardImage image={hr5} name={"Employee Shifts"} value={"41"} />
+          <DashboardImage image={hr1} name={"Admin Office"} value={"41"} />
         </div>
       </div>
     </div>

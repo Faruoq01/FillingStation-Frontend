@@ -54,6 +54,10 @@ const TopNavBar = ({ open }) => {
       return singleLPO?.companyName;
     }
 
+    if (name === "Administrative Office") {
+      return capitalizeFirstLetter(name);
+    }
+
     if (name === "Dispensed Products") {
       return capitalizeFirstLetter(name)?.concat(" ", `( ${type} )`);
     }

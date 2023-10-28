@@ -23,7 +23,7 @@ export const employeeSlice = createSlice({
       state.staffUsers = search;
     },
     singleEmployee: (state, action) => {
-      state.singlePayment = action.payload;
+      state.singleEmployee = action.payload;
     },
     clearEmployees: () => initialState,
   },

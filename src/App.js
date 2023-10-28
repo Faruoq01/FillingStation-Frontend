@@ -57,6 +57,7 @@ import DeliveredOrder from "./components/productorder/deliveredorder";
 import ProductOrderHome from "./components/productorder/productorderhome";
 import ListOutstanding from "./components/DailySales/outstanding";
 import ListSales from "./components/DashboardComponents/saleslist";
+import AdminOffice from "./components/HRComponents/AdminOffice";
 
 function App() {
   useEffect(() => {
@@ -128,6 +129,7 @@ function App() {
             <Route path="query" element={<Query />} />
             <Route path="attendance" element={<Attendance />} />
             <Route path="shifts" element={<EmployeeShifts />} />
+            <Route path="admin" element={<AdminOffice />} />
           </Route>
           <Route path="settings" element={<Settings />} />
         </Route>

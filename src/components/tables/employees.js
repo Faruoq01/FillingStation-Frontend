@@ -9,7 +9,7 @@ import {
   MobileTableRows,
   TableViewForMobile,
 } from "../controls/PageLayout/TableViewForMobile";
-import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { Edit as EditIcon } from "@mui/icons-material";
 import avatar from "../../assets/avatar.png";
 import hr6 from "../../assets/hr6.png";
 import config from "../../constants";
@@ -19,7 +19,6 @@ import { singleEmployee } from "../../storage/employee";
 const Action = ({ item, openEmployee, setEditStaff }) => {
   const dispatch = useDispatch();
 
-  const handleDelete = () => {};
   return (
     <div style={{}} className="actions">
       <img
@@ -39,13 +38,6 @@ const Action = ({ item, openEmployee, setEditStaff }) => {
         onClick={() => {
           dispatch(singleEmployee(item));
           setEditStaff(true);
-        }}
-      />
-      <DeleteIcon
-        onClick={handleDelete}
-        style={{
-          ...styles.icons,
-          backgroundColor: "red",
         }}
       />
     </div>

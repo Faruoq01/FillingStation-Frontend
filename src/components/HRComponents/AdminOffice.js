@@ -39,7 +39,7 @@ const columns = [
 const mediaMatch = window.matchMedia("(max-width: 530px)");
 const mobile = window.matchMedia("(max-width: 600px)");
 
-const Employee = () => {
+const AdminOffice = () => {
   const [editStaff, setEditStaff] = useState(false);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
@@ -230,6 +230,7 @@ const Employee = () => {
             <SearchField ml={"10px"} callback={searchTable} />
           </LeftControls>
           <RightControls>
+            {/* <UserSelect filter={filter} roles={roles} filterMenu={filterMenu} /> */}
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
@@ -278,6 +279,33 @@ const Employee = () => {
   );
 };
 
+const UserSelect = ({ filter, roles, filterMenu }) => {
+  return (
+    <Select
+      labelId="demo-select-small"
+      id="demo-select-small"
+      value={filter}
+      sx={{
+        ...selectStyle2,
+        height: "30px",
+        marginTop: mediaMatch.matches ? "20px" : "0px",
+      }}>
+      {roles.map((data, index) => {
+        return (
+          <MenuItem
+            onClick={() => {
+              filterMenu(data, index);
+            }}
+            style={menu}
+            value={index}>
+            {data}
+          </MenuItem>
+        );
+      })}
+    </Select>
+  );
+};
+
 const menu = {
   fontSize: "12px",
 };
@@ -295,4 +323,4 @@ const selectStyle2 = {
   },
 };
 
-export default Employee;
+export default AdminOffice;
