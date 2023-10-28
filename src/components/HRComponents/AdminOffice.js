@@ -23,6 +23,7 @@ import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { EmployeeDesktopTable, EmployeeMobileTable } from "../tables/employees";
 import GenerateReports from "../Modals/reports";
 import StaffModal from "../Modals/CreateStaffModal";
+import AdminModal from "../Modals/CreateAdminUser";
 
 const columns = [
   "S/N",
@@ -83,12 +84,7 @@ const AdminOffice = () => {
 
   const openModal = () => {
     if (!getPerm("2")) return swal("Warning!", "Permission denied", "info");
-
-    if (oneStationData === null) {
-      swal("Warning!", "Please select a station first", "info");
-    } else {
-      setOpen(true);
-    }
+    setOpen(true);
   };
 
   const openEmployee = (item) => {
@@ -110,13 +106,7 @@ const AdminOffice = () => {
         setTotal(data.staff.count);
         setCroles(data.staff.roles);
 
-        const cloneRoles = [
-          "All Users",
-          "Admin",
-          "Accountant",
-          "Manager",
-          "Staff",
-        ];
+        const cloneRoles = ["All Users", "Admin", "Accountant", "Staff"];
         const extensions = [
           ...new Set(data.staff.roles.map((data) => data.role)),
         ];
@@ -212,12 +202,7 @@ const AdminOffice = () => {
 
         <TableControls>
           <LeftControls>
-            <SelectStation
-              ml={"0px"}
-              oneStation={getPerm("0")}
-              allStation={getPerm("1")}
-              callback={stationHelper}
-            />
+            <SearchField callback={searchTable} />
           </LeftControls>
           <RightControls>
             <CreateButton callback={openModal} label={"Add Employee"} />
@@ -227,10 +212,9 @@ const AdminOffice = () => {
         <TableControls mt={"10px"}>
           <LeftControls>
             <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-            <SearchField ml={"10px"} callback={searchTable} />
           </LeftControls>
           <RightControls>
-            {/* <UserSelect filter={filter} roles={roles} filterMenu={filterMenu} /> */}
+            <UserSelect filter={filter} roles={roles} filterMenu={filterMenu} />
             <PrintButton callback={printReport} />
           </RightControls>
         </TableControls>
@@ -257,15 +241,15 @@ const AdminOffice = () => {
           refresh={refresh}
         />
       )}
-      {
-        <StaffModal
+      {open && (
+        <AdminModal
           roles={cRoles}
           open={open}
           close={setOpen}
           allOutlets={allOutlets}
           refresh={refresh}
         />
-      }
+      )}
       {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
       {prints && (
         <GenerateReports

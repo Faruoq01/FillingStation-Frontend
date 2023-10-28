@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import close from "../../assets/close.png";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -10,17 +10,14 @@ import "../../styles/lpo.scss";
 import Radio from "@mui/material/Radio";
 import "react-html5-camera-photo/build/css/index.css";
 import { MenuItem, Select } from "@mui/material";
-import { adminOutlet } from "../../storage/outlet";
 import AdminUserService from "../../services/360station/adminUsers";
+import { useEffect } from "react";
 import ReactCamera from "./ReactCamera";
 import UploadPhoto from "../common/uploadphoto";
 
-const StaffModal = (props) => {
-  const dispatch = useDispatch();
+const AdminModal = (props) => {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
-  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
   const [cam, setCam] = useState("null");
   const [gall, setGall] = useState("null");
@@ -36,11 +33,12 @@ const StaffModal = (props) => {
   const [bankName, setBankName] = useState("");
   const [dateEmployed, setDateEmployed] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [alias, setAlias] = useState("");
+  const [role, setRole] = useState(["Admin", "Accountant", "Staff"]);
+  const [roleData, setRoleData] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [defaultState, setDefault] = useState(0);
+  const [roleState, setRoleState] = useState(0);
   const [loader, setLoader] = useState(false);
   const [salary, setSalary] = useState("");
 
@@ -55,6 +53,14 @@ const StaffModal = (props) => {
       return { id: user.organisationID };
     }
   };
+
+  useEffect(() => {
+    const extensions = [...new Set(props.roles.map((data) => data.role))];
+    const existingRoles = [...role].concat(extensions);
+    existingRoles.push("Others");
+    setRole(existingRoles);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const submit = () => {
     if (staffName === "")
@@ -79,8 +85,8 @@ const StaffModal = (props) => {
       return swal("Warning!", "Date employed field cannot be empty", "info");
     if (dateOfBirth === "")
       return swal("Warning!", "Date of birth field cannot be empty", "info");
-    if (alias === "")
-      return swal("Warning!", "Alias field cannot be empty", "info");
+    if (roleData === "")
+      return swal("Warning!", "Role field cannot be empty", "info");
     if (jobTitle === "")
       return swal("Warning!", "Job title field cannot be empty", "info");
     if (password === "")
@@ -105,23 +111,19 @@ const StaffModal = (props) => {
       image: cam === "null" ? gall : cam,
       dateEmployed: dateEmployed,
       dateOfBirth: dateOfBirth,
-      role: "Manager",
+      role: roleData,
       timezone: user.timezone,
-      alias: alias,
+      alias: "Admin Office",
       jobTitle: jobTitle,
       password: password,
       organisation: user.organisation,
       organisationID: resolveUserID().id,
-      outletID: oneStationData._id,
+      outletID: "Admin Office",
     };
 
     AdminUserService.createStaffUsers(payload)
       .then((data) => {
-        if (data.hasOwnProperty("message")) {
-          swal("Error!", data.message, "error");
-        } else {
-          swal("Success!", "A new user created successfully!", "success");
-        }
+        swal("Success!", "A new user created successfully!", "success");
       })
       .then(() => {
         setLoading(false);
@@ -139,17 +141,21 @@ const StaffModal = (props) => {
         setSalary("");
         setDateEmployed("");
         setDateOfBirth("");
-        setAlias("");
+        setRoleState(0);
+        setRoleData("");
         setJobTitle("");
-        setDefault(0);
         handleClose();
       });
   };
 
-  const changeMenu = (index, item) => {
-    setDefault(index);
-    setAlias(item.alias);
-    dispatch(adminOutlet(item));
+  const changeRoleMenu = (index, data) => {
+    setRoleState(index);
+
+    if (roleState === 4) {
+      setRoleData("");
+    } else {
+      setRoleData(data);
+    }
   };
 
   return (
@@ -163,7 +169,7 @@ const StaffModal = (props) => {
         <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
         <div className="inner">
           <div className="head">
-            <div className="head-text">Create Station Manager</div>
+            <div className="head-text">Create Admin Staff</div>
             <img
               onClick={handleClose}
               style={{ width: "18px", height: "18px" }}
@@ -274,63 +280,6 @@ const StaffModal = (props) => {
                 placeholder=""
                 type="text"
                 onChange={(e) => setAddress(e.target.value)}
-              />
-            </div>
-            <div style={{ marginTop: "15px" }} className="inputs">
-              <div className="head-text2">Select Station</div>
-              <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={defaultState}
-                sx={{
-                  width: "98%",
-                  outline: "none",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    border: "1px solid #777777",
-                  },
-                }}>
-                <MenuItem style={menu} value={0}>
-                  Select Station
-                </MenuItem>
-                {allOutlets.map((item, index) => {
-                  return (
-                    <MenuItem
-                      key={index}
-                      onClick={() => {
-                        changeMenu(index + 1, item);
-                      }}
-                      style={menu}
-                      value={index + 1}>
-                      {item.outletName + ", " + item.alias}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </div>
-            <div className="inputs">
-              <div className="head-text2">Alias</div>
-              <input
-                disabled
-                style={{
-                  width: "94%",
-                  outline: "none",
-                  paddingLeft: "10px",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  border: "1px solid #777777",
-                }}
-                placeholder=""
-                type="text"
-                value={alias}
-                // onChange={e => setAlias(e.target.value)}
               />
             </div>
             <div className="inputs">
@@ -449,6 +398,63 @@ const StaffModal = (props) => {
                 onChange={(e) => setDateOfBirth(e.target.value)}
               />
             </div>
+            <div style={{ marginTop: "15px" }} className="inputs">
+              <div className="head-text2">Role</div>
+              <Select
+                labelId="demo-select-small"
+                id="demo-select-small"
+                value={roleState}
+                sx={{
+                  width: "98%",
+                  outline: "none",
+                  height: "35px",
+                  marginTop: "5px",
+                  background: "#EEF2F1",
+                  fontSize: "12px",
+                  borderRadius: "0px",
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    border: "1px solid #777777",
+                  },
+                }}>
+                <MenuItem style={menu} value={0}>
+                  Select a designation
+                </MenuItem>
+                {role.map((item, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      onClick={() => {
+                        changeRoleMenu(index + 1, item);
+                      }}
+                      style={menu}
+                      value={index + 1}>
+                      {item}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </div>
+            {roleState === 4 && (
+              <div className="inputs">
+                <div className="head-text2">Specify for others</div>
+                <input
+                  style={{
+                    width: "94%",
+                    outline: "none",
+                    paddingLeft: "10px",
+                    height: "35px",
+                    marginTop: "5px",
+                    background: "#EEF2F1",
+                    fontSize: "12px",
+                    borderRadius: "0px",
+                    border: "1px solid #777777",
+                  }}
+                  placeholder=""
+                  type="text"
+                  onChange={(e) => setRoleData(e.target.value)}
+                />
+              </div>
+            )}
             <div className="inputs">
               <div className="head-text2">Job Title</div>
               <input
@@ -558,4 +564,4 @@ const menu = {
   fontSize: "12px",
 };
 
-export default StaffModal;
+export default AdminModal;
