@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../../styles/payments.scss";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -92,7 +92,7 @@ const AdminOffice = () => {
     setOpen2(true);
   };
 
-  const refresh = (id, date, skip) => {
+  const refresh = (id, date, skip, limit = 15) => {
     setLoading(true);
     const payload = {
       filter: roles[filter],
@@ -118,6 +118,16 @@ const AdminOffice = () => {
       });
   };
 
+  const getAllUsers = useCallback((id, date, skip) => {
+    refresh(id, "None", skip);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const id = oneStationData === null ? "None" : oneStationData._id;
+    getAllUsers(id, "None", skip);
+  }, [getAllUsers, oneStationData, skip]);
+
   const printReport = () => {
     if (!getPerm("4")) return swal("Warning!", "Permission denied", "info");
     setPrints(true);
@@ -130,7 +140,7 @@ const AdminOffice = () => {
   const entriesMenu = (value, limit) => {
     setEntries(value);
     setLimit(limit);
-    refresh("None", "None", skip);
+    refresh("None", "None", skip, limit);
   };
 
   const filterMenu = (data, index) => {
@@ -148,10 +158,6 @@ const AdminOffice = () => {
     AdminUserService.filterRecords(payload).then((data) => {
       dispatch(storeStaffUsers(data.staff.staff));
     });
-  };
-
-  const stationHelper = (id) => {
-    refresh(id, "None", skip);
   };
 
   const desktopTableData = {
