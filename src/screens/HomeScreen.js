@@ -285,7 +285,7 @@ const HomeScreen = () => {
 const scrollBar = {
   marginTop: "10px",
   overflowX: "hidden",
-  paddingBottom: "60px",
+  paddingBottom: "100px",
 };
 
 const sidebar = {

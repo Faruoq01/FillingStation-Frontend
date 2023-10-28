@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // Add your custom styles for the Bottom Navigation component here
+    background: "#e2e2e2",
   },
   selected: {
     // Customize the selected icon highlight color here
