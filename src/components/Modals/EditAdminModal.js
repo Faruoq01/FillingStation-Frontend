@@ -10,14 +10,15 @@ import "../../styles/lpo.scss";
 import Radio from "@mui/material/Radio";
 import "react-html5-camera-photo/build/css/index.css";
 import { MenuItem, Select } from "@mui/material";
-import AdminUserService from "../../services/360station/adminUsers";
 import { useEffect } from "react";
 import ReactCamera from "./ReactCamera";
 import UploadPhoto from "../common/uploadphoto";
+import APIs from "../../services/connections/api";
 
-const AdminModal = (props) => {
+const EditAdminModal = (props) => {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
+  const singleEmployee = useSelector((state) => state.employee.singleEmployee);
 
   const [cam, setCam] = useState("null");
   const [gall, setGall] = useState("null");
@@ -36,8 +37,6 @@ const AdminModal = (props) => {
   const [role, setRole] = useState(["Admin", "Accountant", "Staff"]);
   const [roleData, setRoleData] = useState("");
   const [jobTitle, setJobTitle] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [roleState, setRoleState] = useState(0);
   const [loader, setLoader] = useState(false);
   const [salary, setSalary] = useState("");
@@ -59,6 +58,22 @@ const AdminModal = (props) => {
     const existingRoles = [...role].concat(extensions);
     existingRoles.push("Others");
     setRole(existingRoles);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setStaffName(singleEmployee.staffName);
+    setSex(singleEmployee.sex);
+    setEmail(singleEmployee.email);
+    setPhone(singleEmployee.phone);
+    setAddress(singleEmployee.address);
+    setState(singleEmployee.state);
+    setAccountNumber(singleEmployee.accountNumber);
+    setBankName(singleEmployee.bankName);
+    setDateEmployed(singleEmployee.dateEmployed);
+    setDateOfBirth(singleEmployee.dateOfBirth);
+    setJobTitle(singleEmployee.jobTitle);
+    setSalary(singleEmployee.salary);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -89,10 +104,6 @@ const AdminModal = (props) => {
       return swal("Warning!", "Role field cannot be empty", "info");
     if (jobTitle === "")
       return swal("Warning!", "Job title field cannot be empty", "info");
-    if (password === "")
-      return swal("Warning!", "Password field cannot be empty", "info");
-    if (confirmPassword !== password)
-      return swal("Warning!", "Confirm password field cannot be empty", "info");
     if (cam === "null" && gall === "null")
       return swal("Warning!", "File upload cannot be empty", "info");
 
@@ -115,14 +126,17 @@ const AdminModal = (props) => {
       timezone: user.timezone,
       alias: "Admin Office",
       jobTitle: jobTitle,
-      password: password,
-      organisation: user.organisation,
       organisationID: resolveUserID().id,
       outletID: "Admin Office",
     };
 
-    AdminUserService.createStaffUsers(payload)
-      .then((data) => {
+    const details = {
+      id: singleEmployee._id,
+      data: payload,
+    };
+
+    APIs.post("/hr/employee/update-admin", details)
+      .then(({ data }) => {
         swal("Success!", "A new user created successfully!", "success");
       })
       .then(() => {
@@ -169,7 +183,7 @@ const AdminModal = (props) => {
         <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
         <div className="inner">
           <div className="head">
-            <div className="head-text">Create Admin Staff</div>
+            <div className="head-text">Edit Admin Staff</div>
             <img
               onClick={handleClose}
               style={{ width: "18px", height: "18px" }}
@@ -193,6 +207,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={staffName}
                 placeholder=""
                 type="text"
                 onChange={(e) => setStaffName(e.target.value)}
@@ -239,6 +254,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={email}
                 placeholder=""
                 type="text"
                 onChange={(e) => setEmail(e.target.value)}
@@ -258,6 +274,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={phone}
                 type="number"
                 placeholder=""
                 onChange={(e) => setPhone(e.target.value)}
@@ -277,6 +294,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={address}
                 placeholder=""
                 type="text"
                 onChange={(e) => setAddress(e.target.value)}
@@ -296,6 +314,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={state}
                 placeholder=""
                 type="text"
                 onChange={(e) => setState(e.target.value)}
@@ -315,6 +334,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={accountNumber}
                 placeholder=""
                 type="text"
                 onChange={(e) => setAccountNumber(e.target.value)}
@@ -334,6 +354,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={bankName}
                 placeholder=""
                 type="text"
                 onChange={(e) => setBankName(e.target.value)}
@@ -353,6 +374,7 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={salary}
                 placeholder=""
                 type="text"
                 onChange={(e) => setSalary(e.target.value)}
@@ -373,6 +395,7 @@ const AdminModal = (props) => {
                   border: "1px solid #777777",
                   userSelect: "none",
                 }}
+                value={dateEmployed}
                 placeholder=""
                 type="date"
                 onChange={(e) => setDateEmployed(e.target.value)}
@@ -393,6 +416,7 @@ const AdminModal = (props) => {
                   border: "1px solid #777777",
                   userSelect: "none",
                 }}
+                value={dateOfBirth}
                 placeholder=""
                 type="date"
                 onChange={(e) => setDateOfBirth(e.target.value)}
@@ -469,47 +493,10 @@ const AdminModal = (props) => {
                   borderRadius: "0px",
                   border: "1px solid #777777",
                 }}
+                value={jobTitle}
                 placeholder=""
                 type="text"
                 onChange={(e) => setJobTitle(e.target.value)}
-              />
-            </div>
-            <div className="inputs">
-              <div className="head-text2">Password</div>
-              <input
-                style={{
-                  width: "94%",
-                  outline: "none",
-                  paddingLeft: "10px",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  border: "1px solid #777777",
-                }}
-                placeholder=""
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="inputs">
-              <div className="head-text2">Confirm Password</div>
-              <input
-                style={{
-                  width: "94%",
-                  outline: "none",
-                  paddingLeft: "10px",
-                  height: "35px",
-                  marginTop: "5px",
-                  background: "#EEF2F1",
-                  fontSize: "12px",
-                  borderRadius: "0px",
-                  border: "1px solid #777777",
-                }}
-                placeholder=""
-                type="password"
-                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
             <UploadPhoto setOpen={setOpen} setGall={setGall} cam={cam} />
@@ -564,4 +551,4 @@ const menu = {
   fontSize: "12px",
 };
 
-export default AdminModal;
+export default EditAdminModal;

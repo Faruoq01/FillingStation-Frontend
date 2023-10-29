@@ -8,22 +8,20 @@ import { useSelector } from "react-redux";
 import AdminUserService from "../../services/360station/adminUsers";
 import { searchStaffs, storeStaffUsers } from "../../storage/employee";
 import swal from "sweetalert";
-import EditStaffModal from "../Modals/EditStaffModal";
 import TablePageBackground from "../controls/PageLayout/TablePageBackground";
 import {
   LeftControls,
   RightControls,
   TableControls,
 } from "../controls/PageLayout/TableControls";
-import SelectStation from "../common/selectstations";
 import { SearchField } from "../common/searchfields";
 import { CreateButton, PrintButton } from "../common/buttons";
 import { LimitSelect } from "../common/customselect";
 import TableNavigation from "../controls/PageLayout/TableNavigation";
 import { EmployeeDesktopTable, EmployeeMobileTable } from "../tables/employees";
 import GenerateReports from "../Modals/reports";
-import StaffModal from "../Modals/CreateStaffModal";
 import AdminModal from "../Modals/CreateAdminUser";
+import EditAdminModal from "../Modals/EditAdminModal";
 
 const columns = [
   "S/N",
@@ -61,7 +59,6 @@ const AdminOffice = () => {
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
-  const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const staffUsers = useSelector((state) => state.employee.staffUsers);
   const [cRoles, setCroles] = useState([]);
@@ -241,7 +238,9 @@ const AdminOffice = () => {
         />
       </TablePageBackground>
       {editStaff && (
-        <EditStaffModal
+        <EditAdminModal
+          roles={cRoles}
+          roleList={roles}
           open={editStaff}
           close={setEditStaff}
           refresh={refresh}
@@ -250,9 +249,9 @@ const AdminOffice = () => {
       {open && (
         <AdminModal
           roles={cRoles}
+          roleList={roles}
           open={open}
           close={setOpen}
-          allOutlets={allOutlets}
           refresh={refresh}
         />
       )}
