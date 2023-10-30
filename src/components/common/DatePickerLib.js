@@ -32,7 +32,16 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
       start: parseDate(updatedDate[0]),
       end: parseDate(updatedDate[1]),
     };
-    setRange(initiateDate);
+    const initiateSalesDate = {
+      start: parseDate(updatedDate[0]),
+      end: parseDate(updatedDate[0]),
+    };
+    if (sales) {
+      setRange(initiateSalesDate);
+    } else {
+      setRange(initiateDate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
