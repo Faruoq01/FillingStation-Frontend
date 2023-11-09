@@ -466,7 +466,6 @@ const posPayloadData = (
   terminalID,
   amountPaid,
   oneStationData,
-  currentDate,
   cam,
   gall,
   salesShift
@@ -490,8 +489,8 @@ const posPayloadData = (
     outletID: oneStationData._id,
     organizationID: oneStationData.organisation,
     shift: salesShift,
-    createdAt: currentDate,
-    updatedAt: currentDate,
+    createdAt: date,
+    updatedAt: date,
   };
 };
 
