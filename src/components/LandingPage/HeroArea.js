@@ -16,12 +16,11 @@ const HeroArea = () => {
               <span className="col">digitized way</span>
             </p>
             <p className="body-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pulvinar
-              non amet, proin sed consequat. Quisque quis massa nullam ornare
-              fusce eget massa sed. Phasellus tempus nulla non, facilisi
-              ullamcorper Lorem ipsum dolor sit amet, consectetur adipiscing
-              elit. Pulvinar non amet, proin sed consequat. Quisque quis massa
-              nullam ornare fusce eget massa sed. Phasellus tempus nulla non, .
+              Take control of your fueling outlets with 360 Station, the
+              comprehensive management system designed to streamline your
+              operations. Our digitized approach empowers you to efficiently
+              manage and monitor all aspects of your fueling outlets,
+              revolutionizing the way you do business.
             </p>
 
             <Button

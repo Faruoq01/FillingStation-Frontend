@@ -46,17 +46,18 @@ const confirmPaym = (data, confirmPayment) => {
 };
 
 const getReciept = (data) => {
+  console.log(data);
   return (
     <React.Fragment>
-      {data.uploadSlip !== "null" && (
+      {data.attachApproval !== "null" && (
         <a
-          href={config.BASE_URL + data.uploadSlip}
+          href={config.BASE_URL + data.attachApproval}
           target="_blank"
           rel="noreferrer">
           View Slip
         </a>
       )}
-      {data.uploadSlip === "null" && <span>No attachment</span>}
+      {data.attachApproval === "null" && <span>No attachment</span>}
     </React.Fragment>
   );
 };
