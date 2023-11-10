@@ -46,7 +46,6 @@ const confirmPaym = (data, confirmPayment) => {
 };
 
 const getReciept = (data) => {
-  console.log(data);
   return (
     <React.Fragment>
       {data.attachApproval !== "null" && (
