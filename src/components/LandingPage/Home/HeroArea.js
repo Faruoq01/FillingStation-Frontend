@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import React from "react";
-import doubleArrow from "../../assets/landing/doubleArrow.png";
+import doubleArrow from "../../../assets/landing/doubleArrow.png";
 import { useNavigate } from "react-router-dom";
 
 const HeroArea = () => {

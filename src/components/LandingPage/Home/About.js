@@ -1,4 +1,4 @@
-import tankfill from "../../assets/landing/tankfill.png";
+import tankfill from "../../../assets/landing/tankfill.png";
 
 const About = () => {
   return (

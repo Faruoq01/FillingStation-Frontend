@@ -1,5 +1,5 @@
-import pc from "../../assets/landing/pc.png";
-import tick from "../../assets/landing/tick.png";
+import pc from "../../../assets/landing/pc.png";
+import tick from "../../../assets/landing/tick.png";
 
 const Features = () => {
   return (

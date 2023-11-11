@@ -1,12 +1,12 @@
-import login from "../../assets/landing/login.png";
-import login2 from "../../assets/landing/login2.png";
-import login3 from "../../assets/landing/login3.png";
-import login4 from "../../assets/landing/login4.png";
-import login5 from "../../assets/landing/login5.png";
-import login6 from "../../assets/landing/login6.png";
-import pana from "../../assets/pana.png";
-import bro from "../../assets/bro.png";
-import compter from "../../assets/compter.png";
+import login from "../../../assets/landing/login.png";
+import login2 from "../../../assets/landing/login2.png";
+import login3 from "../../../assets/landing/login3.png";
+import login4 from "../../../assets/landing/login4.png";
+import login5 from "../../../assets/landing/login5.png";
+import login6 from "../../../assets/landing/login6.png";
+import pana from "../../../assets/pana.png";
+import bro from "../../../assets/bro.png";
+import compter from "../../../assets/compter.png";
 
 const HowItWorksSection = () => {
   return (
