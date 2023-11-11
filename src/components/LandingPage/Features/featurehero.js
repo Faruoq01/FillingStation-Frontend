@@ -4,7 +4,7 @@ import "../../../styles/landing/feature.scss";
 const FeatureHero = () => {
   return (
     <React.Fragment>
-      <div className="container">
+      <div className="feature-container">
         <div className="header">Features</div>
         <div className="sec-header">
           Our Expansive network of licensed specialist offers wide range of

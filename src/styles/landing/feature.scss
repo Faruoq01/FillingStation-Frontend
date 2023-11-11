@@ -1,6 +1,6 @@
-.container {
+.feature-container {
   width: 100%;
-  min-height: 400px;
+  min-height: 600px;
   background-image: url("../../assets/landing/features/background.svg");
   background-size: cover;
   background-repeat: no-repeat;
@@ -37,25 +37,36 @@
 }
 
 @media (max-width: 900px) {
-  .container {
+  .feature-container {
+    .header {
+      font-size: 40px;
+    }
     .sec-header {
       max-width: 80%;
+      font-size: 20px;
     }
     .content-header {
       max-width: 80%;
+      font-size: 12px;
+      font-weight: 100;
     }
   }
 }
 
 @media (max-width: 600px) {
-  .container {
+  .feature-container {
+    .header {
+      font-size: 40px;
+    }
     .sec-header {
       max-width: 90%;
-      font-size: 23px;
+      font-size: 18px;
       margin-top: 20px;
     }
     .content-header {
       max-width: 90%;
+      font-size: 12px;
+      font-weight: 100;
     }
   }
 }

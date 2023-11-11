@@ -1,317 +1,316 @@
-.container{
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: row;
-    
-    .left-block{
-        width: 50%;
-        height: 100%;
+.login-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
 
-        .upper-block{
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+  .left-block {
+    width: 50%;
+    height: 100%;
 
-            .login-form-container{
-                width: 60%;
-                max-width: 400px;
-                height: 500px;
-                margin-top: 50px;
-                box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.25);
-                border-radius: 8.30341px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+    .upper-block {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-                .inner-form-container{
-                    width: 90%;
-                    height: 450px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
-
-                    .logo-container{
-                        width: 250px;
-                        height: 70px;
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        justify-content: flex-start;
-
-                        .logo{
-                            width: 60px;
-                            height: 60px;
-                        }
-
-                        .writeups{
-                            height: 100%;
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            justify-content: center;
-
-                            .wwttx{
-                                font-size: 20px;
-                                font-family: 'Poppins';
-                                font-weight: bolder;
-                                line-height: 25px;
-                                margin-top: 10px;
-                            }
-
-                            .ww{
-                                font-size: 8px;
-                                font-family: 'Poppins';
-                            }
-                        }
-                    }
-
-                    .login-text{
-                        font-style: normal;
-                        font-weight: 700;
-                        font-size: 20px;
-                        line-height: 37px;
-                        color: #0AA677;
-                        margin-top: 30px;
-                    }
-
-                    .main-form{
-                        width: 100%;
-                        margin-top: 20px;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-
-                        .input-field{
-                            width: 96%;
-                            height: 35px;
-                            background: #E6F5F1;
-                            border: 0.804764px solid #000000;
-                            border-radius: 24.1472px;
-                            padding-left: 10px;
-                            outline: none;
-                        }
-
-                        .forget-password{
-                            font-style: normal;
-                            font-weight: 600;
-                            font-size: 14.6347px;
-                            line-height: 20px;
-                            color: #3400FF;
-                            margin-top: 30px;
-                        }
-
-                        .login-button{
-                            width: 100%;
-                            height: 35px;
-                            background: #076146;
-                            border-radius: 24.1472px;
-                            color: #fff;
-                            margin-top: 30px;
-                            outline: none;
-                            border: none;
-                        }
-                    }
-                }
-            }
-        }
-
-        .lower-block{
-            width: 100%;
-            height: 6%;
-        }
-    }
-
-    .right-block{
-        width: 50%;
-        height: 100%;
-
-        .station{
-            width: 100%;
-            height: 100%;
-        }
-    }
-}
-
-.reg{
-    width: 96%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-top: 20px;
-
-    .register{
-        font-style: normal;
-        font-weight: 600;
-        font-size: 14.6347px;
-        color: #3400FF;
-    }
-}
-
-.login-text{
-    font-style: normal;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 37px;
-    color: #0AA677;
-    margin-left: 5px;
-}
-
-.inner-sign{
-    width: 95%;
-    height: 96%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.input-field{
-    width: 96%;
-    height: 35px;
-    background: #E6F5F1;
-    border: 0.804764px solid #000000;
-    border-radius: 24.1472px;
-    outline: none;
-    margin-top: 20px;
-    padding-left: 10px;
-}
-
-.single-form{
-    width: 100%;
-    margin-top: 20px;
-
-    .input-d{
-        width: 100%;
+      .login-form-container {
+        width: 60%;
+        max-width: 400px;
+        height: 500px;
+        margin-top: 50px;
+        box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.25);
+        border-radius: 8.30341px;
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 13;
-        line-height: 25px;
+        justify-content: center;
+        align-items: center;
 
-        .text-field{
-            width: 100%;
-            height: 35px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 0.860542px solid #606060;
-            box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
-            border-radius: 5.16325px;
-            padding-left: 10px;
-            outline: none;
-        }
+        .inner-form-container {
+          width: 90%;
+          height: 450px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
 
-        .text-field2{
-            width: 100%;
-            height: 35px;
-            background: #E6F5F1;
-            border: 0.804764px solid #000000;
-            border-radius: 24.1472px;
-            padding-left: 10px;
-            outline: none;
+          .logo-container {
+            width: 250px;
+            height: 70px;
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: space-between;
-        }
+            justify-content: flex-start;
 
-        .drop{
-            position: absolute;
-            z-index: 20;
-            width: 100%;
-            height: auto;
-            background: #fff;
-            margin-top: 1px;
-            box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
-
-            .searches{
-                width: 100%;
-                height: 35px;
-                background-color: #f7f7f7;
-                color: #000;
-                border: none;
-                outline: none;
-                padding-left: 10px;
+            .logo {
+              width: 60px;
+              height: 60px;
             }
 
-            .cons{
-                width: 100%;
-                height: 160px;
-                overflow-y: scroll;
+            .writeups {
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
 
-                .ids{
-                    width: 100%;
-                    height: 35px;
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    color: #000;
-                    font-size: 12px;
-                }
+              .wwttx {
+                font-size: 20px;
+                font-family: "Poppins";
+                font-weight: bolder;
+                line-height: 25px;
+                margin-top: 10px;
+              }
 
-                .ids:hover{
-                    background-color: #e2e2e2;
-                }
+              .ww {
+                font-size: 8px;
+                font-family: "Poppins";
+              }
             }
-        }
+          }
 
-        .select-wrapper{
+          .login-text {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 37px;
+            color: #0aa677;
+            margin-top: 30px;
+          }
+
+          .main-form {
             width: 100%;
-            height: 35px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 0.860542px solid #606060;
-            box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
-            border-radius: 5.16325px;
-            margin-top: 5px;
-            padding-left: 10px;
-            outline: none;
-            position: relative;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            .input-field {
+              width: 96%;
+              height: 35px;
+              background: #e6f5f1;
+              border: 0.804764px solid #000000;
+              border-radius: 24.1472px;
+              padding-left: 10px;
+              outline: none;
+            }
+
+            .forget-password {
+              font-style: normal;
+              font-weight: 600;
+              font-size: 14.6347px;
+              line-height: 20px;
+              color: #3400ff;
+              margin-top: 30px;
+            }
+
+            .login-button {
+              width: 100%;
+              height: 35px;
+              background: #076146;
+              border-radius: 24.1472px;
+              color: #fff;
+              margin-top: 30px;
+              outline: none;
+              border: none;
+            }
+          }
         }
+      }
     }
+
+    .lower-block {
+      width: 100%;
+      height: 6%;
+    }
+  }
+
+  .right-block {
+    width: 50%;
+    height: 100%;
+
+    .station {
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 
-@media (max-width: 1250px){
-    .container{
-        .left-block{
-            .upper-block{
-                .login-form-container{
-                    width: 60%;
-                }
-            }
-        }
-    }
+.reg {
+  width: 96%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  .register {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14.6347px;
+    color: #3400ff;
+  }
 }
 
-@media (max-width: 1000px){
-    .container{
-
-        .right-block{
-            display: none;
-        }
-
-        .left-block{
-            width: 100%;
-
-            .upper-block{
-                .login-form-container{
-                    width: 60%;
-                }
-            }
-        }
-    }
+.login-text {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 37px;
+  color: #0aa677;
+  margin-left: 5px;
 }
 
-@media (max-width: 600px){
-    .container{
-        .left-block{
-            .upper-block{
-                .login-form-container{
-                    width: 96%;
-                }
-            }
-        }
+.inner-sign {
+  width: 95%;
+  height: 96%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input-field {
+  width: 96%;
+  height: 35px;
+  background: #e6f5f1;
+  border: 0.804764px solid #000000;
+  border-radius: 24.1472px;
+  outline: none;
+  margin-top: 20px;
+  padding-left: 10px;
+}
+
+.single-form {
+  width: 100%;
+  margin-top: 20px;
+
+  .input-d {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13;
+    line-height: 25px;
+
+    .text-field {
+      width: 100%;
+      height: 35px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 0.860542px solid #606060;
+      box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
+      border-radius: 5.16325px;
+      padding-left: 10px;
+      outline: none;
     }
+
+    .text-field2 {
+      width: 100%;
+      height: 35px;
+      background: #e6f5f1;
+      border: 0.804764px solid #000000;
+      border-radius: 24.1472px;
+      padding-left: 10px;
+      outline: none;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drop {
+      position: absolute;
+      z-index: 20;
+      width: 100%;
+      height: auto;
+      background: #fff;
+      margin-top: 1px;
+      box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
+
+      .searches {
+        width: 100%;
+        height: 35px;
+        background-color: #f7f7f7;
+        color: #000;
+        border: none;
+        outline: none;
+        padding-left: 10px;
+      }
+
+      .cons {
+        width: 100%;
+        height: 160px;
+        overflow-y: scroll;
+
+        .ids {
+          width: 100%;
+          height: 35px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          color: #000;
+          font-size: 12px;
+        }
+
+        .ids:hover {
+          background-color: #e2e2e2;
+        }
+      }
+    }
+
+    .select-wrapper {
+      width: 100%;
+      height: 35px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 0.860542px solid #606060;
+      box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
+      border-radius: 5.16325px;
+      margin-top: 5px;
+      padding-left: 10px;
+      outline: none;
+      position: relative;
+    }
+  }
+}
+
+@media (max-width: 1250px) {
+  .container {
+    .left-block {
+      .upper-block {
+        .login-form-container {
+          width: 60%;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .container {
+    .right-block {
+      display: none;
+    }
+
+    .left-block {
+      width: 100%;
+
+      .upper-block {
+        .login-form-container {
+          width: 60%;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    .left-block {
+      .upper-block {
+        .login-form-container {
+          width: 96%;
+        }
+      }
+    }
+  }
 }

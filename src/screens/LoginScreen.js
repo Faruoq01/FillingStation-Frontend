@@ -19,7 +19,7 @@ const LoginScreen = () => {
   });
 
   return (
-    <div className="container">
+    <div className="login-container">
       <div className="left-block">
         <div style={{ flexDirection: "column" }} className="upper-block">
           {gotToRegister || <Login reg={setToRegister} />}
