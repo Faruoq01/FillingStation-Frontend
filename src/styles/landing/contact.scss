@@ -1,0 +1,159 @@
+.contact-container {
+  width: 100%;
+  min-height: 600px;
+  background-image: url("../../assets/landing/features/background.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+
+  .header {
+    color: #fff;
+    font-family: "Poppins";
+    font-size: 55px;
+  }
+
+  .sec-header {
+    max-width: 60%;
+    color: #ffffff;
+    font-family: "Poppins";
+    font-size: 33px;
+    font-weight: 500;
+    margin-top: 40px;
+  }
+}
+
+.conversation {
+  width: 100%;
+  background: "red";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+
+  .contact-inner {
+    width: 90%;
+    min-height: 500px;
+
+    .contact-title {
+      font-size: 20px;
+      font-weight: 600;
+      font-family: "Poppins";
+    }
+
+    .contact-row {
+      width: 100%;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      .left-contact-title {
+        font-size: 16px;
+        font-weight: 600;
+        font-family: "Poppins";
+      }
+
+      .form-group {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 20px;
+      }
+
+      .left-contact-title1 {
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Poppins";
+        margin-top: 30px;
+      }
+
+      .left-contact-title2 {
+        width: 70%;
+        font-size: 12px;
+        font-weight: 400;
+        font-family: "Poppins";
+        text-align: left;
+        line-height: 25px;
+      }
+
+      .left-contact-title3 {
+        width: 100%;
+        font-size: 12px;
+        font-weight: 500;
+        font-family: "Poppins";
+        text-align: left;
+      }
+
+      .contact-form {
+        width: 100%;
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .contact-input-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .contact-input {
+        width: 70%;
+        height: 30px;
+        margin-top: 5px;
+        border: 1px solid #000000;
+        outline: none;
+        padding-left: 10px;
+        border-radius: 10px;
+        background: #fff;
+      }
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .contact-container {
+    .header {
+      font-size: 40px;
+    }
+
+    .sec-header {
+      max-width: 80%;
+      font-size: 20px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-container {
+    .header {
+      font-size: 40px;
+    }
+    .sec-header {
+      max-width: 90%;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  }
+
+  .conversation {
+    .contact-inner {
+      .contact-row {
+        .left-contact-title2 {
+          width: 100%;
+        }
+
+        .contact-input {
+          width: 95%;
+        }
+      }
+    }
+  }
+}

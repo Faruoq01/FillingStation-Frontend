@@ -66,6 +66,9 @@ const Navbar = ({ page, setPage }) => {
         </span>
         <div className="items">
           <Button
+            onClick={() => {
+              navigatePages(5);
+            }}
             sx={{
               width: "100%",
               height: "40px",

@@ -9,6 +9,8 @@ import React from "react";
 import FeatureHero from "./Features/featurehero";
 import FeatureGrid from "./Features/featuregrid";
 import PricingComponent from "./Pricing/pricing";
+import AboutHero from "./AboutUs/abouthero";
+import ContactHero from "./ContactUs/contact";
 
 export const Home = () => {
   return (
@@ -52,7 +54,7 @@ export const Pricing = () => {
 export const AboutUs = () => {
   return (
     <React.Fragment>
-      <div>AboutUs</div>
+      <AboutHero />
     </React.Fragment>
   );
 };
@@ -60,7 +62,7 @@ export const AboutUs = () => {
 export const ContactUs = () => {
   return (
     <React.Fragment>
-      <div>ContactUs</div>
+      <ContactHero />
     </React.Fragment>
   );
 };
