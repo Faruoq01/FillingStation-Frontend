@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import Footer from "./Footer";
 import Navbar from "./NavBar";
 import "../../styles/landing.scss";
-import { Home, HowItWorks } from "./pages";
+import {
+  AboutUs,
+  ContactUs,
+  Feature,
+  Home,
+  HowItWorks,
+  Pricing,
+} from "./pages";
 
 const Homepage = () => {
   const [page, setPage] = useState(0);
@@ -13,6 +20,10 @@ const Homepage = () => {
         <Navbar page={page} setPage={setPage} />
         {page === 0 && <Home />}
         {page === 1 && <HowItWorks />}
+        {page === 2 && <Feature />}
+        {page === 3 && <Pricing />}
+        {page === 4 && <AboutUs />}
+        {page === 5 && <ContactUs />}
         <Footer />
       </div>
     </React.Fragment>
