@@ -28,6 +28,7 @@ import ShiftSelect from "../common/shift";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import DateRangeLib from "../common/DatePickerLib";
+import PriceChangeModal from "../Modals/analysis/prices";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -49,6 +50,7 @@ const AnalysisHome = (props) => {
   const [load, setLoad] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
   const [openDetails2, setOpenDetails2] = useState(false);
+  const [prices, setPrices] = useState(false);
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -176,6 +178,8 @@ const AnalysisHome = (props) => {
       setOpenDetails(true);
     } else if (type === "varience") {
       setOpenDetails2(true);
+    } else if (type === "prices") {
+      setPrices(true);
     }
   };
 
@@ -262,6 +266,14 @@ const AnalysisHome = (props) => {
               name={"Varience"}
               value={`NGN ${ApproximateDecimal(totalVarience)}`}
             />
+            <DashboardImage
+              type={"prices"}
+              right={"10px"}
+              left={"0px"}
+              image={folder2}
+              name={"Update sale prices"}
+              value={`change sales price by date`}
+            />
           </div>
         </div>
       </div>
@@ -282,6 +294,7 @@ const AnalysisHome = (props) => {
         <SalesDisplay open={openDetails} close={setOpenDetails} />
       )}
       {openDetails2 && <Varience open={openDetails2} close={setOpenDetails2} />}
+      {prices && <PriceChangeModal open={prices} closeup={setPrices} />}
     </TablePageBackground>
   );
 };

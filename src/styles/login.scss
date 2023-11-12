@@ -274,7 +274,7 @@
 }
 
 @media (max-width: 1250px) {
-  .container {
+  .login-container {
     .left-block {
       .upper-block {
         .login-form-container {
@@ -286,7 +286,7 @@
 }
 
 @media (max-width: 1000px) {
-  .container {
+  .login-container {
     .right-block {
       display: none;
     }
@@ -304,11 +304,13 @@
 }
 
 @media (max-width: 600px) {
-  .container {
+  .login-container {
     .left-block {
       .upper-block {
         .login-form-container {
           width: 96%;
+          box-shadow: 0px 0px 0px 0px #fff;
+          border: 1px solid #ccc;
         }
       }
     }

@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import "../../styles/attendant/attendance.scss";
 import CloseIcon from "@mui/icons-material/Close";
-import { Button, FormControl, InputLabel } from "@mui/material";
+import { Button, FormControl } from "@mui/material";
 import { Circle } from "@mui/icons-material";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
-// import Chart from "react-apexcharts";
 
 const AttendantSellModal = (props) => {
   const [componentsState, setComponentState] = useState(1);
@@ -23,8 +21,7 @@ const AttendantSellModal = (props) => {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", border: "none" }}
-    >
+      sx={{ display: "flex", justifyContent: "center", border: "none" }}>
       <div className="e-station-reciept-modal">
         <div className="cancel-confirm">
           <CloseIcon className="icon-m-close" onClick={handleClose} size={25} />
@@ -102,8 +99,7 @@ const Component3 = ({ handleClose, setComponentState, ...props }) => {
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
-            name="row-radio-buttons-group"
-          >
+            name="row-radio-buttons-group">
             <FormControlLabel
               checked={radioState ?? false}
               onChange={() => {
@@ -145,20 +141,17 @@ const Component3 = ({ handleClose, setComponentState, ...props }) => {
             width: "100%",
             marginBottom: "5px",
           }}
-          className="button-wraper"
-        >
+          className="button-wraper">
           <Button
             onClick={handleClose}
             style={{ border: "1px solid #1B6602", color: "#1B6602" }}
-            variant="outlined"
-          >
+            variant="outlined">
             Cancle
           </Button>
           <Button
             onClick={() => setComponentState(4)}
             style={{ background: "#1B6602", marginLeft: "1rem" }}
-            variant="contained"
-          >
+            variant="contained">
             Submit
           </Button>
         </div>
@@ -222,20 +215,17 @@ const Component2 = ({ handleClose, setComponentState, ...props }) => {
           width: "100%",
           marginBottom: "5px",
         }}
-        className="button-wraper"
-      >
+        className="button-wraper">
         <Button
           onClick={handleClose}
           style={{ border: "1px solid #1B6602", color: "#1B6602" }}
-          variant="outlined"
-        >
+          variant="outlined">
           Cancle
         </Button>
         <Button
           onClick={() => setComponentState(3)}
           style={{ background: "#1B6602", marginLeft: "1rem" }}
-          variant="contained"
-        >
+          variant="contained">
           Proceed
         </Button>
       </div>
@@ -264,8 +254,7 @@ const Component1 = ({ handleClose, setComponentState, ...props }) => {
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-        }}
-      >
+        }}>
         <img src={require("../../assets/attendance/scan-icon.svg").default} />
         <label style={{ color: "#034AFF", marginLeft: 5 }}>Scan code</label>
       </div>
@@ -273,15 +262,13 @@ const Component1 = ({ handleClose, setComponentState, ...props }) => {
         <Button
           onClick={handleClose}
           style={{ border: "1px solid #1B6602", color: "#1B6602" }}
-          variant="outlined"
-        >
+          variant="outlined">
           Cancle
         </Button>
         <Button
           onClick={() => setComponentState(2)}
           style={{ background: "#1B6602", marginLeft: "1rem" }}
-          variant="contained"
-        >
+          variant="contained">
           Confirm
         </Button>
       </div>
@@ -297,8 +284,7 @@ export const CustomInput = ({ ...props }) => (
       justifyItems: "flex-start",
       flexDirection: "column",
       marginBottom: 10,
-    }}
-  >
+    }}>
     <label style={{ textAlign: "left", marginBottom: "5px" }}>
       {props.label}
     </label>
