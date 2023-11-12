@@ -1,11 +1,12 @@
 import React from "react";
+import "../../../styles/landing/works.scss";
 
 const HeroHowItWorks = () => {
   return (
     <React.Fragment>
-      <div style={hero} className="hero2">
-        <h1 style={header}>How it Works</h1>
-        <p style={text}>
+      <div className="works-container">
+        <div className="header">How it Works</div>
+        <div className="content-header">
           To get started with 360-Station, your journey begins with a
           straightforward registration process, laying the foundation for
           precise business management. During registration, you will provide all
@@ -19,28 +20,10 @@ const HeroHowItWorks = () => {
           importance of recording daily transactions, enabling you to maintain a
           detailed record of product sales (AFO, PMS, DPK), pricing information,
           and operational expenses.
-        </p>
+        </div>
       </div>
     </React.Fragment>
   );
-};
-
-const hero = {
-  display: "flex",
-  flexDirection: "column",
-};
-
-const text = {
-  width: "90%",
-  maxWidth: "650px",
-  fontFamily: "Poppins",
-  color: "#fff",
-  lineHeight: "30px",
-};
-
-const header = {
-  color: "#fff",
-  fontFamily: "Poppins",
 };
 
 export default HeroHowItWorks;

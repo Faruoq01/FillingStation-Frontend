@@ -304,10 +304,10 @@
 .features {
   width: 100%;
   height: auto;
-  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 
   .inns {
     width: 86%;
@@ -320,7 +320,6 @@
     .left {
       width: 50%;
       height: auto;
-      margin-top: 50px;
       margin-bottom: 50px;
       text-align: left;
 
@@ -330,10 +329,11 @@
         font-size: 30px;
         line-height: 50px;
         color: #3fad1b;
+        font-family: "Poppins";
       }
 
       .entry {
-        margin-top: 20px;
+        margin-top: 30px;
         display: flex;
         flex-direction: column;
 
@@ -344,19 +344,21 @@
 
           .nxt {
             font-style: normal;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 20px;
             color: #121c39;
+            font-family: "Poppins";
           }
         }
 
         .bdd {
-          margin-top: 15px;
+          margin-top: 10px;
           font-style: normal;
-          font-weight: 500;
+          font-weight: 100;
           font-size: 14px;
           line-height: 29px;
           color: #000000;
+          font-family: "Poppins";
         }
       }
     }
@@ -367,7 +369,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 50px;
       margin-bottom: 50px;
     }
   }
