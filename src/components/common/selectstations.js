@@ -103,7 +103,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
                   changeMenu(index + 1, item);
                 }}
                 value={index + 1}>
-                {item.outletName + ", " + item.alias}
+                {item.outletName}
               </MenuItem>
             );
           })}
@@ -112,9 +112,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
       {oneStation || (
         <Select value={0} sx={selectStyle2} MenuProps={menuProps} disabled>
           <MenuItem style={menu} value={0}>
-            {!oneStation
-              ? oneStationData?.outletName + ", " + oneStationData?.alias
-              : "No station created"}
+            {!oneStation ? oneStationData?.outletName : "No station created"}
           </MenuItem>
         </Select>
       )}
@@ -150,6 +148,8 @@ const menuProps = {
   PaperProps: {
     style: {
       maxHeight: "300px",
+      maxWidth: "200px",
+      width: "100%",
     },
   },
 };

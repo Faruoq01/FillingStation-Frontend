@@ -15,6 +15,8 @@ import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import ReturnToTankModal from "../Modals/comprehensive/returnToTank";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 const ReturnToTank = () => {
   const navigate = useNavigate();
   const rtVolumes = useSelector((state) => state.comprehensive.rtVolumes);
@@ -310,7 +312,12 @@ const ReturnToTank = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
-          <div style={{ width: "95%" }} className="butStyle">
+          <div
+            style={{
+              width: mobile.matches ? "84%" : "95%",
+              marginLeft: "10px",
+            }}
+            className="butStyle">
             <Button
               variant="contained"
               onClick={resetAll}

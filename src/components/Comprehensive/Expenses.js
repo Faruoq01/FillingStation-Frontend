@@ -14,6 +14,8 @@ import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import ExpensesModal from "../Modals/comprehensive/expenses";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 const Expenses = () => {
   const navigate = useNavigate();
   const expenses = useSelector((state) => state.comprehensive.expenses);
@@ -226,7 +228,12 @@ const Expenses = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
-          <div style={{ width: "59%" }} className="butStyle">
+          <div
+            style={{
+              width: mobile.matches ? "84%" : "95%",
+              marginLeft: "10px",
+            }}
+            className="butStyle">
             <Button
               variant="contained"
               onClick={resetAll}

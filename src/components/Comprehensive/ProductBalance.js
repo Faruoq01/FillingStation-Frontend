@@ -370,7 +370,11 @@ const ProductBalance = (props) => {
               />
             )}
             {props.sales && (
-              <div style={{ marginTop: "30px" }} className="butStyle">
+              <div
+                style={{
+                  marginTop: "30px",
+                }}
+                className="butStyle">
                 <Button
                   variant="contained"
                   onClick={resetAll}
@@ -473,7 +477,10 @@ const ProductBalance = (props) => {
             )}
             <div className="mobile_header">&nbsp;&nbsp;&nbsp; {props.type}</div>
             <div
-              style={{ marginBottom: "20px", marginTop: "10px" }}
+              style={{
+                marginBottom: "20px",
+                marginTop: "10px",
+              }}
               className="balance_mobile_detail">
               <div className="sups">
                 <div className="slide">

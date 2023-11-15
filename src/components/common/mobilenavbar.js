@@ -1,4 +1,10 @@
-import { AppBar, Badge, IconButton, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Badge,
+  IconButton,
+  Toolbar,
+  useMediaQuery,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -12,8 +18,11 @@ import { updateUser } from "../../storage/auth";
 import { useEffect } from "react";
 import { routeNames } from "../../modules/routenames";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { useTheme } from "@mui/material/styles";
 
 const MobileNavBar = ({ open, drawer }) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const user = useSelector((state) => state.auth.user);
@@ -54,6 +63,13 @@ const MobileNavBar = ({ open, drawer }) => {
   }
 
   const getStationDetails = (name) => {
+    if (name === "Comprehensive Report") {
+      if (isSmallScreen) {
+        return "Daily Reports";
+      }
+      return capitalizeFirstLetter(name);
+    }
+
     return capitalizeFirstLetter(name);
   };
 

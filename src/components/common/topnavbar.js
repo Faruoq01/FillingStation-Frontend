@@ -69,7 +69,7 @@ const TopNavBar = ({ open }) => {
         return (
           capitalizeFirstLetter(name)?.concat(" ") +
           "(" +
-          oneStationData?.outletName.concat(", ", oneStationData?.alias) +
+          oneStationData?.outletName +
           ")"
         );
       }

@@ -13,6 +13,8 @@ import PaymentsModal from "../Modals/comprehensive/payments";
 import { useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 const PaymentDetails = () => {
   const navigate = useNavigate();
   const payments = useSelector((state) => state.comprehensive.paymentDetails);
@@ -217,7 +219,12 @@ const PaymentDetails = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
-          <div style={{ width: "90%" }} className="butStyle">
+          <div
+            style={{
+              width: mobile.matches ? "84%" : "95%",
+              marginLeft: "10px",
+            }}
+            className="butStyle">
             <Button
               variant="contained"
               onClick={resetAll}

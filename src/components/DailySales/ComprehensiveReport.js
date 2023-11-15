@@ -103,27 +103,19 @@ const ComprehensiveReport = (props) => {
     <Fragment>
       <div className="comprehensive_container">
         <div className="reportings">
-          <div style={buttonGroup} className="comp_result">
-            <DateRangeLib sales={true} mt={mobile.matches ? "10px" : "0px"} />
-
-            <div className="resetAll">
-              <Button
-                variant="contained"
-                sx={resetBut}
-                onClick={resetAllRecords}>
-                Reset All
-              </Button>
-            </div>
-
+          <div style={shifts}>
+            <ShiftSelect />
             <Button
               variant="contained"
               sx={{
                 width: "100px",
                 height: "30px",
+                marginLeft: "10px",
                 background: "#2196F3",
                 fontSize: "12px",
-                borderRadius: "0px",
+                borderRadius: "20px",
                 textTransform: "capitalize",
+                marginRight: mobile.matches ? "10px" : "20px",
                 "&:hover": {
                   backgroundColor: "tomato",
                 },
@@ -132,8 +124,14 @@ const ComprehensiveReport = (props) => {
               Print
             </Button>
           </div>
-          <div style={shifts}>
-            <ShiftSelect />
+          <div style={buttonGroup} className="comp_result">
+            <DateRangeLib sales={true} />
+            <Button
+              variant="contained"
+              sx={{ ...resetBut, marginRight: "10px" }}
+              onClick={resetAllRecords}>
+              Reset All
+            </Button>
           </div>
 
           <div className="first_layer">
@@ -361,13 +359,12 @@ const ComprehensiveReport = (props) => {
 };
 
 const resetBut = {
-  width: "100%",
+  width: "110px",
   height: "30px",
   background: "#E91E63",
   fontSize: "12px",
   marginLeft: "10px",
-  marginRight: "10px",
-  borderRadius: "0px",
+  borderRadius: "5px",
   textTransform: "capitalize",
   "&:hover": {
     backgroundColor: "#FF9800",
@@ -380,7 +377,7 @@ const buttonGroup = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "flex-end",
-  marginBottom: "0px",
+  marginBottom: "10px",
 };
 
 const shifts = {
@@ -389,7 +386,7 @@ const shifts = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "flex-end",
-  marginTop: "10px",
+  marginTop: "20px",
   marginBottom: "10px",
 };
 

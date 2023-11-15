@@ -12,6 +12,8 @@ import { tankLevels } from "../../../storage/dailysales";
 import { tankListType } from "../../../storage/outlet";
 import { useNavigate } from "react-router-dom";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 const TankLevels = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -83,76 +85,63 @@ const TankLevels = () => {
         />
       ) : (
         <div className="tank-inner">
-          <div className="tanks">
-            <div className="tank-head">PMS</div>
-            <div style={{ fontWeight: "500" }} className="level">
-              Level: {ApproximateDecimal(tankLevelsData?.pms.afterSales)} Ltr
-            </div>
-            <div style={{ fontWeight: "500" }} className="capacity">
-              Capacity:{" "}
-              {ApproximateDecimal(
-                tankLevelsData?.pms?.tankCapacity !== 0
-                  ? tankLevelsData?.pms?.tankCapacity
-                  : 33000
-              )}{" "}
-              Ltr
-            </div>
-            <div
-              onClick={() => {
-                goToTanks("PMS");
-              }}
-              className="canvas-container">
-              <PMSTank />
-            </div>
-          </div>
-          <div className="tanks">
-            <div className="tank-head">AGO</div>
-            <div style={{ fontWeight: "500" }} className="level">
-              Level: {ApproximateDecimal(tankLevelsData?.ago?.afterSales)} Ltr
-            </div>
-            <div style={{ fontWeight: "500" }} className="capacity">
-              Capacity:{" "}
-              {ApproximateDecimal(
-                tankLevelsData?.pms?.tankCapacity !== 0
-                  ? tankLevelsData?.pms?.tankCapacity
-                  : 33000
-              )}{" "}
-              Ltr
-            </div>
-            <div
-              onClick={() => {
-                goToTanks("AGO");
-              }}
-              className="canvas-container">
-              <AGOTank />
-            </div>
-          </div>
-          <div className="tanks">
-            <div className="tank-head">DPK</div>
-            <div style={{ fontWeight: "500" }} className="level">
-              Level: {ApproximateDecimal(tankLevelsData?.dpk.afterSales)} Ltr
-            </div>
-            <div style={{ fontWeight: "500" }} className="capacity">
-              Capacity:{" "}
-              {ApproximateDecimal(
-                tankLevelsData?.pms?.tankCapacity !== 0
-                  ? tankLevelsData?.pms?.tankCapacity
-                  : 33000
-              )}{" "}
-              Ltr
-            </div>
-            <div
-              onClick={() => {
-                goToTanks("DPK");
-              }}
-              className="canvas-container">
-              <DPKTank />
-            </div>
-          </div>
+          <TankComponent
+            product={tankLevelsData?.pms}
+            goToTanks={goToTanks}
+            Tank={PMSTank}
+            label={"PMS"}
+          />
+          <TankComponent
+            product={tankLevelsData?.ago}
+            goToTanks={goToTanks}
+            Tank={AGOTank}
+            label={"AGO"}
+          />
+          <TankComponent
+            product={tankLevelsData?.dpk}
+            goToTanks={goToTanks}
+            Tank={DPKTank}
+            label={"DPK"}
+          />
         </div>
       )}
     </React.Fragment>
   );
+};
+
+const TankComponent = ({ product, goToTanks, Tank, label }) => {
+  return (
+    <div style={mobile.matches ? tanks : {}} className="tanks">
+      <div className="tank-head">{label}</div>
+      <div style={{ fontWeight: "500" }} className="level">
+        Level: {ApproximateDecimal(product?.afterSales)} Ltr
+      </div>
+      <div style={{ fontWeight: "500" }} className="capacity">
+        Capacity:{" "}
+        {ApproximateDecimal(
+          product?.tankCapacity !== 0 ? product?.tankCapacity : 33000
+        )}{" "}
+        Ltr
+      </div>
+      <div
+        onClick={() => {
+          goToTanks(label);
+        }}
+        className="canvas-container">
+        <Tank />
+      </div>
+    </div>
+  );
+};
+
+const tanks = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  background: "#fff",
+  boxShadow: "0px 0px 2px 2px #ccc",
+  paddingTop: "10px",
+  paddingBottom: "10px",
 };
 
 export default TankLevels;

@@ -73,9 +73,11 @@ const ExpensesAndPayments = () => {
           justifyContent: "flex-end",
         }}>
         <div>
-          <div style={sales}>
-            <DateRangeLib sales={true} mt={mobile.matches ? "10px" : "0px"} />
-          </div>
+          {mobile.matches || (
+            <div style={sales}>
+              <DateRangeLib sales={true} mt={mobile.matches ? "10px" : "0px"} />
+            </div>
+          )}
         </div>
       </div>
 

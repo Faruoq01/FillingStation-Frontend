@@ -15,6 +15,8 @@ import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import LPOSalesModal from "../Modals/comprehensive/lpo";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 const LPOReport = () => {
   const navigate = useNavigate();
   const lpo = useSelector((state) => state.comprehensive.lpo);
@@ -279,7 +281,12 @@ const LPOReport = () => {
         />
       ) : (
         <div style={{ width: "100%" }}>
-          <div style={{ width: "95%" }} className="butStyle">
+          <div
+            style={{
+              width: mobile.matches ? "84%" : "95%",
+              marginLeft: "10px",
+            }}
+            className="butStyle">
             <Button
               variant="contained"
               onClick={resetAll}

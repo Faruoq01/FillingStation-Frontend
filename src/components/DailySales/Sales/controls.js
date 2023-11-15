@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SelectStation from "../../common/selectstations";
 import ShiftSelect from "../../common/shift";
+import DateRangeLib from "../../common/DatePickerLib";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
@@ -29,14 +30,6 @@ const Controls = () => {
 
   return (
     <div style={style}>
-      <Button
-        variant="contained"
-        sx={button}
-        onClick={() => {
-          openDailySales();
-        }}>
-        Comprehensive report
-      </Button>
       <div style={filters}>
         <SelectStation
           ml={mobile.matches ? "0px" : "10px"}
@@ -46,6 +39,29 @@ const Controls = () => {
         />
         <ShiftSelect />
       </div>
+      <div style={balance}>
+        {mobile.matches && <DateRangeLib sales={true} />}
+        {mobile.matches || (
+          <Button
+            variant="contained"
+            sx={button}
+            onClick={() => {
+              openDailySales();
+            }}>
+            Comprehensive report
+          </Button>
+        )}
+        {mobile.matches && (
+          <Button
+            variant="contained"
+            sx={report}
+            onClick={() => {
+              openDailySales();
+            }}>
+            Comprehensive report
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
@@ -53,7 +69,7 @@ const Controls = () => {
 const style = {
   margin: "0px",
   display: "flex",
-  flexDirection: mobile.matches ? "column" : "row",
+  flexDirection: mobile.matches ? "column" : "row-reverse",
 };
 
 const filters = {
@@ -74,6 +90,25 @@ const button = {
   "&:hover": {
     backgroundColor: "#06805B",
   },
+};
+
+const report = {
+  maxWidth: "300px",
+  height: "30px",
+  background: "tomato",
+  fontSize: "12px",
+  marginLeft: "10px",
+  borderRadius: "5px",
+  textTransform: "capitalize",
+  "&:hover": {
+    backgroundColor: "tomato",
+  },
+};
+
+const balance = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
 };
 
 export default Controls;
