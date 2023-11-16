@@ -61,7 +61,7 @@ const HumanResourcesHome = (props) => {
   };
 
   return (
-    <div className="hrContainer">
+    <div data-aos="zoom-in-down" className="hrContainer">
       <div style={contain2}>
         <div className="imgContainer">
           <DashboardImage image={hr1} name={"Employee"} value={"41"} />

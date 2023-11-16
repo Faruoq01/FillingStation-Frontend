@@ -106,15 +106,26 @@ const DeliveredOrder = () => {
   return (
     <React.Fragment>
       <TablePageBackground>
-        <TableControls>
-          <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-          </LeftControls>
-          <RightControls>
-            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
-            <PrintButton callback={printReport} />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls>
+            <LeftControls>
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            </LeftControls>
+            <RightControls>
+              <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+              <PrintButton callback={printReport} />
+            </RightControls>
+          </TableControls>
+        )}
+
+        {mobile.matches && (
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <DateRangeLib />
+            </LeftControls>
+            <RightControls></RightControls>
+          </TableControls>
+        )}
 
         {mobile.matches ? (
           <DeliveredOrderMobileTable data={mobileTableData} />

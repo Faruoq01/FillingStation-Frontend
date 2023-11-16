@@ -128,48 +128,68 @@ const Expenses = () => {
 
   return (
     <TablePageBackground>
-      <div className="action">
-        <div style={{ width: "150px" }} className="butt2">
-          <Select
-            labelId="demo-select-small"
-            id="demo-select-small"
-            value={10}
-            sx={{
-              ...selectStyle2,
-              backgroundColor: "#06805B",
-              color: "#fff",
-            }}>
-            <MenuItem value={10}>Actions</MenuItem>
-            <MenuItem value={30}>Download PDF</MenuItem>
-            <MenuItem value={40}>Print</MenuItem>
-          </Select>
-        </div>
+      <div style={{ marginTop: "10px" }} className="action">
+        <Select
+          labelId="demo-select-small"
+          id="demo-select-small"
+          value={10}
+          sx={{
+            ...selectStyle2,
+            backgroundColor: "#06805B",
+            color: "#fff",
+            marginLeft: "5px",
+          }}>
+          <MenuItem value={10}>Actions</MenuItem>
+          <MenuItem value={30}>Download PDF</MenuItem>
+          <MenuItem value={40}>Print</MenuItem>
+        </Select>
       </div>
 
-      <TableControls>
-        <LeftControls>
-          <SearchField ml={"0px"} callback={searchTable} />
-          <SelectStation
-            ml={"10px"}
-            oneStation={getPerm("0")}
-            allStation={getPerm("1")}
-            callback={stationHelper}
-          />
-        </LeftControls>
-        <RightControls>
-          <ShiftSelect ml={"10px"} />
-        </RightControls>
-      </TableControls>
+      {mobile.matches || (
+        <TableControls>
+          <LeftControls>
+            <SearchField ml={"0px"} callback={searchTable} />
+            <SelectStation
+              ml={"10px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+          </LeftControls>
+          <RightControls>
+            <ShiftSelect ml={"10px"} />
+          </RightControls>
+        </TableControls>
+      )}
 
-      <TableControls mt={"10px"}>
-        <LeftControls>
-          <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-        </LeftControls>
-        <RightControls>
-          <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
-          <PrintButton callback={printReport} />
-        </RightControls>
-      </TableControls>
+      {mobile.matches || (
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+          </LeftControls>
+          <RightControls>
+            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+            <PrintButton callback={printReport} />
+          </RightControls>
+        </TableControls>
+      )}
+
+      {mobile && (
+        <TableControls mt={"10px"}>
+          <LeftControls>
+            <SelectStation
+              ml={"0px"}
+              oneStation={getPerm("0")}
+              allStation={getPerm("1")}
+              callback={stationHelper}
+            />
+            <ShiftSelect ml={"10px"} />
+          </LeftControls>
+          <RightControls>
+            <DateRangeLib />
+          </RightControls>
+        </TableControls>
+      )}
 
       {mobile.matches ? (
         <ExpenseMobileTable data={mobileTableData} />
@@ -199,6 +219,7 @@ const Expenses = () => {
 };
 
 const selectStyle2 = {
+  maxWidth: "150px",
   width: "100%",
   height: "35px",
   borderRadius: "0px",

@@ -105,16 +105,27 @@ const LPOExpense = () => {
   return (
     <div data-aos="zoom-in-down" className="paymentsCaontainer">
       <div className="inner-pay">
-        <TableControls>
-          <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-            <ShiftSelect ml={"10px"} />
-          </LeftControls>
-          <RightControls>
-            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
-            <PrintButton callback={printReport} />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls>
+            <LeftControls>
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+              <ShiftSelect ml={"10px"} />
+            </LeftControls>
+            <RightControls>
+              <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+              <PrintButton callback={printReport} />
+            </RightControls>
+          </TableControls>
+        )}
+
+        {mobile.matches && (
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <DateRangeLib />
+            </LeftControls>
+            <RightControls></RightControls>
+          </TableControls>
+        )}
 
         {mobile.matches ? (
           !loading ? (
