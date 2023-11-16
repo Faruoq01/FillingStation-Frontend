@@ -20,7 +20,13 @@ const Action = ({ item, openEmployee, setEditStaff }) => {
   const dispatch = useDispatch();
 
   return (
-    <div style={{ width: "70px" }} className="actions">
+    <div
+      style={{
+        width: "70px",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}>
       <img
         onClick={() => {
           openEmployee(item);

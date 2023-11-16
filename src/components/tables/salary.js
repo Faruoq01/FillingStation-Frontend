@@ -40,7 +40,13 @@ const Action = ({ item, refresh, updateSalary }) => {
 
   return (
     <React.Fragment>
-      <div style={{ width: "70px" }} className="actions">
+      <div
+        style={{
+          width: "60px",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}>
         <img
           onClick={() => {
             updateSalary(item);

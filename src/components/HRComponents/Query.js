@@ -165,53 +165,71 @@ const Query = () => {
         <ViewQuery open={openQuery} close={setOpenQuery} desc={description} />
       )}
       <div className="inner-pay">
-        <div className="action">
-          <div style={{ width: "150px" }} className="butt2">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={10}
-              sx={{
-                ...selectStyle2,
-                backgroundColor: "#06805B",
-                color: "#fff",
-              }}>
-              <MenuItem value={10}>Action</MenuItem>
-              <MenuItem onClick={handleQuery} value={20}>
-                Add Query
-              </MenuItem>
-              <MenuItem value={30}>History</MenuItem>
-              <MenuItem onClick={printReport} value={40}>
-                Print
-              </MenuItem>
-            </Select>
-          </div>
+        <div style={{ marginTop: "10px" }} className="action">
+          <Select
+            labelId="demo-select-small"
+            id="demo-select-small"
+            value={10}
+            sx={{
+              ...selectStyle2,
+              backgroundColor: "#06805B",
+              color: "#fff",
+              marginRight: "5px",
+            }}>
+            <MenuItem value={10}>Action</MenuItem>
+            <MenuItem onClick={handleQuery} value={20}>
+              Add Query
+            </MenuItem>
+            <MenuItem value={30}>History</MenuItem>
+            <MenuItem onClick={printReport} value={40}>
+              Print
+            </MenuItem>
+          </Select>
         </div>
 
-        <TableControls mt={"10px"}>
-          <LeftControls>
-            <SelectStation
-              ml={"0px"}
-              oneStation={getPerm("0")}
-              allStation={getPerm("1")}
-              callback={stationHelper}
-            />
-          </LeftControls>
-          <RightControls>
-            <CreateButton callback={handleQuery} label={"Add Query"} />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <SelectStation
+                ml={"0px"}
+                oneStation={getPerm("0")}
+                allStation={getPerm("1")}
+                callback={stationHelper}
+              />
+            </LeftControls>
+            <RightControls>
+              <CreateButton callback={handleQuery} label={"Add Query"} />
+            </RightControls>
+          </TableControls>
+        )}
 
-        <TableControls mt={"10px"}>
-          <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-            <SearchField ml={"10px"} callback={searchTable} />
-          </LeftControls>
-          <RightControls>
-            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
-            <PrintButton callback={printReport} />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+              <SearchField ml={"10px"} callback={searchTable} />
+            </LeftControls>
+            <RightControls>
+              <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+              <PrintButton callback={printReport} />
+            </RightControls>
+          </TableControls>
+        )}
+
+        {mobile.matches && (
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <DateRangeLib />
+              <SelectStation
+                ml={"10px"}
+                oneStation={getPerm("0")}
+                allStation={getPerm("1")}
+                callback={stationHelper}
+              />
+            </LeftControls>
+            <RightControls></RightControls>
+          </TableControls>
+        )}
 
         {mobile.matches ? (
           !loading ? (
@@ -407,6 +425,7 @@ const Query = () => {
 };
 
 const selectStyle2 = {
+  maxWidth: "150px",
   width: "100%",
   height: "35px",
   borderRadius: "0px",

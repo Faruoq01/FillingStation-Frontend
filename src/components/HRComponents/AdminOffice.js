@@ -176,51 +176,71 @@ const AdminOffice = () => {
   return (
     <React.Fragment>
       <TablePageBackground>
-        <div className="action">
-          <div style={{ width: "150px" }} className="butt2">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={10}
-              sx={{
-                ...selectStyle2,
-                backgroundColor: "#06805B",
-                color: "#fff",
-              }}>
-              <MenuItem style={menu} value={10}>
-                Action
-              </MenuItem>
-              <MenuItem onClick={openModal} style={menu} value={20}>
-                Add Staff
-              </MenuItem>
-              <MenuItem style={menu} value={30}>
-                History
-              </MenuItem>
-              <MenuItem onClick={printReport} style={menu} value={40}>
-                Print
-              </MenuItem>
-            </Select>
-          </div>
+        <div style={{ marginTop: "10px" }} className="action">
+          <Select
+            labelId="demo-select-small"
+            id="demo-select-small"
+            value={10}
+            sx={{
+              ...selectStyle2,
+              backgroundColor: "#06805B",
+              color: "#fff",
+              marginRight: "5px",
+            }}>
+            <MenuItem style={menu} value={10}>
+              Action
+            </MenuItem>
+            <MenuItem onClick={openModal} style={menu} value={20}>
+              Add Staff
+            </MenuItem>
+            <MenuItem style={menu} value={30}>
+              History
+            </MenuItem>
+            <MenuItem onClick={printReport} style={menu} value={40}>
+              Print
+            </MenuItem>
+          </Select>
         </div>
 
-        <TableControls>
-          <LeftControls>
-            <SearchField callback={searchTable} />
-          </LeftControls>
-          <RightControls>
-            <CreateButton callback={openModal} label={"Add Employee"} />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls>
+            <LeftControls>
+              <SearchField callback={searchTable} />
+            </LeftControls>
+            <RightControls>
+              <CreateButton callback={openModal} label={"Add Employee"} />
+            </RightControls>
+          </TableControls>
+        )}
 
-        <TableControls mt={"10px"}>
-          <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-          </LeftControls>
-          <RightControls>
-            <UserSelect filter={filter} roles={roles} filterMenu={filterMenu} />
-            <PrintButton callback={printReport} />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            </LeftControls>
+            <RightControls>
+              <UserSelect
+                filter={filter}
+                roles={roles}
+                filterMenu={filterMenu}
+              />
+              <PrintButton callback={printReport} />
+            </RightControls>
+          </TableControls>
+        )}
+
+        {mobile.matches && (
+          <TableControls>
+            <LeftControls>
+              <UserSelect
+                filter={filter}
+                roles={roles}
+                filterMenu={filterMenu}
+              />
+            </LeftControls>
+            <RightControls></RightControls>
+          </TableControls>
+        )}
 
         {mobile.matches ? (
           <EmployeeMobileTable data={mobileTableData} />
@@ -277,7 +297,6 @@ const UserSelect = ({ filter, roles, filterMenu }) => {
       sx={{
         ...selectStyle2,
         height: "30px",
-        marginTop: mediaMatch.matches ? "20px" : "0px",
       }}>
       {roles.map((data, index) => {
         return (
@@ -300,7 +319,8 @@ const menu = {
 };
 
 const selectStyle2 = {
-  width: mobile.matches ? "100%" : "120px",
+  maxWidth: "150px",
+  width: "100%",
   height: "35px",
   borderRadius: "0px",
   background: "#F2F1F1B2",

@@ -70,6 +70,13 @@ const MobileNavBar = ({ open, drawer }) => {
       return capitalizeFirstLetter(name);
     }
 
+    if (name === "Administrative Office") {
+      if (isSmallScreen) {
+        return "Admin Office";
+      }
+      return capitalizeFirstLetter(name);
+    }
+
     return capitalizeFirstLetter(name);
   };
 

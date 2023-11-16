@@ -61,7 +61,7 @@ const HumanResourcesHome = (props) => {
   };
 
   return (
-    <div data-aos="zoom-in-down" className="hrContainer">
+    <div className="hrContainer">
       <div style={contain2}>
         <div className="imgContainer">
           <DashboardImage image={hr1} name={"Employee"} value={"41"} />
@@ -79,7 +79,6 @@ const HumanResourcesHome = (props) => {
 const contain2 = {
   width: "96%",
   marginLeft: "2%",
-  paddingBottom: mobile.matches ? "30px" : "0px",
 };
 
 export default HumanResourcesHome;
