@@ -7,6 +7,8 @@ import hr5 from "../../assets/hr5.png";
 import me6 from "../../assets/me6.png";
 import { useNavigate } from "react-router-dom";
 
+const mobile = window.matchMedia("(max-width: 600px)");
+
 const HumanResourcesHome = (props) => {
   const navigate = useNavigate();
 
@@ -29,7 +31,6 @@ const HumanResourcesHome = (props) => {
   const DashboardImage = (props) => {
     return (
       <div
-        data-aos="flip-left"
         onClick={() => {
           handleNavigation(props);
         }}
@@ -78,6 +79,7 @@ const HumanResourcesHome = (props) => {
 const contain2 = {
   width: "96%",
   marginLeft: "2%",
+  paddingBottom: mobile.matches ? "30px" : "0px",
 };
 
 export default HumanResourcesHome;

@@ -153,7 +153,7 @@ const OutletHome = (props) => {
 
         <TableControls>
           <LeftControls>
-            <SearchField callback={getStations} />
+            {mobile.matches || <SearchField callback={getStations} />}
           </LeftControls>
           <RightControls>
             <CreateButton
@@ -165,7 +165,9 @@ const OutletHome = (props) => {
 
         <TableControls mt={"15px"}>
           <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            {mobile.matches || (
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            )}
           </LeftControls>
           <RightControls>
             <OutletGridSwitch switchTabs={switchTabs} callback={changeSwitch} />

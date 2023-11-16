@@ -44,7 +44,7 @@ const filters = {
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
-  marginTop: mobile.matches ? "5px" : "0px",
+  marginTop: mobile.matches ? "10px" : "0px",
 };
 
 export default Controls;

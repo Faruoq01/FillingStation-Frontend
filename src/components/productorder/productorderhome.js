@@ -154,48 +154,54 @@ const ProductOrderHome = () => {
   return (
     <Fragment>
       <TablePageBackground>
-        <div className="action">
-          <div style={{ width: "150px" }} className="butt2">
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={10}
-              sx={{
-                ...selectStyle2,
-                backgroundColor: "#06805B",
-                color: "#fff",
-              }}>
-              <MenuItem value={10}>Actions</MenuItem>
-              <MenuItem onClick={createOrderHandler} value={20}>
-                Create Order
-              </MenuItem>
-              <MenuItem value={30}>Download PDF</MenuItem>
-              <MenuItem value={40}>Print</MenuItem>
-            </Select>
-          </div>
+        <div style={{ marginTop: "10px" }} className="action">
+          <Select
+            labelId="demo-select-small"
+            id="demo-select-small"
+            value={10}
+            sx={{
+              ...selectStyle2,
+              backgroundColor: "#06805B",
+              color: "#fff",
+              marginRight: "5px",
+            }}>
+            <MenuItem value={10}>Actions</MenuItem>
+            <MenuItem onClick={createOrderHandler} value={20}>
+              Create Order
+            </MenuItem>
+            <MenuItem value={30}>Download PDF</MenuItem>
+            <MenuItem value={40}>Print</MenuItem>
+          </Select>
         </div>
 
-        <TableControls>
-          <LeftControls>
-            <SearchField callback={searchTable} />
-          </LeftControls>
-          <RightControls>
-            <CreateButton
-              callback={createOrderHandler}
-              label={"Create Order"}
-            />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls>
+            <LeftControls>
+              <SearchField callback={searchTable} />
+            </LeftControls>
+            <RightControls>
+              <CreateButton
+                callback={createOrderHandler}
+                label={"Create Order"}
+              />
+            </RightControls>
+          </TableControls>
+        )}
 
-        <TableControls mt={"10px"}>
-          <LeftControls>
-            <LimitSelect entries={entries} entriesMenu={entriesMenu} />
-          </LeftControls>
-          <RightControls>
-            <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
-            <PrintButton callback={printReport} />
-          </RightControls>
-        </TableControls>
+        {mobile.matches || (
+          <TableControls mt={"10px"}>
+            <LeftControls>
+              <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+            </LeftControls>
+            <RightControls>
+              <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+              <PrintButton callback={printReport} />
+            </RightControls>
+          </TableControls>
+        )}
+        {mobile.matches && (
+          <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
+        )}
 
         {mobile.matches ? (
           <ProductMobileTable data={mobileTableData} />
@@ -240,6 +246,7 @@ const ProductOrderHome = () => {
 };
 
 const selectStyle2 = {
+  maxWidth: "150px",
   width: "100%",
   height: "35px",
   borderRadius: "0px",

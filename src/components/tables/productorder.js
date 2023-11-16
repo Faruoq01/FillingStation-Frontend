@@ -63,7 +63,13 @@ const Action = ({
 
   return (
     <React.Fragment>
-      <div style={{ justifyContent: "space-around" }} className="actions">
+      <div
+        style={{
+          width: "110px",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-around",
+        }}>
         <EditIcon
           style={{
             ...styles.icons,

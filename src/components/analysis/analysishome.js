@@ -201,10 +201,7 @@ const AnalysisHome = (props) => {
             <ShiftSelect ml={"10px"} />
           </LeftControls>
           <RightControls>
-            <DateRangeLib
-              disabled={!getPerm("6")}
-              mt={mobile.matches ? "10px" : "0px"}
-            />
+            <DateRangeLib disabled={!getPerm("6")} />
           </RightControls>
         </TableControls>
 

@@ -19,7 +19,7 @@ export const RightControls = ({ children }) => {
 const container = {
   width: "100%",
   display: "flex",
-  flexDirection: mobile.matches ? "column" : "row",
+  flexDirection: mobile.matches ? "column-reverse" : "row",
   justifyContent: mobile.matches ? "flex-start" : "space-between",
   alignItems: mobile.matches ? "flex-start" : "center",
 };
@@ -35,7 +35,8 @@ const right = {
 const left = {
   width: mobile.matches ? "100%" : "50%",
   display: "flex",
-  flexDirection: mobile.matches ? "column" : "row",
+  flexDirection: "row",
   justifyContent: mobile.matches ? "flex-start" : "flex-start",
   alignItems: mobile.matches ? "flex-start" : "center",
+  marginTop: mobile.matches ? "10px" : "0px",
 };

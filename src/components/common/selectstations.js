@@ -121,7 +121,6 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
 };
 
 const style = {
-  margin: mobile.matches ? "10px" : "0px",
   marginLeft: mobile.matches ? "0px" : "10px",
   marginRight: "0px",
 };

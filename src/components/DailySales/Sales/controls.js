@@ -109,6 +109,7 @@ const balance = {
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
+  marginTop: mobile.matches ? "10px" : "0px",
 };
 
 export default Controls;
