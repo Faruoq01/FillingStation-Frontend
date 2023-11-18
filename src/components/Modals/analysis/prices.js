@@ -4,26 +4,50 @@ import ModalBackground from "../../controls/Modal/ModalBackground";
 import ModalInputField from "../../controls/Modal/ModalInputField";
 import { MenuItem, Select } from "@mui/material";
 import { useSelector } from "react-redux";
+import APIs from "../../../services/connections/api";
+import swal from "sweetalert";
 
 const list = ["PMS", "AGO", "DPK"];
 
 const PriceChangeModal = ({ open, closeup }) => {
+  const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState("");
   const [sales, setSales] = useState("");
   const [product, setProuct] = useState("");
-  const [station, setStation] = useState("");
+  const [station, setStation] = useState("None");
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
   const submit = async () => {
+    if (date === "") return swal("Error!", "Date cannot be empty", "info");
+    if (sales === "") return swal("Error!", "Date cannot be empty", "info");
+    if (product === "") return swal("Error!", "Date cannot be empty", "info");
+    setLoading(true);
+
     const payload = {
       date: date,
       sales: sales,
       product: product,
       station: station,
+      organization: resolveUserID().id,
     };
 
-    console.log(payload, "payload");
+    APIs.post("/analysis/price-change", payload)
+      .then(() => {
+        swal("Success!", "Records updated successfully", "success");
+      })
+      .then(() => {
+        setLoading(false);
+        closeup();
+      });
   };
 
   return (
@@ -96,7 +120,11 @@ const SelectStation = ({ name, list, setData }) => {
 
   const getSelectedItem = (data, index) => {
     setSelected(index);
-    setData(data._id);
+    if (data === "All stations") {
+      setData("None");
+    } else {
+      setData(data._id);
+    }
   };
   return (
     <React.Fragment>
@@ -104,7 +132,7 @@ const SelectStation = ({ name, list, setData }) => {
       <Select MenuProps={menuProps} value={selected} sx={style}>
         <MenuItem
           onClick={() => {
-            getSelectedItem("All stations", null);
+            getSelectedItem("All stations", 0);
           }}
           value={0}
           sx={menu}>

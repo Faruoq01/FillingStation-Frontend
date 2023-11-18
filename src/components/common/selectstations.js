@@ -146,7 +146,7 @@ const menu = {
 const menuProps = {
   PaperProps: {
     style: {
-      maxHeight: "300px",
+      maxHeight: "250px",
       maxWidth: "200px",
       width: "100%",
     },
