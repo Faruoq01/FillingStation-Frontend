@@ -216,7 +216,7 @@ const CostPriceModal = (props) => {
                           alt={tick}
                         />
                         <div style={{ marginRight: "20px" }}>
-                          {item.outletName + " (" + item.alias + ")"}
+                          {item.outletName}
                         </div>
                       </div>
                     );

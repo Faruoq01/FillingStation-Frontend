@@ -7,6 +7,7 @@ import upload from "../../assets/upload.png";
 import { useRef } from "react";
 import axios from "axios";
 import config from "../../constants";
+import APIs from "../../services/connections/api";
 
 const UploadPhoto = ({ setOpen, setGall, cam }) => {
   const attach = useRef();
@@ -17,21 +18,51 @@ const UploadPhoto = ({ setOpen, setGall, cam }) => {
   };
 
   const selectedFile = (e) => {
-    let file = e.target.files[0];
+    let file;
+
+    if (e.target.files && e.target.files.length > 0) {
+      file = e.target.files[0];
+    } else if (e.target.files && e.target.files.length === 0) {
+      return;
+    } else {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const base64String = event.target.result.split(",")[1];
+        uploadBase64(base64String);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+      return;
+    }
+
     setLoading2(1);
+
     const formData = new FormData();
     formData.append("file", file);
+
     const httpConfig = {
       headers: {
         "content-type": "multipart/form-data",
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     };
+
     const url = `${config.BASE_URL}/360-station/api/upload`;
+
     axios
       .post(url, formData, httpConfig)
       .then((data) => {
         setGall(data.data.path);
+      })
+      .then(() => {
+        setLoading2(2);
+      });
+  };
+
+  const uploadBase64 = (imageSrc) => {
+    const url = `${config.BASE_URL}/360-station/api/uploadFromCamera`;
+    APIs.post(url, { image: imageSrc })
+      .then(({ data }) => {
+        setGall(data.path);
       })
       .then(() => {
         setLoading2(2);
