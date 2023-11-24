@@ -7,14 +7,25 @@ import hr8 from "../../assets/hr8.png";
 import swal from "sweetalert";
 import axios from "axios";
 import config from "../../constants";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRef } from "react";
 import ReactCamera from "../Modals/ReactCamera";
 import { expensesPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 import ApproximateDecimal from "../common/approx";
+import Navigation from "./navigation";
+import { useNavigate } from "react-router-dom";
 
 const ExpenseComponents = (props) => {
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate()
+
+  const getPerm = (e) => {
+    if (user.userType === "superAdmin") {
+      return true;
+    }
+    return user.permission?.recordSales[e];
+  };
   const gallery = useRef();
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
@@ -120,202 +131,216 @@ const ExpenseComponents = (props) => {
     setReg(e.target.checked);
   };
 
+  const next = () => {
+    if (oneStationData === null)
+      return swal("Warning!", "Please select a station first", "info");
+    if (!getPerm("6"))
+      return swal("Warning!", "Permission denied", "info");
+
+    navigate("/home/recordsales/payments");
+  }
+
   return (
-    <div
-      style={{
-        width: "98%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}>
-      <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
+    <React.Fragment>
+      <div className="form-body">
+        <div
+          style={{
+            width: "98%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}>
+          <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
 
-      <div className="lpo-body">
-        <div className="lpo-left">
-          <div style={checkIt}>
-            <input
-              onChange={handleChange}
-              type={"checkbox"}
-              style={{ width: "20px", height: "20px", marginRight: "10px" }}
-            />
-            <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-              Regulatory Payment
-            </span>
-          </div>
-
-          <div className="single-form">
-            <div className="input-d">
-              <span>Expense Name</span>
-              <input
-                style={{ width: "98%" }}
-                value={expenseName}
-                onChange={(e) => setExpenseName(e.target.value)}
-                className="lpo-inputs"
-                type={"text"}
-              />
-            </div>
-          </div>
-
-          <div className="single-form">
-            <div className="input-d">
-              <span>Description</span>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                style={{ width: "98%", height: "100px" }}
-                className="lpo-inputs"
-                type={"text"}>
-                {" "}
-              </textarea>
-            </div>
-          </div>
-
-          <div className="single-form">
-            <div className="input-d">
-              <span>Expense Amount</span>
-              <input
-                style={{ width: "98%" }}
-                value={ApproximateDecimal(expenseAmount)}
-                onChange={(e) =>
-                  setExpenseAmount(e.target.value.replace(/^0|[^.\w\s]/gi, ""))
-                }
-                className="lpo-inputs"
-                type={"text"}
-              />
-            </div>
-          </div>
-
-          <div style={{ marginTop: "40px" }} className="double-form">
-            <div className="input-d">
-              <Button
-                variant="contained"
-                onClick={openCamera}
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  background: "#216DB2",
-                  fontSize: "13px",
-                  borderRadius: "5px",
-                  textTransform: "capitalize",
-                  "&:hover": {
-                    backgroundColor: "#216DB2",
-                  },
-                }}>
-                <img
-                  style={{ width: "22px", height: "18px", marginRight: "10px" }}
-                  src={photo}
-                  alt="icon"
+          <div className="lpo-body">
+            <div className="lpo-left">
+              <div style={checkIt}>
+                <input
+                  onChange={handleChange}
+                  type={"checkbox"}
+                  style={{ width: "20px", height: "20px", marginRight: "10px" }}
                 />
-                <div>
-                  {typeof cam === "string" ? (
-                    "Image taken"
-                  ) : (
-                    <span>Take photo</span>
-                  )}
+                <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+                  Regulatory Payment
+                </span>
+              </div>
+
+              <div className="single-form">
+                <div className="input-d">
+                  <span>Expense Name</span>
+                  <input
+                    style={{ width: "98%" }}
+                    value={expenseName}
+                    onChange={(e) => setExpenseName(e.target.value)}
+                    className="lpo-inputs"
+                    type={"text"}
+                  />
                 </div>
-              </Button>
-            </div>
+              </div>
 
-            <div className="input-d">
-              <Button
-                onClick={openGallery}
-                variant="contained"
-                sx={{
-                  width: "100%",
-                  height: "35px",
-                  background: "#087B36",
-                  fontSize: "13px",
-                  borderRadius: "5px",
-                  textTransform: "capitalize",
-                  "&:hover": {
-                    backgroundColor: "#087B36",
-                  },
-                }}>
-                <img
-                  style={{ width: "22px", height: "18px", marginRight: "10px" }}
-                  src={upload}
-                  alt="icon"
-                />
-                <div>
-                  {typeof gall === "string" ? (
-                    "File uploaded"
-                  ) : (
-                    <span>Upload</span>
-                  )}
+              <div className="single-form">
+                <div className="input-d">
+                  <span>Description</span>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    style={{ width: "98%", height: "100px" }}
+                    className="lpo-inputs"
+                    type={"text"}>
+                    {" "}
+                  </textarea>
                 </div>
-              </Button>
-            </div>
-          </div>
+              </div>
 
-          <div style={add}>
-            <Button
-              sx={{
-                width: "180px",
-                height: "30px",
-                background: "#427BBE",
-                borderRadius: "3px",
-                fontSize: "11px",
-                marginBottom: "20px",
-                "&:hover": {
-                  backgroundColor: "#427BBE",
-                },
-              }}
-              onClick={addDetailsToList}
-              variant="contained">
-              <AddIcon sx={{ marginRight: "10px" }} /> Add to List
-            </Button>
-            <input
-              onChange={pickFromGallery}
-              ref={gallery}
-              style={{ visibility: "hidden" }}
-              type={"file"}
-            />
-          </div>
-        </div>
+              <div className="single-form">
+                <div className="input-d">
+                  <span>Expense Amount</span>
+                  <input
+                    style={{ width: "98%" }}
+                    value={ApproximateDecimal(expenseAmount)}
+                    onChange={(e) =>
+                      setExpenseAmount(e.target.value.replace(/^0|[^.\w\s]/gi, ""))
+                    }
+                    className="lpo-inputs"
+                    type={"text"}
+                  />
+                </div>
+              </div>
 
-        <div className="lpo-right">
-          <div className="table-head">
-            <div className="col">S/N</div>
-            <div className="col">Expense Name</div>
-            <div className="col">Amount</div>
-            <div className="col">Action</div>
-          </div>
-
-          {expensesPayloadData.length === 0 ? (
-            <div style={{ marginTop: "10px" }}>No data</div>
-          ) : (
-            expensesPayloadData.map((data, index) => {
-              return (
-                <div
-                  key={index}
-                  style={{ background: "#fff", marginTop: "5px" }}
-                  className="table-head">
-                  <div style={{ color: "#000" }} className="col">
-                    {index + 1}
-                  </div>
-                  <div style={{ color: "#000" }} className="col">
-                    {data?.expenseName}
-                  </div>
-                  <div style={{ color: "#000" }} className="col">
-                    {data?.expenseAmount}
-                  </div>
-                  <div style={{ color: "#000" }} className="col">
+              <div style={{ marginTop: "40px" }} className="double-form">
+                <div className="input-d">
+                  <Button
+                    variant="contained"
+                    onClick={openCamera}
+                    sx={{
+                      width: "100%",
+                      height: "35px",
+                      background: "#216DB2",
+                      fontSize: "13px",
+                      borderRadius: "5px",
+                      textTransform: "capitalize",
+                      "&:hover": {
+                        backgroundColor: "#216DB2",
+                      },
+                    }}>
                     <img
-                      onClick={() => {
-                        deleteFromList(index);
-                      }}
-                      style={{ width: "22px", height: "22px" }}
-                      src={hr8}
+                      style={{ width: "22px", height: "18px", marginRight: "10px" }}
+                      src={photo}
                       alt="icon"
                     />
-                  </div>
+                    <div>
+                      {typeof cam === "string" ? (
+                        "Image taken"
+                      ) : (
+                        <span>Take photo</span>
+                      )}
+                    </div>
+                  </Button>
                 </div>
-              );
-            })
-          )}
+
+                <div className="input-d">
+                  <Button
+                    onClick={openGallery}
+                    variant="contained"
+                    sx={{
+                      width: "100%",
+                      height: "35px",
+                      background: "#087B36",
+                      fontSize: "13px",
+                      borderRadius: "5px",
+                      textTransform: "capitalize",
+                      "&:hover": {
+                        backgroundColor: "#087B36",
+                      },
+                    }}>
+                    <img
+                      style={{ width: "22px", height: "18px", marginRight: "10px" }}
+                      src={upload}
+                      alt="icon"
+                    />
+                    <div>
+                      {typeof gall === "string" ? (
+                        "File uploaded"
+                      ) : (
+                        <span>Upload</span>
+                      )}
+                    </div>
+                  </Button>
+                </div>
+              </div>
+
+              <div style={add}>
+                <Button
+                  sx={{
+                    width: "180px",
+                    height: "30px",
+                    background: "#427BBE",
+                    borderRadius: "3px",
+                    fontSize: "11px",
+                    marginBottom: "20px",
+                    "&:hover": {
+                      backgroundColor: "#427BBE",
+                    },
+                  }}
+                  onClick={addDetailsToList}
+                  variant="contained">
+                  <AddIcon sx={{ marginRight: "10px" }} /> Add to List
+                </Button>
+                <input
+                  onChange={pickFromGallery}
+                  ref={gallery}
+                  style={{ visibility: "hidden" }}
+                  type={"file"}
+                />
+              </div>
+            </div>
+
+            <div className="lpo-right">
+              <div className="table-head">
+                <div className="col">S/N</div>
+                <div className="col">Expense Name</div>
+                <div className="col">Amount</div>
+                <div className="col">Action</div>
+              </div>
+
+              {expensesPayloadData.length === 0 ? (
+                <div style={{ marginTop: "10px" }}>No data</div>
+              ) : (
+                expensesPayloadData.map((data, index) => {
+                  return (
+                    <div
+                      key={index}
+                      style={{ background: "#fff", marginTop: "5px" }}
+                      className="table-head">
+                      <div style={{ color: "#000" }} className="col">
+                        {index + 1}
+                      </div>
+                      <div style={{ color: "#000" }} className="col">
+                        {data?.expenseName}
+                      </div>
+                      <div style={{ color: "#000" }} className="col">
+                        {data?.expenseAmount}
+                      </div>
+                      <div style={{ color: "#000" }} className="col">
+                        <img
+                          onClick={() => {
+                            deleteFromList(index);
+                          }}
+                          style={{ width: "22px", height: "22px" }}
+                          src={hr8}
+                          alt="icon"
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+      <Navigation next={next} />
+    </React.Fragment>
   );
 };
 

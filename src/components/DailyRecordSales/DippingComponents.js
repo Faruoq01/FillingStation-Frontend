@@ -1,5 +1,5 @@
 import { Radio } from "@mui/material";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,10 @@ import me4 from "../../assets/me4.png";
 import { tankList, updateSelectedTanks } from "../../storage/recordsales";
 import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
+import Navigation from "./navigation";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
+import SummaryRecord from "../Modals/SummaryRecord";
 
 const returnColor = (data, style) => {
   if (data === "PMS") {
@@ -19,6 +23,8 @@ const returnColor = (data, style) => {
 };
 
 const DippingComponents = (props) => {
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate()
   const [productType, setProductType] = useState("PMS");
   const [loading] = useState(false);
   const dispatch = useDispatch();
@@ -30,6 +36,22 @@ const DippingComponents = (props) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
+  const [openSummary, setOpenSummary] = useState(false);
+
+  const getPerm = (e) => {
+    if (user.userType === "superAdmin") {
+      return true;
+    }
+    return user.permission?.recordSales[e];
+  };
+
+  const resolveUserID = () => {
+    if (user.userType === "superAdmin") {
+      return { id: user._id };
+    } else {
+      return { id: user.organisationID };
+    }
+  };
 
   const getStationTanks = useCallback(() => {
     const copyTanks = JSON.parse(JSON.stringify(tankListData));
@@ -114,251 +136,272 @@ const DippingComponents = (props) => {
     }
   };
 
+  const finish = () => {
+    if (oneStationData === null)
+      return swal("Warning!", "Please select a station first", "info");
+    if (!getPerm("8"))
+    return swal("Warning!", "Permission denied", "info");
+
+    setOpenSummary(true);
+  }
+
   return (
-    <div
-      style={{ flexDirection: "column", alignItems: "flex-start" }}
-      className="inner-body">
-      <div style={rad} className="radio">
-        <div className="rad-item">
-          <Radio
-            {...props}
-            sx={{
-              "&, &.Mui-checked": {
-                color: "#054834",
-              },
-            }}
-            onClick={() => onRadioClick("PMS")}
-            checked={productType === "PMS" ? true : false}
-          />
-          <div
-            className="head-text2"
-            style={{ marginRight: "5px", fontSize: "12px" }}>
-            PMS
+    <React.Fragment>
+      <div className="form-body">
+        <div
+          style={{ flexDirection: "column", alignItems: "flex-start" }}
+          className="inner-body">
+          <div style={rad} className="radio">
+            <div className="rad-item">
+              <Radio
+                {...props}
+                sx={{
+                  "&, &.Mui-checked": {
+                    color: "#054834",
+                  },
+                }}
+                onClick={() => onRadioClick("PMS")}
+                checked={productType === "PMS" ? true : false}
+              />
+              <div
+                className="head-text2"
+                style={{ marginRight: "5px", fontSize: "12px" }}>
+                PMS
+              </div>
+            </div>
+            <div className="rad-item">
+              <Radio
+                {...props}
+                sx={{
+                  "&, &.Mui-checked": {
+                    color: "#054834",
+                  },
+                }}
+                onClick={() => onRadioClick("AGO")}
+                checked={productType === "AGO" ? true : false}
+              />
+              <div
+                className="head-text2"
+                style={{ marginRight: "5px", fontSize: "12px" }}>
+                AGO
+              </div>
+            </div>
+            <div className="rad-item">
+              <Radio
+                {...props}
+                sx={{
+                  "&, &.Mui-checked": {
+                    color: "#054834",
+                  },
+                }}
+                onClick={() => onRadioClick("DPK")}
+                checked={productType === "DPK" ? true : false}
+              />
+              <div
+                className="head-text2"
+                style={{ marginRight: "5px", fontSize: "12px" }}>
+                DPK
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="rad-item">
-          <Radio
-            {...props}
-            sx={{
-              "&, &.Mui-checked": {
-                color: "#054834",
-              },
-            }}
-            onClick={() => onRadioClick("AGO")}
-            checked={productType === "AGO" ? true : false}
-          />
-          <div
-            className="head-text2"
-            style={{ marginRight: "5px", fontSize: "12px" }}>
-            AGO
+
+          <div style={returnColor(productType, pro)}>
+            <span style={{ marginLeft: "15px" }}>{productType}</span>
           </div>
-        </div>
-        <div className="rad-item">
-          <Radio
-            {...props}
-            sx={{
-              "&, &.Mui-checked": {
-                color: "#054834",
-              },
-            }}
-            onClick={() => onRadioClick("DPK")}
-            checked={productType === "DPK" ? true : false}
-          />
-          <div
-            className="head-text2"
-            style={{ marginRight: "5px", fontSize: "12px" }}>
-            DPK
+
+          <div style={{ width: "100%" }} className="pumping">
+            {productType === "PMS" &&
+              (pms.length === 0 ? (
+                <div style={created}>
+                  {loading ? (
+                    <ThreeDots
+                      height="60"
+                      width="50"
+                      radius="9"
+                      color="#076146"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClassName=""
+                      visible={true}
+                    />
+                  ) : (
+                    <span>No tanks loaded</span>
+                  )}
+                </div>
+              ) : (
+                pms.map((item, index) => {
+                  return (
+                    <div
+                      style={{
+                        justifyContent: "flex-start",
+                        height: "230px",
+                        marginLeft: "20px",
+                        marginRight: "0px",
+                      }}
+                      key={index}
+                      className="item">
+                      <img
+                        style={{ width: "80px", height: "65px", marginTop: "15px" }}
+                        src={me4}
+                        alt="icon"
+                      />
+                      <div style={{ marginTop: "0px" }} className="pop">
+                        {item.tankName + "( " + item.productType + " )"}
+                      </div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Opening stock: ${ApproximateDecimal(
+                        item.currentLevel
+                      )}`}</div>
+                      <div style={{ marginTop: "10px" }} className="label">
+                        Dipping (Litres)
+                      </div>
+
+                      <input
+                        value={ApproximateDecimal(item.dipping)}
+                        onChange={(e) => setTotalizer(e, item, index)}
+                        style={imps}
+                        type="text"
+                      />
+                    </div>
+                  );
+                })
+              ))}
+            {productType === "AGO" &&
+              (ago.length === 0 ? (
+                <div style={created}>
+                  {loading ? (
+                    <ThreeDots
+                      height="60"
+                      width="50"
+                      radius="9"
+                      color="#076146"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClassName=""
+                      visible={true}
+                    />
+                  ) : (
+                    <span>No tanks loaded</span>
+                  )}
+                </div>
+              ) : (
+                ago.map((item, index) => {
+                  return (
+                    <div
+                      style={{
+                        justifyContent: "flex-start",
+                        height: "230px",
+                        marginLeft: "20px",
+                        marginRight: "0px",
+                      }}
+                      key={index}
+                      className="item">
+                      <img
+                        style={{ width: "80px", height: "65px", marginTop: "15px" }}
+                        src={me4}
+                        alt="icon"
+                      />
+                      <div style={{ marginTop: "0px" }} className="pop">
+                        {item.tankName + "( " + item.productType + " )"}
+                      </div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Opening stock: ${ApproximateDecimal(
+                        item.currentLevel
+                      )}`}</div>
+                      <div style={{ marginTop: "10px" }} className="label">
+                        Dipping (Litres)
+                      </div>
+
+                      <input
+                        value={ApproximateDecimal(item.dipping)}
+                        onChange={(e) => setTotalizer(e, item, index)}
+                        style={imps}
+                        type="text"
+                      />
+                    </div>
+                  );
+                })
+              ))}
+            {productType === "DPK" &&
+              (dpk.length === 0 ? (
+                <div style={created}>
+                  {loading ? (
+                    <ThreeDots
+                      height="60"
+                      width="50"
+                      radius="9"
+                      color="#076146"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClassName=""
+                      visible={true}
+                    />
+                  ) : (
+                    <span>No tanks loaded</span>
+                  )}
+                </div>
+              ) : (
+                dpk.map((item, index) => {
+                  return (
+                    <div
+                      style={{
+                        justifyContent: "flex-start",
+                        height: "230px",
+                        marginLeft: "20px",
+                        marginRight: "0px",
+                      }}
+                      key={index}
+                      className="item">
+                      <img
+                        style={{ width: "80px", height: "65px", marginTop: "15px" }}
+                        src={me4}
+                        alt="icon"
+                      />
+                      <div style={{ marginTop: "0px" }} className="pop">
+                        {item.tankName + "( " + item.productType + " )"}
+                      </div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Opening stock: ${ApproximateDecimal(
+                        item.currentLevel
+                      )}`}</div>
+                      <div style={{ marginTop: "10px" }} className="label">
+                        Dipping (Litres)
+                      </div>
+
+                      <input
+                        value={ApproximateDecimal(item.dipping)}
+                        onChange={(e) => setTotalizer(e, item, index)}
+                        style={imps}
+                        type="text"
+                      />
+                    </div>
+                  );
+                })
+              ))}
           </div>
         </div>
       </div>
+      <Navigation finish={finish} />
 
-      <div style={returnColor(productType, pro)}>
-        <span style={{ marginLeft: "15px" }}>{productType}</span>
-      </div>
-
-      <div style={{ width: "100%" }} className="pumping">
-        {productType === "PMS" &&
-          (pms.length === 0 ? (
-            <div style={created}>
-              {loading ? (
-                <ThreeDots
-                  height="60"
-                  width="50"
-                  radius="9"
-                  color="#076146"
-                  ariaLabel="three-dots-loading"
-                  wrapperStyle={{}}
-                  wrapperClassName=""
-                  visible={true}
-                />
-              ) : (
-                <span>No tanks loaded</span>
-              )}
-            </div>
-          ) : (
-            pms.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    justifyContent: "flex-start",
-                    height: "230px",
-                    marginLeft: "20px",
-                    marginRight: "0px",
-                  }}
-                  key={index}
-                  className="item">
-                  <img
-                    style={{ width: "80px", height: "65px", marginTop: "15px" }}
-                    src={me4}
-                    alt="icon"
-                  />
-                  <div style={{ marginTop: "0px" }} className="pop">
-                    {item.tankName + "( " + item.productType + " )"}
-                  </div>
-                  <div
-                    style={{ marginTop: "5px", color: "green" }}
-                    className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  <div
-                    style={{ marginTop: "5px", color: "green" }}
-                    className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.currentLevel
-                  )}`}</div>
-                  <div style={{ marginTop: "10px" }} className="label">
-                    Dipping (Litres)
-                  </div>
-
-                  <input
-                    value={ApproximateDecimal(item.dipping)}
-                    onChange={(e) => setTotalizer(e, item, index)}
-                    style={imps}
-                    type="text"
-                  />
-                </div>
-              );
-            })
-          ))}
-        {productType === "AGO" &&
-          (ago.length === 0 ? (
-            <div style={created}>
-              {loading ? (
-                <ThreeDots
-                  height="60"
-                  width="50"
-                  radius="9"
-                  color="#076146"
-                  ariaLabel="three-dots-loading"
-                  wrapperStyle={{}}
-                  wrapperClassName=""
-                  visible={true}
-                />
-              ) : (
-                <span>No tanks loaded</span>
-              )}
-            </div>
-          ) : (
-            ago.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    justifyContent: "flex-start",
-                    height: "230px",
-                    marginLeft: "20px",
-                    marginRight: "0px",
-                  }}
-                  key={index}
-                  className="item">
-                  <img
-                    style={{ width: "80px", height: "65px", marginTop: "15px" }}
-                    src={me4}
-                    alt="icon"
-                  />
-                  <div style={{ marginTop: "0px" }} className="pop">
-                    {item.tankName + "( " + item.productType + " )"}
-                  </div>
-                  <div
-                    style={{ marginTop: "5px", color: "green" }}
-                    className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  <div
-                    style={{ marginTop: "5px", color: "green" }}
-                    className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.currentLevel
-                  )}`}</div>
-                  <div style={{ marginTop: "10px" }} className="label">
-                    Dipping (Litres)
-                  </div>
-
-                  <input
-                    value={ApproximateDecimal(item.dipping)}
-                    onChange={(e) => setTotalizer(e, item, index)}
-                    style={imps}
-                    type="text"
-                  />
-                </div>
-              );
-            })
-          ))}
-        {productType === "DPK" &&
-          (dpk.length === 0 ? (
-            <div style={created}>
-              {loading ? (
-                <ThreeDots
-                  height="60"
-                  width="50"
-                  radius="9"
-                  color="#076146"
-                  ariaLabel="three-dots-loading"
-                  wrapperStyle={{}}
-                  wrapperClassName=""
-                  visible={true}
-                />
-              ) : (
-                <span>No tanks loaded</span>
-              )}
-            </div>
-          ) : (
-            dpk.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    justifyContent: "flex-start",
-                    height: "230px",
-                    marginLeft: "20px",
-                    marginRight: "0px",
-                  }}
-                  key={index}
-                  className="item">
-                  <img
-                    style={{ width: "80px", height: "65px", marginTop: "15px" }}
-                    src={me4}
-                    alt="icon"
-                  />
-                  <div style={{ marginTop: "0px" }} className="pop">
-                    {item.tankName + "( " + item.productType + " )"}
-                  </div>
-                  <div
-                    style={{ marginTop: "5px", color: "green" }}
-                    className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
-                  <div
-                    style={{ marginTop: "5px", color: "green" }}
-                    className="pop">{`Opening stock: ${ApproximateDecimal(
-                    item.currentLevel
-                  )}`}</div>
-                  <div style={{ marginTop: "10px" }} className="label">
-                    Dipping (Litres)
-                  </div>
-
-                  <input
-                    value={ApproximateDecimal(item.dipping)}
-                    onChange={(e) => setTotalizer(e, item, index)}
-                    style={imps}
-                    type="text"
-                  />
-                </div>
-              );
-            })
-          ))}
-      </div>
-    </div>
+      {openSummary && (
+        <SummaryRecord
+          open={openSummary}
+          close={setOpenSummary}
+        />
+      )}
+    </React.Fragment>
   );
 };
 

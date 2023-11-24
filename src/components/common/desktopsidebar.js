@@ -62,7 +62,7 @@ const DesktopSideBar = (props) => {
         />
         <SideItems
           marginT={"135px"}
-          link={"/home/recordsales"}
+          link={"/home/recordsales/pumpupdate/0"}
           name={"Record Sales"}
           icon={recordSales2}
           icon2={recordSales}

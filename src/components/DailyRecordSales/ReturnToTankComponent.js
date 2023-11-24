@@ -1,14 +1,18 @@
 import { Radio } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { updateSelectedPumps } from "../../storage/recordsales";
+import Navigation from "./navigation";
+import { useNavigate } from "react-router-dom";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
 const ReturnToTank = (props) => {
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate()
   const [productType, setProductType] = useState("PMS");
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
 
@@ -16,6 +20,13 @@ const ReturnToTank = (props) => {
   const dispatch = useDispatch();
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
+
+  const getPerm = (e) => {
+    if (user.userType === "superAdmin") {
+      return true;
+    }
+    return user.permission?.recordSales[e];
+  };
 
   const getPMSPump = useCallback(() => {
     const newList = [...selectedPumps];
@@ -187,353 +198,367 @@ const ReturnToTank = (props) => {
     }
   };
 
+  const next = () => {
+    if (oneStationData === null)
+      return swal("Warning!", "Please select a station first", "info");
+    if (!getPerm("4"))
+      return swal("Warning!", "Permission denied", "info");
+
+    navigate("/home/recordsales/lpo");
+  }
+
   return (
-    <div
-      style={{ flexDirection: "column", alignItems: "center" }}
-      className="inner-body">
-      <div style={rad} className="radio">
-        <div className="rad-item">
-          <Radio
-            {...props}
-            sx={{
-              "&, &.Mui-checked": {
-                color: "#054834",
-              },
-            }}
-            onClick={() => onRadioClick("PMS")}
-            checked={productType === "PMS" ? true : false}
-          />
-          <div
-            className="head-text2"
-            style={{ marginRight: "5px", fontSize: "12px" }}>
-            PMS
-          </div>
-        </div>
-        <div className="rad-item">
-          <Radio
-            {...props}
-            sx={{
-              "&, &.Mui-checked": {
-                color: "#054834",
-              },
-            }}
-            onClick={() => onRadioClick("AGO")}
-            checked={productType === "AGO" ? true : false}
-          />
-          <div
-            className="head-text2"
-            style={{ marginRight: "5px", fontSize: "12px" }}>
-            AGO
-          </div>
-        </div>
-        <div className="rad-item">
-          <Radio
-            {...props}
-            sx={{
-              "&, &.Mui-checked": {
-                color: "#054834",
-              },
-            }}
-            onClick={() => onRadioClick("DPK")}
-            checked={productType === "DPK" ? true : false}
-          />
-          <div
-            className="head-text2"
-            style={{ marginRight: "5px", fontSize: "12px" }}>
-            DPK
-          </div>
-        </div>
-      </div>
-
-      <div
-        style={{ marginTop: "10px", marginBottom: "10px", fontWeight: "400" }}>
-        Select Pump used for the day
-      </div>
-      <div
-        style={{ flexDirection: "row", justifyContent: "center" }}
-        className="pump-list">
-        {selectedPumps?.length === 0 ? (
-          <div style={{ ...box, width: "170px" }}>
-            <div style={{ marginRight: "10px", fontWeight: "500" }}>
-              No pump Created
+    <React.Fragment>
+      <div className="form-body">
+        <div
+        style={{ flexDirection: "column", alignItems: "center" }}
+        className="inner-body">
+          <div style={rad} className="radio">
+            <div className="rad-item">
+              <Radio
+                {...props}
+                sx={{
+                  "&, &.Mui-checked": {
+                    color: "#054834",
+                  },
+                }}
+                onClick={() => onRadioClick("PMS")}
+                checked={productType === "PMS" ? true : false}
+              />
+              <div
+                className="head-text2"
+                style={{ marginRight: "5px", fontSize: "12px" }}>
+                PMS
+              </div>
             </div>
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src={cross}
-              alt="icon"
-            />
+            <div className="rad-item">
+              <Radio
+                {...props}
+                sx={{
+                  "&, &.Mui-checked": {
+                    color: "#054834",
+                  },
+                }}
+                onClick={() => onRadioClick("AGO")}
+                checked={productType === "AGO" ? true : false}
+              />
+              <div
+                className="head-text2"
+                style={{ marginRight: "5px", fontSize: "12px" }}>
+                AGO
+              </div>
+            </div>
+            <div className="rad-item">
+              <Radio
+                {...props}
+                sx={{
+                  "&, &.Mui-checked": {
+                    color: "#054834",
+                  },
+                }}
+                onClick={() => onRadioClick("DPK")}
+                checked={productType === "DPK" ? true : false}
+              />
+              <div
+                className="head-text2"
+                style={{ marginRight: "5px", fontSize: "12px" }}>
+                DPK
+              </div>
+            </div>
           </div>
-        ) : productType === "PMS" ? (
-          pms.map((data, index) => {
-            return (
-              <div key={index}>
-                {Number.isInteger(data.identity) && (
-                  <div className="box">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={() => {
-                        deselect(data);
-                      }}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-                {!Number.isInteger(data.identity) && (
-                  <div className="box2">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={() => {
-                        deselect(data);
-                      }}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
+
+          <div
+            style={{ marginTop: "10px", marginBottom: "10px", fontWeight: "400" }}>
+            Select Pump used for the day
+          </div>
+          <div
+            style={{ flexDirection: "row", justifyContent: "center" }}
+            className="pump-list">
+            {selectedPumps?.length === 0 ? (
+              <div style={{ ...box, width: "170px" }}>
+                <div style={{ marginRight: "10px", fontWeight: "500" }}>
+                  No pump Created
+                </div>
+                <img
+                  style={{ width: "20px", height: "20px" }}
+                  src={cross}
+                  alt="icon"
+                />
               </div>
-            );
-          })
-        ) : productType === "AGO" ? (
-          ago.map((data, index) => {
-            return (
-              <div key={index}>
-                {Number.isInteger(data.identity) && (
-                  <div className="box">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={() => {
-                        deselect(data);
-                      }}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
+            ) : productType === "PMS" ? (
+              pms.map((data, index) => {
+                return (
+                  <div key={index}>
+                    {Number.isInteger(data.identity) && (
+                      <div className="box">
+                        <p
+                          onClick={(e) => pumpItem(e, index, data)}
+                          style={{ marginRight: "10px" }}>
+                          {data.pumpName}
+                        </p>
+                        <img
+                          onClick={() => {
+                            deselect(data);
+                          }}
+                          style={{ width: "20px", height: "20px" }}
+                          src={cross}
+                          alt="icon"
+                        />
+                      </div>
+                    )}
+                    {!Number.isInteger(data.identity) && (
+                      <div className="box2">
+                        <p
+                          onClick={(e) => pumpItem(e, index, data)}
+                          style={{ marginRight: "10px" }}>
+                          {data.pumpName}
+                        </p>
+                        <img
+                          onClick={() => {
+                            deselect(data);
+                          }}
+                          style={{ width: "20px", height: "20px" }}
+                          src={cross}
+                          alt="icon"
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-                {!Number.isInteger(data.identity) && (
-                  <div className="box2">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={() => {
-                        deselect(data);
-                      }}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
+                );
+              })
+            ) : productType === "AGO" ? (
+              ago.map((data, index) => {
+                return (
+                  <div key={index}>
+                    {Number.isInteger(data.identity) && (
+                      <div className="box">
+                        <p
+                          onClick={(e) => pumpItem(e, index, data)}
+                          style={{ marginRight: "10px" }}>
+                          {data.pumpName}
+                        </p>
+                        <img
+                          onClick={() => {
+                            deselect(data);
+                          }}
+                          style={{ width: "20px", height: "20px" }}
+                          src={cross}
+                          alt="icon"
+                        />
+                      </div>
+                    )}
+                    {!Number.isInteger(data.identity) && (
+                      <div className="box2">
+                        <p
+                          onClick={(e) => pumpItem(e, index, data)}
+                          style={{ marginRight: "10px" }}>
+                          {data.pumpName}
+                        </p>
+                        <img
+                          onClick={() => {
+                            deselect(data);
+                          }}
+                          style={{ width: "20px", height: "20px" }}
+                          src={cross}
+                          alt="icon"
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })
-        ) : (
-          dpk.map((data, index) => {
-            return (
-              <div key={index}>
-                {Number.isInteger(data.identity) && (
-                  <div className="box">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={() => {
-                        deselect(data);
-                      }}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
+                );
+              })
+            ) : (
+              dpk.map((data, index) => {
+                return (
+                  <div key={index}>
+                    {Number.isInteger(data.identity) && (
+                      <div className="box">
+                        <p
+                          onClick={(e) => pumpItem(e, index, data)}
+                          style={{ marginRight: "10px" }}>
+                          {data.pumpName}
+                        </p>
+                        <img
+                          onClick={() => {
+                            deselect(data);
+                          }}
+                          style={{ width: "20px", height: "20px" }}
+                          src={cross}
+                          alt="icon"
+                        />
+                      </div>
+                    )}
+                    {!Number.isInteger(data.identity) && (
+                      <div className="box2">
+                        <p
+                          onClick={(e) => pumpItem(e, index, data)}
+                          style={{ marginRight: "10px" }}>
+                          {data.pumpName}
+                        </p>
+                        <img
+                          onClick={() => {
+                            deselect(data);
+                          }}
+                          style={{ width: "20px", height: "20px" }}
+                          src={cross}
+                          alt="icon"
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-                {!Number.isInteger(data.identity) && (
-                  <div className="box2">
-                    <p
-                      onClick={(e) => pumpItem(e, index, data)}
-                      style={{ marginRight: "10px" }}>
-                      {data.pumpName}
-                    </p>
-                    <img
-                      onClick={() => {
-                        deselect(data);
+                );
+              })
+            )}
+          </div>
+
+          <div
+            style={{ width: "100%", marginTop: "20px", justifyContent: "center" }}
+            className="pumping">
+            {productType === "PMS" &&
+              (pms.length === 0 ? (
+                <div style={cap}>Please click to select a pump</div>
+              ) : (
+                pms.map((item, index) => {
+                  return (
+                    <div
+                      style={{
+                        width: mediaMatch.matches ? "100%" : "270px",
+                        height: "230px",
                       }}
-                      style={{ width: "20px", height: "20px" }}
-                      src={cross}
-                      alt="icon"
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
+                      key={index}
+                      className="item">
+                      <img
+                        style={{ width: "55px", height: "60px", marginTop: "10px" }}
+                        src={pump1}
+                        alt="icon"
+                      />
+                      <div className="pop">{item.pumpName}</div>
+                      <div style={{ marginTop: "10px" }} className="label">
+                        Date: {item.updatedAt.split("T")[0]}
+                      </div>
+                      <div style={{ width: "94%" }}>
+                        <div style={{ marginTop: "10px" }} className="label">
+                          Quantity (Litres)
+                        </div>
+                        <input
+                          onChange={(e) => setTotalizer(e, item)}
+                          style={{
+                            ...imps,
+                            width: "94%",
+                            border:
+                              Number(item.totalizerReading) >
+                                Number(item.newTotalizer) &&
+                              item.newTotalizer !== "0"
+                                ? "1px solid red"
+                                : "1px solid black",
+                          }}
+                          type="number"
+                          value={item.RTlitre}
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              ))}
+
+            {productType === "AGO" &&
+              (ago.length === 0 ? (
+                <div style={cap}>Please click to select a pump</div>
+              ) : (
+                ago.map((item, index) => {
+                  return (
+                    <div
+                      style={{
+                        width: mediaMatch.matches ? "100%" : "300px",
+                        height: "230px",
+                      }}
+                      key={index}
+                      className="item">
+                      <img
+                        style={{ width: "55px", height: "60px", marginTop: "10px" }}
+                        src={pump1}
+                        alt="icon"
+                      />
+                      <div className="pop">{item.pumpName}</div>
+                      <div style={{ marginTop: "10px" }} className="label">
+                        Date: {item.updatedAt.split("T")[0]}
+                      </div>
+                      <div style={{ width: "94%" }}>
+                        <div style={{ marginTop: "10px" }} className="label">
+                          Quantity (Litres)
+                        </div>
+                        <input
+                          onChange={(e) => setTotalizer(e, item)}
+                          value={item.RTlitre}
+                          style={{
+                            ...imps,
+                            width: "94%",
+                            border:
+                              Number(item.totalizerReading) >
+                                Number(item.newTotalizer) &&
+                              item.newTotalizer !== "0"
+                                ? "1px solid red"
+                                : "1px solid black",
+                          }}
+                          type="number"
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              ))}
+
+            {productType === "DPK" &&
+              (dpk.length === 0 ? (
+                <div style={cap}>Please click to select a pump</div>
+              ) : (
+                dpk.map((item, index) => {
+                  return (
+                    <div
+                      style={{
+                        width: mediaMatch.matches ? "100%" : "300px",
+                        height: "230px",
+                      }}
+                      key={index}
+                      className="item">
+                      <img
+                        style={{ width: "55px", height: "60px", marginTop: "10px" }}
+                        src={pump1}
+                        alt="icon"
+                      />
+                      <div className="pop">{item.pumpName}</div>
+                      <div style={{ marginTop: "10px" }} className="label">
+                        Date: {item.updatedAt.split("T")[0]}
+                      </div>
+                      <div style={{ width: "94%" }}>
+                        <div style={{ marginTop: "10px" }} className="label">
+                          Quantity (Litres)
+                        </div>
+                        <input
+                          onChange={(e) => setTotalizer(e, item)}
+                          value={item.RTlitre}
+                          style={{
+                            ...imps,
+                            width: "94%",
+                            border:
+                              Number(item.totalizerReading) >
+                                Number(item.newTotalizer) &&
+                              item.newTotalizer !== "0"
+                                ? "1px solid red"
+                                : "1px solid black",
+                          }}
+                          type="number"
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              ))}
+          </div>
+        </div>
       </div>
-
-      <div
-        style={{ width: "100%", marginTop: "20px", justifyContent: "center" }}
-        className="pumping">
-        {productType === "PMS" &&
-          (pms.length === 0 ? (
-            <div style={cap}>Please click to select a pump</div>
-          ) : (
-            pms.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    width: mediaMatch.matches ? "100%" : "270px",
-                    height: "230px",
-                  }}
-                  key={index}
-                  className="item">
-                  <img
-                    style={{ width: "55px", height: "60px", marginTop: "10px" }}
-                    src={pump1}
-                    alt="icon"
-                  />
-                  <div className="pop">{item.pumpName}</div>
-                  <div style={{ marginTop: "10px" }} className="label">
-                    Date: {item.updatedAt.split("T")[0]}
-                  </div>
-                  <div style={{ width: "94%" }}>
-                    <div style={{ marginTop: "10px" }} className="label">
-                      Quantity (Litres)
-                    </div>
-                    <input
-                      onChange={(e) => setTotalizer(e, item)}
-                      style={{
-                        ...imps,
-                        width: "94%",
-                        border:
-                          Number(item.totalizerReading) >
-                            Number(item.newTotalizer) &&
-                          item.newTotalizer !== "0"
-                            ? "1px solid red"
-                            : "1px solid black",
-                      }}
-                      type="number"
-                      value={item.RTlitre}
-                    />
-                  </div>
-                </div>
-              );
-            })
-          ))}
-
-        {productType === "AGO" &&
-          (ago.length === 0 ? (
-            <div style={cap}>Please click to select a pump</div>
-          ) : (
-            ago.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    width: mediaMatch.matches ? "100%" : "300px",
-                    height: "230px",
-                  }}
-                  key={index}
-                  className="item">
-                  <img
-                    style={{ width: "55px", height: "60px", marginTop: "10px" }}
-                    src={pump1}
-                    alt="icon"
-                  />
-                  <div className="pop">{item.pumpName}</div>
-                  <div style={{ marginTop: "10px" }} className="label">
-                    Date: {item.updatedAt.split("T")[0]}
-                  </div>
-                  <div style={{ width: "94%" }}>
-                    <div style={{ marginTop: "10px" }} className="label">
-                      Quantity (Litres)
-                    </div>
-                    <input
-                      onChange={(e) => setTotalizer(e, item)}
-                      value={item.RTlitre}
-                      style={{
-                        ...imps,
-                        width: "94%",
-                        border:
-                          Number(item.totalizerReading) >
-                            Number(item.newTotalizer) &&
-                          item.newTotalizer !== "0"
-                            ? "1px solid red"
-                            : "1px solid black",
-                      }}
-                      type="number"
-                    />
-                  </div>
-                </div>
-              );
-            })
-          ))}
-
-        {productType === "DPK" &&
-          (dpk.length === 0 ? (
-            <div style={cap}>Please click to select a pump</div>
-          ) : (
-            dpk.map((item, index) => {
-              return (
-                <div
-                  style={{
-                    width: mediaMatch.matches ? "100%" : "300px",
-                    height: "230px",
-                  }}
-                  key={index}
-                  className="item">
-                  <img
-                    style={{ width: "55px", height: "60px", marginTop: "10px" }}
-                    src={pump1}
-                    alt="icon"
-                  />
-                  <div className="pop">{item.pumpName}</div>
-                  <div style={{ marginTop: "10px" }} className="label">
-                    Date: {item.updatedAt.split("T")[0]}
-                  </div>
-                  <div style={{ width: "94%" }}>
-                    <div style={{ marginTop: "10px" }} className="label">
-                      Quantity (Litres)
-                    </div>
-                    <input
-                      onChange={(e) => setTotalizer(e, item)}
-                      value={item.RTlitre}
-                      style={{
-                        ...imps,
-                        width: "94%",
-                        border:
-                          Number(item.totalizerReading) >
-                            Number(item.newTotalizer) &&
-                          item.newTotalizer !== "0"
-                            ? "1px solid red"
-                            : "1px solid black",
-                      }}
-                      type="number"
-                    />
-                  </div>
-                </div>
-              );
-            })
-          ))}
-      </div>
-    </div>
+      <Navigation next={next} />
+    </React.Fragment>
   );
 };
 

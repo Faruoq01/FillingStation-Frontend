@@ -58,6 +58,12 @@ import ProductOrderHome from "./components/productorder/productorderhome";
 import ListOutstanding from "./components/DailySales/outstanding";
 import ListSales from "./components/DashboardComponents/saleslist";
 import AdminOffice from "./components/HRComponents/AdminOffice";
+import PumpUpdateComponent from "./components/DailyRecordSales/PumpUpdateComponent";
+import ReturnToTankComponent from "./components/DailyRecordSales/ReturnToTankComponent"
+import LPOComponent from "./components/DailyRecordSales/LPOComponent";
+import ExpenseComponents from "./components/DailyRecordSales/ExpenseComponents";
+import PaymentsComponents from "./components/DailyRecordSales/PaymentComponents";
+import DippingComponents from "./components/DailyRecordSales/DippingComponents";
 
 function App() {
   useEffect(() => {
@@ -95,7 +101,14 @@ function App() {
             <Route path="tanks" element={<Tank />} />
             <Route path="pumps" element={<Pump />} />
           </Route>
-          <Route path="recordsales" element={<DailyRecordSales />} />
+          <Route path="recordsales" element={<DailyRecordSales />} >
+            <Route path="pumpupdate/:index" element={<PumpUpdateComponent />} />
+            <Route path="rttank" element={<ReturnToTankComponent />} />
+            <Route path="lpo" element={<LPOComponent />} />
+            <Route path="expenses" element={<ExpenseComponents />} />
+            <Route path="payments" element={<PaymentsComponents />} />
+            <Route path="dipping" element={<DippingComponents/>} />
+          </Route>
           <Route path="analysis" element={<Analysis />}>
             <Route path="analysishome/:index" element={<AnalysisHome />} />
             <Route path="payments" element={<Payments />} />

@@ -59,6 +59,8 @@ import moment from "moment";
 import APIs from "../../services/connections/api";
 import { daySupply } from "../../storage/supply";
 import { useCallback } from "react";
+import Navigation from "../DailyRecordSales/navigation";
+import { Outlet } from "react-router-dom";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
@@ -173,7 +175,6 @@ const DailyRecordSales = () => {
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const [defaultState, setDefault] = useState(0);
   const [open, setOpen] = useState(false);
-  const [openSummary, setOpenSummary] = useState(false);
   const [pending, setPending] = useState(false);
   const [pages, setPages] = useState(1);
 
@@ -261,38 +262,6 @@ const DailyRecordSales = () => {
     getAllInitialRecords();
   }, [dispatch, getAllInitialRecords]);
 
-  const nextQuestion = () => {
-    if (pages <= 6) {
-      if (oneStationData === null)
-        return swal("Warning!", "Please select a station first", "info");
-      if (!getPerm("3") && pages === 1)
-        return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("4") && pages === 2)
-        return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("5") && pages === 3)
-        return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("6") && pages === 4)
-        return swal("Warning!", "Permission denied", "info");
-      if (!getPerm("7") && pages === 5)
-        return swal("Warning!", "Permission denied", "info");
-
-      setPages((prev) => prev + 1);
-    }
-  };
-
-  const prevQuestion = () => {
-    if (pages >= 1) {
-      setPages((prev) => prev - 1);
-    }
-  };
-
-  const finishAndSubmit = () => {
-    if (!getPerm("8") && pages === 6)
-      return swal("Warning!", "Permission denied", "info");
-
-    setOpenSummary(true);
-  };
-
   const changeMenu = async (index, item) => {
     if (!getPerm("1") && item === null)
       return swal("Warning!", "Permission denied", "info");
@@ -303,29 +272,6 @@ const DailyRecordSales = () => {
     setPending(true);
     getAllRecordDetails(item, currentDate);
   };
-
-  // const updateTanksWithSupplies = (tankListData, daySupply) => {
-  //   if (daySupply.length === 0 || tankListData.length === 0) {
-  //     dispatch(tankList(tankListData));
-  //   } else {
-  //     const copyTanks = JSON.parse(JSON.stringify(tankListData));
-  //     for (const supply of daySupply) {
-  //       const recipient = Object.values(supply.recipientTanks);
-  //       for (const tank of recipient) {
-  //         const findID = copyTanks.findIndex((data) => data._id === tank.id);
-  //         if (findID !== -1) {
-  //           const newLevel =
-  //             Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
-  //           copyTanks[findID] = {
-  //             ...copyTanks[findID],
-  //             currentLevel: newLevel,
-  //           };
-  //         }
-  //       }
-  //     }
-  //     dispatch(tankList(copyTanks));
-  //   }
-  // };
 
   const updateDate = (newValue) => {
     if (oneStationData === null)
@@ -428,15 +374,6 @@ const DailyRecordSales = () => {
 
   return (
     <div className="salesRecordStyle">
-      {openSummary && (
-        <SummaryRecord
-          setPages={setPages}
-          refresh={getAllInitialRecords}
-          clops={setOpen}
-          open={openSummary}
-          close={setOpenSummary}
-        />
-      )}
       {pending && (
         <PendingSales
           date={setValue}
@@ -621,76 +558,7 @@ const DailyRecordSales = () => {
           {/* <ArrowCircleRightIcon sx={{width:'50px', height:'50px', marginRight:'2%'}} /> */}
         </IconButton>
       </div>
-
-      <div className="form-body">
-        {pages === 1 && <PumpUpdateComponent />}
-        {pages === 2 && <ReturnToTankComponent />}
-        {pages === 3 && <LPOComponent />}
-        {pages === 4 && <ExpenseComponents />}
-        {pages === 5 && <PaymentsComponents />}
-        {pages === 6 && <DippingComponents />}
-      </div>
-
-      <div className="navs">
-        <div>
-          {pages > 1 && (
-            <Button
-              variant="contained"
-              sx={{
-                width: "100px",
-                height: "30px",
-                background: "#054834",
-                fontSize: "13px",
-                borderRadius: "5px",
-                textTransform: "capitalize",
-                "&:hover": {
-                  backgroundColor: "#054834",
-                },
-              }}
-              onClick={prevQuestion}>
-              Previous
-            </Button>
-          )}
-        </div>
-
-        {pages < 6 && (
-          <Button
-            variant="contained"
-            sx={{
-              width: "140px",
-              height: "30px",
-              background: "#054834",
-              fontSize: "13px",
-              borderRadius: "5px",
-              textTransform: "capitalize",
-              "&:hover": {
-                backgroundColor: "#054834",
-              },
-            }}
-            onClick={nextQuestion}>
-            Save & Proceed
-          </Button>
-        )}
-
-        {pages === 6 && (
-          <Button
-            variant="contained"
-            sx={{
-              width: "140px",
-              height: "30px",
-              background: "#054834",
-              fontSize: "13px",
-              borderRadius: "5px",
-              textTransform: "capitalize",
-              "&:hover": {
-                backgroundColor: "#054834",
-              },
-            }}
-            onClick={finishAndSubmit}>
-            Finish
-          </Button>
-        )}
-      </div>
+      <Outlet />
     </div>
   );
 };
