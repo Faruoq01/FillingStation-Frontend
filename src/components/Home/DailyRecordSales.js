@@ -1,27 +1,7 @@
 import * as React from "react";
-import PropTypes from "prop-types";
-import { styled } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepConnector, {
-  stepConnectorClasses,
-} from "@mui/material/StepConnector";
-import SanitizerIcon from "@mui/icons-material/Sanitizer";
-import PropaneTankIcon from "@mui/icons-material/PropaneTank";
-import CreditScoreIcon from "@mui/icons-material/CreditScore";
-import AssignmentReturnedIcon from "@mui/icons-material/AssignmentReturned";
-import PaidIcon from "@mui/icons-material/Paid";
-import AddCardIcon from "@mui/icons-material/AddCard";
 import "../../styles/newSales.scss";
-import { Button, IconButton, MenuItem, Select } from "@mui/material";
-import PumpUpdateComponent from "../DailyRecordSales/PumpUpdateComponent";
-import LPOComponent from "../DailyRecordSales/LPOComponent";
-import ExpenseComponents from "../DailyRecordSales/ExpenseComponents";
-import PaymentsComponents from "../DailyRecordSales/PaymentComponents";
-import ReturnToTankComponent from "../DailyRecordSales/ReturnToTankComponent";
-import DippingComponents from "../DailyRecordSales/DippingComponents";
+import { MenuItem, Select } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -60,105 +40,10 @@ import APIs from "../../services/connections/api";
 import { daySupply } from "../../storage/supply";
 import { useCallback } from "react";
 import Navigation from "../DailyRecordSales/navigation";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import StepperComponent from "../../components/DailyRecordSales/stepper";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
-
-const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 22,
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage:
-        "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage:
-        "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    height: 3,
-    border: 0,
-    backgroundColor:
-      theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
-    borderRadius: 1,
-  },
-}));
-
-const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
-  zIndex: 1,
-  color: "#fff",
-  width: 40,
-  height: 40,
-  display: "flex",
-  borderRadius: "50%",
-  justifyContent: "center",
-  fontSize: "11px",
-  alignItems: "center",
-  ...(ownerState.active && {
-    backgroundImage:
-      "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
-    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
-  }),
-  ...(ownerState.completed && {
-    backgroundImage:
-      "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)",
-  }),
-}));
-
-function ColorlibStepIcon(props) {
-  const { active, completed, className } = props;
-
-  const icons = {
-    1: <SanitizerIcon />,
-    2: <AssignmentReturnedIcon />,
-    3: <CreditScoreIcon />,
-    4: <PaidIcon />,
-    5: <AddCardIcon />,
-    6: <PropaneTankIcon />,
-  };
-
-  return (
-    <ColorlibStepIconRoot
-      ownerState={{ completed, active }}
-      className={className}>
-      {icons[String(props.icon)]}
-    </ColorlibStepIconRoot>
-  );
-}
-
-ColorlibStepIcon.propTypes = {
-  /**
-   * Whether this step is active.
-   * @default false
-   */
-  active: PropTypes.bool,
-  className: PropTypes.string,
-  /**
-   * Mark the step as completed. Is passed to child components.
-   * @default false
-   */
-  completed: PropTypes.bool,
-  /**
-   * The label displayed in the step icon.
-   */
-  icon: PropTypes.node,
-};
-
-const steps = [
-  "Pump Update",
-  "Return to Tank",
-  "LPO",
-  "Expenses",
-  "Payments",
-  "Dipping",
-];
 
 const DailyRecordSales = () => {
   const date = new Date();
@@ -173,10 +58,12 @@ const DailyRecordSales = () => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const tankListData = useSelector((state) => state.recordsales.tankList);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
   const [defaultState, setDefault] = useState(0);
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [pages, setPages] = useState(1);
+  const navigate = useNavigate();
 
   const resolveUserID = () => {
     if (user.userType === "superAdmin") {
@@ -265,7 +152,7 @@ const DailyRecordSales = () => {
   const changeMenu = async (index, item) => {
     if (!getPerm("1") && item === null)
       return swal("Warning!", "Permission denied", "info");
-    setPages(1);
+    navigate('/home/recordsales/pumpupdate/0');
     setDefault(index);
     dispatch(changeStation());
     dispatch(adminOutlet(item));
@@ -276,7 +163,7 @@ const DailyRecordSales = () => {
   const updateDate = (newValue) => {
     if (oneStationData === null)
       return swal("Warning!", "Please select station first", "info");
-    setPages(1);
+    navigate('/home/recordsales/pumpupdate/0');
 
     if (tankListData.length === null)
       return swal(
@@ -302,23 +189,31 @@ const DailyRecordSales = () => {
       organisationID: station.organisation,
     };
 
+    const salesPayload = {
+      outletID: station._id,
+      organizationID: station.organisation,
+      date: getDate,
+      shift: currentShift
+    }
+
     const stationPumps = OutletService.getAllStationPumps(payload);
-    // const stationTanks = OutletService.getAllOutletTanks(payload);
     const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
-
+    const currentSales = APIs.post("/sales/current-sales", salesPayload);
     const orgLpo = LPOService.getAllLPO(payload);
-    const supply = APIs.post("/supply/dayRecord", {
-      ...payload,
-      createdAt: getDate,
-    });
 
-    Promise.all([stationPumps, stationTanks, orgLpo, supply]).then((data) => {
-      const [pumps, tanks, lpo, supply] = data;
+    Promise.all([stationPumps, stationTanks, orgLpo, currentSales]).then((data) => {
+      const [pumps, tanks, lpo, currentSales] = data;
+      const salesData = currentSales.data.data;
 
       ///////////////// station pumps //////////////////////
       const copyData = JSON.parse(JSON.stringify(pumps));
       const updated = copyData.map((data) => {
         let pumps = { ...data };
+        const pumpSales = salesData.find(sale => {
+          const copy = JSON.parse(JSON.stringify(sale));
+          return copy.pumpID === data._id
+        });
+
         return {
           ...pumps,
           identity: null,
@@ -326,6 +221,7 @@ const DailyRecordSales = () => {
           newTotalizer: "Enter closing meter",
           RTlitre: 0,
           sales: 0,
+          pumpSales: pumpSales? pumpSales: null,
         };
       });
       const PMS = updated.filter((data) => data.productType === "PMS");
@@ -354,9 +250,6 @@ const DailyRecordSales = () => {
 
       ///////////////// station lpo //////////////////////
       dispatch(createLPO(lpo.lpo.lpo));
-
-      ///////////////// station supplies /////////////////
-      dispatch(daySupply(supply.data.supply));
       dispatch(tankList(outletTanks));
       dispatch(changeDate(date));
     });
@@ -460,104 +353,7 @@ const DailyRecordSales = () => {
         </div>
       </div>
 
-      <div className="steps">
-        <Stack sx={{ width: "100%", marginTop: "20px" }} spacing={4}>
-          <Stepper
-            alternativeLabel
-            activeStep={pages - 1}
-            connector={<ColorlibConnector />}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel StepIconComponent={ColorlibStepIcon}>
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Stack>
-      </div>
-
-      <div className="ttx" style={text}>
-        {steps[pages - 1]}
-      </div>
-
-      <div className="mob">
-        <IconButton>
-          {/* <ArrowCircleLeftIcon sx={{width:'50px', height:'50px', marginLeft:'2%'}} /> */}
-        </IconButton>
-
-        <div className="icons">
-          <div
-            className="cont"
-            style={{
-              backgroundImage:
-                pages >= 1
-                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
-                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
-            }}>
-            <SanitizerIcon sx={{ color: "#fff" }} />
-          </div>
-
-          <div
-            className="cont"
-            style={{
-              backgroundImage:
-                pages >= 2
-                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
-                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
-            }}>
-            <AssignmentReturnedIcon sx={{ color: "#fff" }} />
-          </div>
-
-          <div
-            className="cont"
-            style={{
-              backgroundImage:
-                pages >= 3
-                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
-                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
-            }}>
-            <CreditScoreIcon sx={{ color: "#fff" }} />
-          </div>
-
-          <div
-            className="cont"
-            style={{
-              backgroundImage:
-                pages >= 4
-                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
-                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
-            }}>
-            <PaidIcon sx={{ color: "#fff" }} />
-          </div>
-
-          <div
-            className="cont"
-            style={{
-              backgroundImage:
-                pages >= 5
-                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
-                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
-            }}>
-            <AddCardIcon sx={{ color: "#fff" }} />
-          </div>
-
-          <div
-            className="cont"
-            style={{
-              backgroundImage:
-                pages === 6
-                  ? "linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)"
-                  : "linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)",
-            }}>
-            <PropaneTankIcon sx={{ color: "#fff" }} />
-          </div>
-        </div>
-
-        <IconButton>
-          {/* <ArrowCircleRightIcon sx={{width:'50px', height:'50px', marginRight:'2%'}} /> */}
-        </IconButton>
-      </div>
+      <StepperComponent />
       <Outlet />
     </div>
   );
@@ -578,15 +374,6 @@ const selectStyle2 = {
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #777777",
   },
-};
-
-const text = {
-  width: "96%",
-  textAlign: "left",
-  fontSize: "12px",
-  marginTop: "30px",
-  marginLeft: "4%",
-  fontWeight: "bold",
 };
 
 const sales = {

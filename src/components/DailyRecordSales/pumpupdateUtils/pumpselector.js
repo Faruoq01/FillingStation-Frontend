@@ -22,6 +22,8 @@ const PumpSelector = ({ data, index }) => {
       return swal("Alert", "Please refresh tanks not loaded!", "warning");
     const tankClone = JSON.parse(JSON.stringify(tankListData));
     const tankID = tankClone.findIndex((data) => data.tankID === pump.hostTank);
+    if(tankID === -1) return swal("Alert", "This pump is not connected to any tank!", "warning");
+    if(pump.pumpSales) return swal("Alert", "This pump has already been recorded!", "warning");
 
     switch (pump.productType) {
       case "PMS": {

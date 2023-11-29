@@ -5,9 +5,11 @@ import { setProductType } from "../../storage/recordsales";
 import PumpCard from "./pumpupdateUtils/pumpcard";
 import PumpIndicators from "./pumpupdateUtils/pumpindicator";
 import Navigation from "./navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
+import SummarySales from "../Modals/recordsales/sales";
+import SalesSummary from "../Modals/recordsales/salesdetails";
 
 const PumpUpdateComponent = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -15,9 +17,12 @@ const PumpUpdateComponent = (props) => {
   const navigate = useNavigate()
   const productType = useSelector((state) => state.recordsales.productType);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const [openSummary, setOpenSummary] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
 
   //////////////////////////////////////////////////////////////
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
 
   const PMS = useSelector((state) => state.recordsales.PMS);
   const AGO = useSelector((state) => state.recordsales.AGO);
@@ -83,7 +88,10 @@ const PumpUpdateComponent = (props) => {
     if (!getPerm("3"))
       return swal("Warning!", "Permission denied", "info");
 
-    navigate("/home/recordsales/rttank");
+    if(selectedPumps.length === 0 && selectedTanks.length === 0){
+      return navigate("/home/recordsales/rttank");
+    }
+    setOpenSummary(true)
   }
 
   return (
@@ -118,6 +126,20 @@ const PumpUpdateComponent = (props) => {
         </div>
       </div>
       <Navigation next={next} route={'pump'} />
+
+      {openSummary && (
+        <SummarySales
+          open={openSummary}
+          close={setOpenSummary}
+          details={setOpenDetails}
+        />
+      )}
+      {openDetails && (
+        <SalesSummary
+          open={openDetails}
+          close={setOpenDetails}
+        />
+      )}
     </React.Fragment>
   );
 };

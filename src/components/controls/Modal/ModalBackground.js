@@ -13,6 +13,7 @@ const ModalBackground = ({
   report = false,
   pdf,
   print,
+  bg="fff"
 }) => {
   const handleClose = () => closeModal(false);
 
@@ -23,7 +24,7 @@ const ModalBackground = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div style={{ height: "auto" }} className="modalContainer2">
+      <div style={{background: "#f7f7f7", height: "auto" }} className="modalContainer2">
         <div className="inner">
           <div style={{ marginTop: "10px" }} className="head">
             <div className="head-text">{label}</div>

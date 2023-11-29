@@ -132,29 +132,6 @@ const PendingSales = (props) => {
     return user.permission?.recordSales[e];
   };
 
-  // const updateTanksWithSupplies = (tankListData, daySupply) => {
-  //   if (daySupply.length === 0 || tankListData.length === 0) {
-  //     dispatch(tankList(tankListData));
-  //   } else {
-  //     const copyTanks = JSON.parse(JSON.stringify(tankListData));
-  //     for (const supply of daySupply) {
-  //       const recipient = Object.values(supply.recipientTanks);
-  //       for (const tank of recipient) {
-  //         const findID = copyTanks.findIndex((data) => data._id === tank.id);
-  //         if (findID !== -1) {
-  //           const newLevel =
-  //             Number(copyTanks[findID].currentLevel) + Number(tank.quantity);
-  //           copyTanks[findID] = {
-  //             ...copyTanks[findID],
-  //             currentLevel: newLevel,
-  //           };
-  //         }
-  //       }
-  //     }
-  //     dispatch(tankList(copyTanks));
-  //   }
-  // };
-
   const updateDate = (newValue) => {
     if (oneStationData === null)
       return swal("Warning!", "Please select station first", "info");
@@ -181,36 +158,49 @@ const PendingSales = (props) => {
 
   const getAllRecordDetails = (station, date) => {
     setDateLoader(true);
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = date === "" ? today : date;
 
     const payload = {
       outletID: station._id,
       organisationID: station.organisation,
     };
 
+    const salesPayload = {
+      outletID: station._id,
+      organizationID: station.organisation,
+      date: getDate,
+      shift: currentShift
+    }
+
     const stationPumps = OutletService.getAllStationPumps(payload);
     const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
-    // const stationTanks = OutletService.getAllOutletTanks(payload);
+    const currentSales = APIs.post("/sales/current-sales", salesPayload);
     const orgLpo = LPOService.getAllLPO(payload);
-    const supply = APIs.post("/supply/dayRecord", {
-      ...payload,
-      createdAt: date,
-    });
 
-    Promise.all([stationPumps, stationTanks, orgLpo, supply])
+    Promise.all([stationPumps, stationTanks, orgLpo, currentSales])
       .then((data) => {
-        const [pumps, tanks, lpo, supply] = data;
+        const [pumps, tanks, lpo, currentSales] = data;
+        const salesData = currentSales.data.data;
 
         ///////////////// station pumps //////////////////////
         const copyData = JSON.parse(JSON.stringify(pumps));
         const updated = copyData.map((data) => {
           let pumps = { ...data };
+
+          const pumpSales = salesData.find(sale => {
+            const copy = JSON.parse(JSON.stringify(sale));
+            return copy.pumpID === data._id
+          });
+
           return {
             ...pumps,
             identity: null,
             closingMeter: 0,
-            newTotalizer: "Enter closing meter",
+            newTotalizer: pumpSales? pumpSales: "Enter closing meter",
             RTlitre: 0,
             sales: 0,
+            pumpSales: pumpSales? pumpSales: null,
           };
         });
         const PMS = updated.filter((data) => data.productType === "PMS");
@@ -239,9 +229,6 @@ const PendingSales = (props) => {
 
         ///////////////// station lpo //////////////////////
         dispatch(createLPO(lpo.lpo.lpo));
-
-        ///////////////// station supplies /////////////////
-        dispatch(daySupply(supply.data.supply));
         dispatch(tankList(outletTanks));
         dispatch(changeDate(date));
       })

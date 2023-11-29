@@ -1,8 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import pump1 from "../../../assets/pump1.png";
-import { updateSelectedPumps } from "../../../storage/recordsales";
+import { changeDate, createLPO, tankList, updateRecords, updateSelectedPumps } from "../../../storage/recordsales";
 import swal from "sweetalert";
 import ApproximateDecimal from "../../common/approx";
+import { Button } from "@mui/material";
+import Sales from "../../Modals/DailySales/sales";
+import React, { useCallback, useEffect, useState } from "react";
+import moment from "moment";
+import OutletService from "../../../services/360station/outletService";
+import APIs from "../../../services/connections/api";
+import LPOService from "../../../services/360station/lpo";
 const mediaMatch = window.matchMedia("(max-width: 500px)");
 
 const PumpCard = ({ item, index }) => {
@@ -10,9 +17,13 @@ const PumpCard = ({ item, index }) => {
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const productType = useSelector((state) => state.recordsales.productType);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [oneRecord, setOneRecord] = useState({});
 
   function removeSpecialCharacters(str) {
     return str.replace(/[^0-9.]/g, "");
@@ -139,72 +150,175 @@ const PumpCard = ({ item, index }) => {
   };
 
   const computedSales = (item) => {
-    const newMeter = Number(item.newTotalizer);
-    const currentMeter = Number(item.totalizerReading);
-    console.log(newMeter, "new meter");
+    const newMeter = Number(item.pumpSales? item.pumpSales.closingMeter: item.newTotalizer);
+    const currentMeter = Number(item.pumpSales? item.pumpSales.openingMeter: item.totalizerReading);
+    
     if (!isNaN(newMeter)) {
       return ApproximateDecimal(newMeter - currentMeter);
     }
     return ApproximateDecimal(0);
   };
 
-  return (
-    <div
-      style={{
-        width: mediaMatch.matches ? "100%" : "270px",
-        height: "auto",
-      }}
-      key={index}
-      className="item">
-      <img
-        style={{ width: "55px", height: "60px", marginTop: "15px" }}
-        src={pump1}
-        alt="icon"
-      />
-      <div className="pop">
-        {item.pumpName} ({item.hostTankName})
-      </div>
-      <div style={label} className="label">
-        Date: {item.updatedAt.split("T")[0]}
-      </div>
-      <div style={label2} className="label">
-        Sales:{" "}
-        <span style={{ color: computedSales(item) < 0 ? "red" : "green" }}>
-          {computedSales(item)}
-        </span>
-      </div>
-      <div style={{ width: "94%" }}>
-        <div style={{ marginTop: "10px" }} className="label">
-          Opening meter (Litres)
-        </div>
-        <input
-          disabled={true}
-          value={item.totalizerReading}
-          style={{ ...imps, width: "94%" }}
-          type="text"
-        />
+  const openEditModal = (data) => {
+    if(!data.pumpSales) 
+      return swal("Warning!", "A problem occured please refresh and try again!", "info");
 
-        <div style={{ marginTop: "10px" }} className="label">
-          Closing meter (Litres)
-        </div>
-        <input
-          onChange={(e) => setTotalizer(e, item, index)}
-          style={{
-            ...imps,
-            width: "94%",
-            marginBottom: "15px",
-            border:
-              Number(item.totalizerReading) > Number(item.newTotalizer) &&
-              item.newTotalizer !== "0"
-                ? "1px solid red"
-                : "1px solid black",
-          }}
-          type="number"
-          value={item.newTotalizer}
-          placeholder={"Enter closing meter"}
+    setOneRecord(data.pumpSales);
+    setOpenEdit(true);
+  }
+
+  const refreshAllRecords = useCallback((station, date) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = date === "" ? today : date;
+
+    const payload = {
+      outletID: station._id,
+      organisationID: station.organisation,
+    };
+
+    const salesPayload = {
+      outletID: station._id,
+      organizationID: station.organisation,
+      date: getDate,
+      shift: currentShift
+    }
+
+    const stationPumps = OutletService.getAllStationPumps(payload);
+    const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
+    const currentSales = APIs.post("/sales/current-sales", salesPayload);
+    const orgLpo = LPOService.getAllLPO(payload);
+
+    Promise.all([stationPumps, stationTanks, orgLpo, currentSales])
+      .then((data) => {
+        const [pumps, tanks, lpo, currentSales] = data;
+        const salesData = currentSales.data.data;
+
+        ///////////////// station pumps //////////////////////
+        const copyData = JSON.parse(JSON.stringify(pumps));
+        const updated = copyData.map((data) => {
+          let pumps = { ...data };
+
+          const pumpSales = salesData.find(sale => {
+            const copy = JSON.parse(JSON.stringify(sale));
+            return copy.pumpID === data._id
+          });
+
+          return {
+            ...pumps,
+            identity: null,
+            closingMeter: 0,
+            newTotalizer: pumpSales? pumpSales: "Enter closing meter",
+            RTlitre: 0,
+            sales: 0,
+            pumpSales: pumpSales? pumpSales: null,
+          };
+        });
+        const PMS = updated.filter((data) => data.productType === "PMS");
+        const AGO = updated.filter((data) => data.productType === "AGO");
+        const DPK = updated.filter((data) => data.productType === "DPK");
+        dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
+
+        ///////////////// station tanks //////////////////////
+        const outletTanks = tanks.data.tanks.map((data) => {
+          const newData = {
+            ...data,
+            label: data.tankName,
+            value: data._id,
+            dipping: 0,
+            sales: 0,
+            outlet: null,
+            pumps: [],
+            beforeSales: data.afterSales,
+            previousLevel: data.beforeSales,
+            currentLevel: data.afterSales,
+            afterSales: 0,
+            RTlitre: 0,
+          };
+          return newData;
+        });
+
+        ///////////////// station lpo //////////////////////
+        dispatch(createLPO(lpo.lpo.lpo));
+        dispatch(tankList(outletTanks));
+        dispatch(changeDate(date));
+    })
+  }, []);
+
+  useEffect(()=>{
+    refreshAllRecords(oneStationData, currentDate);
+  }, [refresh, refreshAllRecords, oneStationData, currentDate])
+
+  return (
+    <React.Fragment>
+      <div
+        style={{
+          width: mediaMatch.matches ? "100%" : "270px",
+          height: "auto",
+        }}
+        key={index}
+        className="item">
+        <img
+          style={{ width: "55px", height: "60px", marginTop: "20px" }}
+          src={pump1}
+          alt="icon"
         />
+        <div className="pop">
+          {item.pumpName} ({item.hostTankName})
+        </div>
+        {item.pumpSales && 
+          <Button onClick={()=>{openEditModal(item)}} sx={editButton}>Edit</Button>
+        }
+        <div style={label} className="label">
+          Date: {item.updatedAt.split("T")[0]}
+        </div>
+        <div style={label2} className="label">
+          Sales:{" "}
+          <span style={{ color: computedSales(item) < 0 ? "red" : "green" }}>
+            {computedSales(item)}
+          </span>
+        </div>
+        <div style={{ width: "94%" }}>
+          <div style={{ marginTop: "10px" }} className="label">
+            Opening meter (Litres)
+          </div>
+          <input
+            disabled={true}
+            value={item.pumpSales? item.pumpSales.openingMeter: item.totalizerReading}
+            style={{ ...imps, width: "94%" }}
+            type="text"
+          />
+
+          <div style={{ marginTop: "10px" }} className="label">
+            Closing meter (Litres)
+          </div>
+          <input
+            onChange={(e) => setTotalizer(e, item, index)}
+            disabled={item.pumpSales? true: false}
+            style={{
+              ...imps,
+              width: "94%",
+              marginBottom: "15px",
+              border:
+                Number(item.totalizerReading) > Number(item.newTotalizer) &&
+                item.newTotalizer !== "0"
+                  ? "1px solid red"
+                  : "1px solid black",
+            }}
+            type="number"
+            value={item.pumpSales? item.pumpSales.closingMeter: item.newTotalizer}
+            placeholder={"Enter closing meter"}
+          />
+        </div>
       </div>
-    </div>
+      {openEdit && (
+        <Sales
+          data={oneRecord}
+          update={setRefresh}
+          open={openEdit}
+          close={setOpenEdit}
+        />
+      )}
+    </React.Fragment>
   );
 };
 
@@ -228,5 +342,17 @@ const label2 = {
   fontSize: "14px",
   color: "green",
 };
+
+const editButton = {
+  width: "80px",
+  height: "25px",
+  background: "tomato",
+  marginTop: "5px",
+  color: "#fff",
+  fontSize: "12px",
+  "&: hover":{
+    background: "tomato"
+  }
+}
 
 export default PumpCard;

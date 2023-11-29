@@ -2,11 +2,13 @@ import { Radio } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import swal from "sweetalert";
-import { updateSelectedPumps } from "../../storage/recordsales";
 import Navigation from "./navigation";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import APIs from "../../services/connections/api";
+import RTDetails from "../Modals/recordsales/rtdetails";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
@@ -15,11 +17,16 @@ const ReturnToTank = (props) => {
   const navigate = useNavigate()
   const [productType, setProductType] = useState("PMS");
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
+  const [rtPayload, setRTpayload] = useState({
+    sales: [],
+    rt: []
+  });
+  const [openRt, setOpenRt] = useState(false);
 
   ////////////////////////////////////////////////////////////
-  const dispatch = useDispatch();
-  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
-  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
+  const [salesList, setSalesList] = useState([]);
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -28,37 +35,41 @@ const ReturnToTank = (props) => {
     return user.permission?.recordSales[e];
   };
 
-  const getPMSPump = useCallback(() => {
-    const newList = [...selectedPumps];
-    const pms = newList.filter((data) => data.productType === "PMS");
-    return pms;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const getSalesData = useCallback(async (station, date) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = date === "" ? today : date;
 
-  const getAGOPump = useCallback(() => {
-    const newList = [...selectedPumps];
-    const ago = newList.filter((data) => data.productType === "AGO");
-    return ago;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const salesPayload = {
+      outletID: station._id,
+      organizationID: station.organisation,
+      date: getDate,
+      shift: currentShift
+    }
 
-  const getDPKPump = useCallback(() => {
-    const newList = [...selectedPumps];
-    const dpk = newList.filter((data) => data.productType === "DPK");
-    return dpk;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const currentSales = await APIs.post("/sales/current-sales", salesPayload);
+    const salesList = currentSales.data.data;
+
+    const PMSData = salesList.filter(data => data.productType === "PMS");
+    const AGOData = salesList.filter(data => data.productType === "AGO");
+    const DPKData = salesList.filter(data => data.productType === "DPK");
+
+    setPMS(PMSData);
+    setAGO(AGOData);
+    setDPK(DPKData);
+    setSalesList(salesList);
+  }, [])
 
   const [pms, setPMS] = useState([]);
   const [ago, setAGO] = useState([]);
   const [dpk, setDPK] = useState([]);
 
   useEffect(() => {
-    setPMS(getPMSPump());
-    setAGO(getAGOPump());
-    setDPK(getDPKPump());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    getSalesData(oneStationData, currentDate);
+  }, [oneStationData, currentDate]);
+
+  const refresh = () => {
+    getSalesData(oneStationData, currentDate);
+  }
 
   const onRadioClick = (data) => {
     if (data === "PMS") {
@@ -90,113 +101,60 @@ const ReturnToTank = (props) => {
     );
   };
 
-  const updateTotalizer = (e, pump) => {
-    if (Number(pump.sales) === 0)
-      return swal("Error!", "You have made zero sales from this pump", "error");
-
-    switch (productType) {
-      case "PMS": {
-        /*###########################################
-                Update the pump readings for PMS
-            ############################################*/
-
-        const newPms = JSON.parse(JSON.stringify(pms));
-        const findID = newPms.findIndex((data) => data._id === pump._id);
-        newPms[findID] = { ...newPms[findID], RTlitre: e };
-        newPms[findID] = { ...newPms[findID], outlet: oneStationData };
-        setPMS(newPms);
-
-        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
-        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
-        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
-        dispatch(updateSelectedPumps(FromAllPumps));
-        break;
-      }
-
-      case "AGO": {
-        /*###########################################
-                Update the pump readings for AGO
-            ############################################*/
-
-        const newAgo = JSON.parse(JSON.stringify(ago));
-        const findID = newAgo.findIndex((data) => data._id === pump._id);
-        newAgo[findID] = { ...newAgo[findID], RTlitre: e };
-        newAgo[findID] = { ...newAgo[findID], outlet: oneStationData };
-        setAGO(newAgo);
-
-        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
-        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
-        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
-        dispatch(updateSelectedPumps(FromAllPumps));
-        break;
-      }
-
-      case "DPK": {
-        /*###########################################
-                Update the pump readings for DPK
-            ############################################*/
-
-        const newDpk = JSON.parse(JSON.stringify(dpk));
-        const findID = newDpk.findIndex((data) => data._id === pump._id);
-        newDpk[findID] = { ...newDpk[findID], RTlitre: e };
-        newDpk[findID] = { ...newDpk[findID], outlet: oneStationData };
-        setDPK(newDpk);
-
-        const FromAllPumps = JSON.parse(JSON.stringify(selectedPumps));
-        const indexID = FromAllPumps.findIndex((data) => data._id === pump._id);
-        FromAllPumps[indexID] = { ...FromAllPumps[indexID], RTlitre: e };
-        dispatch(updateSelectedPumps(FromAllPumps));
-        break;
-      }
-      default: {
-      }
-    }
-  };
-
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
-  }
-
   const setTotalizer = (e, item) => {
-    if (selectedTanks.length !== 0) {
-      const clonedTanks = [...selectedTanks];
-      const currentTank = clonedTanks.filter(
-        (data) => data.tankID === item.hostTank
-      );
-
-      if (currentTank.length !== 0) {
-        const quantity =
-          Number(currentTank[0].currentLevel) +
-          Number(removeSpecialCharacters(e.target.value));
-
-        if (oneStationData === null) {
-          swal("Warning!", "Please select a station", "info");
-        } else if (!Number.isInteger(item.identity)) {
-          updateTotalizer("0", item);
-          swal("Warning!", "Please select a pump", "info");
-        } else if (selectedPumps.length === 0) {
-          updateTotalizer("0", item);
-          swal("Warning!", "Please select a pump", "info");
-        } else {
-          if (quantity > Number(currentTank[0].tankCapacity)) {
-            updateTotalizer("0", item);
-            swal("Warning!", "Reading exceeded tank level", "info");
-          } else {
-            updateTotalizer(
-              removeSpecialCharacters(e.target.value),
-              item,
-              currentTank
-            );
-          }
+    switch(item.productType){
+      case "PMS":{
+        const copyPMS = JSON.parse(JSON.stringify(pms));
+        const index = copyPMS.findIndex(data => data.pumpID === item.pumpID);
+        if(index !== -1){
+          copyPMS[index] = {...copyPMS[index], RTlitre: Number(e.target.value)};
+          setPMS(copyPMS);
+          updatePayload(copyPMS, ago, dpk);
+          return
         }
-      } else {
-        updateTotalizer("0", "0", item);
-        swal("Warning!", "Please select a pump", "info");
+        return swal("Error!", "This pump doesnt have a sales value", "error");
       }
-    } else {
-      swal("Warning!", "Please select a pump", "info");
+      case "AGO":{
+        const copyAGO = JSON.parse(JSON.stringify(ago));
+        const index = copyAGO.findIndex(data => data.pumpID === item.pumpID);
+        if(index !== -1){
+          copyAGO[index] = {...copyAGO[index], RTlitre: Number(e.target.value)};
+          setAGO(copyAGO);
+          updatePayload(pms, copyAGO, dpk);
+          return
+        }
+        return swal("Error!", "This pump doesnt have a sales value", "error");
+      }
+      case "DPK":{
+        const copyDPK = JSON.parse(JSON.stringify(dpk));
+        const index = copyDPK.findIndex(data => data.pumpID === item.pumpID);
+        if(index !== -1){
+          copyDPK[index] = {...copyDPK[index], RTlitre: Number(e.target.value)};
+          setDPK(copyDPK);
+          updatePayload(pms, ago, copyDPK);
+          return
+        }
+        return swal("Error!", "This pump doesnt have a sales value", "error");
+      }
+      default:{}
     }
   };
+
+  const updatePayload = (pms, ago, dpk) => {
+    const totalSales = [...pms, ...ago, ...dpk];
+    const getRTSales = totalSales.filter(item => item.RTlitre !== 0);
+
+    const totalRT = getRTSales.map(data => {
+      const rt = getRTPayload(data, currentDate, currentShift);
+      return rt;
+    })
+
+    const payload = {
+      sales: getRTSales,
+      rt: totalRT
+    }
+    setRTpayload(payload);
+  }
 
   const next = () => {
     if (oneStationData === null)
@@ -204,7 +162,11 @@ const ReturnToTank = (props) => {
     if (!getPerm("4"))
       return swal("Warning!", "Permission denied", "info");
 
-    navigate("/home/recordsales/lpo");
+    if(rtPayload.sales.length === 0){
+      navigate("/home/recordsales/lpo");
+    }else{
+      setOpenRt(true);
+    }
   }
 
   return (
@@ -274,7 +236,7 @@ const ReturnToTank = (props) => {
           <div
             style={{ flexDirection: "row", justifyContent: "center" }}
             className="pump-list">
-            {selectedPumps?.length === 0 ? (
+            {salesList?.length === 0 ? (
               <div style={{ ...box, width: "170px" }}>
                 <div style={{ marginRight: "10px", fontWeight: "500" }}>
                   No pump Created
@@ -289,40 +251,21 @@ const ReturnToTank = (props) => {
               pms.map((data, index) => {
                 return (
                   <div key={index}>
-                    {Number.isInteger(data.identity) && (
-                      <div className="box">
-                        <p
-                          onClick={(e) => pumpItem(e, index, data)}
-                          style={{ marginRight: "10px" }}>
-                          {data.pumpName}
-                        </p>
-                        <img
-                          onClick={() => {
-                            deselect(data);
-                          }}
-                          style={{ width: "20px", height: "20px" }}
-                          src={cross}
-                          alt="icon"
-                        />
-                      </div>
-                    )}
-                    {!Number.isInteger(data.identity) && (
-                      <div className="box2">
-                        <p
-                          onClick={(e) => pumpItem(e, index, data)}
-                          style={{ marginRight: "10px" }}>
-                          {data.pumpName}
-                        </p>
-                        <img
-                          onClick={() => {
-                            deselect(data);
-                          }}
-                          style={{ width: "20px", height: "20px" }}
-                          src={cross}
-                          alt="icon"
-                        />
-                      </div>
-                    )}
+                    <div className="box">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={() => {
+                          deselect(data);
+                        }}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
                   </div>
                 );
               })
@@ -330,40 +273,21 @@ const ReturnToTank = (props) => {
               ago.map((data, index) => {
                 return (
                   <div key={index}>
-                    {Number.isInteger(data.identity) && (
-                      <div className="box">
-                        <p
-                          onClick={(e) => pumpItem(e, index, data)}
-                          style={{ marginRight: "10px" }}>
-                          {data.pumpName}
-                        </p>
-                        <img
-                          onClick={() => {
-                            deselect(data);
-                          }}
-                          style={{ width: "20px", height: "20px" }}
-                          src={cross}
-                          alt="icon"
-                        />
-                      </div>
-                    )}
-                    {!Number.isInteger(data.identity) && (
-                      <div className="box2">
-                        <p
-                          onClick={(e) => pumpItem(e, index, data)}
-                          style={{ marginRight: "10px" }}>
-                          {data.pumpName}
-                        </p>
-                        <img
-                          onClick={() => {
-                            deselect(data);
-                          }}
-                          style={{ width: "20px", height: "20px" }}
-                          src={cross}
-                          alt="icon"
-                        />
-                      </div>
-                    )}
+                    <div className="box">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={() => {
+                          deselect(data);
+                        }}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
                   </div>
                 );
               })
@@ -371,40 +295,21 @@ const ReturnToTank = (props) => {
               dpk.map((data, index) => {
                 return (
                   <div key={index}>
-                    {Number.isInteger(data.identity) && (
-                      <div className="box">
-                        <p
-                          onClick={(e) => pumpItem(e, index, data)}
-                          style={{ marginRight: "10px" }}>
-                          {data.pumpName}
-                        </p>
-                        <img
-                          onClick={() => {
-                            deselect(data);
-                          }}
-                          style={{ width: "20px", height: "20px" }}
-                          src={cross}
-                          alt="icon"
-                        />
-                      </div>
-                    )}
-                    {!Number.isInteger(data.identity) && (
-                      <div className="box2">
-                        <p
-                          onClick={(e) => pumpItem(e, index, data)}
-                          style={{ marginRight: "10px" }}>
-                          {data.pumpName}
-                        </p>
-                        <img
-                          onClick={() => {
-                            deselect(data);
-                          }}
-                          style={{ width: "20px", height: "20px" }}
-                          src={cross}
-                          alt="icon"
-                        />
-                      </div>
-                    )}
+                    <div className="box">
+                      <p
+                        onClick={(e) => pumpItem(e, index, data)}
+                        style={{ marginRight: "10px" }}>
+                        {data.pumpName}
+                      </p>
+                      <img
+                        onClick={() => {
+                          deselect(data);
+                        }}
+                        style={{ width: "20px", height: "20px" }}
+                        src={cross}
+                        alt="icon"
+                      />
+                    </div>
                   </div>
                 );
               })
@@ -453,7 +358,7 @@ const ReturnToTank = (props) => {
                                 : "1px solid black",
                           }}
                           type="number"
-                          value={item.RTlitre}
+                          value={item.RTlitre === 0? "": item.RTlitre}
                         />
                       </div>
                     </div>
@@ -489,7 +394,7 @@ const ReturnToTank = (props) => {
                         </div>
                         <input
                           onChange={(e) => setTotalizer(e, item)}
-                          value={item.RTlitre}
+                          value={item.RTlitre === 0? "": item.RTlitre}
                           style={{
                             ...imps,
                             width: "94%",
@@ -536,7 +441,7 @@ const ReturnToTank = (props) => {
                         </div>
                         <input
                           onChange={(e) => setTotalizer(e, item)}
-                          value={item.RTlitre}
+                          value={item.RTlitre === 0? "": item.RTlitre}
                           style={{
                             ...imps,
                             width: "94%",
@@ -557,9 +462,34 @@ const ReturnToTank = (props) => {
           </div>
         </div>
       </div>
+      {openRt &&
+        <RTDetails refresh={refresh} open={openRt} close={setOpenRt} data={rtPayload} />
+      }
       <Navigation next={next} />
     </React.Fragment>
   );
+};
+
+const getRTPayload = (data, currentDate, currentShift) => {
+  return {
+    rtLitre: data.RTlitre,
+    PMSCost: data.PMSCostPrice,
+    AGOCost: data.AGOCostPrice,
+    DPKCost: data.DPKCostPrice,
+    PMSPrice: data.PMSSellingPrice,
+    AGOPrice: data.AGOSellingPrice,
+    DPKPrice: data.DPKSellingPrice,
+    productType: data.productType,
+    pumpID: data.pumpID,
+    tankID: data.tankID,
+    pumpName: data.pumpName,
+    tankName: data.tankName,
+    outletID: data.outletID,
+    organizationID: data.organisationID,
+    shift: currentShift,
+    createdAt: currentDate,
+    updatedAt: currentDate,
+  };
 };
 
 const cap = {
