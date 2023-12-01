@@ -12,16 +12,12 @@ import { MenuItem, Select, Stack } from "@mui/material";
 import {
   changeDate,
   changeStation,
-  createLPO,
   setCurrentShift,
   tankList,
   updateRecords,
 } from "../../storage/recordsales";
-import { daySupply } from "../../storage/supply";
 import swal from "sweetalert";
 import moment from "moment";
-import OutletService from "../../services/360station/outletService";
-import LPOService from "../../services/360station/lpo";
 import APIs from "../../services/connections/api";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -135,7 +131,6 @@ const PendingSales = (props) => {
   const updateDate = (newValue) => {
     if (oneStationData === null)
       return swal("Warning!", "Please select station first", "info");
-    props.pages(1);
 
     if (tankListData.length === null)
       return swal(
@@ -147,94 +142,39 @@ const PendingSales = (props) => {
     setValue(newValue);
     props.date(newValue);
     dispatch(changeStation());
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-    const getDate = newValue === "" ? today : newValue.format("YYYY-MM-DD");
+    const getDate = newValue.format("YYYY-MM-DD");
     if (!isValidDateFormat(getDate))
       return swal("Error", "Please select a valid date", "error");
-
+    
     getAllRecordDetails(oneStationData, getDate);
     return getDate;
   };
 
   const getAllRecordDetails = (station, date) => {
     setDateLoader(true);
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-    const getDate = date === "" ? today : date;
-
-    const payload = {
-      outletID: station._id,
-      organisationID: station.organisation,
-    };
 
     const salesPayload = {
       outletID: station._id,
-      organizationID: station.organisation,
-      date: getDate,
+      organisationID: station.organisation,
+      date: date,
       shift: currentShift
     }
 
-    const stationPumps = OutletService.getAllStationPumps(payload);
-    const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
-    const currentSales = APIs.post("/sales/current-sales", salesPayload);
-    const orgLpo = LPOService.getAllLPO(payload);
+    APIs.post("/sales/pump-update", salesPayload).then(({data}) => {
+      const {pumps, tanks} = data;
+  
+      ////////////////////// pumps ///////////////////////////////
+      const PMS = pumps.filter((data) => data.productType === "PMS");
+      const AGO = pumps.filter((data) => data.productType === "AGO");
+      const DPK = pumps.filter((data) => data.productType === "DPK");
 
-    Promise.all([stationPumps, stationTanks, orgLpo, currentSales])
-      .then((data) => {
-        const [pumps, tanks, lpo, currentSales] = data;
-        const salesData = currentSales.data.data;
+      dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
+      dispatch(tankList(tanks));
+      dispatch(changeDate(date));
 
-        ///////////////// station pumps //////////////////////
-        const copyData = JSON.parse(JSON.stringify(pumps));
-        const updated = copyData.map((data) => {
-          let pumps = { ...data };
-
-          const pumpSales = salesData.find(sale => {
-            const copy = JSON.parse(JSON.stringify(sale));
-            return copy.pumpID === data._id
-          });
-
-          return {
-            ...pumps,
-            identity: null,
-            closingMeter: 0,
-            newTotalizer: pumpSales? pumpSales: "Enter closing meter",
-            RTlitre: 0,
-            sales: 0,
-            pumpSales: pumpSales? pumpSales: null,
-          };
-        });
-        const PMS = updated.filter((data) => data.productType === "PMS");
-        const AGO = updated.filter((data) => data.productType === "AGO");
-        const DPK = updated.filter((data) => data.productType === "DPK");
-        dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
-
-        ///////////////// station tanks //////////////////////
-        const outletTanks = tanks.data.tanks.map((data) => {
-          const newData = {
-            ...data,
-            label: data.tankName,
-            value: data._id,
-            dipping: 0,
-            sales: 0,
-            outlet: null,
-            pumps: [],
-            beforeSales: data.afterSales,
-            previousLevel: data.beforeSales,
-            currentLevel: data.afterSales,
-            afterSales: 0,
-            RTlitre: 0,
-          };
-          return newData;
-        });
-
-        ///////////////// station lpo //////////////////////
-        dispatch(createLPO(lpo.lpo.lpo));
-        dispatch(tankList(outletTanks));
-        dispatch(changeDate(date));
-      })
-      .then(() => {
-        setDateLoader(false);
-      });
+    }).then(() => {
+      setDateLoader(false);
+    });   
   };
 
   const convertDate = (newValue) => {

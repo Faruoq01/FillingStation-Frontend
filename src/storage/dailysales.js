@@ -112,7 +112,7 @@ const initialState = {
   },
   incoming: [],
   tankLevelList: [],
-  salesShift: "",
+  salesShift: "All shifts",
   outstanding: [],
 };
 

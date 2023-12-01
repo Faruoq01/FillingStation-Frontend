@@ -172,18 +172,20 @@ const ExpenseComponents = (props) => {
         icon: "warning",
         buttons: true,
         dangerMode: true,
-      }).then(async () => {
-        const payload = expensesData.filter(data => !("_id" in data))
-        try{
-          const status = await SalesService.expenses({
-            expenses: payload,
-          });
-          if(status){
-            setSaved(true);
-            swal("Success!", "LPO records saved successfully!", "success");
+      }).then(async (willSave) => {
+        if(willSave){
+          const payload = expensesData.filter(data => !("_id" in data))
+          try{
+            const status = await SalesService.expenses({
+              expenses: payload,
+            });
+            if(status){
+              setSaved(true);
+              swal("Success!", "LPO records saved successfully!", "success");
+            }
+          }catch(e){
+            console.log(e)
           }
-        }catch(e){
-          console.log(e)
         }
       });
     }

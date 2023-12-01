@@ -268,19 +268,20 @@ const LPOComponent = (props) => {
         text: "Are you sure you want to save current changes?",
         icon: "warning",
         buttons: true,
-        dangerMode: true,
-      }).then(async () => {
-        const payload = lposalesData.filter(data => !("_id" in data))
-        try{
-          const status = await SalesService.lpo({
-            lposales: payload,
-          });
-          if(status){
-            setSaved(true);
-            swal("Success!", "LPO records saved successfully!", "success");
+      }).then(async (willSave) => {
+        if(willSave){
+          const payload = lposalesData.filter(data => !("_id" in data))
+          try{
+            const status = await SalesService.lpo({
+              lposales: payload,
+            });
+            if(status){
+              setSaved(true);
+              swal("Success!", "LPO records saved successfully!", "success");
+            }
+          }catch(e){
+            console.log(e)
           }
-        }catch(e){
-          console.log(e)
         }
       });
     }

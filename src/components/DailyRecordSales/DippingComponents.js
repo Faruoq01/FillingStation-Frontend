@@ -144,26 +144,27 @@ const DippingComponents = (props) => {
     return swal("Warning!", "Permission denied", "info");
 
     if(saved){
-      navigate("/home/recordsales/pumpupdate/0");
+      navigate("/home/dailysales/dailysaleshome/0");
     }else{
       swal({
         title: "Alert!",
         text: "Are you sure you want to save current changes?",
         icon: "warning",
         buttons: true,
-        dangerMode: true,
-      }).then(async () => {
-        try{
-          const status = await SalesService.dipping({
-            dipping: dippingList,
-          });
-          if(status){
-            setSaved(true);
-            setRefresh(prev => !prev)
-            swal("Success!", "LPO records saved successfully!", "success");
+      }).then(async (willSave) => {
+        if(willSave){
+          try{
+            const status = await SalesService.dipping({
+              dipping: dippingList,
+            });
+            if(status){
+              setSaved(true);
+              setRefresh(prev => !prev)
+              swal("Success!", "LPO records saved successfully!", "success");
+            }
+          }catch(e){
+            console.log(e)
           }
-        }catch(e){
-          console.log(e)
         }
       });
     }

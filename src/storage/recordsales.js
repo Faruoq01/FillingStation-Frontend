@@ -39,7 +39,7 @@ const initialState = {
   linkedData: { page: 1 },
   lpo: [],
   searchData2: [],
-  currentShift: "",
+  currentShift: "All shifts",
   productType: "PMS",
   pumpAndTank: [[], []],
 };

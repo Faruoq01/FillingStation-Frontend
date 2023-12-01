@@ -71,21 +71,22 @@ const PaymentsComponents = (props) => {
                 text: "Are you sure you want to save current changes?",
                 icon: "warning",
                 buttons: true,
-                dangerMode: true,
-            }).then(async () => {
-                const bank = bankPayloadData.filter(data => !("_id" in data));
-                const pos = posPayloadData.filter(data => !("_id" in data));
-                try{
-                    const status = await SalesService.payments({
-                        bank: bank,
-                        pos: pos
-                    });
-                if(status){
-                    setSaved(true);
-                    swal("Success!", "LPO records saved successfully!", "success");
-                }
-                }catch(e){
-                    console.log(e)
+            }).then(async (willSave) => {
+                if(willSave){
+                    const bank = bankPayloadData.filter(data => !("_id" in data));
+                    const pos = posPayloadData.filter(data => !("_id" in data));
+                    try{
+                        const status = await SalesService.payments({
+                            bank: bank,
+                            pos: pos
+                        });
+                    if(status){
+                        setSaved(true);
+                        swal("Success!", "LPO records saved successfully!", "success");
+                    }
+                    }catch(e){
+                        console.log(e)
+                    }
                 }
             });
         }

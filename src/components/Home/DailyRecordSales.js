@@ -21,14 +21,8 @@ import {
   updateSelectedTanks,
 } from "../../storage/recordsales";
 import { useSelector } from "react-redux";
-import OutletService from "../../services/360station/outletService";
-import { adminOutlet, getAllPumps, getAllStations } from "../../storage/outlet";
-import LPOService from "../../services/360station/lpo";
-import { createLPO } from "../../storage/recordsales";
-import Backdrop from "@mui/material/Backdrop";
-import { BallTriangle } from "react-loader-spinner";
+import { adminOutlet, getAllPumps } from "../../storage/outlet";
 import { useState } from "react";
-import SummaryRecord from "../Modals/SummaryRecord";
 import { changeDate, changeStation } from "../../storage/recordsales";
 import swal from "sweetalert";
 import ButtonDatePicker from "../common/CustomDatePicker";
@@ -36,12 +30,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import PendingSales from "../Modals/PendingSales";
 import moment from "moment";
-import APIs from "../../services/connections/api";
 import { daySupply } from "../../storage/supply";
 import { useCallback } from "react";
-import Navigation from "../DailyRecordSales/navigation";
 import { Outlet, useNavigate } from "react-router-dom";
 import StepperComponent from "../../components/DailyRecordSales/stepper";
+import APIs from "../../services/connections/api";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
@@ -56,22 +49,10 @@ const DailyRecordSales = () => {
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const currentDate = useSelector((state) => state.recordsales.currentDate);
   const tankListData = useSelector((state) => state.recordsales.tankList);
-  const currentShift = useSelector((state) => state.recordsales.currentShift);
   const [defaultState, setDefault] = useState(0);
-  const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
-  const [pages, setPages] = useState(1);
   const navigate = useNavigate();
-
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -79,41 +60,6 @@ const DailyRecordSales = () => {
     }
     return user.permission?.recordSales[e];
   };
-
-  const getAllInitialRecords = React.useCallback(
-    () => {
-      const payload = {
-        organisation: resolveUserID().id,
-      };
-
-      OutletService.getAllOutletStations(payload).then((data) => {
-        dispatch(getAllStations(data.station));
-        if (
-          (getPerm("0") || user.userType === "superAdmin") &&
-          oneStationData === null
-        ) {
-          if (!getPerm("1")) setDefault(1);
-          dispatch(adminOutlet(null));
-          dispatch(getAllPumps([]));
-          dispatch(changeStation());
-          return "None";
-        } else {
-          if (user.userType === "staff") {
-            OutletService.getOneOutletStation({ outletID: user.outletID }).then(
-              (data) => {
-                dispatch(adminOutlet(data.station));
-                dispatch(changeStation());
-                changeMenu(0, data.station);
-              }
-            );
-            return user.outletID;
-          }
-        }
-      });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
 
   const resetAllVariables = useCallback(() => {
     dispatch(updateSelectedPumps([]));
@@ -138,16 +84,16 @@ const DailyRecordSales = () => {
     dispatch(daySupply([]));
     dispatch(getAllPumps([]));
     dispatch(changeStation());
+    dispatch(updateRecords({ pms: [], ago: [], dpk: [] }));
   }, [dispatch]);
 
   useEffect(() => {
     resetAllVariables();
-    return () => dispatch(changeDate(""));
+    return () => {
+      resetAllVariables();
+      dispatch(changeDate(""));
+    }
   }, [dispatch, oneStationData, resetAllVariables]);
-
-  useEffect(() => {
-    getAllInitialRecords();
-  }, [dispatch, getAllInitialRecords]);
 
   const changeMenu = async (index, item) => {
     if (!getPerm("1") && item === null)
@@ -157,7 +103,6 @@ const DailyRecordSales = () => {
     dispatch(changeStation());
     dispatch(adminOutlet(item));
     setPending(true);
-    getAllRecordDetails(item, currentDate);
   };
 
   const updateDate = (newValue) => {
@@ -180,81 +125,6 @@ const DailyRecordSales = () => {
     return getDate;
   };
 
-  const getAllRecordDetails = (station, date) => {
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-    const getDate = date === "" ? today : date;
-
-    const payload = {
-      outletID: station._id,
-      organisationID: station.organisation,
-    };
-
-    const salesPayload = {
-      outletID: station._id,
-      organizationID: station.organisation,
-      date: getDate,
-      shift: currentShift
-    }
-
-    const stationPumps = OutletService.getAllStationPumps(payload);
-    const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
-    const currentSales = APIs.post("/sales/current-sales", salesPayload);
-    const orgLpo = LPOService.getAllLPO(payload);
-
-    Promise.all([stationPumps, stationTanks, orgLpo, currentSales]).then((data) => {
-      const [pumps, tanks, lpo, currentSales] = data;
-      const salesData = currentSales.data.data;
-
-      ///////////////// station pumps //////////////////////
-      const copyData = JSON.parse(JSON.stringify(pumps));
-      const updated = copyData.map((data) => {
-        let pumps = { ...data };
-        const pumpSales = salesData.find(sale => {
-          const copy = JSON.parse(JSON.stringify(sale));
-          return copy.pumpID === data._id
-        });
-
-        return {
-          ...pumps,
-          identity: null,
-          closingMeter: 0,
-          newTotalizer: "Enter closing meter",
-          RTlitre: 0,
-          sales: 0,
-          pumpSales: pumpSales? pumpSales: null,
-        };
-      });
-      const PMS = updated.filter((data) => data.productType === "PMS");
-      const AGO = updated.filter((data) => data.productType === "AGO");
-      const DPK = updated.filter((data) => data.productType === "DPK");
-      dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
-
-      ///////////////// station tanks //////////////////////
-      const outletTanks = tanks.stations.map((data) => {
-        const newData = {
-          ...data,
-          label: data.tankName,
-          value: data._id,
-          dipping: 0,
-          sales: 0,
-          outlet: null,
-          pumps: [],
-          beforeSales: data.afterSales,
-          previousLevel: data.beforeSales,
-          currentLevel: data.afterSales,
-          afterSales: 0,
-          RTlitre: 0,
-        };
-        return newData;
-      });
-
-      ///////////////// station lpo //////////////////////
-      dispatch(createLPO(lpo.lpo.lpo));
-      dispatch(tankList(outletTanks));
-      dispatch(changeDate(date));
-    });
-  };
-
   const convertDate = (newValue) => {
     const getDate = newValue === "" ? date2 : newValue.format("MM/DD/YYYY");
     const date = new Date(getDate);
@@ -265,32 +135,23 @@ const DailyRecordSales = () => {
     return finalDate;
   };
 
+  useEffect(()=>{
+    if(oneStationData !== null){
+      setPending(true);
+    }else{
+      navigate("/home/recordsales/pumpupdate/0");
+    }
+  }, [])
+
   return (
     <div className="salesRecordStyle">
       {pending && (
         <PendingSales
           date={setValue}
-          pages={setPages}
           open={pending}
           close={setPending}
         />
       )}
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={open}
-        // onClick={handleClose}
-      >
-        <BallTriangle
-          height={100}
-          width={100}
-          radius={5}
-          color="#fff"
-          ariaLabel="ball-triangle-loading"
-          wrapperClass={{}}
-          wrapperStyle=""
-          visible={true}
-        />
-      </Backdrop>
       <div
         style={{
           width: "90%",

@@ -1,15 +1,17 @@
-import { Radio } from "@mui/material";
+import { Backdrop, Radio } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setProductType } from "../../storage/recordsales";
+import { changeDate, setProductType, tankList, updateRecords } from "../../storage/recordsales";
 import PumpCard from "./pumpupdateUtils/pumpcard";
 import PumpIndicators from "./pumpupdateUtils/pumpindicator";
 import Navigation from "./navigation";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import SummarySales from "../Modals/recordsales/sales";
 import SalesSummary from "../Modals/recordsales/salesdetails";
+import { BallTriangle } from "react-loader-spinner";
+import APIs from "../../services/connections/api";
 
 const PumpUpdateComponent = (props) => {
   const user = useSelector((state) => state.auth.user);
@@ -17,8 +19,11 @@ const PumpUpdateComponent = (props) => {
   const navigate = useNavigate()
   const productType = useSelector((state) => state.recordsales.productType);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
   const [openSummary, setOpenSummary] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
+  const [backdrop, setBackdrop] = useState(false);
 
   //////////////////////////////////////////////////////////////
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
@@ -94,6 +99,35 @@ const PumpUpdateComponent = (props) => {
     setOpenSummary(true)
   }
 
+  const getAllRecordDetails = useCallback((station, date) => {
+    const salesPayload = {
+      outletID: station._id,
+      organisationID: station.organisation,
+      date: date,
+      shift: currentShift
+    }
+
+    APIs.post("/sales/pump-update", salesPayload).then(({data}) => {
+      const {pumps, tanks} = data;
+  
+      ////////////////////// pumps ///////////////////////////////
+      const PMS = pumps.filter((data) => data.productType === "PMS");
+      const AGO = pumps.filter((data) => data.productType === "AGO");
+      const DPK = pumps.filter((data) => data.productType === "DPK");
+
+      dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
+      dispatch(tankList(tanks));
+      dispatch(changeDate(date));
+
+    });  
+  }, []);
+
+  useEffect(()=>{
+    if(oneStationData !== null){
+      getAllRecordDetails(oneStationData, currentDate);
+    }
+  }, [getAllRecordDetails, oneStationData, currentDate])
+
   return (
     <React.Fragment>
       <div className="form-body">
@@ -140,6 +174,22 @@ const PumpUpdateComponent = (props) => {
           close={setOpenDetails}
         />
       )}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={backdrop}
+        // onClick={handleClose}
+      >
+        <BallTriangle
+          height={100}
+          width={100}
+          radius={5}
+          color="#fff"
+          ariaLabel="ball-triangle-loading"
+          wrapperClass={{}}
+          wrapperStyle=""
+          visible={true}
+        />
+      </Backdrop>
     </React.Fragment>
   );
 };
