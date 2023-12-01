@@ -7,7 +7,7 @@ import hr8 from "../../assets/hr8.png";
 import swal from "sweetalert";
 import axios from "axios";
 import config from "../../constants";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRef } from "react";
 import ReactCamera from "../Modals/ReactCamera";
 import { expensesPayload } from "../../storage/recordsales";
@@ -15,29 +15,20 @@ import "../../styles/lpoNew.scss";
 import ApproximateDecimal from "../common/approx";
 import Navigation from "./navigation";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import APIs from "../../services/connections/api";
+import SalesService from "../../services/360station/sales";
 
 const ExpenseComponents = (props) => {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate()
-
-  const getPerm = (e) => {
-    if (user.userType === "superAdmin") {
-      return true;
-    }
-    return user.permission?.recordSales[e];
-  };
   const gallery = useRef();
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentShift = useSelector((state) => state.recordsales.currentShift);
   const [reg, setReg] = useState(false);
-
-  /////////////////////////////////////////////////////////////
-  const expensesPayloadData = useSelector(
-    (state) => state.recordsales.expensesPayload
-  );
-  const currentDate = useSelector((state) => state.recordsales.currentDate);
 
   // payload data
   const [expenseName, setExpenseName] = useState("");
@@ -45,9 +36,42 @@ const ExpenseComponents = (props) => {
   const [expenseAmount, setExpenseAmount] = useState("");
   const [cam, setCam] = useState(null);
   const [gall, setGall] = useState(null);
+  const [refreshIt, setRefresh] = useState(false);
+  const [saved, setSaved] = useState(true);
+  const [expensesData, setExpensesData] = useState([]);
+
+  const getPerm = (e) => {
+    if (user.userType === "superAdmin") {
+      return true;
+    }
+    return user.permission?.recordSales[e];
+  };
+
+  const getExpenseData = useCallback(async (station, date) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = date === "" ? today : date;
+
+    const lpoPayload = {
+      organizationID:station.organisation,
+      outletID: station._id,
+      date: getDate,
+      shift: currentShift
+    }
+
+    const {data} = await APIs.post("/sales/expense-data", lpoPayload);
+    setExpensesData(data.data);
+  }, [])
+
+  useEffect(() => {
+    getExpenseData(oneStationData, currentDate);
+  }, [oneStationData, currentDate, refreshIt]);
+
+  const refresh = () => {
+    getExpenseData(oneStationData, currentDate);
+  }
 
   const deleteFromList = (index) => {
-    const copyExpenses = JSON.parse(JSON.stringify(expensesPayloadData));
+    const copyExpenses = JSON.parse(JSON.stringify(expensesData));
     copyExpenses.splice(index, 1);
     dispatch(expensesPayload(copyExpenses));
   };
@@ -78,6 +102,7 @@ const ExpenseComponents = (props) => {
   };
 
   const addDetailsToList = () => {
+    setSaved(false)
     if (oneStationData === null)
       return swal("Warning!", "please select station", "info");
     if (expenseName === "")
@@ -116,9 +141,9 @@ const ExpenseComponents = (props) => {
       updatedAt: currentDate,
     };
 
-    const copyExpenses = JSON.parse(JSON.stringify(expensesPayloadData));
-    copyExpenses.push(payload);
-    dispatch(expensesPayload(copyExpenses));
+    const expenses = [...expensesData];
+    expenses.push(payload);
+    setExpensesData(expenses);
 
     setExpenseAmount("");
     setDescription("");
@@ -128,6 +153,7 @@ const ExpenseComponents = (props) => {
   };
 
   const handleChange = (e) => {
+    setSaved(false)
     setReg(e.target.checked);
   };
 
@@ -137,7 +163,30 @@ const ExpenseComponents = (props) => {
     if (!getPerm("6"))
       return swal("Warning!", "Permission denied", "info");
 
-    navigate("/home/recordsales/payments");
+    if(saved || expensesData.length === 0){
+      navigate("/home/recordsales/payments");
+    }else{
+      swal({
+        title: "Alert!",
+        text: "Are you sure you want to save current changes?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then(async () => {
+        const payload = expensesData.filter(data => !("_id" in data))
+        try{
+          const status = await SalesService.expenses({
+            expenses: payload,
+          });
+          if(status){
+            setSaved(true);
+            swal("Success!", "LPO records saved successfully!", "success");
+          }
+        }catch(e){
+          console.log(e)
+        }
+      });
+    }
   }
 
   return (
@@ -303,10 +352,10 @@ const ExpenseComponents = (props) => {
                 <div className="col">Action</div>
               </div>
 
-              {expensesPayloadData.length === 0 ? (
+              {expensesData.length === 0 ? (
                 <div style={{ marginTop: "10px" }}>No data</div>
               ) : (
-                expensesPayloadData.map((data, index) => {
+                expensesData.map((data, index) => {
                   return (
                     <div
                       key={index}

@@ -23,10 +23,6 @@ APIs.interceptors.response.use(
       store.dispatch(setConnection(false));
     }
 
-    if (err.response.status === 404) {
-      swal("Error!", err.response.data.message, "error");
-    }
-
     if (err.response.status === 401) {
       if (err.response.data.message !== "Incorrect password!") {
         if (err.response.data.error.name === "TokenExpiredError") {
@@ -37,6 +33,18 @@ APIs.interceptors.response.use(
       }
       swal("Error!", "Incorrect Password", "error");
       logout();
+    }
+
+    if (err.response.status === 404) {
+      swal("Error!", err.response.data.message, "error");
+    }
+
+    if (err.response.status === 409) {
+      swal("Error!", "Oops there is a heavy traffic please try again.", "error");
+    }
+
+    if (err.response.status === 500) {
+      swal("Error!", err.response.data.message, "error");
     }
   }
 );

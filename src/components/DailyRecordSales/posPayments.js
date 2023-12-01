@@ -79,6 +79,7 @@ const PosPayments = (props) => {
   };
 
   const addDetailsToList = () => {
+    props.setSaved(false);
     if (oneStationData === null)
       return swal("Warning!", "please select station", "info");
     if (posName === "")

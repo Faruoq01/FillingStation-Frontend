@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import photo from "../../assets/photo.png";
 import upload from "../../assets/upload.png";
 import cross from "../../assets/cross.png";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ReactCamera from "../Modals/ReactCamera";
 import { useRef } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,35 +12,27 @@ import swal from "sweetalert";
 import axios from "axios";
 import config from "../../constants";
 import { useEffect } from "react";
-import { creditPayload, lpoPayload } from "../../storage/recordsales";
 import "../../styles/lpoNew.scss";
 import ApproximateDecimal from "../common/approx";
 import { useNavigate } from "react-router-dom";
 import Navigation from "./navigation";
+import APIs from "../../services/connections/api";
+import moment from "moment";
+import SalesService from "../../services/360station/sales";
 
 const LPOComponent = (props) => {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate()
-  const dispatch = useDispatch();
   const gallery = useRef();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const currentShift = useSelector((state) => state.recordsales.currentShift);
-  const lpos = useSelector((state) => state.recordsales.lpo);
   const [selectedPMS, setSelectedPMS] = useState(null);
   const [selectedAGO, setSelectedAGO] = useState(null);
   const [selectedDPK, setSelectedDPK] = useState(null);
-
-  // selections
+  const [lpos, setLPOs] = useState([]);
+  const [lposalesData, setLpoSalesData] = useState([]);
   const [open, setOpen] = useState(false);
-  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
-  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
-  const lpoPayloadData = useSelector((state) => state.recordsales.lpoPayload);
-  const creditPayloadData = useSelector(
-    (state) => state.recordsales.creditPayload
-  );
-  // console.log(lpoPayloadData, "lpo payload");
-  // console.log(creditPayloadData, "lpo payload");
 
   // payload records
   const [cam, setCam] = useState(null);
@@ -50,7 +42,8 @@ const LPOComponent = (props) => {
   const [dispensedPump, setDispensedPump] = useState(null);
   const [truckNo, setTruckNo] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [balanceTracker, setBalanceTracker] = useState("");
+  const [refreshIt, setRefresh] = useState(false);
+  const [saved, setSaved] = useState(true);
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -59,33 +52,42 @@ const LPOComponent = (props) => {
     return user.permission?.recordSales[e];
   };
 
-  const getPMSPump = useCallback(() => {
-    const newList = [...selectedPumps];
-    const pms = newList.filter((data) => data.productType === "PMS");
-    return pms;
-  }, [selectedPumps]);
+  const getSalesData = useCallback(async (station, date) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = date === "" ? today : date;
 
-  const getAGOPump = useCallback(() => {
-    const newList = [...selectedPumps];
-    const ago = newList.filter((data) => data.productType === "AGO");
-    return ago;
-  }, [selectedPumps]);
+    const lpoPayload = {
+      organizationID:station.organisation,
+      outletID: station._id,
+      date: getDate,
+      shift: currentShift
+    }
 
-  const getDPKPump = useCallback(() => {
-    const newList = [...selectedPumps];
-    const dpk = newList.filter((data) => data.productType === "DPK");
-    return dpk;
-  }, [selectedPumps]);
+    const {data} = await APIs.post("/sales/lpo-data", lpoPayload);
+    const [lposales, lpoaccts, salesList] = data.data;
+
+    const PMSData = salesList.filter(data => data.productType === "PMS");
+    const AGOData = salesList.filter(data => data.productType === "AGO");
+    const DPKData = salesList.filter(data => data.productType === "DPK");
+
+    setPMS(PMSData);
+    setAGO(AGOData);
+    setDPK(DPKData);
+    setLPOs(lpoaccts);
+    setLpoSalesData(lposales);
+  }, [])
 
   const [pms, setPMS] = useState([]);
   const [ago, setAGO] = useState([]);
   const [dpk, setDPK] = useState([]);
 
   useEffect(() => {
-    setPMS(getPMSPump());
-    setAGO(getAGOPump());
-    setDPK(getDPKPump());
-  }, [getAGOPump, getDPKPump, getPMSPump]);
+    getSalesData(oneStationData, currentDate);
+  }, [oneStationData, currentDate, refreshIt]);
+
+  const refresh = () => {
+    getSalesData(oneStationData, currentDate);
+  }
 
   const onRadioClick = (data) => {
     if (data === "PMS") {
@@ -140,14 +142,17 @@ const LPOComponent = (props) => {
   const selectLPOAccount = (e) => {
     const value = e.target.options[e.target.options.selectedIndex].value;
     setDispensedLPO(JSON.parse(value));
+    setSaved(false);
   };
 
   const openCamera = () => {
     setOpen(true);
+    setSaved(false);
   };
 
   const openGallery = () => {
     gallery.current.click();
+    setSaved(false);
   };
 
   const pickFromGallery = (e) => {
@@ -167,26 +172,8 @@ const LPOComponent = (props) => {
     });
   };
 
-  const getProductDetails = () => {
-    switch (productType) {
-      case "PMS": {
-        return Number(oneStationData.PMSPrice);
-      }
-
-      case "AGO": {
-        return Number(oneStationData.AGOPrice);
-      }
-
-      case "DPK": {
-        return Number(oneStationData.DPKPrice);
-      }
-
-      default: {
-      }
-    }
-  };
-
   const addDetailsToList = () => {
+    setSaved(false);
     if (oneStationData === null)
       return swal("Warning!", "please select station", "info");
     if (dispensedPump === null)
@@ -206,17 +193,6 @@ const LPOComponent = (props) => {
         "quantity field is not a number, remove characters like comma",
         "info"
       );
-
-    let balance = 0;
-    if (balanceTracker === "") {
-      balance =
-        Number(dispenseLpo.currentBalance) -
-        Number(quantity) * getProductDetails();
-      setBalanceTracker(balance);
-    } else {
-      balance = balanceTracker - Number(quantity) * getProductDetails();
-      setBalanceTracker(balance);
-    }
 
     const getImage = () => {
       if (gall === null && cam === null) return "null";
@@ -246,26 +222,9 @@ const LPOComponent = (props) => {
       updatedAt: currentDate,
     };
 
-    const creditPay = {
-      debit: Number(quantity) * getProductDetails(),
-      lpoID: dispenseLpo._id,
-      quantity: quantity,
-      productType: productType,
-      org: oneStationData?.organisation,
-      outletID: oneStationData._id,
-      truckNo: truckNo,
-      shift: currentShift,
-      createdAt: currentDate,
-      updatedAt: currentDate,
-    };
-
-    const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));
-    copyPayload.push(payload);
-    dispatch(lpoPayload(copyPayload));
-
-    const copyCredit = JSON.parse(JSON.stringify(creditPayloadData));
-    copyCredit.push(creditPay);
-    dispatch(creditPayload(copyCredit));
+    const currentSalesList = [...lposalesData];
+    currentSalesList.push(payload);
+    setLpoSalesData(currentSalesList);
 
     setGall(null);
     setCam(null);
@@ -275,13 +234,10 @@ const LPOComponent = (props) => {
   };
 
   const deleteFromList = (index) => {
-    const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));
-    copyPayload.splice(index, 1);
-    dispatch(lpoPayload(copyPayload));
-
-    const copyCredit = JSON.parse(JSON.stringify(creditPayloadData));
-    copyCredit.splice(index, 1);
-    dispatch(creditPayload(copyCredit));
+    const copyLposales = [...lposalesData];
+    copyLposales.splice(index, 1);
+    setLpoSalesData(copyLposales);
+    setSaved(false);
   };
 
   const updateTankWithLPO = (e) => {
@@ -289,63 +245,12 @@ const LPOComponent = (props) => {
       return swal("Error!", "Please select LPO account", "error");
 
     const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
-    const copyPayload = JSON.parse(JSON.stringify(lpoPayloadData));
-    const currentLPOs = copyPayload;
-
-    const pmsList = currentLPOs.filter((data) => data.productType === "PMS");
-    const agoList = currentLPOs.filter((data) => data.productType === "AGO");
-    const dpkList = currentLPOs.filter((data) => data.productType === "DPK");
-
-    const pmsTotalLPOs = pmsList.reduce((accum, current) => {
-      return Number(accum) + Number(current.lpoLitre) * Number(current.PMSRate);
-    }, 0);
-    const agoTotalLPOs = agoList.reduce((accum, current) => {
-      return Number(accum) + Number(current.lpoLitre) * Number(current.AGORate);
-    }, 0);
-    const dpkTotalLPOs = dpkList.reduce((accum, current) => {
-      return Number(accum) + Number(current.lpoLitre) * Number(current.DPKRate);
-    }, 0);
-    const currentRate =
-      productType === "PMS"
-        ? Number(removeFormat) * oneStationData.PMSPrice
-        : productType === "AGO"
-        ? Number(removeFormat) * oneStationData.AGOPrice
-        : productType === "DPK"
-        ? Number(removeFormat) * oneStationData.DPKPrice
-        : 0;
-
-    const combinedTotal =
-      pmsTotalLPOs + agoTotalLPOs + dpkTotalLPOs + currentRate;
-    const accountBalance = Number(dispenseLpo.currentBalance);
-    const creditBalance = Number(dispenseLpo.creditBalance);
-
-    if (combinedTotal > accountBalance) {
-      if (accountBalance < 0) {
-        if (Math.abs(accountBalance) > creditBalance) {
-          return swal(
-            "Warning!",
-            "This account does not have sufficient balance!",
-            "info"
-          );
-        }
-      }
-    }
-
     if (dispensedPump === null) {
       setQuantity("");
       swal("Warning!", "Please select lpo pump", "info");
     } else {
-      // update tank payload
-      const newTankList = [...selectedTanks];
-      const tankID = newTankList.findIndex(
-        (data) => data.tankID === dispensedPump.hostTank
-      );
-      if (tankID === -1) {
-        setQuantity("");
-        swal("Warning!", "This selected pump has not been used", "info");
-      } else {
-        setQuantity(removeFormat);
-      }
+      setQuantity(removeFormat);
+      setSaved(false);
     }
   };
 
@@ -355,7 +260,30 @@ const LPOComponent = (props) => {
     if (!getPerm("5"))
       return swal("Warning!", "Permission denied", "info");
 
-    navigate("/home/recordsales/expenses");
+    if(saved || lposalesData.length === 0){
+      navigate("/home/recordsales/expenses");
+    }else{
+      swal({
+        title: "Alert!",
+        text: "Are you sure you want to save current changes?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then(async () => {
+        const payload = lposalesData.filter(data => !("_id" in data))
+        try{
+          const status = await SalesService.lpo({
+            lposales: payload,
+          });
+          if(status){
+            setSaved(true);
+            swal("Success!", "LPO records saved successfully!", "success");
+          }
+        }catch(e){
+          console.log(e)
+        }
+      });
+    }
   }
 
   return (
@@ -730,10 +658,10 @@ const LPOComponent = (props) => {
                 <div className="col">Action</div>
               </div>
 
-              {lpoPayloadData.length === 0 ? (
+              {lposalesData.length === 0 ? (
                 <div style={{ marginTop: "10px" }}>No data</div>
               ) : (
-                lpoPayloadData.map((data, index) => {
+                lposalesData.map((data, index) => {
                   return (
                     <div
                       key={index}

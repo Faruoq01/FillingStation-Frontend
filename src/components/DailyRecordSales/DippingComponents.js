@@ -11,6 +11,9 @@ import Navigation from "./navigation";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import SummaryRecord from "../Modals/SummaryRecord";
+import APIs from "../../services/connections/api";
+import moment from "moment";
+import SalesService from "../../services/360station/sales";
 
 const returnColor = (data, style) => {
   if (data === "PMS") {
@@ -23,8 +26,8 @@ const returnColor = (data, style) => {
 };
 
 const DippingComponents = (props) => {
-  const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate()
+  const user = useSelector((state) => state.auth.user);
   const [productType, setProductType] = useState("PMS");
   const [loading] = useState(false);
   const dispatch = useDispatch();
@@ -35,8 +38,11 @@ const DippingComponents = (props) => {
   const [dpk, setDPK] = useState([]);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const tankListData = useSelector((state) => state.recordsales.tankList);
-  const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
-  const [openSummary, setOpenSummary] = useState(false);
+  const currentDate = useSelector((state) => state.recordsales.currentDate);
+  const currentShift = useSelector((state) => state.recordsales.currentShift);
+  const [dippingList, setDippingList] = useState([]);
+  const [saved, setSaved] = useState(true);
+  const [refreshIt, setRefresh] = useState(false);
 
   const getPerm = (e) => {
     if (user.userType === "superAdmin") {
@@ -45,16 +51,19 @@ const DippingComponents = (props) => {
     return user.permission?.recordSales[e];
   };
 
-  const resolveUserID = () => {
-    if (user.userType === "superAdmin") {
-      return { id: user._id };
-    } else {
-      return { id: user.organisationID };
-    }
-  };
+  const getStationTanks = useCallback(async(station, date) => {
+    const today = moment().format("YYYY-MM-DD").split(" ")[0];
+    const getDate = date === "" ? today : date;
 
-  const getStationTanks = useCallback(() => {
-    const copyTanks = JSON.parse(JSON.stringify(tankListData));
+    const payload = {
+      organizationID:station.organisation,
+      outletID: station._id,
+      createdAt: getDate,
+      shift: currentShift
+    }
+
+    const {data} = await APIs.post("/sales/tanklevels-data", payload);
+    const copyTanks = JSON.parse(JSON.stringify(data.data));
     const outletTanks = copyTanks.map((data) => {
       const newData = { ...data, label: data.tankName, value: data.tankID };
       return newData;
@@ -67,12 +76,13 @@ const DippingComponents = (props) => {
     setPMS(pmsData);
     setAGO(agoData);
     setDPK(dpkData);
+    setDippingList(outletTanks)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [oneStationData._id]);
+  }, []);
 
   useEffect(() => {
-    getStationTanks();
-  }, [getStationTanks]);
+    getStationTanks(oneStationData, currentDate);
+  }, [getStationTanks, oneStationData, currentDate, refreshIt]);
 
   const onRadioClick = (data) => {
     if (data === "PMS") {
@@ -89,28 +99,19 @@ const DippingComponents = (props) => {
   };
 
   const setTotalizer = (e, item, index) => {
+    setSaved(false);
     const removeFormat = e.target.value.replace(/^0|[^.\w\s]/gi, "");
     const tankCopy = JSON.parse(JSON.stringify(item));
-    tankCopy.dipping = removeFormat;
+    tankCopy.dipping = Number(removeFormat);
+    
+    const copyList = JSON.parse(JSON.stringify(dippingList));
+    const position = copyList.findIndex(data => data.tankID === item.tankID);
 
-    const tankListCopy = JSON.parse(JSON.stringify(tankListData));
-    const selectedTanksCopy = JSON.parse(JSON.stringify(selectedTanks));
-    const findID = tankListCopy.findIndex(
-      (data) => data.tankID === item.tankID
-    );
-    if (findID !== -1) {
-      tankListCopy[findID] = tankCopy;
-      dispatch(tankList(tankListCopy));
+    if(position !== -1){
+      copyList[position] = tankCopy;
+      setDippingList(copyList);
     }
 
-    const tankIndex = selectedTanksCopy.findIndex(
-      (data) => data.tankID === item.tankID
-    );
-
-    if (tankIndex !== -1) {
-      selectedTanksCopy[tankIndex] = tankCopy;
-      dispatch(updateSelectedTanks(selectedTanksCopy));
-    }
 
     switch (item.productType) {
       case "PMS": {
@@ -142,7 +143,30 @@ const DippingComponents = (props) => {
     if (!getPerm("8"))
     return swal("Warning!", "Permission denied", "info");
 
-    setOpenSummary(true);
+    if(saved){
+      navigate("/home/recordsales/pumpupdate/0");
+    }else{
+      swal({
+        title: "Alert!",
+        text: "Are you sure you want to save current changes?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then(async () => {
+        try{
+          const status = await SalesService.dipping({
+            dipping: dippingList,
+          });
+          if(status){
+            setSaved(true);
+            setRefresh(prev => !prev)
+            swal("Success!", "LPO records saved successfully!", "success");
+          }
+        }catch(e){
+          console.log(e)
+        }
+      });
+    }
   }
 
   return (
@@ -234,7 +258,7 @@ const DippingComponents = (props) => {
                     <div
                       style={{
                         justifyContent: "flex-start",
-                        height: "230px",
+                        height: "250px",
                         marginLeft: "20px",
                         marginRight: "0px",
                       }}
@@ -249,12 +273,17 @@ const DippingComponents = (props) => {
                         {item.tankName + "( " + item.productType + " )"}
                       </div>
                       <div
-                        style={{ marginTop: "5px", color: "green" }}
+                        style={{ marginTop: "10px", color: "tomato" }}
                         className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
                       <div
                         style={{ marginTop: "5px", color: "green" }}
                         className="pop">{`Opening stock: ${ApproximateDecimal(
                         item.currentLevel
+                      )}`}</div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Closing stock: ${ApproximateDecimal(
+                        item.afterSales
                       )}`}</div>
                       <div style={{ marginTop: "10px" }} className="label">
                         Dipping (Litres)
@@ -294,7 +323,7 @@ const DippingComponents = (props) => {
                     <div
                       style={{
                         justifyContent: "flex-start",
-                        height: "230px",
+                        height: "250px",
                         marginLeft: "20px",
                         marginRight: "0px",
                       }}
@@ -309,12 +338,17 @@ const DippingComponents = (props) => {
                         {item.tankName + "( " + item.productType + " )"}
                       </div>
                       <div
-                        style={{ marginTop: "5px", color: "green" }}
+                        style={{ marginTop: "10px", color: "tomato" }}
                         className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
                       <div
                         style={{ marginTop: "5px", color: "green" }}
                         className="pop">{`Opening stock: ${ApproximateDecimal(
                         item.currentLevel
+                      )}`}</div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Closing stock: ${ApproximateDecimal(
+                        item.afterSales
                       )}`}</div>
                       <div style={{ marginTop: "10px" }} className="label">
                         Dipping (Litres)
@@ -354,7 +388,7 @@ const DippingComponents = (props) => {
                     <div
                       style={{
                         justifyContent: "flex-start",
-                        height: "230px",
+                        height: "250px",
                         marginLeft: "20px",
                         marginRight: "0px",
                       }}
@@ -369,12 +403,17 @@ const DippingComponents = (props) => {
                         {item.tankName + "( " + item.productType + " )"}
                       </div>
                       <div
-                        style={{ marginTop: "5px", color: "green" }}
+                        style={{ marginTop: "10px", color: "tomato" }}
                         className="pop">{`Tank capacity: ${item.tankCapacity}`}</div>
                       <div
                         style={{ marginTop: "5px", color: "green" }}
                         className="pop">{`Opening stock: ${ApproximateDecimal(
                         item.currentLevel
+                      )}`}</div>
+                      <div
+                        style={{ marginTop: "5px", color: "green" }}
+                        className="pop">{`Closing stock: ${ApproximateDecimal(
+                        item.afterSales
                       )}`}</div>
                       <div style={{ marginTop: "10px" }} className="label">
                         Dipping (Litres)
@@ -394,13 +433,6 @@ const DippingComponents = (props) => {
         </div>
       </div>
       <Navigation finish={finish} />
-
-      {openSummary && (
-        <SummaryRecord
-          open={openSummary}
-          close={setOpenSummary}
-        />
-      )}
     </React.Fragment>
   );
 };

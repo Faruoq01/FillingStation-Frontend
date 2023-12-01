@@ -1,4 +1,4 @@
-import { Radio } from "@mui/material";
+import { Button, Radio } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import pump1 from "../../assets/pump1.png";
 import cross from "../../assets/cross.png";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import APIs from "../../services/connections/api";
 import RTDetails from "../Modals/recordsales/rtdetails";
+import UpdateReturnToTank from "../Modals/DailySales/returnToTank";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
@@ -24,6 +25,9 @@ const ReturnToTank = (props) => {
     rt: []
   });
   const [openRt, setOpenRt] = useState(false);
+  const[refreshIt, setRefresh] = useState(false);
+  const [editRT, setEditRt] = useState(false);
+  const [oneRecord, setOneRecord] = useState({});
 
   ////////////////////////////////////////////////////////////
   const [salesList, setSalesList] = useState([]);
@@ -65,7 +69,7 @@ const ReturnToTank = (props) => {
 
   useEffect(() => {
     getSalesData(oneStationData, currentDate);
-  }, [oneStationData, currentDate]);
+  }, [oneStationData, currentDate, refreshIt]);
 
   const refresh = () => {
     getSalesData(oneStationData, currentDate);
@@ -166,6 +170,20 @@ const ReturnToTank = (props) => {
       navigate("/home/recordsales/lpo");
     }else{
       setOpenRt(true);
+    }
+  }
+
+  const editRtHandler = async(item) => {
+    const payload = {
+      pumpID: item.pumpID,
+      createdAt: item.createdAt
+    }
+    const {data} = await APIs.post("/sales/single-rt", payload);
+    if(data.data !== 'none'){
+      setOneRecord(data.data);
+      setEditRt(true)
+    }else{
+      swal('Error!', 'Return to tank record was not found', 'error');
     }
   }
 
@@ -328,7 +346,7 @@ const ReturnToTank = (props) => {
                     <div
                       style={{
                         width: mediaMatch.matches ? "100%" : "270px",
-                        height: "230px",
+                        height: "250px",
                       }}
                       key={index}
                       className="item">
@@ -338,6 +356,9 @@ const ReturnToTank = (props) => {
                         alt="icon"
                       />
                       <div className="pop">{item.pumpName}</div>
+                      {item.RTlitre !== 0 &&
+                        <Button onClick={() => {editRtHandler(item)}} sx={editButton}>Edit</Button>
+                      }
                       <div style={{ marginTop: "10px" }} className="label">
                         Date: {item.updatedAt.split("T")[0]}
                       </div>
@@ -462,6 +483,14 @@ const ReturnToTank = (props) => {
           </div>
         </div>
       </div>
+      {editRT && (
+        <UpdateReturnToTank 
+          data={oneRecord}
+          update={setRefresh}
+          open={editRT}
+          close={setEditRt}
+        />
+      )}
       {openRt &&
         <RTDetails refresh={refresh} open={openRt} close={setOpenRt} data={rtPayload} />
       }
@@ -525,5 +554,17 @@ const imps = {
   border: "1px solid #000",
   paddingLeft: "10px",
 };
+
+const editButton = {
+  width: "80px",
+  height: "25px",
+  background: "tomato",
+  marginTop: "5px",
+  color: "#fff",
+  fontSize: "12px",
+  "&: hover":{
+    background: "tomato"
+  }
+}
 
 export default ReturnToTank;

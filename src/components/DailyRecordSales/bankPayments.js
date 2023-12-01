@@ -12,7 +12,7 @@ import swal from "sweetalert";
 import hr8 from "../../assets/hr8.png";
 import AddIcon from "@mui/icons-material/Add";
 
-const BankPayment = () => {
+const BankPayment = (props) => {
   const dispatch = useDispatch();
   const gallery = useRef();
   const [open, setOpen] = useState(false);
@@ -76,6 +76,7 @@ const BankPayment = () => {
   };
 
   const addDetailsToList = () => {
+    props.setSaved(false);
     if (oneStationData === null)
       return swal("Warning!", "please select station", "info");
     if (bankName === "")

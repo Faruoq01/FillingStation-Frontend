@@ -21,20 +21,12 @@ const SalesService = {
     return APIs.post("/sales/expenses", data);
   },
 
-  bankPayment: (data) => {
-    return APIs.post("/sales/bankPayment", data);
-  },
-
-  posPayment: (data) => {
-    return APIs.post("/sales/posPayment", data);
+  payments: (data) => {
+    return APIs.post("/sales/payments", data);
   },
 
   dipping: (data) => {
     return APIs.post("/sales/dipping", data);
-  },
-
-  balanceCF: (data) => {
-    return APIs.post("/sales/balanceCF", data);
   },
 
   tankLevels: (data) => {
