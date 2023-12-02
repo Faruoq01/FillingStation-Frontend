@@ -195,11 +195,6 @@ const CreateSupply = (props) => {
       setProductSupply("");
       setSupplyDate("");
       setSelected([]);
-
-      const incomingLeft = incomingList.filter(
-        (data) => data._id !== selectedIncomingOrders._id
-      );
-      setIncomingList(incomingLeft);
     } else {
       swal("Warning!", `Please add quantity to each tank. `, "info");
     }
@@ -293,7 +288,6 @@ const CreateSupply = (props) => {
           const payload = {
             load: supplyList,
           };
-          console.log(payload, "payload");
           SupplyService.createSupply(payload)
             .then((data) => {
               if (data.status === "failed") {

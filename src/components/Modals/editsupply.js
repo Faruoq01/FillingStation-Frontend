@@ -46,15 +46,16 @@ const EditSupply = ({ open, close, skip, refresh }) => {
         supply: copy,
       };
 
-      APIs.post("/supply/update", payload)
+      const response = await APIs.post("/supply/update", payload)
         .then((data) => {
           refresh(copy.outletID, updateDate, skip);
+          return data;
         })
-        .then(() => {
-          setLoading(false);
-          swal("Success!", "Record has been updated successfully!", "success");
-          close(false);
-        });
+      setLoading(false);
+      close(false);
+      if(response){
+        swal("Success!", "Record has been updated successfully!", "success");
+      }
     }
   };
 

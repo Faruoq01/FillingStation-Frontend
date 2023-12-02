@@ -49,17 +49,15 @@ const Action = ({ data, setEditSupply, refresh, skip }) => {
             supply: supply,
           };
 
-          APIs.post("/supply/delete", payload)
-            .then((data) => {
-              refresh(supply.outletID, "None", skip);
-            })
-            .then(() => {
-              swal(
-                "Success!",
-                "Record has been updated successfully!",
-                "success"
-              );
-            });
+          const response = await APIs.post("/supply/delete", payload);
+          refresh(supply.outletID, "None", skip);
+          if(response){
+            swal(
+              "Success!",
+              "Record has been deleted successfully!",
+              "success"
+            );
+          }
         }
       }
     });

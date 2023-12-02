@@ -135,14 +135,6 @@ const DailyRecordSales = () => {
     return finalDate;
   };
 
-  useEffect(()=>{
-    if(oneStationData !== null){
-      setPending(true);
-    }else{
-      navigate("/home/recordsales/pumpupdate/0");
-    }
-  }, [])
-
   return (
     <div className="salesRecordStyle">
       {pending && (
