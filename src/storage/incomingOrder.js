@@ -4,6 +4,8 @@ const initialState = {
   incomingOrder: [],
   searchData: [],
   singleIncomingOrder: {},
+  unallocatedOrder: [],
+  singleUnallocated: {}
 };
 
 export const incomingSlice = createSlice({
@@ -28,6 +30,12 @@ export const incomingSlice = createSlice({
       );
       state.incomingOrder = search;
     },
+    createUnAllocatedOrder: (state, action) => {
+      state.unallocatedOrder = action.payload;
+    },
+    singleUnallocatedOrder: (state, action) => {
+      state.singleUnallocated = action.payload;
+    },
     clearIncomingOrder: () => initialState,
   },
 });
@@ -38,6 +46,8 @@ export const {
   singleIncomingOrderRecord,
   searchIncoming,
   clearIncomingOrder,
+  createUnAllocatedOrder,
+  singleUnallocatedOrder
 } = incomingSlice.actions;
 
 export default incomingSlice.reducer;

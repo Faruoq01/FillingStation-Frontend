@@ -1,16 +1,43 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import "../../styles/lpo.scss";
-import IncomingService from "../../services/360station/IncomingService";
+import "../../../styles/lpo.scss";
+import IncomingService from "../../../services/360station/IncomingService";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import ProductService from "../../services/360station/productService";
-import { setProductOrder } from "../../storage/productOrder";
+import ProductService from "../../../services/360station/productService";
+import { setProductOrder } from "../../../storage/productOrder";
 import { Radio } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import ModalBackground from "../controls/Modal/ModalBackground";
-import ModalInputField from "../controls/Modal/ModalInputField";
+import ModalBackground from "../../controls/Modal/ModalBackground";
+import ModalInputField from "../../controls/Modal/ModalInputField";
+
+const baseForm = {
+  depotStation: '',
+  destination: '',
+  product: '',
+  quantity: '',
+  dateCreated: '',
+  productOrderID: '',
+  truckNo: '',
+  wayBillNo: '',
+  driverName: '',
+  phoneNo: '',
+  transporter: '',
+  customerName: '',
+  customerAddress: '',
+  customerPhone: '',
+  customerDestination: '',
+  status: '',
+  deliveryStatus: '',
+  shortage: '',
+  overage: '',
+  outletName: '',
+  outletID: '',
+  organizationID: '',
+  createdAt: '',
+  updatedAt: '',
+}
 
 const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [loading, setLoading] = useState(false);
@@ -35,7 +62,6 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [driverName, setDriverName] = useState("");
   const [phoneNo, setPhoneNumber] = useState("");
   const [val, setVal] = useState(1);
-  const [stationSelect, setStationSelect] = useState(false);
   const [selected, setSelected] = useState([]);
   const [loadedQuantity, setLoadedQuantity] = useState("0");
   const [searchKey, setSearchKey] = useState("");
@@ -46,6 +72,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [customerDestination, setCustomerDestination] = useState("");
   const [quantity, setQuantity] = useState("");
   const updateDate = useSelector((state) => state.dashboard.dateRange);
+  const [form, setForm] = useState(baseForm);
 
   const handleClose = () => closeup(false);
 
@@ -194,32 +221,6 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
     handleClose();
   };
 
-  const menuSelection = (e, item) => {
-    if (e === 2) setProduct("PMS");
-    if (e === 3) setProduct("AGO");
-    if (e === 4) setProduct("DPK");
-    setVal(e);
-
-    const payload = {
-      productType: item,
-      outletID: oneStationData._id,
-      organisationID: oneStationData.organisation,
-    };
-
-    ProductService.getAllProductOrder2(payload).then((data) => {
-      dispatch(setProductOrder(data.product.product));
-    });
-  };
-
-  const changeMenu = (index, item) => {
-    setDefault(index);
-    setDepotStation(item.depot);
-    setPreviousBalance(item.currentBalance);
-    setQuantityOrdered(item.quantity);
-    setProductOrderID(item._id);
-    setQuantityLoaded(item.quantityLoaded);
-  };
-
   const updateSelection = (e, data) => {
     const dataClone = { ...data, incomingQuantity: 0 };
 
@@ -321,103 +322,13 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
     );
   };
 
-  const PRODUCT_ENUM = ["PMS", "AGO", "DPK"];
-
   return (
     <ModalBackground
       openModal={open}
       closeModal={closeup}
       submit={submit}
       loading={loading}
-      label={"Create Incoming Order"}>
-      <RadioButtonComponent
-        productType={productType}
-        setProductType={setProductType}
-        labelOne={"Available Order"}
-        labelTwo={"New Order"}
-        title={"Choose Order Type"}
-        mt={"20px"}
-      />
-      <div style={{ marginTop: "20px" }} className="inputs">
-        <div className="head-text2">Product Type</div>
-        <Select value={val} sx={productSelect}>
-          <MenuItem style={menu} value={1}>
-            Select Product
-          </MenuItem>
-          {PRODUCT_ENUM.map((item, index) => {
-            return (
-              <MenuItem
-                onClick={() => {
-                  menuSelection(index + 2, item);
-                }}
-                style={menu}
-                value={index + 2}>
-                {item}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </div>
-
-      {productType === "available" && (
-        <div style={{ marginTop: "20px" }} className="inputs">
-          <div className="head-text2">Product Order </div>
-          <Select
-            labelId="demo-select-small"
-            id="demo-select-small"
-            value={defaultState}
-            sx={selectStyle2}>
-            <MenuItem style={menu} value={0}>
-              Select Product Order
-            </MenuItem>
-            {productOrder.map((item, index) => {
-              return (
-                <MenuItem
-                  key={index}
-                  style={menu}
-                  onClick={() => {
-                    changeMenu(index + 1, item);
-                  }}
-                  value={index + 1}>
-                  {item.depot}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </div>
-      )}
-
-      <ModalInputField
-        value={depotStation}
-        setValue={setDepotStation}
-        type={"text"}
-        label={"Supplier"}
-      />
-
-      <ModalInputField
-        value={transporter}
-        setValue={setTransporter}
-        type={"text"}
-        label={"Transporter"}
-      />
-
-      {productType === "available" && (
-        <ModalInputField
-          value={quantityOrdered}
-          type={"text"}
-          label={"Quantity Orderd (ltr)"}
-          disabled={true}
-        />
-      )}
-
-      {productType === "available" && (
-        <ModalInputField
-          value={previousBalance}
-          type={"text"}
-          label={"Quantity Orderd (ltr)"}
-          disabled={true}
-        />
-      )}
+      label={"Allocate Incoming Order"}>
 
       <RadioButtonComponent
         productType={inhouse}
@@ -427,61 +338,65 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
         mt={"30px"}
       />
 
+      <ModalInputField
+        value={form.dateCreated}
+        setValue={setDateCreated}
+        type={"date"}
+        label={"Date allocated"}
+      />
+
+      {inhouse === 'available' &&
+        <ModalInputField
+          value={form.quantity}
+          setValue={setDateCreated}
+          disabled={true}
+          type={"text"}
+          label={"Loaded Quantity"}
+        />
+      }
+
       {inhouse === "available" && (
-        <div style={{ marginTop: "10px" }} className="inputs">
+        <div style={{ marginTop: "20px" }} className="inputs">
           <div className="head-text2">Select discharge stations</div>
-          <div onClick={() => setStationSelect(!stationSelect)} style={drop}>
-            <span style={{ marginLeft: "10px" }}>
-              Select ({selected.length})
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loaded
-              Quantity ( &nbsp;
-              <span style={{ color: "green", fontWeight: "600" }}>
-                {loadedQuantity}
-              </span>
-              &nbsp; )
-            </span>
-            <KeyboardArrowDownIcon sx={{ marginRight: "10px" }} />
-          </div>
-          {stationSelect && (
-            <div style={pop}>
-              <input
-                onChange={(e) => {
-                  searchStationList(e.target.value);
-                }}
-                style={searchBar}
-                type={"text"}
-                placeholder="Search"
-              />
-              {getStations(allOutlets).map((data, index) => {
-                return (
-                  <div key={index} style={menus}>
-                    <div style={{ width: "70%" }}>
-                      <input
-                        onChange={(e) => {
-                          updateSelection(e, data);
-                        }}
-                        style={{ marginLeft: "10px" }}
-                        type={"checkbox"}
-                      />
-                      <span style={{ marginLeft: "10px", fontSize: "11px" }}>
-                        {data.outletName}, {data.city}
-                      </span>
-                    </div>
+          <div style={pop}>
+            <input
+              onChange={(e) => {
+                searchStationList(e.target.value);
+              }}
+              style={searchBar}
+              type={"text"}
+              placeholder="Search"
+            />
+            {getStations(allOutlets).map((data, index) => {
+              return (
+                <div key={index} style={menus}>
+                  <div style={{ width: "70%" }}>
                     <input
-                      placeholder="quantity"
-                      onChange={(e) => updateQantity(e, data)}
-                      style={{
-                        width: "30%",
-                        outline: "none",
-                        fontSize: "11px",
+                      onChange={(e) => {
+                        updateSelection(e, data);
                       }}
-                      type={"text"}
+                      style={{ marginLeft: "10px" }}
+                      type={"checkbox"}
                     />
+                    <span style={{ marginLeft: "10px", fontSize: "11px" }}>
+                      {data.outletName}
+                    </span>
                   </div>
-                );
-              })}
-            </div>
-          )}
+                  <input
+                    placeholder="quantity"
+                    onChange={(e) => updateQantity(e, data)}
+                    style={{
+                      width: "30%",
+                      outline: "none",
+                      fontSize: "11px",
+                      marginRight: '10px'
+                    }}
+                    type={"text"}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -519,51 +434,6 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
           />
         </React.Fragment>
       )}
-
-      <ModalInputField
-        value={dateCreated}
-        setValue={setDateCreated}
-        type={"date"}
-        label={"Date created"}
-      />
-
-      {productType === "available" && (
-        <ModalInputField
-          value={productOrderID}
-          setValue={setProductOrderID}
-          type={"text"}
-          label={"Product Order ID"}
-          disabled={true}
-        />
-      )}
-
-      <ModalInputField
-        value={truckNo}
-        setValue={setTruckNo}
-        type={"text"}
-        label={"Truck No"}
-      />
-
-      <ModalInputField
-        value={wayBillNo}
-        setValue={setWayBillNo}
-        type={"text"}
-        label={"Waybill No"}
-      />
-
-      <ModalInputField
-        value={driverName}
-        setValue={setDriverName}
-        type={"text"}
-        label={"Driver's Name"}
-      />
-
-      <ModalInputField
-        value={phoneNo}
-        setValue={setPhoneNumber}
-        type={"text"}
-        label={"Phone Number"}
-      />
     </ModalBackground>
   );
 };
@@ -605,11 +475,10 @@ const drop = {
 
 const pop = {
   width: "98%",
-  height: "200px",
+  height: "auto",
   background: "#e2e2e2",
   zIndex: "20",
   marginTop: "5px",
-  overflowY: "scroll",
 };
 
 const menus = {

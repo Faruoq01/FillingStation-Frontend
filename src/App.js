@@ -64,6 +64,8 @@ import LPOComponent from "./components/DailyRecordSales/LPOComponent";
 import ExpenseComponents from "./components/DailyRecordSales/ExpenseComponents";
 import PaymentsComponents from "./components/DailyRecordSales/PaymentComponents";
 import DippingComponents from "./components/DailyRecordSales/DippingComponents";
+import UnallocatedOrder from "./components/incomingorder/unallocated";
+import AllocatedOrder from "./components/incomingorder/allocated";
 
 function App() {
   useEffect(() => {
@@ -128,7 +130,10 @@ function App() {
             />
             <Route path="deliveredorder" element={<DeliveredOrder />} />
           </Route>
-          <Route path="incomingorder" element={<IncomingOrders />} />
+          <Route path="unallocatedorder" element={<IncomingOrders />} >
+            <Route path="unallocatedorderhome/:index" element={<UnallocatedOrder />} />
+            <Route path="incomingorder" element={<AllocatedOrder />} />
+          </Route>
           <Route path="supply" element={<Supply />}>
             <Route path="supplyhome/:index" element={<SupplyHome />} />
             <Route path="createsupply" element={<CreateSupply />} />

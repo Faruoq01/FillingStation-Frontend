@@ -24,6 +24,39 @@ const IncomingService = {
     });
   },
 
+  createUnallocated: async(data) => {
+    return APIs.post("/unallocated-order/create", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
+  updateUnallocated: async(data) => {
+    return APIs.post("/unallocated-order/update", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
+  getUnallocated: async(data) => {
+    return APIs.post("/unallocated-order/allRecords", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
   getAllIncoming: (data) => {
     return APIs.post("/incoming-order/allRecords", data)
       .then(({ data }) => {
