@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import "../../../styles/lpo.scss";
@@ -11,12 +11,14 @@ import { Radio } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ModalBackground from "../../controls/Modal/ModalBackground";
 import ModalInputField from "../../controls/Modal/ModalInputField";
+import moment from "moment";
+import { singleUnallocatedOrder } from "../../../storage/incomingOrder";
 
 const baseForm = {
   depotStation: '',
   destination: '',
   product: '',
-  quantity: '',
+  quantity: 0,
   dateCreated: '',
   productOrderID: '',
   truckNo: '',
@@ -29,9 +31,7 @@ const baseForm = {
   customerPhone: '',
   customerDestination: '',
   status: '',
-  deliveryStatus: '',
-  shortage: '',
-  overage: '',
+  deliveryStatus: 'Not delivered',
   outletName: '',
   outletID: '',
   organizationID: '',
@@ -63,7 +63,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [phoneNo, setPhoneNumber] = useState("");
   const [val, setVal] = useState(1);
   const [selected, setSelected] = useState([]);
-  const [loadedQuantity, setLoadedQuantity] = useState("0");
+  const [loadedQuantity, setLoadedQuantity] = useState(0);
   const [searchKey, setSearchKey] = useState("");
 
   const [customerName, setCustomerName] = useState("");
@@ -72,193 +72,146 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [customerDestination, setCustomerDestination] = useState("");
   const [quantity, setQuantity] = useState("");
   const updateDate = useSelector((state) => state.dashboard.dateRange);
+  const today = moment().format('YYYY-MM-DD').split(" ")[0];
+  const [selectedDate, setSelectedDate] = useState('');
   const [form, setForm] = useState(baseForm);
+  const [orderList, setOrderList] = useState([]);
+  const singleUnallocated = useSelector(state => state.incomingorder.singleUnallocated);
 
-  const handleClose = () => closeup(false);
+  function inhouseOrderSum(order) {
+    const totalQuantity = order.reduce((accum, current) => {
+      return accum + current.quantity;
+    }, 0);
 
-  function removeSpecialCharacters(str) {
-    return str.replace(/[^0-9.]/g, "");
+    const overage = totalQuantity - singleUnallocated.quantity;
+    const shortage = singleUnallocated.quantity - totalQuantity;
+
+    return {totalQuantity, shortage: shortage < 0? 0: shortage, overage:overage < 0? 0: overage};
+  }
+
+  function externalOrderSum(order) {
+    const overage = form.quantity - singleUnallocated.quantity;
+    const shortage = singleUnallocated.quantity - form.quantity;
+
+    return {shortage: shortage < 0? 0: shortage, overage:overage < 0? 0: overage};
+  }
+
+  const inHouseOrder = async() => {
+    for(const list of orderList){
+      if(list.quantity === "") if(form.quantity === 0) return swal('Error!', `Loaded quantity field cannot be empty!`, 'error');
+      if(list.outletID === "") return swal('Error!', `An error occured, please refresh!`, 'error');
+      if(list.dateCreated === "") return swal('Error!', `Date field cannot be empty!`, 'error');
+    }
+    const order = JSON.parse(JSON.stringify(singleUnallocated));
+    const totalQuantity = inhouseOrderSum(orderList).totalQuantity;
+
+    if(totalQuantity > order.quantity){
+      order.overage = totalQuantity - order.quantity;
+    }
+
+    if(totalQuantity < order.quantity){
+      order.shortage = order.quantity - totalQuantity;
+    }
+
+    const payload = {
+      allocated: orderList,
+      order: order,
+      type: 'inhouse'
+    }
+    try{
+      const response = await IncomingService.createIncoming(payload);
+      if(response){
+        setLoading(false);
+        refresh('None', updateDate, skip);
+        swal("Success", "Incoming order created successfully!", "success");
+        closeup();
+      }
+    }catch(e){
+      console.log(e)
+    }
+  }
+
+  const externalOrder = async() => {
+    const order = JSON.parse(JSON.stringify(singleUnallocated));
+    if(form.quantity === 0) return swal('Error!', `Loaded quantity field cannot be empty!`, 'error');
+    if(form.customerName === "") return swal('Error!', `Customer name field cannot be empty!`, 'error');
+    if(form.customerAddress === "") return swal('Error!', `Customer address field cannot be empty!`, 'error');
+    if(form.customerPhone === "") return swal('Error!', `Customer phone field cannot be empty!`, 'error');
+    if(form.customerDestination === "") return swal('Error!', `Destination field cannot be empty!`, 'error');
+    if(form.dateCreated === "") return swal('Error!', `Date field cannot be empty!`, 'error');
+    form.outletID = 'Others';
+    form.outletName = form.customerName;
+    form.deliveryStatus = 'Not delivered';
+    setLoading(true);
+
+    if(form.quantity > order.quantity){
+      order.overage = form.quantity - order.quantity;
+    }
+
+    if(form.quantity < order.quantity){
+      order.shortage = order.quantity - form.quantity;
+    }
+
+    const payload = {
+      allocated: form,
+      order: order,
+      type: 'other'
+    }
+
+    try{
+      const response = await IncomingService.createIncoming(payload);
+      console.log(response, "respose")
+      if(response){
+        setLoading(false);
+        refresh('None', updateDate, skip);
+        swal("Success", "Incoming order created successfully!", "success");
+        closeup();
+      }
+    }catch(e){
+      console.log(e)
+    }
   }
 
   const submit = async () => {
-    if (transporter === "")
-      return swal("Warning!", "Transporter cannot be empty", "info");
-    if (depotStation === "")
-      return swal("Warning!", "Depot station field cannot be empty", "info");
-    if (product === "")
-      return swal("Warning!", "Product field cannot be empty", "info");
-    if (dateCreated === "")
-      return swal("Warning!", "Date created field cannot be empty", "info");
-    if (productOrderID === "" && productType === "available")
-      return swal("Warning!", "Product order ID field cannot be empty", "info");
-    if (customerName === "" && inhouse !== "available")
-      return swal("Warning!", "Please provide customer name", "info");
-    if (customerAddress === "" && inhouse !== "available")
-      return swal("Warning!", "Please provide customer address", "info");
-    if (customerPhone === "" && inhouse !== "available")
-      return swal("Warning!", "Please provide customer phone", "info");
-    if (customerDestination === "" && inhouse !== "available")
-      return swal("Warning!", "Please provide customer destination", "info");
-    if (truckNo === "")
-      return swal("Warning!", "Truck No cannot be empty", "info");
-    if (driverName === "")
-      return swal("Warning!", "Driver name cannot be empty", "info");
-    if (phoneNo === "")
-      return swal("Warning!", "Phone no cannot be empty", "info");
-
-    const totalLoadedQuantity = selected.reduce((accum, current) => {
-      return Number(accum) + Number(current.incomingQuantity);
-    }, 0);
-
-    if (
-      Number(totalLoadedQuantity) > Number(previousBalance) &&
-      productType === "available"
-    )
-      return swal("Warning!", "Total quantity exceeds current balance", "info");
-
-    setLoading(true);
-
-    const selectedStations = [...selected];
-    let previous = previousBalance;
-    let loaded = quantityLoaded;
-
-    if (inhouse !== "available") {
-      if (quantity <= 0)
-        return swal(
-          "Warning!",
-          `${oneStationData.alias} was assigned 0 litres, please add a quantity`,
-          "info"
-        );
-      const currentBalanceUpdate = Number(previous) - Number(quantity);
-      const loadedUpdate = Number(loaded) + Number(quantity);
-
-      const payload = {
-        depotStation: depotStation,
-        destination: oneStationData.alias,
-        product: product,
-        quantity: quantity,
-        updateCurrentBalance: currentBalanceUpdate,
-        updateQantityLoaded: loadedUpdate,
-        customerName: inhouse !== "available" ? customerName : "null",
-        customerAddress: inhouse !== "available" ? customerAddress : "null",
-        customerPhone: inhouse !== "available" ? customerPhone : "null",
-        customerDestination:
-          inhouse !== "available" ? customerDestination : "null",
-        dateCreated: dateCreated,
-        productOrderID: productOrderID,
-        truckNo: truckNo,
-        transporter: transporter,
-        wayBillNo: wayBillNo,
-        driverName: driverName,
-        phoneNo: phoneNo,
-        outletName: oneStationData.outletName,
-        outletID: oneStationData._id,
-        organizationID: oneStationData.organisation,
-      };
-
-      const res = await IncomingService.createIncoming(payload);
-      if (res) previous = currentBalanceUpdate;
-      loaded = loadedUpdate;
-    } else {
-      for (let station of selectedStations) {
-        if (station.incomingQuantity <= 0)
-          return swal(
-            "Warning!",
-            `${station.alias} was assigned 0 litres, please add a quantity`,
-            "info"
-          );
-        const currentBalanceUpdate =
-          Number(previous) - Number(station.incomingQuantity);
-        const loadedUpdate = Number(loaded) + Number(station.incomingQuantity);
-
-        const payload = {
-          depotStation: depotStation,
-          destination: station.alias,
-          product: product,
-          quantity: station.incomingQuantity,
-          updateCurrentBalance: currentBalanceUpdate,
-          updateQantityLoaded: loadedUpdate,
-          customerName: inhouse !== "available" ? customerName : "null",
-          customerAddress: inhouse !== "available" ? customerAddress : "null",
-          customerPhone: inhouse !== "available" ? customerPhone : "null",
-          customerDestination:
-            inhouse !== "available" ? customerDestination : "null",
-          dateCreated: dateCreated,
-          productOrderID: productOrderID,
-          truckNo: truckNo,
-          transporter: transporter,
-          wayBillNo: wayBillNo,
-          driverName: driverName,
-          phoneNo: phoneNo,
-          outletName: station.outletName,
-          outletID: station._id,
-          organizationID: station.organisation,
-        };
-
-        const res = await IncomingService.createIncoming(payload);
-        if (res) previous = currentBalanceUpdate;
-        loaded = loadedUpdate;
-      }
+    if(inhouse === "available"){
+      inHouseOrder()
+    }else{
+      externalOrder();
     }
-
-    setLoading(false);
-    setDepotStation("");
-    setTransporter("");
-    setTruckNo("");
-    setWayBillNo("");
-    setDriverName("");
-    setPhoneNumber("");
-    setLoadedQuantity("0");
-    setProductOrderID("");
-    setCustomerName("");
-    setCustomerAddress("");
-    setCustomerPhone("");
-    setCustomerDestination("");
-    setDefault(0);
-    setVal(1);
-    swal("Success", "Incoming order created successfully!", "success");
-    refresh(oneStationData._id, updateDate, skip);
-    handleClose();
   };
 
   const updateSelection = (e, data) => {
-    const dataClone = { ...data, incomingQuantity: 0 };
+    const newOrder = {...form, outletID: data._id, outletName: data.outletName}
 
     if (e.target.checked) {
-      const cloneSelected = [...selected];
-      const findID = cloneSelected.findIndex(
-        (item) => dataClone._id === item._id
+      const cloneOrderList = [...orderList];
+      const findID = cloneOrderList.findIndex(
+        (item) => newOrder.outletID === item._id
       );
       if (findID === -1) {
-        setSelected((prev) => [...prev, dataClone]);
+        setOrderList((prev) => [...prev, newOrder]);
       }
     } else {
-      const cloneSelected = [...selected];
-      const findID = cloneSelected.findIndex(
-        (item) => dataClone._id === item._id
+      const cloneOrderList = [...orderList];
+      const findID = cloneOrderList.findIndex(
+        (item) => newOrder._id === item._id
       );
-      cloneSelected.splice(findID, 1);
-      setSelected(cloneSelected);
+      cloneOrderList.splice(findID, 1);
+      setOrderList(cloneOrderList);
     }
   };
 
   const updateQantity = (e, data) => {
-    const cloneSelected = [...selected];
-    const findID = cloneSelected.findIndex((item) => item._id === data._id);
+    const payload = Number(e.target.value);
+    const cloneOrderList = [...orderList];
+
+    const findID = cloneOrderList.findIndex((item) => item.outletID === data._id);
     if (findID === -1) {
       swal("Warning!", "Please select a field first to add quantity!", "info");
     } else {
-      cloneSelected[findID] = {
-        ...cloneSelected[findID],
-        incomingQuantity: removeSpecialCharacters(e.target.value),
-      };
-      setSelected(cloneSelected);
-
-      const totalLoadedQuantity = cloneSelected.reduce((accum, current) => {
-        return Number(accum) + Number(current.incomingQuantity);
-      }, 0);
-
-      setLoadedQuantity(totalLoadedQuantity);
+      
+      cloneOrderList[findID].quantity = payload;
+      setOrderList(cloneOrderList);
     }
   };
 
@@ -298,6 +251,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
             <Radio
               onClick={() => {
                 setProductType("available");
+                setOrderList([])
               }}
               checked={productType === "available" ? true : false}
             />
@@ -310,6 +264,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
             <Radio
               onClick={() => {
                 setProductType("new");
+                setForm(baseForm);
               }}
               checked={productType === "new" ? true : false}
             />
@@ -321,6 +276,34 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
       </div>
     );
   };
+
+  useEffect(()=>{
+    form.depotStation = singleUnallocated.depotStation;
+    form.destination = singleUnallocated.destination;
+    form.product = singleUnallocated.product;
+    form.productOrderID = singleUnallocated.productOrderID;
+    form.incomingOrderID = singleUnallocated._id;
+    form.truckNo = singleUnallocated.truckNo;
+    form.wayBillNo = singleUnallocated.wayBillNo;
+    form.driverName = singleUnallocated.driverName;
+    form.phoneNo = singleUnallocated.phoneNo;
+    form.transporter = singleUnallocated.transporter;
+    form.organizationID = singleUnallocated.organizationID;
+    form.createdAt = today;
+    form.updatedAt = today;
+    setLoadedQuantity(singleUnallocated.quantity)
+  }, []);
+
+  const getDateFromInput = (data) => {
+    if(orderList.length === 0){
+      return swal("Error!", "Please add stations and supplies", 'error');
+    }else{
+      const cloneOrderList = [...orderList];
+      cloneOrderList.map(item => item.dateCreated = data);
+      setOrderList(cloneOrderList);
+      setSelectedDate(data);
+    }
+  }
 
   return (
     <ModalBackground
@@ -338,21 +321,30 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
         mt={"30px"}
       />
 
-      <ModalInputField
-        value={form.dateCreated}
-        setValue={setDateCreated}
-        type={"date"}
-        label={"Date allocated"}
-      />
-
       {inhouse === 'available' &&
-        <ModalInputField
-          value={form.quantity}
-          setValue={setDateCreated}
-          disabled={true}
-          type={"text"}
-          label={"Loaded Quantity"}
-        />
+        <React.Fragment>
+          <ModalInputField
+            value={loadedQuantity}
+            setValue={setLoadedQuantity}
+            disabled={true}
+            type={"text"}
+            label={"Loaded Quantity"}
+          />
+          <ModalInputField
+            value={inhouseOrderSum(orderList).shortage}
+            setValue={()=>{}}
+            disabled={true}
+            type={"text"}
+            label={"Shortage"}
+          />
+          <ModalInputField
+            value={inhouseOrderSum(orderList).overage}
+            setValue={()=>{}}
+            disabled={true}
+            type={"text"}
+            label={"Overage"}
+          />
+        </React.Fragment>
       }
 
       {inhouse === "available" && (
@@ -391,7 +383,7 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
                       fontSize: "11px",
                       marginRight: '10px'
                     }}
-                    type={"text"}
+                    type={"number"}
                   />
                 </div>
               );
@@ -403,37 +395,82 @@ const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
       {inhouse !== "available" && (
         <React.Fragment>
           <ModalInputField
-            value={quantity}
-            setValue={setQuantity}
+            value={externalOrderSum().shortage}
+            setValue={()=>{}}
+            disabled={true}
             type={"text"}
+            label={"Shortage"}
+          />
+          <ModalInputField
+            value={externalOrderSum().overage}
+            setValue={()=>{}}
+            disabled={true}
+            type={"text"}
+            label={"Overage"}
+          />
+          <ModalInputField
+            value={form.quantity}
+            setValue={data => {
+              setForm(prev => ({...prev, quantity: data}))
+            }}
+            type={"number"}
             label={"Loaded quantity"}
           />
           <ModalInputField
-            value={customerName}
-            setValue={setCustomerName}
+            value={form.customerName}
+            setValue={(data) => {
+              setForm(prev => ({...prev, customerName: data }))
+            }}
             type={"text"}
             label={"Customer Name"}
           />
           <ModalInputField
-            value={customerAddress}
-            setValue={setCustomerAddress}
+            value={form.customerAddress}
+            setValue={(data) => {
+              setForm(prev => ({...prev, customerAddress: data}))
+            }}
             type={"text"}
             label={"Customer Address"}
           />
           <ModalInputField
-            value={customerPhone}
-            setValue={setCustomerPhone}
+            value={form.customerPhone}
+            setValue={data => {
+              setForm(prev => ({...prev, customerPhone: data}))
+            }}
             type={"text"}
             label={"Customer Phone"}
           />
           <ModalInputField
-            value={customerDestination}
-            setValue={setCustomerDestination}
+            value={form.customerDestination}
+            setValue={data => {
+              setForm(prev => ({...prev, customerDestination: data}))
+            }}
             type={"text"}
             label={"Customer Destination"}
           />
+          <ModalInputField
+            value={form.dateCreated}
+            setValue={(data) => {
+              setForm(prev => ({
+                ...prev,
+                createdAt: data,
+                updatedAt: data,
+                dateCreated: data
+              }))
+            }}
+            type={"date"}
+            label={"Date allocated"}
+          />
         </React.Fragment>
       )}
+      {inhouse === 'available' &&
+        <ModalInputField
+          value={selectedDate}
+          setValue={getDateFromInput}
+          type={"date"}
+          label={"Date allocated"}
+        />
+      }
     </ModalBackground>
   );
 };

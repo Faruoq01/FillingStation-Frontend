@@ -16,6 +16,7 @@ import { singleUnallocatedOrder } from "../../storage/incomingOrder";
 import swal from "sweetalert";
 import IncomingService from "../../services/360station/IncomingService";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Action = ({ data, setOpenEditUnallocated, refresh, skip }) => {
   const dispatch = useDispatch();
@@ -72,11 +73,14 @@ const Action = ({ data, setOpenEditUnallocated, refresh, skip }) => {
   );
 };
 
-const allocateOrder = (setOpenAllocated) => {
-  setOpenAllocated(true)
+const allocateOrder = (setOpenAllocated, item, dispatch) => {
+  setOpenAllocated(true);
+  dispatch(singleUnallocatedOrder(item));
 }
 
 export const UnallocatedOrderDesktop = ({ data }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     columns,
     tablePrints,
@@ -113,7 +117,9 @@ export const UnallocatedOrderDesktop = ({ data }) => {
                       refresh={refresh}
                       skip={skip}
                     />:
-                    <Button onClick={()=>{allocateOrder(setOpenAllocated)}} sx={allocate}>Allocate</Button>
+                    item.deliveryStatus === 'approved'?
+                    <Button onClick={()=>{allocateOrder(setOpenAllocated, item, dispatch)}} sx={allocate}>Allocate</Button>:
+                    <Button onClick={()=>{navigate("/home/unallocatedorder/incomingorder")}} sx={allocate}>View</Button>
                   }
                 />
               </DesktopTableRows>
@@ -125,6 +131,8 @@ export const UnallocatedOrderDesktop = ({ data }) => {
 };
 
 export const UnallocatedOrderMobileTable = ({ data }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { allOutlets, loading, setOpenEditUnallocated, refresh, skip, setOpenAllocated } =
     data;
   return (
@@ -155,7 +163,11 @@ export const UnallocatedOrderMobileTable = ({ data }) => {
                     setOpenEditUnallocated={setOpenEditUnallocated}
                     refresh={refresh}
                     skip={skip}
-                  />: <Button onClick={()=>{allocateOrder(setOpenAllocated)}} sx={allocate}>Allocate</Button>,
+                  />: 
+                  item.deliveryStatus === 'approved'?
+                  <Button onClick={()=>{allocateOrder(setOpenAllocated, item, dispatch)}} sx={allocate}>Allocate</Button>:
+                  <Button onClick={()=>{navigate("/home/unallocatedorder/incomingorder")}} sx={allocate}>View</Button>
+                  ,
                 ]}
               />
             </MobileTableRows>

@@ -21,6 +21,8 @@ const baseForm = {
     wayBillNo: '',
     driverName: '',
     phoneNo: '',
+    shortage: '',
+    overage: '',
     deliveryStatus: '',
     organizationID: '',
     createdAt: '',

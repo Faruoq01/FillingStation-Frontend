@@ -1,10 +1,10 @@
 import APIs from "../connections/api";
 
 const IncomingService = {
-  createIncoming: (data) => {
+  createIncoming: async(data) => {
     return APIs.post("/incoming-order/create", data)
       .then(({ data }) => {
-        return data.incoming;
+        return data;
       })
       .catch((err) => {
         console.log("Auth service err", err);

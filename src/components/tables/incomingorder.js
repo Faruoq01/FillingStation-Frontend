@@ -22,24 +22,28 @@ const Action = ({ data, setIncomingOrderEditModal, refresh, skip }) => {
   const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const handleDelete = (data) => {
-    swal({
-      title: "Alert!",
-      text: "Are you sure you want to delete this record?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        IncomingService.deleteIncoming({
-          id: data._id,
-          quantity: data.quantity,
-          productOrderID: data.productOrderID,
-        }).then(() => {
-          refresh(oneStationData._id, updateDate, skip);
-          swal("Success", "Incoming order deleted successfully!", "success");
-        });
-      }
-    });
+    if(oneStationData === null){
+      swal("Error!", "Please select a station to delete this order", "error")
+    }else{
+      swal({
+        title: "Alert!",
+        text: "Are you sure you want to delete this record?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          IncomingService.deleteIncoming({
+            id: data._id,
+            quantity: data.quantity,
+            productOrderID: data.productOrderID,
+          }).then(() => {
+            refresh(oneStationData._id, updateDate, skip);
+            swal("Success", "Incoming order deleted successfully!", "success");
+          });
+        }
+      });
+    }
   };
 
   return (
