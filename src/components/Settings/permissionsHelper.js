@@ -1,6 +1,5 @@
-const data = [
-  {
-    name: "Dashboard",
+const data = {
+  dashboard: {
     permissions: {
       0: "selecting a single station",
       1: "selecting all stations",
@@ -16,8 +15,7 @@ const data = [
     },
   },
 
-  {
-    name: "Daily Sales",
+  dailySales: {
     permissions: {
       0: "selecting a single station",
       1: "selecting all stations",
@@ -40,8 +38,7 @@ const data = [
     },
   },
 
-  {
-    name: "My Stations",
+  station: {
     permissions: {
       0: "Creating stations",
       1: "Viewing tanks",
@@ -55,8 +52,7 @@ const data = [
     },
   },
 
-  {
-    name: "Record Sales",
+  recordsales: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -70,8 +66,7 @@ const data = [
     },
   },
 
-  {
-    name: "Analysis",
+  analysis: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -83,8 +78,7 @@ const data = [
     },
   },
 
-  {
-    name: "Payments",
+  payments: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -92,16 +86,14 @@ const data = [
     },
   },
 
-  {
-    name: "Expenses",
+  expenses: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
     },
   },
 
-  {
-    name: "Corporate Sales",
+  lpo: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -112,8 +104,7 @@ const data = [
     },
   },
 
-  {
-    name: "Product Orders",
+  productorder: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -122,8 +113,7 @@ const data = [
     },
   },
 
-  {
-    name: "Incoming Orders",
+  incomingorder: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -132,8 +122,7 @@ const data = [
     },
   },
 
-  {
-    name: "Supply",
+  supply: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -142,8 +131,7 @@ const data = [
     },
   },
 
-  {
-    name: "Regulatory payment",
+  regulatory: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -152,8 +140,7 @@ const data = [
     },
   },
 
-  {
-    name: "Tank Update",
+  tankupdate: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -161,8 +148,7 @@ const data = [
     },
   },
 
-  {
-    name: "Human Resources",
+  hr: {
     permissions: {
       0: "Selecting a single station for employess",
       1: "Selecting all stations for employees",
@@ -184,8 +170,7 @@ const data = [
     },
   },
 
-  {
-    name: "Settings",
+  settings: {
     permissions: {
       0: "Selecting a single station",
       1: "Selecting all stations",
@@ -198,6 +183,6 @@ const data = [
       8: "Delete my station",
     },
   },
-];
+}
 
 export default data;

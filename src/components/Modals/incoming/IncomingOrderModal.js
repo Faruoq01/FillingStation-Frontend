@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import "../../../styles/lpo.scss";
 import IncomingService from "../../../services/360station/IncomingService";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import ProductService from "../../../services/360station/productService";
-import { setProductOrder } from "../../../storage/productOrder";
 import { Radio } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ModalBackground from "../../controls/Modal/ModalBackground";
 import ModalInputField from "../../controls/Modal/ModalInputField";
 import moment from "moment";
-import { singleUnallocatedOrder } from "../../../storage/incomingOrder";
 
 const baseForm = {
   depotStation: '',
@@ -41,36 +35,10 @@ const baseForm = {
 
 const IncomingOrderModal = ({ open, closeup, skip, refresh }) => {
   const [loading, setLoading] = useState(false);
-  const [defaultState, setDefault] = useState(0);
-  const productOrder = useSelector((state) => state.productorder.productorder);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
-  const dispatch = useDispatch();
-  const [productType, setProductType] = useState("available");
   const [inhouse, setInhouse] = useState("available");
-  const [quantityOrdered, setQuantityOrdered] = useState("");
-  const [previousBalance, setPreviousBalance] = useState("");
-  const [quantityLoaded, setQuantityLoaded] = useState("");
-  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-
-  const [depotStation, setDepotStation] = useState("");
-  const [product, setProduct] = useState("");
-  const [dateCreated, setDateCreated] = useState("");
-  const [productOrderID, setProductOrderID] = useState("");
-  const [truckNo, setTruckNo] = useState("");
-  const [wayBillNo, setWayBillNo] = useState("");
-  const [transporter, setTransporter] = useState("");
-  const [driverName, setDriverName] = useState("");
-  const [phoneNo, setPhoneNumber] = useState("");
-  const [val, setVal] = useState(1);
-  const [selected, setSelected] = useState([]);
   const [loadedQuantity, setLoadedQuantity] = useState(0);
   const [searchKey, setSearchKey] = useState("");
-
-  const [customerName, setCustomerName] = useState("");
-  const [customerAddress, setCustomerAddress] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [customerDestination, setCustomerDestination] = useState("");
-  const [quantity, setQuantity] = useState("");
   const updateDate = useSelector((state) => state.dashboard.dateRange);
   const today = moment().format('YYYY-MM-DD').split(" ")[0];
   const [selectedDate, setSelectedDate] = useState('');

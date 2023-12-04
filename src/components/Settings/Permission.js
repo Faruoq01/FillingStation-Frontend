@@ -98,7 +98,7 @@ const UserRow = (props) => {
 
   return (
     <div className="user_rows">
-      <div style={{ justifyContent: "space-between" }} className="perm_cell2">
+      <div style={{ width: "50%", justifyContent: "space-between" }} className="perm_cell2">
         <Checkbox
           checked={props.data.selected === "1" ? true : false}
           sx={{
@@ -111,13 +111,10 @@ const UserRow = (props) => {
           {...label}
           onChange={(e) => changeSelected(e, props.data)}
         />
-        <div style={{ marginRight: "30px" }}>{props.index + 1}</div>
-      </div>
-      <div className="perm_cell2">
-        <Avatar sx={{ width: "25px", height: "25px" }} />
       </div>
       <div
         style={{
+          width: "150%",
           display: "flex",
           flexDirection: "row",
           justifyContent: "flex-start",
@@ -344,7 +341,7 @@ const Permissions = (props) => {
       <div className="perm_users">
         <div className="user_header">
           <div
-            style={{ justifyContent: "space-between" }}
+            style={{width: "50%", justifyContent: "space-between" }}
             className="perm_cell">
             <Checkbox
               sx={{
@@ -357,10 +354,8 @@ const Permissions = (props) => {
               {...label}
               onChange={(e) => selectAllUsers(e)}
             />
-            <div style={{ marginRight: "30px" }}>S/N</div>
           </div>
-          <div className="perm_cell">Image</div>
-          <div className="perm_cell">Full Name</div>
+          <div style={{width: "150%", justifyContent: "flex-start"}} className="perm_cell">Full Name</div>
           <div className="perm_cell">Status</div>
           <div className="perm_cell">Action</div>
         </div>

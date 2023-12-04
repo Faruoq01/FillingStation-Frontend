@@ -17,8 +17,10 @@ export const settingSlice = createSlice({
       const updated = newList.map((data) => {
         return { ...data, selected: action.payload ? "1" : "0" };
       });
+      const filterSelected = updated.filter((data) => data.selected === "1");
 
       state.orgEmployee = updated;
+      state.selectedUsers = filterSelected;
     },
     changeEmployeeStatus: (state, action) => {
       const newList = [...state.orgEmployee];
