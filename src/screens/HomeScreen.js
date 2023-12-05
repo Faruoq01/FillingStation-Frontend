@@ -76,7 +76,7 @@ const HomeScreen = () => {
  }, [user._id, user.userType, user.outletID, dispatch]);
 
  useEffect(() => {
-  window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'home' }));
+  window?.ReactNativeWebView?.postMessage(JSON.stringify({ type: 'home' }));
   getAllStationData();
  }, [getAllStationData]);
 

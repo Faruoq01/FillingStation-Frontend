@@ -19,7 +19,7 @@ const LoginScreen = () => {
  });
 
  useEffect(() => {
-  window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'login' }));
+  window?.ReactNativeWebView?.postMessage(JSON.stringify({ type: 'login' }));
  }, []);
 
  return (

@@ -21,7 +21,7 @@ const AuthService = {
  login: async (data) => {
   try {
    const { data: data_1 } = await APIs.post('/login', data);
-   window.ReactNativeWebView.postMessage(
+   window?.ReactNativeWebView?.postMessage(
     JSON.stringify({ type: 'auth', auth_data: data_1 }),
    );
    setHeadersAndStorage(data_1);
