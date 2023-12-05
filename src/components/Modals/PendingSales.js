@@ -146,7 +146,8 @@ const PendingSales = (props) => {
     if (!isValidDateFormat(getDate))
       return swal("Error", "Please select a valid date", "error");
     
-    getAllRecordDetails(oneStationData, getDate);
+    // getAllRecordDetails(oneStationData, getDate);
+    dispatch(changeDate(getDate));
     return getDate;
   };
 

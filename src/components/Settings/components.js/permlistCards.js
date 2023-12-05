@@ -60,7 +60,7 @@ const ListCards = ({key, item, section, data }) => {
           <div className="perm_check">
             <Android12Switch
               onChange={(e) => changePermission(e)}
-              checked={typeof getPerm() === "undefined" ? false : getPerm()}
+              checked={getPerm()}
             />
           </div>
         </div>

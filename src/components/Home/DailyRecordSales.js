@@ -34,7 +34,6 @@ import { daySupply } from "../../storage/supply";
 import { useCallback } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import StepperComponent from "../../components/DailyRecordSales/stepper";
-import APIs from "../../services/connections/api";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 

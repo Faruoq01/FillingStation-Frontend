@@ -10,7 +10,7 @@ import { updateUser } from "../../storage/auth";
 import swal from "sweetalert";
 import OutletService from "../../services/360station/outletService";
 import { adminOutlet, getAllStations } from "../../storage/outlet";
-import { ThreeDots } from "react-loader-spinner";
+import { BallTriangle, ThreeDots } from "react-loader-spinner";
 import UserService from "../../services/360station/user";
 import OutletInfo from "../Settings/OutletInfo";
 import Appearances from "../Settings/Appearance";
@@ -19,6 +19,7 @@ import Permissions from "../Settings/Permission";
 import PermissionList from "../Settings/PermissionList";
 import { logout } from "../../storage/logout";
 import HistoryPage from "./History";
+import { Backdrop } from "@mui/material";
 
 const Password = () => {
   const user = useSelector((state) => state.auth.user);
@@ -347,6 +348,7 @@ const Settings = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
+  const loader = useSelector((state) => state.settings.loader);
 
   const logouts = () => {
     swal({
@@ -420,243 +422,261 @@ const Settings = (props) => {
   };
 
   return (
-    <div data-aos="zoom-in-down" className="settingsContainer">
-      <div className="action">
-        <Select
-          labelId="demo-select-small"
-          id="demo-select-small"
-          value={actionState}
-          sx={mobileSelect}>
-          <MenuItem value={10}>Action</MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(0);
-            }}
-            value={0}>
-            Outlet Information
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(1);
-            }}
-            value={1}>
-            Permission
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(2);
-            }}
-            value={2}>
-            History
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(3);
-            }}
-            value={3}>
-            Appearances
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(4);
-            }}
-            value={4}>
-            Logo (Branding)
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(5);
-            }}
-            value={5}>
-            Change Password
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(6);
-            }}
-            value={6}>
-            Change Email
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigateAround(7);
-            }}
-            value={7}>
-            Delete Outlet
-          </MenuItem>
-          <MenuItem onClick={logouts} value={8}>
-            Logout
-          </MenuItem>
-        </Select>
-      </div>
-      <div className="inner-container">
-        <div className="leftSettings">
-          <div className="linspace">
-            <div
+    <React.Fragment>
+      <div data-aos="zoom-in-down" className="settingsContainer">
+        <div className="action">
+          <Select
+            labelId="demo-select-small"
+            id="demo-select-small"
+            value={actionState}
+            sx={mobileSelect}>
+            <MenuItem value={10}>Action</MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(0);
               }}
-              className="accord">
-              <div style={nav === 0 ? active : inActive}>
-                Outlet Information
-              </div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div
+              value={0}>
+              Outlet Information
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(1);
               }}
-              className="accord">
-              <div style={nav === 1 ? active : inActive}>Permission</div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div
+              value={1}>
+              Permission
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(2);
               }}
-              className="accord">
-              <div style={nav === 2 ? active : inActive}>Activity history</div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div
+              value={2}>
+              History
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(3);
               }}
-              className="accord">
-              <div style={nav === 3 ? active : inActive} className="text">
-                Appearances
-              </div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div
+              value={3}>
+              Appearances
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(4);
               }}
-              className="accord">
-              <div style={nav === 4 ? active : inActive} className="text">
-                Logo ( Branding )
-              </div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div
+              value={4}>
+              Logo (Branding)
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(5);
               }}
-              className="accord">
-              <div style={nav === 5 ? active : inActive} className="text">
-                Change Password
-              </div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div
+              value={5}>
+              Change Password
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(6);
               }}
-              className="accord">
-              <div style={nav === 6 ? active : inActive} className="text">
-                Change Email
-              </div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div
+              value={6}>
+              Change Email
+            </MenuItem>
+            <MenuItem
               onClick={() => {
                 navigateAround(7);
               }}
-              className="accord">
-              <div style={nav === 7 ? active : inActive} className="text">
-                Delete Outlets
+              value={7}>
+              Delete Outlet
+            </MenuItem>
+            <MenuItem onClick={logouts} value={8}>
+              Logout
+            </MenuItem>
+          </Select>
+        </div>
+        <div className="inner-container">
+          <div className="leftSettings">
+            <div className="linspace">
+              <div
+                onClick={() => {
+                  navigateAround(0);
+                }}
+                className="accord">
+                <div style={nav === 0 ? active : inActive}>
+                  Outlet Information
+                </div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
               </div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
-            </div>
-            <div onClick={logouts} className="accord">
-              <div style={{ color: "#1F1F1F" }} className="text">
-                Logout
+              <div
+                onClick={() => {
+                  navigateAround(1);
+                }}
+                className="accord">
+                <div style={nav === 1 ? active : inActive}>Permission</div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
               </div>
-              <img
-                style={{ width: "7px", height: "13px" }}
-                src={rightArrow}
-                alt="icon"
-              />
+              <div
+                onClick={() => {
+                  navigateAround(2);
+                }}
+                className="accord">
+                <div style={nav === 2 ? active : inActive}>Activity history</div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
+              </div>
+              <div
+                onClick={() => {
+                  navigateAround(3);
+                }}
+                className="accord">
+                <div style={nav === 3 ? active : inActive} className="text">
+                  Appearances
+                </div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
+              </div>
+              <div
+                onClick={() => {
+                  navigateAround(4);
+                }}
+                className="accord">
+                <div style={nav === 4 ? active : inActive} className="text">
+                  Logo ( Branding )
+                </div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
+              </div>
+              <div
+                onClick={() => {
+                  navigateAround(5);
+                }}
+                className="accord">
+                <div style={nav === 5 ? active : inActive} className="text">
+                  Change Password
+                </div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
+              </div>
+              <div
+                onClick={() => {
+                  navigateAround(6);
+                }}
+                className="accord">
+                <div style={nav === 6 ? active : inActive} className="text">
+                  Change Email
+                </div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
+              </div>
+              <div
+                onClick={() => {
+                  navigateAround(7);
+                }}
+                className="accord">
+                <div style={nav === 7 ? active : inActive} className="text">
+                  Delete Outlets
+                </div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
+              </div>
+              <div onClick={logouts} className="accord">
+                <div style={{ color: "#1F1F1F" }} className="text">
+                  Logout
+                </div>
+                <img
+                  style={{ width: "7px", height: "13px" }}
+                  src={rightArrow}
+                  alt="icon"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="rightSettings">
-          <div className="inner">
-            {nav === 1 || nav === 7 || (
-              <div style={contain}>
-                <div className="second-select">
-                  {
-                    <Select
-                      labelId="demo-select-small"
-                      id="demo-select-small"
-                      value={defaultState}
-                      sx={selectStyle2}>
-                      <MenuItem style={menu} value={0}>
-                        Select Station
-                      </MenuItem>
-                      {allOutlets.map((item, index) => {
-                        return (
-                          <MenuItem
-                            key={index}
-                            style={menu}
-                            onClick={() => {
-                              changeMenu(index + 1, item);
-                            }}
-                            value={index + 1}>
-                            {item.outletName + ", " + item.alias}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  }
+          <div className="rightSettings">
+            <div className="inner">
+              {nav === 1 || nav === 7 || (
+                <div style={contain}>
+                  <div className="second-select">
+                    {
+                      <Select
+                        labelId="demo-select-small"
+                        id="demo-select-small"
+                        value={defaultState}
+                        sx={selectStyle2}>
+                        <MenuItem style={menu} value={0}>
+                          Select Station
+                        </MenuItem>
+                        {allOutlets.map((item, index) => {
+                          return (
+                            <MenuItem
+                              key={index}
+                              style={menu}
+                              onClick={() => {
+                                changeMenu(index + 1, item);
+                              }}
+                              value={index + 1}>
+                              {item.outletName + ", " + item.alias}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    }
+                  </div>
                 </div>
-              </div>
-            )}
-            {nav === 0 && <OutletInfo refresh={getStationData} />}
-            {nav === 1 && <Permissions nav={setNav} />}
-            {nav === 2 && <HistoryPage />}
-            {nav === 3 && <Appearances />}
-            {nav === 4 && <Logo />}
-            {nav === 5 && <Password />}
-            {nav === 6 && <Email />}
-            {nav === 7 && <DeleteOutlet refresh={getStationData} />}
-            {nav === 8 && <PermissionList nav={setNav} />}
+              )}
+              {nav === 0 && <OutletInfo refresh={getStationData} />}
+              {nav === 1 && <Permissions nav={setNav} />}
+              {nav === 2 && <HistoryPage />}
+              {nav === 3 && <Appearances />}
+              {nav === 4 && <Logo />}
+              {nav === 5 && <Password />}
+              {nav === 6 && <Email />}
+              {nav === 7 && <DeleteOutlet refresh={getStationData} />}
+              {nav === 8 && <PermissionList nav={setNav} />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loader}
+        // onClick={handleClose}
+      >
+        <BallTriangle
+          height={100}
+          width={100}
+          radius={5}
+          color="#fff"
+          ariaLabel="ball-triangle-loading"
+          wrapperClass={{}}
+          wrapperStyle=""
+          visible={true}
+        />
+      </Backdrop>
+    </React.Fragment>
   );
 };
 

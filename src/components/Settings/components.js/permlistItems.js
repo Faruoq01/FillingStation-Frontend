@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { saveSelectedUsers, storeSingleUser } from "../../../storage/settings";
 import ListCards from "./permlistCards";
@@ -54,6 +54,21 @@ const PermissionListItems = ({id, name, data}) => {
             swal("Error!", "Please select the current user to change permission", "error");
         }
     }
+
+    useEffect(()=>{
+        let initstatus;
+        let user = JSON.parse(JSON.stringify(singleUser));
+        let permField = user?.permission[mapToPerm[name]];
+        const keys = Object.keys(permField);
+        for(const key of keys){
+            if(typeof initstatus === "undefined"){
+                initstatus = permField[key];
+            }else{
+                initstatus = initstatus && permField[key];
+            }  
+        }
+        setGroupCheck(initstatus);
+    },[])
   
     return (
       <div className="perm_list_items">

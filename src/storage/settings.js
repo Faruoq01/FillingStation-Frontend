@@ -6,6 +6,7 @@ const initialState = {
   searchData: [],
   singleUser: {},
   selectedUsers: [],
+  loader: false
 };
 
 export const settingSlice = createSlice({
@@ -49,6 +50,9 @@ export const settingSlice = createSlice({
     saveSelectedUsers: (state, action) => {
       state.selectedUsers = action.payload;
     },
+    setLoader: (state, action) => {
+      state.loader = action.payload;
+    },
     clearSetting: () => initialState,
   },
 });
@@ -62,6 +66,7 @@ export const {
   clearSetting,
   settingsEmployee,
   saveSelectedUsers,
+  setLoader
 } = settingSlice.actions;
 
 export default settingSlice.reducer;
