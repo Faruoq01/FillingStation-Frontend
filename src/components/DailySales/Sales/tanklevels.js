@@ -112,23 +112,25 @@ const TankLevels = () => {
 const TankComponent = ({ product, goToTanks, Tank, label }) => {
   return (
     <div style={mobile.matches ? tanks : {}} className="tanks">
-      <div className="tank-head">{label}</div>
-      <div style={{ fontWeight: "500" }} className="level">
-        Level: {ApproximateDecimal(product?.afterSales)} Ltr
-      </div>
-      <div style={{ fontWeight: "500" }} className="capacity">
-        Capacity:{" "}
-        {ApproximateDecimal(
-          product?.tankCapacity !== 0 ? product?.tankCapacity : 33000
-        )}{" "}
-        Ltr
-      </div>
-      <div
-        onClick={() => {
-          goToTanks(label);
-        }}
-        className="canvas-container">
-        <Tank />
+      <div style={tankInner}>
+        <div className="tank-head">{label}</div>
+        <div style={{ fontWeight: "500" }} className="level">
+          Level: {ApproximateDecimal(product?.afterSales)} Ltr
+        </div>
+        <div style={{ fontWeight: "500" }} className="capacity">
+          Capacity:{" "}
+          {ApproximateDecimal(
+            product?.tankCapacity !== 0 ? product?.tankCapacity : 33000
+          )}{" "}
+          Ltr
+        </div>
+        <div
+          onClick={() => {
+            goToTanks(label);
+          }}
+          className="canvas-container">
+          <Tank />
+        </div>
       </div>
     </div>
   );
@@ -139,9 +141,20 @@ const tanks = {
   justifyContent: "center",
   alignItems: "center",
   background: "#fff",
-  boxShadow: "0px 0px 2px 2px #ccc",
-  paddingTop: "10px",
-  paddingBottom: "10px",
+  paddingTop: "30px",
+  paddingBottom: "30px",
 };
+
+const tankInner = {
+  width: "250px",
+  height: "auto",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  paddingTop: "20px",
+  paddingBottom: "20px",
+  border: '1px solid #07956A',
+  boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.25)'
+}
 
 export default TankLevels;
