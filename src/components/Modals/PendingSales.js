@@ -146,36 +146,8 @@ const PendingSales = (props) => {
     if (!isValidDateFormat(getDate))
       return swal("Error", "Please select a valid date", "error");
     
-    // getAllRecordDetails(oneStationData, getDate);
     dispatch(changeDate(getDate));
     return getDate;
-  };
-
-  const getAllRecordDetails = (station, date) => {
-    setDateLoader(true);
-
-    const salesPayload = {
-      outletID: station._id,
-      organisationID: station.organisation,
-      date: date,
-      shift: currentShift
-    }
-
-    APIs.post("/sales/pump-update", salesPayload).then(({data}) => {
-      const {pumps, tanks} = data;
-  
-      ////////////////////// pumps ///////////////////////////////
-      const PMS = pumps.filter((data) => data.productType === "PMS");
-      const AGO = pumps.filter((data) => data.productType === "AGO");
-      const DPK = pumps.filter((data) => data.productType === "DPK");
-
-      dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
-      dispatch(tankList(tanks));
-      dispatch(changeDate(date));
-
-    }).then(() => {
-      setDateLoader(false);
-    });   
   };
 
   const convertDate = (newValue) => {

@@ -9,7 +9,7 @@ import swal from "sweetalert";
 
 const mobile = window.matchMedia("(max-width: 600px)");
 
-const SelectStation = ({ ml, oneStation, allStation, callback }) => {
+const SelectStation = ({ ml, oneStation, allStation, callback = () => {}, recordCallback = () => {} }) => {
   const allOutlets = useSelector((state) => state.outlet.allOutlets);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const dispatch = useDispatch();
@@ -37,6 +37,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
         );
         setDefault(findID + 1);
         callback(oneStationData._id);
+        recordCallback(oneStationData);
         return;
       }
     }
@@ -58,11 +59,14 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
             }
           );
 
-          return user.outletID;
+          return user;
         }
       })
       .then((data) => {
-        callback(data);
+        const id = data === "None"? data: data.outletID;
+        const item = data === "None"? null: data;
+        callback(id);
+        recordCallback(item);
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,6 +84,7 @@ const SelectStation = ({ ml, oneStation, allStation, callback }) => {
 
     const id = item === null ? "None" : item._id;
     callback(id);
+    recordCallback(item);
   };
 
   return (

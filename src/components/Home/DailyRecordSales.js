@@ -34,6 +34,7 @@ import { daySupply } from "../../storage/supply";
 import { useCallback } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import StepperComponent from "../../components/DailyRecordSales/stepper";
+import SelectStation from "../common/selectstations";
 
 const mediaMatch = window.matchMedia("(max-width: 450px)");
 
@@ -94,14 +95,13 @@ const DailyRecordSales = () => {
     }
   }, [dispatch, oneStationData, resetAllVariables]);
 
-  const changeMenu = async (index, item) => {
-    if (!getPerm("1") && item === null)
-      return swal("Warning!", "Permission denied", "info");
+  const changeMenu = async (item) => {console.log(item)
     navigate('/home/recordsales/pumpupdate/0');
-    setDefault(index);
     dispatch(changeStation());
     dispatch(adminOutlet(item));
-    setPending(true);
+    if(item !== null){
+      setPending(true);
+    }
   };
 
   const updateDate = (newValue) => {
@@ -151,44 +151,11 @@ const DailyRecordSales = () => {
           justifyContent: "space-between",
         }}>
         <div>
-          {getPerm("0") && (
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={defaultState}
-              sx={selectStyle2}>
-              <MenuItem style={menu} value={0}>
-                Select Station
-              </MenuItem>
-              {allOutlets.map((item, index) => {
-                return (
-                  <MenuItem
-                    key={index}
-                    style={menu}
-                    onClick={() => {
-                      changeMenu(index + 1, item);
-                    }}
-                    value={index + 1}>
-                    {item.outletName + ", " + item.alias}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          )}
-          {getPerm("0") || (
-            <Select
-              labelId="demo-select-small"
-              id="demo-select-small"
-              value={0}
-              sx={selectStyle2}
-              disabled>
-              <MenuItem style={menu} value={0}>
-                {!getPerm("0")
-                  ? oneStationData?.outletName + ", " + oneStationData?.alias
-                  : "No station created"}
-              </MenuItem>
-            </Select>
-          )}
+          <SelectStation
+            oneStation={getPerm("0")}
+            allStation={getPerm("1")}
+            recordCallback={changeMenu}
+          />
         </div>
         <div>
           <div style={sales}>

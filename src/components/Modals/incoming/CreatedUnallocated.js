@@ -14,15 +14,15 @@ const baseForm = {
     destination: '',
     transporter: '',
     product: '',
-    productOrderID: '',
+    productOrderID: 'null',
     quantity: '',
     dateCreated: '',
     truckNo: '',
     wayBillNo: '',
     driverName: '',
     phoneNo: '',
-    shortage: '',
-    overage: '',
+    shortage: 0,
+    overage: 0,
     deliveryStatus: '',
     organizationID: '',
     createdAt: '',
@@ -56,14 +56,18 @@ const CreateUnallocated = ({ open, closeup, skip, refresh }) => {
     }
 
     setLoading(true);
-    const incoming = await IncomingService.createUnallocated(form);
-    const dateUpdated = [form.createdAt, form.createdAt];
-    refresh("None", dateUpdated, skip);
-    setLoading(false);
-    if(incoming){
-        swal('Success', 'Incoming order created successfully!', 'success');
+    try{
+      const incoming = await IncomingService.createUnallocated(form);
+      const dateUpdated = [form.createdAt, form.createdAt];
+      refresh("None", dateUpdated, skip);
+      setLoading(false);
+      if(incoming){
+          swal('Success', 'Incoming order created successfully!', 'success');
+      }
+      closeup(false);
+    }catch(e){
+      console.log(e);
     }
-    closeup(false);
   };
 
   const RadioButtonComponent = ({

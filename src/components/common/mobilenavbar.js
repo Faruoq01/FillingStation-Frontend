@@ -20,7 +20,21 @@ import { routeNames } from "../../modules/routenames";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useTheme } from "@mui/material/styles";
 
-const MobileNavBar = ({ open, drawer }) => {
+const Names = [
+  "My Station",
+  "Pump Updates",
+  "Analysis",
+  "Corporate Sales",
+  "Product Order",
+  "Incoming Order",
+  "Supply",
+  "Regulatory",
+  "Tank Update",
+  "Human Resources",
+  "Settings"
+]
+
+const MobileNavBar = ({ toggle, open }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const dispatch = useDispatch();
@@ -35,6 +49,10 @@ const MobileNavBar = ({ open, drawer }) => {
 
   const toggleDrawer = () => {
     navigate(-1);
+  };
+
+  const closeSideBar = () => {
+    toggle();
   };
 
   const switchDarkMode = () => {
@@ -89,9 +107,10 @@ const MobileNavBar = ({ open, drawer }) => {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
+            sx={{ mr: 1 }}
             onClick={toggleDrawer}>
-            <KeyboardBackspaceIcon sx={{ color: "#000" }} />
+            {Names.includes(name) || <KeyboardBackspaceIcon sx={{ color: "#000" }} />}
+            {Names.includes(name) && <MenuIcon sx={{color: "#000"}} onClick={closeSideBar} />}
           </IconButton>
           <span style={roots}>{getStationDetails(name)}</span>
           <div style={navbar} className="side-app-bar">
