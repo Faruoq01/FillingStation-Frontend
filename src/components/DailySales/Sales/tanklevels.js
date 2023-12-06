@@ -112,7 +112,7 @@ const TankLevels = () => {
 const TankComponent = ({ product, goToTanks, Tank, label }) => {
   return (
     <div style={mobile.matches ? tanks : {}} className="tanks">
-      <div style={tankInner}>
+      <div style={mobile.matches ? tankInner : {}}>
         <div className="tank-head">{label}</div>
         <div style={{ fontWeight: "500" }} className="level">
           Level: {ApproximateDecimal(product?.afterSales)} Ltr

@@ -1,12 +1,16 @@
 import React from "react";
 import ThreeDotsLoader from "../../common/ThreeDotsLoader";
 import "../../../styles/common/table.scss";
+import empty from "../../../assets/comp/No data-cuate 1.svg";
 
 export const TableViewForMobile = ({ children, rows, loading }) => {
   return (
     <React.Fragment>
       {loading && <ThreeDotsLoader />}
-      {rows.length === 0 && !loading && <div style={place}>No data</div>}
+      {rows.length === 0 && !loading && <div style={place}>
+        <img style={emptyStyle} src={empty} alt="No data" />
+        <div style={{marginBottom: "50px"}}>No records for the current filter</div>
+      </div>}
       {children}
     </React.Fragment>
   );
@@ -87,3 +91,8 @@ const place = {
   marginTop: "20px",
   color: "green",
 };
+
+const emptyStyle = {
+  width: "200px",
+  height: "200px",
+}
