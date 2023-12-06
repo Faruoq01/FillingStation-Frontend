@@ -42,7 +42,6 @@ const theme = useTheme();
 const barWidth = 270;
 const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 const [calColumn, setCalColumn] = useState(0);
-console.log(calColumn, "jgsfghdfhg")
 
 useEffect(() => {
     const handleResize = () => {

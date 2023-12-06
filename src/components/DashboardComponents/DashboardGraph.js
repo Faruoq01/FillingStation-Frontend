@@ -86,6 +86,7 @@ const DashboardGraph = (props) => {
   const dispatch = useDispatch();
   const [currentSelection, setCurrentSelection] = useState(1);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
+  const updatedDate = useSelector((state) => state.dashboard.dateRange);
 
   const setWeeklyData = () => {
     const weeklyData = {
@@ -206,9 +207,8 @@ const DashboardGraph = (props) => {
 
   const getWeeklyGraphData = useCallback((date, station, salesShift) => {
     setLoad(true);
-    const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
-    const firstDayOfTheWeek = getLastSunday(getDate);
-    const lastDayOfTheWeek = getUpcomingSunday(getDate);
+    const firstDayOfTheWeek = getLastSunday(date[0]);
+    const lastDayOfTheWeek = getUpcomingSunday(date[1]);
     const range = getAllDatesBetween(firstDayOfTheWeek, lastDayOfTheWeek);
 
     const payload = {
@@ -233,8 +233,7 @@ const DashboardGraph = (props) => {
 
   const getMonthlyGraphData = useCallback(
     (date, station, salesShift) => {
-      const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
-      const getYear = moment(getDate).format("YYYY");
+      const getYear = moment(date[0]).format("YYYY");
       const range = [];
 
       for (let month = 0; month < 12; month++) {
@@ -267,8 +266,7 @@ const DashboardGraph = (props) => {
 
   const getAnnualGraphData = useCallback(
     (date, station, salesShift) => {
-      const getDate = date === null ? date2 : date.format("YYYY-MM-DD");
-      const getYear = moment(getDate).format("YYYY");
+      const getYear = moment(date[0]).format("YYYY");
       const startYear = Number(getYear) - 5;
       const endYear = Number(getYear) + 5;
       const yearSet = [];
@@ -307,13 +305,13 @@ const DashboardGraph = (props) => {
   );
 
   useEffect(() => {
-    getWeeklyGraphData(value, oneStationData, salesShift);
-    getMonthlyGraphData(value, oneStationData, salesShift);
-    getAnnualGraphData(value, oneStationData, salesShift);
+    getWeeklyGraphData(updatedDate, oneStationData, salesShift);
+    getMonthlyGraphData(updatedDate, oneStationData, salesShift);
+    getAnnualGraphData(updatedDate, oneStationData, salesShift);
   }, [
     oneStationData,
     getWeeklyGraphData,
-    value,
+    updatedDate,
     getMonthlyGraphData,
     getAnnualGraphData,
     salesShift,
@@ -334,19 +332,19 @@ const DashboardGraph = (props) => {
     switch (type) {
       case "week": {
         setCurrentSelection(1);
-        getWeeklyGraphData(value, oneStationData);
+        getWeeklyGraphData(updatedDate, oneStationData, salesShift);
         break;
       }
 
       case "month": {
         setCurrentSelection(2);
-        getMonthlyGraphData(value, oneStationData);
+        getMonthlyGraphData(updatedDate, oneStationData, salesShift);
         break;
       }
 
       case "year": {
         setCurrentSelection(3);
-        getAnnualGraphData(value, oneStationData);
+        getAnnualGraphData(updatedDate, oneStationData, salesShift);
         break;
       }
 
