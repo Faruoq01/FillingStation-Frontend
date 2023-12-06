@@ -20,7 +20,6 @@ import AppBottomNavigation from '../components/common/appnavigation';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import SimpleBarReact from 'simplebar-react';
-import 'simplebar-react/dist/simplebar.min.css';
 
 const tabLinks = [
  '/home/dashboard/dashboardhome/0',
@@ -30,17 +29,31 @@ const tabLinks = [
 ];
 
 const HomeScreen = () => {
- const user = useSelector((state) => state.auth.user);
- const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
- const oneStationData = useSelector((state) => state.outlet.adminOutlet);
- const allOutlets = useSelector((state) => state.outlet.allOutlets);
- const online = useSelector((data) => data.auth.connection);
- const dispatch = useDispatch();
- const navigate = useNavigate();
- const location = useLocation();
- const theme = useTheme();
+const user = useSelector((state) => state.auth.user);
+const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+const allOutlets = useSelector((state) => state.outlet.allOutlets);
+const online = useSelector((data) => data.auth.connection);
+const dispatch = useDispatch();
+const navigate = useNavigate();
+const location = useLocation();
+const theme = useTheme();
 
- const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+const barWidth = 270;
+const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+const [calColumn, setCalColumn] = useState(0);
+console.log(calColumn, "jgsfghdfhg")
+
+useEffect(() => {
+    const handleResize = () => {
+        const columns = barWidth/window.innerWidth * 12;
+        setCalColumn(columns);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+        window.removeEventListener('resize', handleResize);
+    };
+}, []); 
 
  const hideScrollbarOnMobile = () => {
   if (isSmallScreen) {
@@ -232,7 +245,7 @@ const HomeScreen = () => {
      </Hidden>
     )}
     <Hidden mdDown>
-     <Grid md={2} lg={2} xl={2} item>
+     <Grid sx={{background: "red"}} md={2} lg={2} xl={calColumn} item>
       <Box sx={sidebar}>
        <DesktopSideBar />
       </Box>
@@ -244,7 +257,7 @@ const HomeScreen = () => {
      sm={12}
      md={10}
      lg={10}
-     xl={10}
+     xl={12 - calColumn}
      item
     >
      <Box sx={main}>
@@ -258,12 +271,14 @@ const HomeScreen = () => {
         <SimpleBarReact
          style={{
           ...scrollBar,
-          maxHeight: '91vh',
+          maxHeight: '77vh',
          }}
         >
          <div style={inner}>
-          <TopNavBar open={setOpenRight} />
-          <Outlet />
+          <div style={outmehn}>
+            <TopNavBar open={setOpenRight} />
+            <Outlet />
+          </div>
          </div>
         </SimpleBarReact>
        </Grid>
@@ -298,7 +313,7 @@ const sidebar = {
 
 const main = {
  width: '100%',
- minHeight: '100vh',
+ minHeight: '77vh',
 };
 
 const mobileTop = {
@@ -308,9 +323,19 @@ const mobileTop = {
 
 const inner = {
  width: '100%',
+ height: "100%",
  display: 'flex',
  flexDirection: 'column',
  alignItems: 'center',
 };
+
+const outmehn = {
+    maxWidth: "1440px",
+    width: '100%',
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+}
 
 export default HomeScreen;
