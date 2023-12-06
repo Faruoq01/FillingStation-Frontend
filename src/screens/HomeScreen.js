@@ -217,7 +217,7 @@ const HomeScreen = () => {
      <Hidden mdUp>
       <Grid xs={12} sm={12} item>
        <Box sx={mobileTop}>
-        <MobileAppBar toggle={toggleDrawer} open={isOpen} />
+        <MobileAppBar notice={setOpenRight} toggle={toggleDrawer} open={isOpen} />
        </Box>
       </Grid>
      </Hidden>
@@ -226,7 +226,7 @@ const HomeScreen = () => {
      <Hidden mdUp>
       <Grid xs={12} sm={12} item>
        <Box sx={mobileTop}>
-        <MobileNavBar toggle={toggleDrawer} open={isOpen} />
+        <MobileNavBar notice={setOpenRight} toggle={toggleDrawer} open={isOpen} />
        </Box>
       </Grid>
      </Hidden>

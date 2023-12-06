@@ -34,7 +34,7 @@ const Names = [
   "Settings"
 ]
 
-const MobileNavBar = ({ toggle, open }) => {
+const MobileNavBar = ({notice, toggle, open }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const dispatch = useDispatch();
@@ -131,8 +131,7 @@ const MobileNavBar = ({ toggle, open }) => {
               edge="start"
               color="inherit"
               aria-label="menu"
-              sx={{ marginRight: "0px" }}
-              onClick={open}>
+              sx={{ marginRight: "0px" }}>
               {user.noteCount === "0" || (
                 <Badge badgeContent={user.noteCount} color="error">
                   <img

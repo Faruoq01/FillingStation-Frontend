@@ -15,6 +15,10 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import { useSelector } from "react-redux";
+import { logout } from "../../storage/logout";
+import swal from "sweetalert";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -56,14 +60,24 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar({ toggle, open }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+export default function PrimarySearchAppBar({notice, toggle, open }) {
+  const user = useSelector((state) => state.auth.user);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleProfileMenuOpen = () => {
+    swal({
+      title: "Alert!",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        logout();
+      }
+    });
   };
 
   const handleMobileMenuClose = () => {
@@ -79,37 +93,6 @@ export default function PrimarySearchAppBar({ toggle, open }) {
   };
 
   const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMobileMenuOpen}
-      onClose={() => {
-        handleMobileMenuClose();
-      }}>
-      <MenuItem
-        onClick={() => {
-          handleMobileMenuClose();
-        }}>
-        Profile
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          handleMobileMenuClose();
-        }}>
-        My account
-      </MenuItem>
-    </Menu>
-  );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -120,29 +103,28 @@ export default function PrimarySearchAppBar({ toggle, open }) {
         horizontal: "right",
       }}
       id={mobileMenuId}
-      keepMounted
       transformOrigin={{
         vertical: "top",
         horizontal: "right",
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}>
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={()=>{
+        notice(true);
+        handleMobileMenuClose()
+      }}>
         <IconButton
           size="large"
           aria-label="show 17 new notifications"
           color="inherit">
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
+            {user.noteCount === "0" || (
+              <Badge badgeContent={user.noteCount} color="error">
+                <NotificationsIcon />
+              </Badge>
+            )}
+            {user.noteCount === "0" && (
+              <NotificationsIcon />
+            )}
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
@@ -153,9 +135,9 @@ export default function PrimarySearchAppBar({ toggle, open }) {
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit">
-          <AccountCircle />
+          <MeetingRoomIcon />
         </IconButton>
-        <p>Profile</p>
+        <p>Logout</p>
       </MenuItem>
     </Menu>
   );
@@ -231,7 +213,6 @@ export default function PrimarySearchAppBar({ toggle, open }) {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {renderMenu}
     </Box>
   );
 }
