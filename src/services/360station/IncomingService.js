@@ -46,6 +46,17 @@ const IncomingService = {
       });
   },
 
+  deleteUnallocated: async(data) => {
+    return APIs.post("/unallocated-order/delete", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Auth service err", err);
+        throw err;
+      });
+  },
+
   getUnallocated: async(data) => {
     return APIs.post("/unallocated-order/allRecords", data)
       .then(({ data }) => {

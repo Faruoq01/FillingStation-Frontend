@@ -30,6 +30,8 @@ import CreateUnallocated from "../Modals/incoming/CreatedUnallocated";
 import EditUnallocatedModal from "../Modals/incoming/EditUnallocatedModal";
 import AllocatedOrder from "./allocated";
 import IncomingOrderModal from "../Modals/incoming/IncomingOrderModal";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   "S/N",
@@ -47,6 +49,7 @@ const columns = [
 const mobile = window.matchMedia("(max-width: 600px)");
 
 const UnallocatedOrder = () => {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const unallocatedOrder = useSelector(
     (state) => state.incomingorder.unallocatedOrder
@@ -149,6 +152,10 @@ const UnallocatedOrder = () => {
     setOpenAllocated: setOpenAllocated
   };
 
+  const goToAllocation = () => {
+    navigate("/home/unallocatedorder/incomingorder")
+  }
+
   return (
     <Fragment>
       <TablePageBackground>
@@ -181,7 +188,6 @@ const UnallocatedOrder = () => {
                 allStation={getPerm("1")}
                 callback={stationHelper}
               />
-              <SearchField ml={"10px"} callback={searchTable} />
             </LeftControls>
             <RightControls>
               <CreateButton
@@ -196,6 +202,7 @@ const UnallocatedOrder = () => {
           <TableControls mt={"10px"}>
             <LeftControls>
               <LimitSelect entries={entries} entriesMenu={entriesMenu} />
+              <Button onClick={goToAllocation} sx={allocation}>Allocation list</Button>
             </LeftControls>
             <RightControls>
               <DateRangeLib mt={mobile.matches ? "10px" : "0px"} />
@@ -284,5 +291,17 @@ const selectStyle2 = {
     border: "1px solid #777777",
   },
 };
+
+const allocation = {
+  textTransform: "capitalize",
+  height: "30px",
+  fontSize: '12px',
+  background: "#006892",
+  color: "white",
+  marginLeft: "10px",
+  '&:hover':{
+    background: "#006892"
+  }
+}
 
 export default UnallocatedOrder;

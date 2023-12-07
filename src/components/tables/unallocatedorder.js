@@ -20,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 
 const Action = ({ data, setOpenEditUnallocated, refresh, skip }) => {
   const dispatch = useDispatch();
+  const oneStationData = useSelector((state) => state.outlet.adminOutlet);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
 
   const handleDelete = (data) => {
     if(data.deliveryStatus === "approved"){
@@ -33,7 +35,10 @@ const Action = ({ data, setOpenEditUnallocated, refresh, skip }) => {
         dangerMode: true,
       }).then((willDelete) => {
         if (willDelete) {
-          
+          IncomingService.deleteUnallocated(data).then(()=>{
+            refresh(oneStationData._id, updateDate, skip);
+            swal("Success", "Record deleted successfully", 'success');
+          })
         }
       });
     }

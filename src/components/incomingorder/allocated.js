@@ -31,16 +31,17 @@ import DateRangeLib from "../common/DatePickerLib";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import GenerateReports from "../Modals/reports";
+import { Button } from "@mui/material";
 
 const columns = [
   "S/N",
   "Date created",
-  "Depot station",
-  "Discharge station",
-  "Products",
+  "Allocation type",
   "Quantity",
+  "Product",
+  "Customer name",
+  "Address",
   "Truck no",
-  "Waybill no",
   "Delivery status",
   "Actions",
 ];
@@ -185,7 +186,7 @@ const AllocatedOrder = () => {
                 allStation={getPerm("1")}
                 callback={stationHelper}
               />
-              <SearchField ml={"10px"} callback={searchTable} />
+              
             </LeftControls>
             <RightControls>
               <CreateButton

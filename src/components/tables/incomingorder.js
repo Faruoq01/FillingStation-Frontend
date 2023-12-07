@@ -98,12 +98,12 @@ export const IncomingOrderDesktopTable = ({ data }) => {
               <DesktopTableRows index={index}>
                 <DesktopTableCell data={index + 1} />
                 <DesktopTableCell data={item.dateCreated} />
-                <DesktopTableCell data={item.depotStation} />
-                <DesktopTableCell data={item.destination} />
-                <DesktopTableCell data={item.product} />
+                <DesktopTableCell data={item.outletID === "Others"? "External customer": "Inhouse"} />
                 <DesktopTableCell data={item.quantity} />
+                <DesktopTableCell data={item.product} />
+                <DesktopTableCell data={item.outletID === "Others"? item.customerName: item.outletName} />
+                <DesktopTableCell data={item.outletID === "Others"? item.customerAddress: item.destination} />
                 <DesktopTableCell data={item.truckNo} />
-                <DesktopTableCell data={item.wayBillNo} />
                 <DesktopTableCell data={item.deliveryStatus} />
                 <DesktopTableCell
                   data={
@@ -133,21 +133,21 @@ export const IncomingOrderMobileTable = ({ data }) => {
           return (
             <MobileTableRows index={index}>
               <MobileTableCell
-                columns={["Date created", "Depot station"]}
-                cellData={[item.dateCreated, item.depotStation]}
+                columns={["Date created", "Allocation type"]}
+                cellData={[item.dateCreated, item.outletID === "Others"? "External customer": "Inhouse"]}
               />
               <MobileTableCell
-                columns={["Destination", "Truck no"]}
-                cellData={[item.destination, item.truckNo]}
+                columns={["Quantity", "Product"]}
+                cellData={[item.quantity, item.product]}
               />
               <MobileTableCell
-                columns={["Waybill no", "Delivery status"]}
-                cellData={[item.wayBillNo, item.deliveryStatus]}
+                columns={["Customer Name", "Address"]}
+                cellData={[item.outletID === "Others"? item.customerName: item.outletName, item.deliveryStatus, item.outletID === "Other"? item.customerAddress: item.destination]}
               />
               <MobileTableCell
-                columns={["", "action"]}
+                columns={["Delivery status", "action"]}
                 cellData={[
-                  "",
+                  item.deliveryStatus,
                   <Action
                     data={item}
                     setIncomingOrderEditModal={setIncomingOrderEditModal}
