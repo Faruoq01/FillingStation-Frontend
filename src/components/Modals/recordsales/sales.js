@@ -2,9 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import {
-    changeDate,
-    createLPO,
-  salesPayload, setSavedPumpAndTankRecords, tanksPayload, updateAgoList, updateDpkList, updatePmsList, updateRecords, updateSelectedPumps, updateSelectedTanks,
+  salesPayload, tanksPayload, updateAgoList, updateDpkList, updatePmsList, updateRecords, updateSelectedPumps, updateSelectedTanks,
 } from "../../../storage/recordsales";
 import "../../../styles/summary.scss";
 import { useState } from "react";
@@ -164,6 +162,7 @@ const SummarySales = (props) => {
   /////////////////////////////////////////////////////////
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
+
   const salesPayloadData = useSelector(
     (state) => state.recordsales.salesPayload
   );
@@ -189,16 +188,11 @@ const SummarySales = (props) => {
     }, 0);
 
     const deepCopy = JSON.parse(JSON.stringify(selectedPumps));
-    const updatedPumps = deepCopy.map((data) => {
-      const newSales = Number(data.sales) - Number(data.RTlitre);
-      return { ...data, sales: newSales };
-    });
-
-    const allProductPumps = updatedPumps.filter(
+    const allProductPumps = deepCopy.filter(
       (pump) => pump.productType === product
     );
 
-    const allTankPumps = updatedPumps.filter(
+    const allTankPumps = deepCopy.filter(
       (pump) => pump.hostTank === tank.tankID
     );
 
@@ -243,6 +237,7 @@ const SummarySales = (props) => {
 
       return update;
     });
+    console.log(updatedTanks, "tanks")
 
     /*############# Creating tank levels ##################*/
     const updatedSet = [...updatedTanks];
@@ -337,23 +332,20 @@ const SummarySales = (props) => {
     };
     
     try{
-        const responseData = await SalesService.pumpUpdate({
-            ...settings,
-            station: oneStationData,
-            sales: salesPayloadData,
-            tanklevels: tanksPayloadData
-        });
-        const {updatedPumps, updatedTanks} = responseData.data.data;
-        refreshAllRecords(oneStationData, currentDate)
-        dispatch(setSavedPumpAndTankRecords([updatedPumps, updatedTanks]))
-        handleClose();
-        props.details(true);
-        dispatch(updateSelectedPumps([]));
-        dispatch(updateSelectedTanks([]));
-        dispatch(updatePmsList([]));
-        dispatch(updateAgoList([]));
-        dispatch(updateDpkList([]));
-        swal("Success!", "Record saved successfully!", "success");
+      const responseData = await SalesService.pumpUpdate({
+          ...settings,
+          station: oneStationData,
+          sales: salesPayloadData,
+          tanklevels: tanksPayloadData
+      });
+      props.refreshIt(prev => !prev);
+      handleClose();
+      dispatch(updateSelectedPumps([]));
+      dispatch(updateSelectedTanks([]));
+      dispatch(updatePmsList([]));
+      dispatch(updateAgoList([]));
+      dispatch(updateDpkList([]));
+      swal("Success!", "Record saved successfully!", "success");
     }catch(e){
         console.log(e)
     }
@@ -367,83 +359,6 @@ const SummarySales = (props) => {
     } else if (type === "DPK") {
       return "#35393E";
     }
-  };
-
-  const refreshAllRecords = (station, date) => {
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-    const getDate = date === "" ? today : date;
-
-    const payload = {
-      outletID: station._id,
-      organisationID: station.organisation,
-    };
-
-    const salesPayload = {
-      outletID: station._id,
-      organizationID: station.organisation,
-      date: getDate,
-      shift: currentShift
-    }
-
-    const stationPumps = OutletService.getAllStationPumps(payload);
-    const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
-    const currentSales = APIs.post("/sales/current-sales", salesPayload);
-    const orgLpo = LPOService.getAllLPO(payload);
-
-    Promise.all([stationPumps, stationTanks, orgLpo, currentSales])
-      .then((data) => {
-        const [pumps, tanks, lpo, currentSales] = data;
-        const salesData = currentSales.data.data;
-
-        ///////////////// station pumps //////////////////////
-        const copyData = JSON.parse(JSON.stringify(pumps));
-        const updated = copyData.map((data) => {
-          let pumps = { ...data };
-
-          const pumpSales = salesData.find(sale => {
-            const copy = JSON.parse(JSON.stringify(sale));
-            return copy.pumpID === data._id
-          });
-
-          return {
-            ...pumps,
-            identity: null,
-            closingMeter: 0,
-            newTotalizer: pumpSales? pumpSales: "Enter closing meter",
-            RTlitre: 0,
-            sales: 0,
-            pumpSales: pumpSales? pumpSales: null,
-          };
-        });
-        const PMS = updated.filter((data) => data.productType === "PMS");
-        const AGO = updated.filter((data) => data.productType === "AGO");
-        const DPK = updated.filter((data) => data.productType === "DPK");
-        dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
-
-        ///////////////// station tanks //////////////////////
-        const outletTanks = tanks.data.tanks.map((data) => {
-          const newData = {
-            ...data,
-            label: data.tankName,
-            value: data._id,
-            dipping: 0,
-            sales: 0,
-            outlet: null,
-            pumps: [],
-            beforeSales: data.afterSales,
-            previousLevel: data.beforeSales,
-            currentLevel: data.afterSales,
-            afterSales: 0,
-            RTlitre: 0,
-          };
-          return newData;
-        });
-
-        ///////////////// station lpo //////////////////////
-        dispatch(createLPO(lpo.lpo.lpo));
-        dispatch(tankList(outletTanks));
-        dispatch(changeDate(date));
-    })
   };
 
   return (

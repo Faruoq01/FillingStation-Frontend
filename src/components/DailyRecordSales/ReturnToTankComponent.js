@@ -49,9 +49,15 @@ const ReturnToTank = (props) => {
       date: getDate,
       shift: currentShift
     }
-
+    
     const currentSales = await APIs.post("/sales/current-sales", salesPayload);
-    const salesList = currentSales.data.data;
+    let salesList = currentSales.data.data;
+    salesList = salesList.map(data => {
+      return {
+        ...data,
+        done: data.RTlitre !== 0? true: false
+      }
+    })
 
     const PMSData = salesList.filter(data => data.productType === "PMS");
     const AGOData = salesList.filter(data => data.productType === "AGO");
@@ -146,17 +152,18 @@ const ReturnToTank = (props) => {
 
   const updatePayload = (pms, ago, dpk) => {
     const totalSales = [...pms, ...ago, ...dpk];
-    const getRTSales = totalSales.filter(item => item.RTlitre !== 0);
+    const getRTSales = totalSales.filter(item => !item.done && item.RTlitre !== 0);
 
     const totalRT = getRTSales.map(data => {
       const rt = getRTPayload(data, currentDate, currentShift);
       return rt;
-    })
+    });
 
     const payload = {
       sales: getRTSales,
       rt: totalRT
     }
+    
     setRTpayload(payload);
   }
 
@@ -176,7 +183,7 @@ const ReturnToTank = (props) => {
   const editRtHandler = async(item) => {
     const payload = {
       pumpID: item.pumpID,
-      createdAt: item.createdAt
+      date: item.createdAt
     }
     const {data} = await APIs.post("/sales/single-rt", payload);
     if(data.data !== 'none'){
@@ -185,6 +192,15 @@ const ReturnToTank = (props) => {
     }else{
       swal('Error!', 'Return to tank record was not found', 'error');
     }
+  }
+
+  const getRTData = () => {
+    let copy = {...rtPayload}
+    copy.sales = copy.sales.map(obj => {
+      const { ['done']: removedField, ...rest } = obj;
+      return rest;
+    });
+    return copy;
   }
 
   return (
@@ -356,7 +372,7 @@ const ReturnToTank = (props) => {
                         alt="icon"
                       />
                       <div className="pop">{item.pumpName}</div>
-                      {item.RTlitre !== 0 &&
+                      {item.done &&
                         <Button onClick={() => {editRtHandler(item)}} sx={editButton}>Edit</Button>
                       }
                       <div style={{ marginTop: "10px" }} className="label">
@@ -367,6 +383,7 @@ const ReturnToTank = (props) => {
                           Quantity (Litres)
                         </div>
                         <input
+                          disabled={item.done}
                           onChange={(e) => setTotalizer(e, item)}
                           style={{
                             ...imps,
@@ -396,7 +413,7 @@ const ReturnToTank = (props) => {
                     <div
                       style={{
                         width: mediaMatch.matches ? "100%" : "300px",
-                        height: "230px",
+                        height: "250px",
                       }}
                       key={index}
                       className="item">
@@ -406,6 +423,9 @@ const ReturnToTank = (props) => {
                         alt="icon"
                       />
                       <div className="pop">{item.pumpName}</div>
+                      {item.done &&
+                        <Button onClick={() => {editRtHandler(item)}} sx={editButton}>Edit</Button>
+                      }
                       <div style={{ marginTop: "10px" }} className="label">
                         Date: {item.updatedAt.split("T")[0]}
                       </div>
@@ -414,6 +434,7 @@ const ReturnToTank = (props) => {
                           Quantity (Litres)
                         </div>
                         <input
+                          disabled={item.done}
                           onChange={(e) => setTotalizer(e, item)}
                           value={item.RTlitre === 0? "": item.RTlitre}
                           style={{
@@ -443,7 +464,7 @@ const ReturnToTank = (props) => {
                     <div
                       style={{
                         width: mediaMatch.matches ? "100%" : "300px",
-                        height: "230px",
+                        height: "250px",
                       }}
                       key={index}
                       className="item">
@@ -453,6 +474,9 @@ const ReturnToTank = (props) => {
                         alt="icon"
                       />
                       <div className="pop">{item.pumpName}</div>
+                      {item.done &&
+                        <Button onClick={() => {editRtHandler(item)}} sx={editButton}>Edit</Button>
+                      }
                       <div style={{ marginTop: "10px" }} className="label">
                         Date: {item.updatedAt.split("T")[0]}
                       </div>
@@ -461,6 +485,7 @@ const ReturnToTank = (props) => {
                           Quantity (Litres)
                         </div>
                         <input
+                          disabled={item.done}
                           onChange={(e) => setTotalizer(e, item)}
                           value={item.RTlitre === 0? "": item.RTlitre}
                           style={{
@@ -492,7 +517,7 @@ const ReturnToTank = (props) => {
         />
       )}
       {openRt &&
-        <RTDetails refresh={refresh} open={openRt} close={setOpenRt} data={rtPayload} />
+        <RTDetails refresh={refresh} open={openRt} close={setOpenRt} data={getRTData()} />
       }
       <Navigation next={next} />
     </React.Fragment>

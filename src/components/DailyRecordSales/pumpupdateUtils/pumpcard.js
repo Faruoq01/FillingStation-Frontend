@@ -1,28 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
 import pump1 from "../../../assets/pump1.png";
-import { changeDate, createLPO, tankList, updateRecords, updateSelectedPumps } from "../../../storage/recordsales";
+import { updateSelectedPumps } from "../../../storage/recordsales";
 import swal from "sweetalert";
 import ApproximateDecimal from "../../common/approx";
 import { Button } from "@mui/material";
 import Sales from "../../Modals/DailySales/sales";
-import React, { useCallback, useEffect, useState } from "react";
-import moment from "moment";
-import OutletService from "../../../services/360station/outletService";
-import APIs from "../../../services/connections/api";
-import LPOService from "../../../services/360station/lpo";
+import React, { useState } from "react";
 const mediaMatch = window.matchMedia("(max-width: 500px)");
 
-const PumpCard = ({ item, index }) => {
+const PumpCard = ({ item, index, refreshIt }) => {
   const dispatch = useDispatch();
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
   const selectedTanks = useSelector((state) => state.recordsales.selectedTanks);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
-  const currentShift = useSelector((state) => state.recordsales.currentShift);
   const tankListData = useSelector((state) => state.recordsales.tankList);
   const productType = useSelector((state) => state.recordsales.productType);
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
   const [openEdit, setOpenEdit] = useState(false);
-  const [refresh, setRefresh] = useState(false);
   const [oneRecord, setOneRecord] = useState({});
 
   function removeSpecialCharacters(str) {
@@ -167,87 +161,6 @@ const PumpCard = ({ item, index }) => {
     setOpenEdit(true);
   }
 
-  const refreshAllRecords = useCallback((station, date) => {
-    const today = moment().format("YYYY-MM-DD").split(" ")[0];
-    const getDate = date === "" ? today : date;
-
-    const payload = {
-      outletID: station._id,
-      organisationID: station.organisation,
-    };
-
-    const salesPayload = {
-      outletID: station._id,
-      organizationID: station.organisation,
-      date: getDate,
-      shift: currentShift
-    }
-
-    const stationPumps = OutletService.getAllStationPumps(payload);
-    const stationTanks = APIs.post("/daily-sales/all-tanks", payload);
-    const currentSales = APIs.post("/sales/current-sales", salesPayload);
-    const orgLpo = LPOService.getAllLPO(payload);
-
-    Promise.all([stationPumps, stationTanks, orgLpo, currentSales])
-      .then((data) => {
-        const [pumps, tanks, lpo, currentSales] = data;
-        const salesData = currentSales.data.data;
-
-        ///////////////// station pumps //////////////////////
-        const copyData = JSON.parse(JSON.stringify(pumps));
-        const updated = copyData.map((data) => {
-          let pumps = { ...data };
-
-          const pumpSales = salesData.find(sale => {
-            const copy = JSON.parse(JSON.stringify(sale));
-            return copy.pumpID === data._id
-          });
-
-          return {
-            ...pumps,
-            identity: null,
-            closingMeter: 0,
-            newTotalizer: pumpSales? pumpSales: "Enter closing meter",
-            RTlitre: 0,
-            sales: 0,
-            pumpSales: pumpSales? pumpSales: null,
-          };
-        });
-        const PMS = updated.filter((data) => data.productType === "PMS");
-        const AGO = updated.filter((data) => data.productType === "AGO");
-        const DPK = updated.filter((data) => data.productType === "DPK");
-        dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
-
-        ///////////////// station tanks //////////////////////
-        const outletTanks = tanks.data.tanks.map((data) => {
-          const newData = {
-            ...data,
-            label: data.tankName,
-            value: data._id,
-            dipping: 0,
-            sales: 0,
-            outlet: null,
-            pumps: [],
-            beforeSales: data.afterSales,
-            previousLevel: data.beforeSales,
-            currentLevel: data.afterSales,
-            afterSales: 0,
-            RTlitre: 0,
-          };
-          return newData;
-        });
-
-        ///////////////// station lpo //////////////////////
-        dispatch(createLPO(lpo.lpo.lpo));
-        dispatch(tankList(outletTanks));
-        dispatch(changeDate(date));
-    })
-  }, []);
-
-  useEffect(()=>{
-    refreshAllRecords(oneStationData, currentDate);
-  }, [refresh, refreshAllRecords, oneStationData, currentDate])
-
   return (
     <React.Fragment>
       <div
@@ -313,7 +226,7 @@ const PumpCard = ({ item, index }) => {
       {openEdit && (
         <Sales
           data={oneRecord}
-          update={setRefresh}
+          update={refreshIt}
           open={openEdit}
           close={setOpenEdit}
         />

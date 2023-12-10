@@ -8,7 +8,7 @@ import PollIcon from "@mui/icons-material/Poll";
 import FolderIcon from "@mui/icons-material/Folder";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { makeStyles } from "@mui/styles";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,28 +20,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const paths = {
+  dashboard: "/home/dashboard/dashboardhome/0",
+  dailysales: "/home/dailysales/dailysaleshome/0",
+  recordsales: "/home/recordsales/pumpupdate/0",
+  settings: "/home/settings"
+}
+
 export default function AppBottomNavigation() {
-  const [value, setValue] = React.useState(0);
   const ref = React.useRef(null);
   const navigate = useNavigate();
+  const {pathname} = useLocation();
   const classes = useStyles();
 
   const navigateToPages = (page) => {
     switch (page) {
       case "dashboard": {
-        navigate("/home/dashboard/dashboardhome/0");
+        navigate(paths.dashboard);
         break;
       }
       case "dailysales": {
-        navigate("/home/dailysales/dailysaleshome/0");
+        navigate(paths.dailysales);
         break;
       }
       case "recordsales": {
-        navigate("/home/recordsales");
+        navigate(paths.recordsales);
         break;
       }
       case "settings": {
-        navigate("/home/settings");
+        navigate(paths.settings);
         break;
       }
       default: {
@@ -52,21 +59,17 @@ export default function AppBottomNavigation() {
   return (
     <Box sx={{ pb: 7 }} ref={ref}>
       <Paper
-        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+        sx={{ position: "fixed", zIndex: "100", bottom: 0, left: 0, right: 0 }}
         elevation={3}>
         <BottomNavigation
           className={classes.root}
-          showLabels
-          value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}>
+          showLabels>
           <BottomNavigationAction
             classes={{ selected: classes.selected }}
             label="Dashboard"
             icon={
               <DashboardCustomizeIcon
-                style={{ color: value === 0 ? "#06805B" : "inherit" }}
+                style={{ color: pathname === paths.dashboard ? "#06805B" : "inherit" }}
               />
             }
             onClick={() => {
@@ -78,7 +81,7 @@ export default function AppBottomNavigation() {
             label="Dailysales"
             icon={
               <PollIcon
-                style={{ color: value === 1 ? "#06805B" : "inherit" }}
+                style={{ color: pathname === paths.dailysales ? "#06805B" : "inherit" }}
               />
             }
             onClick={() => {
@@ -90,7 +93,7 @@ export default function AppBottomNavigation() {
             label="Recordsales"
             icon={
               <FolderIcon
-                style={{ color: value === 2 ? "#06805B" : "inherit" }}
+                style={{ color: pathname === paths.recordsales ? "#06805B" : "inherit" }}
               />
             }
             onClick={() => {
@@ -102,7 +105,7 @@ export default function AppBottomNavigation() {
             label="Settings"
             icon={
               <SettingsIcon
-                style={{ color: value === 3 ? "#06805B" : "inherit" }}
+                style={{ color: pathname === paths.settings ? "#06805B" : "inherit" }}
               />
             }
             onClick={() => {

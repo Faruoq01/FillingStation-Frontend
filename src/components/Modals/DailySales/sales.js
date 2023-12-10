@@ -54,7 +54,6 @@ const Sales = (props) => {
         "info"
       );
     setLoading(true);
-
     APIs.post("/comprehensive/update-sales", {
       sale: props.data,
       closing: closingMeter,

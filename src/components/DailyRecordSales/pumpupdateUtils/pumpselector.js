@@ -18,7 +18,7 @@ const PumpSelector = ({ data, index }) => {
 
   const pumpItem = (e, index, pump) => {
     e.preventDefault();
-    if (tankListData.lenth === 0)
+    if (tankListData.length === 0)
       return swal("Alert", "Please refresh tanks not loaded!", "warning");
     const tankClone = JSON.parse(JSON.stringify(tankListData));
     const tankID = tankClone.findIndex((data) => data.tankID === pump.hostTank);

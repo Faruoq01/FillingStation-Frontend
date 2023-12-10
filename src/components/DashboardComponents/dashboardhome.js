@@ -26,7 +26,7 @@ const DashboardHome = () => {
 
   return (
     <React.Fragment>
-      <div style={{ marginTop: "0px" }} className="dashboardContainer">
+      <div style={{ marginTop: "0px"}} className="dashboardContainer">
         <div className="left-dash">
           <Controls />
           <Sales priceModal={setPrices} />

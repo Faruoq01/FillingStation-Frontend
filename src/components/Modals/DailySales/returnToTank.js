@@ -52,6 +52,7 @@ const UpdateReturnToTank = (props) => {
     APIs.post("/comprehensive/update-rt", {
       rtData: props.data,
       rtLitre: quantity,
+      rate: rate
     }).then(({ data }) => {
       if (data.status === "none") {
         props.update((prev) => !prev);
@@ -173,7 +174,6 @@ const UpdateReturnToTank = (props) => {
                 Rate
               </div>
               <OutlinedInput
-                disabled
                 sx={{
                   width: "100%",
                   height: "35px",

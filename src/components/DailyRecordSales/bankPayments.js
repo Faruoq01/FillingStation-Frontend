@@ -207,47 +207,15 @@ const BankPayment = (props) => {
           );
         }, 0);
 
-      /*############################################
-            Return to tank
-        ###############################################*/
-
-      const pmsRT = selectedPumps
-        .filter((data) => data.productType === "PMS")
-        .reduce((accum, current) => {
-          return (
-            Number(accum) +
-            Number(current.RTlitre) * Number(oneStationData.PMSPrice)
-          );
-        }, 0);
-
-      const agoRT = selectedPumps
-        .filter((data) => data.productType === "AGO")
-        .reduce((accum, current) => {
-          return (
-            Number(accum) +
-            Number(current.RTlitre) * Number(oneStationData.AGOPrice)
-          );
-        }, 0);
-
-      const dpkRT = selectedPumps
-        .filter((data) => data.productType === "DPK")
-        .reduce((accum, current) => {
-          return (
-            Number(accum) +
-            Number(current.RTlitre) * Number(oneStationData.DPKPrice)
-          );
-        }, 0);
-
       const totalSales = totalPMS + totalAGO + totalDPK;
       const totalLpoSales = totalLpoPMS + totalLpoAGO + totalLpoDPK;
-      const totalRT = pmsRT + agoRT + dpkRT;
-      const netToBank = totalSales - totalLpoSales - totalRT - totalExpenses;
+      const netToBank = totalSales - totalLpoSales - totalExpenses;
       const totalPayments =
         totalBankPayment + totalPosPayment + Number(newPayment);
 
       const payment = {
-        totalSales: totalSales - totalRT,
-        salesAmount: totalSales - totalLpoSales - totalRT,
+        totalSales: totalSales,
+        salesAmount: totalSales - totalLpoSales,
         netToBank: netToBank,
         outstanding: totalPayments - netToBank,
       };

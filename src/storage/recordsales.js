@@ -41,7 +41,6 @@ const initialState = {
   searchData2: [],
   currentShift: "All shifts",
   productType: "PMS",
-  pumpAndTank: [[], []],
 };
 
 export const recordsalesSlice = createSlice({
@@ -240,9 +239,6 @@ export const recordsalesSlice = createSlice({
     setProductType: (state, action) => {
       state.productType = action.payload;
     },
-    setSavedPumpAndTankRecords: (state, action) => {
-      state.pumpAndTank = action.payload;
-    },
     clearRecordSales: () => initialState,
   },
 });
@@ -278,7 +274,6 @@ export const {
   clearRecordSales,
   setCurrentShift,
   setProductType,
-  setSavedPumpAndTankRecords
 } = recordsalesSlice.actions;
 
 export default recordsalesSlice.reducer;

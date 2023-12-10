@@ -19,7 +19,7 @@ import MobileAppBar from '../components/common/appbar';
 import AppBottomNavigation from '../components/common/appnavigation';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import SimpleBarReact from 'simplebar-react';
+import { Scrollbar } from 'react-scrollbars-custom';
 
 const tabLinks = [
  '/home/dashboard/dashboardhome/0',
@@ -267,19 +267,16 @@ useEffect(() => {
         </Box>
        </Grid>
        <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
-        <SimpleBarReact
-         style={{
-          ...scrollBar,
-          maxHeight: '77vh',
-         }}
-        >
-         <div style={inner}>
-          <div style={outmehn}>
-            <TopNavBar open={setOpenRight} />
-            <Outlet />
-          </div>
-         </div>
-        </SimpleBarReact>
+            <Scrollbar
+                style={{...scrollBar, height: isSmallScreen? "85vh": "91vh"}}   
+            >
+                <div style={inner}>
+                    <div style={outmehn}>
+                        <TopNavBar open={setOpenRight} />
+                        <Outlet />
+                    </div>
+                </div>
+            </Scrollbar>
        </Grid>
       </Grid>
      </Box>
@@ -302,7 +299,6 @@ useEffect(() => {
 const scrollBar = {
  marginTop: '10px',
  overflowX: 'hidden',
- paddingBottom: '100px',
 };
 
 const sidebar = {
@@ -317,12 +313,10 @@ const main = {
 
 const mobileTop = {
  width: '100%',
- background: 'yellow',
 };
 
 const inner = {
  width: '100%',
- height: "100%",
  display: 'flex',
  flexDirection: 'column',
  alignItems: 'center',
@@ -331,7 +325,6 @@ const inner = {
 const outmehn = {
     maxWidth: "1440px",
     width: '100%',
-    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

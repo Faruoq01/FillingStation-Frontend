@@ -9,7 +9,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import SummarySales from "../Modals/recordsales/sales";
-import SalesSummary from "../Modals/recordsales/salesdetails";
 import { BallTriangle } from "react-loader-spinner";
 import APIs from "../../services/connections/api";
 
@@ -22,8 +21,8 @@ const PumpUpdateComponent = (props) => {
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const currentShift = useSelector((state) => state.recordsales.currentShift);
   const [openSummary, setOpenSummary] = useState(false);
-  const [openDetails, setOpenDetails] = useState(false);
   const [backdrop, setBackdrop] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   //////////////////////////////////////////////////////////////
   const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
@@ -107,6 +106,8 @@ const PumpUpdateComponent = (props) => {
       shift: currentShift
     }
 
+    console.log(salesPayload, "callback")
+
     APIs.post("/sales/pump-update", salesPayload).then(({data}) => {
       const {pumps, tanks} = data;
   
@@ -126,7 +127,7 @@ const PumpUpdateComponent = (props) => {
     if(oneStationData !== null){
       getAllRecordDetails(oneStationData, currentDate);
     }
-  }, [getAllRecordDetails, oneStationData, currentDate])
+  }, [getAllRecordDetails, oneStationData, currentDate, refresh])
 
   return (
     <React.Fragment>
@@ -146,15 +147,15 @@ const PumpUpdateComponent = (props) => {
           <div style={pumpcontainer} className="pumping">
             {productType === "PMS" &&
               displaySelectedPumps(PMS, "PMS")?.map((item, index) => {
-                return <PumpCard item={item} index={index} />;
+                return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
               })}
             {productType === "AGO" &&
               displaySelectedPumps(AGO, "AGO")?.map((item, index) => {
-                return <PumpCard item={item} index={index} />;
+                return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
               })}
             {productType === "DPK" &&
               displaySelectedPumps(DPK, "DPK")?.map((item, index) => {
-                return <PumpCard item={item} index={index} />;
+                return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
               })}
           </div>
         </div>
@@ -165,13 +166,7 @@ const PumpUpdateComponent = (props) => {
         <SummarySales
           open={openSummary}
           close={setOpenSummary}
-          details={setOpenDetails}
-        />
-      )}
-      {openDetails && (
-        <SalesSummary
-          open={openDetails}
-          close={setOpenDetails}
+          refreshIt={setRefresh}
         />
       )}
       <Backdrop
