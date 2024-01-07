@@ -29,7 +29,7 @@ const PosPayments = (props) => {
   );
   const bankPayloadData = useSelector((state) => state.recordsales.bankPayload);
   const posPayloadData = useSelector((state) => state.recordsales.posPayload);
-  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const salesList = useSelector((state) => state.recordsales.salesList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
 
   // payload data
@@ -152,7 +152,7 @@ const PosPayments = (props) => {
             Total sales
         ###############################################*/
 
-      const totalPMS = selectedPumps
+      const totalPMS = salesList
         .filter((data) => data.productType === "PMS")
         .reduce((accum, current) => {
           return (
@@ -161,7 +161,7 @@ const PosPayments = (props) => {
           );
         }, 0);
 
-      const totalAGO = selectedPumps
+      const totalAGO = salesList
         .filter((data) => data.productType === "AGO")
         .reduce((accum, current) => {
           return (
@@ -170,7 +170,7 @@ const PosPayments = (props) => {
           );
         }, 0);
 
-      const totalDPK = selectedPumps
+      const totalDPK = salesList
         .filter((data) => data.productType === "DPK")
         .reduce((accum, current) => {
           return (
@@ -211,7 +211,7 @@ const PosPayments = (props) => {
             Return to tank
         ###############################################*/
 
-      const pmsRT = selectedPumps
+      const pmsRT = salesList
         .filter((data) => data.productType === "PMS")
         .reduce((accum, current) => {
           return (
@@ -220,7 +220,7 @@ const PosPayments = (props) => {
           );
         }, 0);
 
-      const agoRT = selectedPumps
+      const agoRT = salesList
         .filter((data) => data.productType === "AGO")
         .reduce((accum, current) => {
           return (
@@ -229,7 +229,7 @@ const PosPayments = (props) => {
           );
         }, 0);
 
-      const dpkRT = selectedPumps
+      const dpkRT = salesList
         .filter((data) => data.productType === "DPK")
         .reduce((accum, current) => {
           return (
@@ -262,7 +262,7 @@ const PosPayments = (props) => {
       oneStationData.DPKPrice,
       oneStationData.PMSPrice,
       posPayloadData,
-      selectedPumps,
+      salesList,
     ]
   );
 

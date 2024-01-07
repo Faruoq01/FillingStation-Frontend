@@ -4,13 +4,11 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import me4 from "../../assets/me4.png";
-import { tankList, updateSelectedTanks } from "../../storage/recordsales";
 import ApproximateDecimal from "../common/approx";
 import { ThreeDots } from "react-loader-spinner";
 import Navigation from "./navigation";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
-import SummaryRecord from "../Modals/SummaryRecord";
 import APIs from "../../services/connections/api";
 import moment from "moment";
 import SalesService from "../../services/360station/sales";
@@ -37,7 +35,6 @@ const DippingComponents = (props) => {
   const [ago, setAGO] = useState([]);
   const [dpk, setDPK] = useState([]);
   const oneStationData = useSelector((state) => state.outlet.adminOutlet);
-  const tankListData = useSelector((state) => state.recordsales.tankList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
   const currentShift = useSelector((state) => state.recordsales.currentShift);
   const [dippingList, setDippingList] = useState([]);
@@ -259,7 +256,7 @@ const DippingComponents = (props) => {
                     <div
                       style={{
                         justifyContent: "flex-start",
-                        height: "250px",
+                        height: "230px",
                         marginLeft: "20px",
                         marginRight: "0px",
                       }}
@@ -280,11 +277,6 @@ const DippingComponents = (props) => {
                         style={{ marginTop: "5px", color: "green" }}
                         className="pop">{`Opening stock: ${ApproximateDecimal(
                         item.currentLevel
-                      )}`}</div>
-                      <div
-                        style={{ marginTop: "5px", color: "green" }}
-                        className="pop">{`Closing stock: ${ApproximateDecimal(
-                        item.afterSales
                       )}`}</div>
                       <div style={{ marginTop: "10px" }} className="label">
                         Dipping (Litres)
@@ -324,7 +316,7 @@ const DippingComponents = (props) => {
                     <div
                       style={{
                         justifyContent: "flex-start",
-                        height: "250px",
+                        height: "230px",
                         marginLeft: "20px",
                         marginRight: "0px",
                       }}
@@ -345,11 +337,6 @@ const DippingComponents = (props) => {
                         style={{ marginTop: "5px", color: "green" }}
                         className="pop">{`Opening stock: ${ApproximateDecimal(
                         item.currentLevel
-                      )}`}</div>
-                      <div
-                        style={{ marginTop: "5px", color: "green" }}
-                        className="pop">{`Closing stock: ${ApproximateDecimal(
-                        item.afterSales
                       )}`}</div>
                       <div style={{ marginTop: "10px" }} className="label">
                         Dipping (Litres)
@@ -389,7 +376,7 @@ const DippingComponents = (props) => {
                     <div
                       style={{
                         justifyContent: "flex-start",
-                        height: "250px",
+                        height: "230px",
                         marginLeft: "20px",
                         marginRight: "0px",
                       }}
@@ -410,11 +397,6 @@ const DippingComponents = (props) => {
                         style={{ marginTop: "5px", color: "green" }}
                         className="pop">{`Opening stock: ${ApproximateDecimal(
                         item.currentLevel
-                      )}`}</div>
-                      <div
-                        style={{ marginTop: "5px", color: "green" }}
-                        className="pop">{`Closing stock: ${ApproximateDecimal(
-                        item.afterSales
                       )}`}</div>
                       <div style={{ marginTop: "10px" }} className="label">
                         Dipping (Litres)

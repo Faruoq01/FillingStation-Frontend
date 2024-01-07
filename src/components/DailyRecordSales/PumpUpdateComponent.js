@@ -106,8 +106,6 @@ const PumpUpdateComponent = (props) => {
       shift: currentShift
     }
 
-    console.log(salesPayload, "callback")
-
     APIs.post("/sales/pump-update", salesPayload).then(({data}) => {
       const {pumps, tanks} = data;
   
@@ -115,7 +113,7 @@ const PumpUpdateComponent = (props) => {
       const PMS = pumps.filter((data) => data.productType === "PMS");
       const AGO = pumps.filter((data) => data.productType === "AGO");
       const DPK = pumps.filter((data) => data.productType === "DPK");
-
+      
       dispatch(updateRecords({ pms: PMS, ago: AGO, dpk: DPK }));
       dispatch(tankList(tanks));
       dispatch(changeDate(date));

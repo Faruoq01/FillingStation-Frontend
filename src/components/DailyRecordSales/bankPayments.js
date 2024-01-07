@@ -27,7 +27,7 @@ const BankPayment = (props) => {
   );
   const bankPayloadData = useSelector((state) => state.recordsales.bankPayload);
   const posPayloadData = useSelector((state) => state.recordsales.posPayload);
-  const selectedPumps = useSelector((state) => state.recordsales.selectedPumps);
+  const salesList = useSelector((state) => state.recordsales.salesList);
   const currentDate = useSelector((state) => state.recordsales.currentDate);
 
   const [bankName, setBankName] = useState("");
@@ -152,7 +152,7 @@ const BankPayment = (props) => {
             Total sales
         ###############################################*/
 
-      const totalPMS = selectedPumps
+      const totalPMS = salesList
         .filter((data) => data.productType === "PMS")
         .reduce((accum, current) => {
           return (
@@ -161,7 +161,7 @@ const BankPayment = (props) => {
           );
         }, 0);
 
-      const totalAGO = selectedPumps
+      const totalAGO = salesList
         .filter((data) => data.productType === "AGO")
         .reduce((accum, current) => {
           return (
@@ -170,7 +170,7 @@ const BankPayment = (props) => {
           );
         }, 0);
 
-      const totalDPK = selectedPumps
+      const totalDPK = salesList
         .filter((data) => data.productType === "DPK")
         .reduce((accum, current) => {
           return (
@@ -231,7 +231,7 @@ const BankPayment = (props) => {
       oneStationData.DPKPrice,
       oneStationData.PMSPrice,
       posPayloadData,
-      selectedPumps,
+      salesList,
     ]
   );
 

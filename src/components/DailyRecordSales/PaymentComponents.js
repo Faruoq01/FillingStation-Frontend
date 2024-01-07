@@ -7,7 +7,7 @@ import swal from "sweetalert";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import APIs from "../../services/connections/api";
-import { bankPayload, expensesPayload, lpoPayload, posPayload, updateSelectedPumps } from "../../storage/recordsales";
+import { bankPayload, expensesPayload, lpoPayload, posPayload, setSalesList } from "../../storage/recordsales";
 import SalesService from "../../services/360station/sales";
 
 
@@ -42,7 +42,7 @@ const PaymentsComponents = (props) => {
         }
 
         const {data} = await APIs.post("/sales/payment-data", payload);
-        dispatch(updateSelectedPumps(data.sales));
+        dispatch(setSalesList(data.sales));
         dispatch(lpoPayload(data.lposales));
         dispatch(bankPayload(data.bank));
         dispatch(posPayload(data.pos));
