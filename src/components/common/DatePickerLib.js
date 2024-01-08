@@ -15,7 +15,7 @@ import React, { useCallback, useEffect } from "react";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { dateRange } from "../../storage/dashboard";
+import { dateRange, setGraphDate } from "../../storage/dashboard";
 
 const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
   const dispatch = useDispatch();
@@ -70,6 +70,7 @@ const DateRangeLib = ({ sales = false, mt = "0px", disabled = false }) => {
       : moment(endDate).format("YYYY-MM-DD");
 
     dispatch(dateRange([startDate, endDate]));
+    dispatch(setGraphDate([startDate, endDate]));
 
     const constructDate = {
       start: parseDate(startMoment),

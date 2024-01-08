@@ -98,6 +98,7 @@ const initialState = {
   assetsList: [],
   employeeList: [],
   employeeListCopy: [],
+  graphDate: [today, today]
 };
 
 export const dashboard = createSlice({
@@ -175,6 +176,9 @@ export const dashboard = createSlice({
     setSalesList: (state, action) => {
       state.saleslist = action.payload;
     },
+    setGraphDate: (state, action) => {
+      state.graphDate = action.payload;
+    },
     clearDashboard: () => initialState,
   },
 });
@@ -195,6 +199,7 @@ export const {
   lpo,
   incoming,
   dateRange,
+  setGraphDate,
   overageType,
   asset,
   assetData,

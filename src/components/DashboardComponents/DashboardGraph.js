@@ -18,7 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ButtonDatePicker from "../common/CustomDatePicker";
 import APIs from "../../services/connections/api";
-import { weekly, monthly, annually, yearList } from "../../storage/dashboard";
+import { weekly, monthly, annually, yearList, setGraphDate } from "../../storage/dashboard";
 
 ChartJS.register(
   CategoryScale,
@@ -74,7 +74,6 @@ const options = {
 
 const DashboardGraph = (props) => {
   const moment = require("moment-timezone");
-  const date2 = moment().format("Do MMM YYYY");
   const [initial, setInitial] = useState("");
   const [value, setValue] = useState(null);
 
@@ -86,7 +85,7 @@ const DashboardGraph = (props) => {
   const dispatch = useDispatch();
   const [currentSelection, setCurrentSelection] = useState(1);
   const salesShift = useSelector((state) => state.dailysales.salesShift);
-  const updatedDate = useSelector((state) => state.dashboard.dateRange);
+  const updatedDate = useSelector((state) => state.dashboard.graphDate);
 
   const setWeeklyData = () => {
     const weeklyData = {
@@ -172,6 +171,8 @@ const DashboardGraph = (props) => {
   };
 
   const updateDate = async (newValue) => {
+    const date = newValue.format("YYYY-MM-DD");
+    dispatch(setGraphDate([date, date]));
     setValue(newValue);
   };
 
@@ -305,6 +306,8 @@ const DashboardGraph = (props) => {
   );
 
   useEffect(() => {
+    const dateUpdate = moment(updatedDate[0]).format("Do MMM YYYY");
+    setValue(dateUpdate);
     getWeeklyGraphData(updatedDate, oneStationData, salesShift);
     getMonthlyGraphData(updatedDate, oneStationData, salesShift);
     getAnnualGraphData(updatedDate, oneStationData, salesShift);
@@ -324,6 +327,7 @@ const DashboardGraph = (props) => {
   }, []);
 
   const convertDate = (newValue) => {
+    if(typeof newValue === 'string') return newValue;
     const getDate = newValue === "" ? initial : newValue.format("Do MMM YYYY");
     return getDate;
   };
