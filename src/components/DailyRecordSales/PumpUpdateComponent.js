@@ -156,11 +156,23 @@ const PumpUpdateComponent = (props) => {
                 })}
               {productType === "AGO" &&
                 displaySelectedPumps(AGO, "AGO")?.map((item, index) => {
-                  return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
+                  return (
+                    <Grid xs={12} sm={6} md={4} lg={3} xl={3} item>
+                      <Box sx={{width: "100%"}}>
+                        <PumpCard refreshIt={setRefresh} item={item} index={index} />
+                      </Box>
+                    </Grid>
+                  )
                 })}
               {productType === "DPK" &&
                 displaySelectedPumps(DPK, "DPK")?.map((item, index) => {
-                  return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
+                  return (
+                    <Grid xs={12} sm={6} md={4} lg={3} xl={3} item>
+                      <Box sx={{width: "100%"}}>
+                        <PumpCard refreshIt={setRefresh} item={item} index={index} />
+                      </Box>
+                    </Grid>
+                  )
                 })}
             </Grid>
           </div>

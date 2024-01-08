@@ -6,7 +6,6 @@ import ApproximateDecimal from "../../common/approx";
 import { Button } from "@mui/material";
 import Sales from "../../Modals/DailySales/sales";
 import React, { useState } from "react";
-const mediaMatch = window.matchMedia("(max-width: 500px)");
 
 const PumpCard = ({ item, index, refreshIt }) => {
   const dispatch = useDispatch();
