@@ -31,6 +31,7 @@ const baseForm = {
 
 const CreateUnallocated = ({ open, closeup, skip, refresh }) => {
   const user = useSelector((state) => state.auth.user);
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const [loading, setLoading] = useState(false);
   const today = moment().format('YYYY-MM-DD').split(" ")[0];
   const [productOrder, setProductOrder] = useState([]);
@@ -51,15 +52,14 @@ const CreateUnallocated = ({ open, closeup, skip, refresh }) => {
     const allKeys = Object.keys(form);
     for(const key of allKeys){
         if(form[key] === ''){
-            return swal('Error!', `Field ${key.toLowerCase()} cannot be empty!`, 'error')
+          return swal('Error!', `Field ${key.toLowerCase()} cannot be empty!`, 'error')
         }
     }
 
     setLoading(true);
     try{
       const incoming = await IncomingService.createUnallocated(form);
-      const dateUpdated = [form.createdAt, form.createdAt];
-      refresh("None", dateUpdated, skip);
+      refresh('None', updateDate, skip);
       setLoading(false);
       if(incoming){
           swal('Success', 'Incoming order created successfully!', 'success');

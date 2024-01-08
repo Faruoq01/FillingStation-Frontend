@@ -28,6 +28,7 @@ const baseForm = {
 }
 
 const EditUnallocatedModal = ({ open, closeup, skip, refresh }) => {
+  const updateDate = useSelector((state) => state.dashboard.dateRange);
   const singleUnallocated = useSelector(state => state.incomingorder.singleUnallocated);
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
@@ -53,8 +54,7 @@ const EditUnallocatedModal = ({ open, closeup, skip, refresh }) => {
     }
     setLoading(true);
     const incoming = await IncomingService.updateUnallocated(form);
-    const dateUpdated = [form.createdAt, form.createdAt];
-    refresh("None", dateUpdated, skip);
+    refresh('None', updateDate, skip);
     setLoading(false);
     if(incoming){
         swal('Success', 'Incoming order created successfully!', 'success');
