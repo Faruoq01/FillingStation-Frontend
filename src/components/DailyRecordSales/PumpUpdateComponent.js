@@ -1,4 +1,4 @@
-import { Backdrop, Radio } from "@mui/material";
+import { Backdrop, Box, Grid, Radio } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { changeDate, setProductType, tankList, updateRecords } from "../../storage/recordsales";
@@ -142,19 +142,27 @@ const PumpUpdateComponent = (props) => {
           <div style={placeholder}>Select pump used for the day</div>
           <PumpIndicators />
 
-          <div style={pumpcontainer} className="pumping">
-            {productType === "PMS" &&
-              displaySelectedPumps(PMS, "PMS")?.map((item, index) => {
-                return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
-              })}
-            {productType === "AGO" &&
-              displaySelectedPumps(AGO, "AGO")?.map((item, index) => {
-                return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
-              })}
-            {productType === "DPK" &&
-              displaySelectedPumps(DPK, "DPK")?.map((item, index) => {
-                return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
-              })}
+          <div className="pumping">
+            <Grid spacing={3} container>
+              {productType === "PMS" &&
+                displaySelectedPumps(PMS, "PMS")?.map((item, index) => {
+                  return (
+                    <Grid xs={12} sm={6} md={4} lg={3} xl={3} item>
+                      <Box sx={{width: "100%"}}>
+                        <PumpCard refreshIt={setRefresh} item={item} index={index} />
+                      </Box>
+                    </Grid>
+                  )
+                })}
+              {productType === "AGO" &&
+                displaySelectedPumps(AGO, "AGO")?.map((item, index) => {
+                  return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
+                })}
+              {productType === "DPK" &&
+                displaySelectedPumps(DPK, "DPK")?.map((item, index) => {
+                  return <PumpCard refreshIt={setRefresh} item={item} index={index} />;
+                })}
+            </Grid>
           </div>
         </div>
       </div>
@@ -197,12 +205,6 @@ const placeholder = {
   marginTop: "10px",
   marginBottom: "10px",
   fontWeight: "400",
-};
-
-const pumpcontainer = {
-  width: "100%",
-  marginTop: "20px",
-  justifyContent: "center",
 };
 
 export default PumpUpdateComponent;

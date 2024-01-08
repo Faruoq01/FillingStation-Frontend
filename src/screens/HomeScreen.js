@@ -268,6 +268,7 @@ useEffect(() => {
        </Grid>
        <Grid xs={12} sm={12} md={12} lg={12} xl={12} item>
             <Scrollbar
+                scrollbarWidth={5}
                 style={{...scrollBar, height: isSmallScreen? "85vh": "91vh"}}   
             >
                 <div style={inner}>

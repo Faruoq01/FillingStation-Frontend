@@ -165,8 +165,9 @@ const PumpCard = ({ item, index, refreshIt }) => {
     <React.Fragment>
       <div
         style={{
-          width: mediaMatch.matches ? "100%" : "270px",
+          width: "100%",
           height: "auto",
+          margin: "0px",
         }}
         key={index}
         className="item">
