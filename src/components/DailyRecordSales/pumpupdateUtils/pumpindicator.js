@@ -21,7 +21,6 @@ const PumpIndicators = () => {
 
   return (
     <div
-      style={{ flexDirection: "row", justifyContent: "center" }}
       className="pump-list">
       {productType === "PMS" &&
         (PMS.length === 0 ? (
@@ -60,8 +59,6 @@ const box = {
   backgroundColor: "#06805B",
   borderRadius: "30px",
   color: "#fff",
-  marginRight: "10px",
-  marginTop: "10px",
 };
 
 export default PumpIndicators;

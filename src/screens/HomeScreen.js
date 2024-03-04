@@ -40,8 +40,9 @@ const location = useLocation();
 const theme = useTheme();
 
 const barWidth = 270;
+const columns = barWidth/window.innerWidth * 12;
 const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-const [calColumn, setCalColumn] = useState(0);
+const [calColumn, setCalColumn] = useState(columns);
 
 useEffect(() => {
     const handleResize = () => {
