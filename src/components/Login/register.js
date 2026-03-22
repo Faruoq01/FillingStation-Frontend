@@ -251,7 +251,7 @@ const Register = (props) => {
         />
 
         <Button
-          disabled
+          // disabled
           sx={{
             width: "100%",
             height: "35px",
